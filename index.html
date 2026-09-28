@@ -155,6 +155,7 @@
 
             <!-- Tasks & Progress View -->
             <div id="view-tasks" class="hidden">
+                <!-- Progress Tracking Section -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200" id="progress-tracking">
                     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -163,6 +164,7 @@
                         </div>
                     </div>
                     
+                    <!-- Search, Filter, and Export Controls -->
                     <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <div class="relative flex-1 max-w-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -213,6 +215,7 @@
 
             <!-- Team Budget View -->
             <div id="view-budget" class="hidden">
+                <!-- Admin Config Section -->
                 <div id="budget-config-section" style="display: none;" class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5">
                     <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
                         <div class="mr-2">
@@ -236,6 +239,9 @@
                         </div>
                         <div class="flex space-x-2">
                             <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">Save Limit</button>
+                            <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate Local Data to Cloud
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -514,7 +520,7 @@
             db = getFirestore(app);
         } catch (err) {
             console.error("Firebase initialization error:", err);
-            alert("Firebase configuration error. The app cannot load your data. Please check your firebaseConfig object.");
+            alert("Firebase configuration error. The app cannot load your data.");
         }
 
         // --- App State ---
@@ -632,11 +638,11 @@
         window.initApp = () => {
             setupTeamMembersUI();
             
-            // Abort initial data fetch if Firebase wasn't configured
+            // Force an initial UI render so the calendar isn't blank while waiting for Firebase
+            window.renderUI();
+            
             if (!db) {
-                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error. Please check configuration.</div>`;
-                document.getElementById('tasks-table-body').innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-red-500">Firebase Connection Error.</td></tr>`;
-                document.getElementById('budget-table-body').innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-sm text-red-500">Firebase Connection Error.</td></tr>`;
+                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error.</div>`;
                 return;
             }
 
@@ -649,6 +655,8 @@
                     updateCurrencySymbols();
                     window.renderUI();
                 }
+            }, (error) => {
+                console.error("Settings Error:", error);
             });
 
             // 2. Listen to Events
@@ -679,6 +687,10 @@
                         window.renderDrawerChecklist(t);
                     }
                 }
+            }, (error) => {
+                console.error("Events Error:", error);
+                window.showToast("Database connection failed. Please ensure Firestore is enabled in Test Mode.", "error");
+                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm text-balance px-4">Database Error:<br>${error.message}</div>`;
             });
 
             // 3. Listen to Budgets
@@ -691,8 +703,52 @@
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
+            }, (error) => {
+                console.error("Budgets Error:", error);
             });
         }
+
+        window.migrateLocalData = async () => {
+            if(!confirm("This will upload all tasks and budgets saved locally on this browser to your Firebase Cloud Database. Do you want to proceed?")) return;
+            
+            if (!db) {
+                window.showToast("Firebase is not connected.", "error");
+                return;
+            }
+
+            const localEvents = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const localBudgets = JSON.parse(localStorage.getItem(BUDGET_STORAGE_KEY) || '[]');
+            const localSettings = JSON.parse(localStorage.getItem(BUDGET_SETTINGS_KEY) || '{}');
+
+            if (localEvents.length === 0 && localBudgets.length === 0) {
+                window.showToast("No local data found on this computer to migrate.", "info");
+                return;
+            }
+
+            window.showToast("Migrating data to cloud... Please wait.", "info");
+
+            try {
+                // Upload Events
+                for (let e of localEvents) {
+                    await setDoc(doc(db, "events", e.id), e);
+                }
+                
+                // Upload Budgets
+                for (let b of localBudgets) {
+                    await setDoc(doc(db, "budgets", b.id), b);
+                }
+
+                // Upload Settings
+                if (Object.keys(localSettings).length > 0) {
+                    await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
+                }
+
+                window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error migrating data to cloud. Check console for details.", "error");
+            }
+        };
 
         function setupTeamMembersUI() {
             const container = document.getElementById('assignee-checkboxes');
@@ -881,11 +937,13 @@
             btn.disabled = true;
 
             try {
+                if (!db) throw new Error("Firebase not initialized");
                 await window.syncEventToFirestore(eventData);
                 window.showToast(id ? "Task updated" : "Task created", "success");
                 window.closeAddModal();
             } catch (err) {
                 console.error("Save Event Error:", err);
+                window.showToast("Could not save to database.", "error");
             } finally {
                 btn.innerHTML = 'Save Task';
                 btn.disabled = false;
@@ -1056,11 +1114,17 @@
 
         window.updateStats = () => {
             const filtered = window.filterEventsByGlobalCategory(window.events);
-            document.getElementById('stat-total').innerText = filtered.filter(e => e.status !== 'Done').length;
-            document.getElementById('stat-progress').innerText = filtered.filter(e => e.status === 'Ongoing').length;
+            
+            const statTotal = document.getElementById('stat-total');
+            if (statTotal) statTotal.innerText = filtered.filter(e => e.status !== 'Done').length;
+            
+            const statProgress = document.getElementById('stat-progress');
+            if (statProgress) statProgress.innerText = filtered.filter(e => e.status === 'Ongoing').length;
             
             const currStr = window.getCurrentMonthStr();
-            document.getElementById('stat-completed').innerText = filtered.filter(e => e.status === 'Done' && e.endDate.startsWith(currStr)).length;
+            
+            const statCompleted = document.getElementById('stat-completed');
+            if (statCompleted) statCompleted.innerText = filtered.filter(e => e.status === 'Done' && e.endDate.startsWith(currStr)).length;
             
             let totalSpent = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
@@ -1071,7 +1135,9 @@
             const limitForMonth = window.budgetSettings.limits[currStr] || 0;
             const available = limitForMonth - totalSpent;
             
-            document.getElementById('stat-budget-month-label').innerText = currStr;
+            const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
+            if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
+            
             const budgetStatEl = document.getElementById('stat-budget');
             if(budgetStatEl) {
                 budgetStatEl.innerText = window.formatCurrency(available);
@@ -1221,7 +1287,8 @@
             monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
             monthlyEvents.sort((a, b) => a.startDate.localeCompare(b.startDate));
 
-            document.getElementById('ongoing-count').innerText = monthlyEvents.length;
+            const ongoingCountEl = document.getElementById('ongoing-count');
+            if (ongoingCountEl) ongoingCountEl.innerText = monthlyEvents.length;
 
             if (monthlyEvents.length === 0) {
                 ongoingList.innerHTML = `
@@ -1437,6 +1504,386 @@
             });
         }
 
+        window.setBudgetOwnerFilter = (val) => { 
+            window.budgetFilterOwner = val; 
+            window.renderBudgetTable(); 
+        };
+        
+        window.setBudgetSearch = (val) => { 
+            window.budgetSearchQuery = val; 
+            window.renderBudgetTable(); 
+        }
+        
+        window.setBudgetMonthFilter = (val) => { 
+            window.budgetFilterMonth = val; 
+            window.renderBudgetTable(); 
+        }
+        
+        window.handleBudgetSort = (col) => {
+            if (window.budgetSortCol === col) { 
+                window.budgetSortAsc = !window.budgetSortAsc; 
+            } else { 
+                window.budgetSortCol = col; 
+                window.budgetSortAsc = true; 
+            }
+            window.renderBudgetTable();
+        }
+
+        window.renderBudgetTable = () => {
+            const table = document.getElementById('budget-table-body');
+            if (!table) return;
+            table.innerHTML = '';
+            
+            ['month', 'name', 'type', 'owner', 'allocated', 'spent'].forEach(col => {
+                const icon = document.getElementById(`budget-sort-icon-${col}`);
+                if (icon) { 
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); 
+                }
+            });
+
+            let filteredBudgets = window.budgets.filter(b => {
+                const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
+                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+                return matchesSearch && matchesMonth && matchesOwner;
+            });
+
+            filteredBudgets.sort((a, b) => {
+                let valA = a[window.budgetSortCol]; 
+                let valB = b[window.budgetSortCol];
+                
+                if (['allocated', 'spent'].includes(window.budgetSortCol)) { 
+                    valA = parseFloat(valA) || 0; 
+                    valB = parseFloat(valB) || 0; 
+                } else { 
+                    valA = (valA || '').toLowerCase(); 
+                    valB = (valB || '').toLowerCase(); 
+                }
+                
+                if (valA < valB) return window.budgetSortAsc ? -1 : 1;
+                if (valA > valB) return window.budgetSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            if (filteredBudgets.length === 0) {
+                table.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
+                document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
+                document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
+                document.getElementById('budget-total-remaining').innerText = window.formatCurrency(0);
+                return;
+            }
+
+            let totalAllocated = 0; 
+            let totalSpent = 0;
+            
+            filteredBudgets.forEach(b => {
+                const alloc = parseFloat(b.allocated) || 0; 
+                const spent = parseFloat(b.spent) || 0; 
+                const remaining = alloc - spent;
+                
+                totalAllocated += alloc; 
+                totalSpent += spent;
+                
+                const escName = b.name.replace(/"/g, '&quot;'); 
+                const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
+                
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="${escOwner}">${escOwner}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+            
+            const totalRemaining = totalAllocated - totalSpent;
+            document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
+            document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
+            
+            const remainingEl = document.getElementById('budget-total-remaining');
+            remainingEl.innerText = window.formatCurrency(totalRemaining);
+            remainingEl.className = `px-6 py-4 text-right text-sm font-bold ${totalRemaining < 0 ? 'text-red-600' : 'text-blue-600'}`;
+        }
+
+        window.saveBudgetEntry = async (e) => {
+            e.preventDefault();
+            const form = document.getElementById('budget-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('budget-id').value;
+            const month = document.getElementById('budget-month').value;
+            const owner = document.getElementById('budget-owner').value.trim();
+            const name = document.getElementById('budget-name').value.trim();
+            const type = document.getElementById('budget-type').value;
+            const allocated = document.getElementById('budget-allocated').value;
+            const spent = document.getElementById('budget-spent').value || 0;
+
+            const entryId = id ? id : Date.now().toString();
+            const entryData = { 
+                id: entryId, 
+                name, 
+                type, 
+                owner, 
+                month, 
+                allocated: parseFloat(allocated), 
+                spent: parseFloat(spent) 
+            };
+
+            const btn = document.getElementById('save-budget-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                if (!db) throw new Error("Firebase not configured");
+                await setDoc(doc(db, "budgets", entryId), entryData);
+                window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
+                window.closeBudgetModal();
+            } catch(e) { 
+                window.showToast("Error saving budget", "error"); 
+            } finally {
+                btn.innerHTML = 'Save Entry';
+                btn.disabled = false;
+            }
+        };
+
+        window.deleteBudgetEntry = async (id) => {
+            if (!db) return;
+            try {
+                await deleteDoc(doc(db, "budgets", id));
+                window.showToast("Budget entry deleted", "success");
+            } catch(e) { 
+                window.showToast("Error deleting", "error"); 
+            }
+        };
+
+        window.openBudgetModal = (id = null) => {
+            document.getElementById('budget-form').reset();
+            document.getElementById('budget-id').value = '';
+            document.getElementById('budget-modal-title').innerText = 'Add Budget Entry';
+            document.getElementById('budget-month').value = window.getCurrentMonthStr();
+            document.getElementById('budget-type').value = 'UGC Rewards'; 
+            
+            if (id) {
+                const b = window.budgets.find(x => x.id === id);
+                if (b) {
+                    document.getElementById('budget-id').value = b.id;
+                    document.getElementById('budget-month').value = b.month || window.getCurrentMonthStr();
+                    document.getElementById('budget-owner').value = b.owner || '';
+                    document.getElementById('budget-name').value = b.name;
+                    if(b.type) document.getElementById('budget-type').value = b.type;
+                    document.getElementById('budget-allocated').value = b.allocated;
+                    document.getElementById('budget-spent').value = b.spent;
+                    document.getElementById('budget-modal-title').innerText = 'Edit Budget Entry';
+                }
+            }
+            
+            document.getElementById('budget-modal').classList.remove('hidden');
+        };
+
+        window.closeBudgetModal = () => {
+            document.getElementById('budget-modal').classList.add('hidden');
+        };
+
+        window.openBudgetDrawer = () => {
+            const overlay = document.getElementById('budget-drawer-overlay');
+            const drawer = document.getElementById('budget-drawer');
+            
+            const years = new Set(); 
+            years.add(currentYear.toString());
+            window.budgets.forEach(b => { 
+                if (b.month) years.add(b.month.split('-')[0]); 
+            });
+            
+            const yearSelect = document.getElementById('budget-drawer-year');
+            yearSelect.innerHTML = Array.from(years).sort().reverse().map(y => `<option value="${y}" ${y === currentYear.toString() ? 'selected' : ''}>${y}</option>`).join('');
+            
+            window.renderBudgetDrawerContent(currentYear.toString());
+            overlay.classList.remove('hidden'); 
+            void overlay.offsetWidth; 
+            overlay.classList.remove('opacity-0'); 
+            drawer.classList.remove('translate-x-full');
+        };
+
+        window.closeBudgetDrawer = () => {
+            const overlay = document.getElementById('budget-drawer-overlay');
+            const drawer = document.getElementById('budget-drawer');
+            
+            overlay.classList.add('opacity-0'); 
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => { 
+                overlay.classList.add('hidden'); 
+            }, 300);
+        };
+
+        window.renderBudgetDrawerContent = (year) => {
+            const content = document.getElementById('budget-drawer-content');
+            const monthsInYear = [];
+            
+            for (let m = 1; m <= 12; m++) { 
+                monthsInYear.push(`${year}-${String(m).padStart(2, '0')}`); 
+            }
+            
+            window.budgets.forEach(b => { 
+                if (b.month && b.month.startsWith(year) && !monthsInYear.includes(b.month)) { 
+                    monthsInYear.push(b.month); 
+                } 
+            });
+
+            const activeMonths = monthsInYear.filter(m => {
+                const hasBudget = window.budgets.some(b => b.month === m);
+                const hasLimit = (window.budgetSettings.limits[m] || 0) > 0;
+                return hasBudget || hasLimit;
+            });
+
+            activeMonths.sort().reverse();
+
+            if (activeMonths.length === 0) { 
+                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>'; 
+                return; 
+            }
+
+            let html = '';
+            activeMonths.forEach(m => {
+                let spent = 0;
+                window.budgets.filter(b => b.month === m).forEach(b => { 
+                    spent += (parseFloat(b.spent) || 0); 
+                });
+                
+                const limit = window.budgetSettings.limits[m] || 0;
+                const d = new Date(m + '-01');
+                const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+                html += `
+                    <div class="bg-white border-b border-gray-200 p-4">
+                        <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Total Spent</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                            </div>
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Month Limit</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            content.innerHTML = html;
+        };
+
+        window.changeMonth = (dir) => {
+            currentMonth += dir;
+            if (currentMonth < 0) { 
+                currentMonth = 11; 
+                currentYear--; 
+            } else if (currentMonth > 11) { 
+                currentMonth = 0; 
+                currentYear++; 
+            }
+            window.renderUI();
+        };
+
+        window.resetToToday = () => {
+            currentMonth = new Date().getMonth(); 
+            currentYear = new Date().getFullYear(); 
+            window.renderUI();
+        };
+
+        window.openAddModal = () => {
+            document.getElementById('event-form').reset();
+            document.getElementById('event-id').value = '';
+            document.getElementById('modal-title').innerText = 'Add New Content Task';
+            document.getElementById('event-start-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('event-end-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('event-campaign-type').value = 'Slot';
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        window.openAddModalWithDate = (dateStr) => {
+            window.openAddModal();
+            document.getElementById('event-start-date').value = dateStr; 
+            document.getElementById('event-end-date').value = dateStr;
+        }
+
+        window.openEditById = (id) => { 
+            const evt = window.events.find(e => e.id === id); 
+            if (evt) window.openEditModal(evt); 
+        }
+
+        window.openEditModal = (evt) => {
+            document.getElementById('event-form').reset(); 
+            document.getElementById('event-id').value = evt.id;
+            document.getElementById('modal-title').innerText = 'Edit Content Task'; 
+            document.getElementById('event-title').value = evt.title;
+            document.getElementById('event-start-date').value = evt.startDate; 
+            document.getElementById('event-end-date').value = evt.endDate;
+            document.getElementById('event-campaign-type').value = evt.campaignType || 'Slot';
+            
+            const assigns = evt.assignees || [];
+            document.querySelectorAll('input[name="assignees"]').forEach(cb => { 
+                cb.checked = assigns.includes(cb.value); 
+            });
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        window.closeAddModal = () => { 
+            document.getElementById('event-modal').classList.add('hidden'); 
+        }
+
+        window.openTaskDrawer = (taskId) => {
+            const evt = window.events.find(e => e.id === taskId);
+            if (!evt) return;
+            
+            window.currentDrawerTaskId = taskId;
+            if (document.getElementById('assignee-filter-select')) {
+                document.getElementById('assignee-filter-select').value = 'All';
+            }
+            window.assigneeFilter = 'All';
+            
+            const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
+            document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
+            
+            window.updateDrawerProgressUI(evt); 
+            window.renderDrawerChecklist(evt);
+
+            const overlay = document.getElementById('drawer-overlay'); 
+            const drawer = document.getElementById('task-drawer');
+            
+            overlay.classList.remove('hidden'); 
+            void overlay.offsetWidth; 
+            overlay.classList.remove('opacity-0'); 
+            drawer.classList.remove('translate-x-full');
+        };
+
+        window.closeTaskDrawer = () => {
+            const overlay = document.getElementById('drawer-overlay'); 
+            const drawer = document.getElementById('task-drawer');
+            
+            overlay.classList.add('opacity-0'); 
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => { 
+                overlay.classList.add('hidden'); 
+                window.currentDrawerTaskId = null; 
+            }, 300);
+        };
+
         window.updateDrawerProgressUI = (evt) => {
             const p = evt.progress || 0; 
             const pFormatted = p.toFixed(2);
@@ -1454,6 +1901,81 @@
                 bar.classList.add('bg-gray-400');
             }
         }
+
+        window.handleHashtagEnter = (e, taskId) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault(); 
+                const input = e.target; 
+                const val = input.value.trim(); 
+                if (!val) return;
+                
+                const task = window.events.find(ev => ev.id === taskId); 
+                if (!task) return;
+                
+                if (!Array.isArray(task.fields.hashtags)) task.fields.hashtags = [];
+                
+                const newTags = val.split(/\s+/).filter(t => t.length > 0);
+                newTags.forEach(tag => { 
+                    if (task.fields.hashtags.length < 10) { 
+                        task.fields.hashtags.push(tag); 
+                    } 
+                });
+                
+                input.value = ''; 
+                task.progress = window.calcProgress(task);
+                
+                window.syncEventToFirestore(task);
+                window.updateDrawerProgressUI(task); 
+                window.renderDrawerChecklist(task); 
+                window.renderUI();
+                
+                setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
+            }
+        };
+
+        window.removeHashtag = (taskId, idx) => {
+            const task = window.events.find(ev => ev.id === taskId);
+            if (!task || !Array.isArray(task.fields.hashtags)) return;
+            
+            task.fields.hashtags.splice(idx, 1); 
+            task.progress = window.calcProgress(task);
+            
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderUI();
+            
+            setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
+        };
+
+        window.updateDashboardStatus = (taskId, changedDateStr, value) => {
+            const task = window.events.find(e => e.id === taskId); 
+            if (!task) return;
+            if (!task.fields.dashboardStatus) task.fields.dashboardStatus = {};
+            
+            let numVal = parseFloat(value); 
+            if (isNaN(numVal)) numVal = 0; 
+            if (numVal > 100) numVal = 100; 
+            if (numVal < 0) numVal = 0;
+            
+            task.fields.dashboardStatus[changedDateStr] = numVal;
+            
+            if (numVal === 100) {
+                const dates = window.getDatesInRange(task.startDate, task.endDate);
+                let hit = false;
+                dates.forEach(d => { 
+                    if (d === changedDateStr) hit = true; 
+                    else if (hit) { task.fields.dashboardStatus[d] = 100; } 
+                });
+            }
+            
+            task.progress = window.calcProgress(task);
+            
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderUI();
+        };
 
         window.renderDrawerChecklist = (evt) => {
             const list = document.getElementById('drawer-checklist');
@@ -1638,6 +2160,121 @@
                 </div>
             `;
         }
+
+        window.updateTaskField = (taskId, fieldName, val) => {
+            const taskIdx = window.events.findIndex(e => e.id === taskId); 
+            if (taskIdx === -1) return;
+            
+            const task = window.events[taskIdx]; 
+            if (!task.fields) task.fields = { ...defaultFields };
+            
+            task.fields[fieldName] = val;
+            task.progress = window.calcProgress(task);
+            
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            
+            if (['document', 'dailyDataReport', 'postMortemReport'].includes(fieldName)) { 
+                window.renderDrawerChecklist(task); 
+            }
+            window.renderTasksTable(); 
+            window.renderOngoingEvents(); 
+        };
+
+        window.addPostId = (taskId) => {
+            const task = window.events.find(e => e.id === taskId); 
+            if (!task) return;
+            if (!Array.isArray(task.fields.postIds)) task.fields.postIds = [];
+            
+            task.fields.postIds.push({ type: '', id: '', imgUrl: '' });
+            window.syncEventToFirestore(task);
+            window.renderDrawerChecklist(task);
+        };
+
+        window.updatePostIdField = (taskId, idx, key, val) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.postIds) || !task.fields.postIds[idx]) return;
+            
+            task.fields.postIds[idx][key] = val; 
+            task.progress = window.calcProgress(task);
+            
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task); 
+            window.renderTasksTable();
+        };
+
+        window.removePostId = (taskId, idx) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.postIds)) return;
+            
+            task.fields.postIds.splice(idx, 1); 
+            task.progress = window.calcProgress(task);
+            
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderTasksTable();
+        };
+
+        window.jumpToTask = (id) => {
+            window.switchView('tasks');
+            
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = ''; 
+            window.searchQuery = '';
+            
+            window.renderTasksTable();
+            
+            setTimeout(() => {
+                const row = document.getElementById(`task-row-${id}`);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.classList.remove('hover:bg-gray-50'); 
+                    row.classList.add('bg-indigo-100');
+                    setTimeout(() => { 
+                        row.classList.remove('bg-indigo-100'); 
+                        row.classList.add('hover:bg-gray-50'); 
+                    }, 2000);
+                }
+            }, 100);
+        }
+
+        window.showToast = (message, type = "info", iconOverride = null) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bg = 'bg-gray-800';
+            let icon = 'fa-circle-info';
+            let iconColor = 'text-blue-400';
+            
+            if (type === 'success') { icon = 'fa-circle-check'; iconColor = 'text-emerald-400'; }
+            if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
+            if (iconOverride) { icon = iconOverride; }
+
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-lg shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
+            toast.innerHTML = `
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                    <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
+                </div>
+                <div class="ml-3 text-sm font-normal">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-enter-active');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                toast.classList.add('toast-exit-active');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = window.initApp;
+
     </script>
 </body>
 </html>
