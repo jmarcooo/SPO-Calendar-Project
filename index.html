@@ -86,15 +86,15 @@
                 <!-- Quick Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks</div>
+                        <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-1 text-3xl font-semibold text-gray-900" id="stat-total">0</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks</div>
+                        <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-1 text-3xl font-semibold text-indigo-600" id="stat-progress">0</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-                        <div class="text-sm font-medium text-gray-500 truncate">Completed (This Month)</div>
+                        <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
                         <div class="mt-1 text-3xl font-semibold text-emerald-600" id="stat-completed">0</div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative">
@@ -155,7 +155,6 @@
 
             <!-- Tasks & Progress View -->
             <div id="view-tasks" class="hidden">
-                <!-- Progress Tracking Section -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200" id="progress-tracking">
                     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -164,7 +163,6 @@
                         </div>
                     </div>
                     
-                    <!-- Search, Filter, and Export Controls -->
                     <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <div class="relative flex-1 max-w-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -215,7 +213,6 @@
 
             <!-- Team Budget View -->
             <div id="view-budget" class="hidden">
-                <!-- Admin Config Section -->
                 <div id="budget-config-section" style="display: none;" class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5">
                     <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
                         <div class="mr-2">
@@ -716,9 +713,9 @@
                 return;
             }
 
-            const localEvents = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            const localBudgets = JSON.parse(localStorage.getItem(BUDGET_STORAGE_KEY) || '[]');
-            const localSettings = JSON.parse(localStorage.getItem(BUDGET_SETTINGS_KEY) || '{}');
+            const localEvents = JSON.parse(localStorage.getItem('spo_content_calendar_events') || '[]');
+            const localBudgets = JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            const localSettings = JSON.parse(localStorage.getItem('spo_budget_settings') || '{}');
 
             if (localEvents.length === 0 && localBudgets.length === 0) {
                 window.showToast("No local data found on this computer to migrate.", "info");
@@ -990,6 +987,29 @@
                 return matchesSearch && matchesStatus && matchesAssignee;
             });
 
+            // APPLY CURRENT SORTING BEFORE EXPORTING
+            filteredEvents.sort((a, b) => {
+                let valA = a[window.sortCol]; 
+                let valB = b[window.sortCol];
+                if (window.sortCol === 'assignees') { 
+                    valA = (a.assignees || []).join(', '); 
+                    valB = (b.assignees || []).join(', '); 
+                } else if (window.sortCol === 'progress') { 
+                    valA = a.progress || 0; 
+                    valB = b.progress || 0; 
+                } else if (window.sortCol === 'title' || window.sortCol === 'status') { 
+                    valA = (valA || '').toLowerCase(); 
+                    valB = (valB || '').toLowerCase(); 
+                } else if (window.sortCol === 'date') { 
+                    valA = new Date(a.startDate).getTime(); 
+                    valB = new Date(b.startDate).getTime(); 
+                }
+
+                if (valA < valB) return window.sortAsc ? -1 : 1;
+                if (valA > valB) return window.sortAsc ? 1 : -1;
+                return 0;
+            });
+
             const data = filteredEvents.map(e => {
                 const f = e.fields || {};
                 const posts = (f.postIds || []).map(p => {
@@ -1050,6 +1070,24 @@
                 return matchesSearch && matchesMonth && matchesOwner;
             });
             
+            // APPLY CURRENT SORTING BEFORE EXPORTING
+            filteredBudgets.sort((a, b) => {
+                let valA = a[window.budgetSortCol]; 
+                let valB = b[window.budgetSortCol];
+                
+                if (['allocated', 'spent'].includes(window.budgetSortCol)) { 
+                    valA = parseFloat(valA) || 0; 
+                    valB = parseFloat(valB) || 0; 
+                } else { 
+                    valA = (valA || '').toLowerCase(); 
+                    valB = (valB || '').toLowerCase(); 
+                }
+                
+                if (valA < valB) return window.budgetSortAsc ? -1 : 1;
+                if (valA > valB) return window.budgetSortAsc ? 1 : -1;
+                return 0;
+            });
+
             const data = filteredBudgets.map(b => {
                 const alloc = parseFloat(b.allocated) || 0;
                 const spent = parseFloat(b.spent) || 0;
@@ -1114,17 +1152,29 @@
 
         window.updateStats = () => {
             const filtered = window.filterEventsByGlobalCategory(window.events);
-            
-            const statTotal = document.getElementById('stat-total');
-            if (statTotal) statTotal.innerText = filtered.filter(e => e.status !== 'Done').length;
-            
-            const statProgress = document.getElementById('stat-progress');
-            if (statProgress) statProgress.innerText = filtered.filter(e => e.status === 'Ongoing').length;
-            
             const currStr = window.getCurrentMonthStr();
             
+            // Get boundaries for currently viewed month
+            const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+            // Filter events strictly to what is shown on the currently viewed calendar month
+            const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
+
+            // Update Labels
+            document.querySelectorAll('.stat-month-label').forEach(el => {
+                el.innerText = currStr;
+            });
+            
+            const statTotal = document.getElementById('stat-total');
+            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done').length;
+            
+            const statProgress = document.getElementById('stat-progress');
+            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing').length;
+            
             const statCompleted = document.getElementById('stat-completed');
-            if (statCompleted) statCompleted.innerText = filtered.filter(e => e.status === 'Done' && e.endDate.startsWith(currStr)).length;
+            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done').length;
             
             let totalSpent = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
