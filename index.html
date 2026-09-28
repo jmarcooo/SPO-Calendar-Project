@@ -83,6 +83,7 @@
             
             <!-- Dashboard View -->
             <div id="view-dashboard" class="block">
+                <!-- Quick Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
                         <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks</div>
@@ -109,12 +110,19 @@
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-lg font-bold text-gray-900" id="calendar-month-year">Month Year</h2>
                                 <div class="flex space-x-2">
-                                    <button onclick="changeMonth(-1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                                    <button onclick="resetToToday()" class="px-3 py-1 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">Today</button>
-                                    <button onclick="changeMonth(1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
+                                    <button onclick="changeMonth(-1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                    </button>
+                                    <button onclick="resetToToday()" class="px-3 py-1 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                                        Today
+                                    </button>
+                                    <button onclick="changeMonth(1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
                                 </div>
                             </div>
                             
+                            <!-- Calendar Grid -->
                             <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden border border-gray-200">
                                 <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
                                 <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
@@ -125,7 +133,7 @@
                                 <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
                             </div>
                             <div id="calendar-grid" class="flex flex-col gap-px bg-gray-200 border-l border-r border-b border-gray-200 rounded-b-lg">
-                                <!-- Generated days -->
+                                <!-- Dynamically generated days -->
                             </div>
                         </div>
                     </div>
@@ -138,7 +146,7 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
                             </div>
                             <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
-                                <!-- List -->
+                                <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
                             </div>
                         </div>
                     </div>
@@ -196,6 +204,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="tasks-table-body">
+                                <tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Loading tasks...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -379,7 +388,9 @@
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
                 <h3 class="text-lg font-bold text-gray-900" id="budget-modal-title">Add Budget Entry</h3>
-                <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
             </div>
             <div class="p-6 overflow-y-auto">
                 <form id="budget-form" class="space-y-4">
@@ -440,7 +451,9 @@
     <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-start bg-gray-50 shrink-0">
             <h2 id="drawer-title" class="text-xl font-bold text-gray-900 leading-tight pr-4">Task Title</h2>
-            <button onclick="closeTaskDrawer()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <button onclick="closeTaskDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
         <div class="px-6 py-5 border-b border-gray-200 shrink-0">
             <div class="flex justify-between items-end mb-2">
@@ -462,7 +475,9 @@
     <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-gray-200">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 shrink-0">
             <h2 class="text-lg font-bold text-gray-900 leading-tight">All Months Budget</h2>
-            <button onclick="closeBudgetDrawer()" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <button onclick="closeBudgetDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
         <div class="p-4 border-b border-gray-200 shrink-0 bg-white">
             <label class="block text-sm font-medium text-gray-700 mb-1">Select Year</label>
@@ -476,23 +491,30 @@
     <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // 1. PUT YOUR FIREBASE CONFIG HERE
-        // ==========================================
+        // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY_HERE",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDnVAW0iDK1RVvgHppwrfyaXP0ZQIl0wqs",
+            authDomain: "spo-calendar-project.firebaseapp.com",
+            projectId: "spo-calendar-project",
+            storageBucket: "spo-calendar-project.firebasestorage.app",
+            messagingSenderId: "375136175643",
+            appId: "1:375136175643:web:4f307eebeb3f56a040dabe",
+            measurementId: "G-B81BZ4X1Y1"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Initialize Firebase variables
+        let app, analytics, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            analytics = getAnalytics(app);
+            db = getFirestore(app);
+        } catch (err) {
+            console.error("Firebase initialization error:", err);
+            alert("Firebase configuration error. The app cannot load your data. Please check your firebaseConfig object.");
+        }
 
         // --- App State ---
         const TEAM_MEMBERS = ['Kenneth', 'Renee', 'Liezl', 'Nami', 'Lim', 'Marco'];
@@ -503,8 +525,8 @@
         let currentYear = new Date().getFullYear();
         let currentDateObj = new Date();
         let defaultMonthStr = `${currentDateObj.getFullYear()}-${String(currentDateObj.getMonth() + 1).padStart(2, '0')}`;
+        
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
-
         window.globalCategoryFilter = 'All';
         
         let logoClickCount = 0;
@@ -517,7 +539,12 @@
             }
         };
 
-        let drawerAccordionStates = { links: true, media: false, ops: false, dash: false };
+        let drawerAccordionStates = { 
+            links: true, 
+            media: false, 
+            ops: false, 
+            dash: false 
+        };
         
         window.budgetSearchQuery = '';
         window.budgetFilterOwner = 'All';
@@ -532,11 +559,21 @@
         window.sortAsc = false;
         
         const defaultFields = {
-            document: '', dailyDataReport: '', postMortemReport: '',
-            hashtags: [], postIds: [], ignoreListed: false,
-            gameReview: 'Pending', dailyTask: false, contentWriters: 'Pending',
-            imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
-            postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending',
+            document: '', 
+            dailyDataReport: '', 
+            postMortemReport: '',
+            hashtags: [], 
+            postIds: [], 
+            ignoreListed: false,
+            gameReview: 'Pending', 
+            dailyTask: false, 
+            contentWriters: 'Pending',
+            imChannels: 'Pending', 
+            trackableLinks: 'Pending', 
+            sms: 'Pending',
+            postPinned: 'Pending', 
+            rewardDistributed: 'Pending', 
+            rewardsBanner: 'Pending',
             dashboardStatus: {}
         };
 
@@ -545,13 +582,16 @@
                 document.getElementById('budget-spent').value = this.value;
             }
         });
+
         document.getElementById('budget-type').addEventListener('change', function() {
             if (this.value === 'Monthly Expenses') {
                 document.getElementById('budget-spent').value = document.getElementById('budget-allocated').value;
             }
         });
 
-        window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+        window.getCurrentMonthStr = () => {
+            return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+        }
 
         window.calculateStatus = (startDate, endDate) => {
             const today = new Date().toISOString().split('T')[0];
@@ -591,6 +631,14 @@
         window.initApp = () => {
             setupTeamMembersUI();
             
+            // Abort initial data fetch if Firebase wasn't configured
+            if (!db) {
+                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error. Please set API Keys.</div>`;
+                document.getElementById('tasks-table-body').innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-red-500">Firebase Connection Error. Please set API Keys.</td></tr>`;
+                document.getElementById('budget-table-body').innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-sm text-red-500">Firebase Connection Error. Please set API Keys.</td></tr>`;
+                return;
+            }
+
             // 1. Listen to Settings
             onSnapshot(doc(db, "settings", "budgetSettings"), (docSnap) => {
                 if (docSnap.exists()) {
@@ -610,14 +658,19 @@
                     if (!e.startDate) e.startDate = e.date || new Date().toISOString().split('T')[0];
                     if (!e.endDate) e.endDate = e.date || new Date().toISOString().split('T')[0];
                     e.status = window.calculateStatus(e.startDate, e.endDate);
+                    
                     if (!e.fields) e.fields = { ...defaultFields };
-                    if (typeof e.fields.hashtags === 'string') e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
+                    if (typeof e.fields.hashtags === 'string') {
+                        e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
+                    }
                     if (!e.fields.dashboardStatus) e.fields.dashboardStatus = {};
                     e.progress = window.calcProgress(e);
                     tempEvents.push(e);
                 });
+                
                 window.events = tempEvents;
                 window.renderUI();
+                
                 if (window.currentDrawerTaskId) {
                     const t = window.events.find(ev => ev.id === window.currentDrawerTaskId);
                     if(t) {
@@ -630,7 +683,10 @@
             // 3. Listen to Budgets
             onSnapshot(collection(db, "budgets"), (snapshot) => {
                 let tempBudgets = [];
-                snapshot.forEach((doc) => { tempBudgets.push(doc.data()); });
+                snapshot.forEach((doc) => {
+                    tempBudgets.push(doc.data());
+                });
+                
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
@@ -640,6 +696,7 @@
         function setupTeamMembersUI() {
             const container = document.getElementById('assignee-checkboxes');
             const filterSelect = document.getElementById('assignee-filter-select');
+            
             TEAM_MEMBERS.forEach(member => {
                 const id = `chk-${member}`;
                 if (container) {
@@ -650,11 +707,16 @@
                         </div>
                     `;
                 }
-                if (filterSelect) filterSelect.innerHTML += `<option value="${member}">${member}</option>`;
+                if (filterSelect) {
+                    filterSelect.innerHTML += `<option value="${member}">${member}</option>`;
+                }
             });
         }
 
-        window.setGlobalCategoryFilter = (val) => { window.globalCategoryFilter = val; window.renderUI(); }
+        window.setGlobalCategoryFilter = (val) => { 
+            window.globalCategoryFilter = val; 
+            window.renderUI(); 
+        }
 
         window.filterEventsByGlobalCategory = (eventList) => {
             if (window.globalCategoryFilter === 'All') return eventList;
@@ -678,7 +740,10 @@
             try {
                 await setDoc(doc(db, "settings", "budgetSettings"), window.budgetSettings);
                 window.showToast("Budget settings saved", "success");
-            } catch(e) { window.showToast("Failed to save settings", "error"); }
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to save settings", "error");
+            }
         }
 
         window.syncBudgetMonth = (val) => {
@@ -693,11 +758,14 @@
         function updateBudgetOwnerDropdown() {
             const ownerSelect = document.getElementById('budget-filter-owner');
             if (!ownerSelect) return;
+            
             const currentVal = window.budgetFilterOwner;
             let options = `<option value="All">All Owners</option>`;
             
             const owners = [...new Set(window.budgets.map(b => (b.owner || '').trim()).filter(o => o !== ''))].sort();
-            owners.forEach(o => { options += `<option value="${o}">${o}</option>`; });
+            owners.forEach(o => { 
+                options += `<option value="${o}">${o}</option>`; 
+            });
             ownerSelect.innerHTML = options;
             
             if (owners.includes(currentVal) || currentVal === 'All') {
@@ -727,7 +795,11 @@
             if (fields.ignoreListed) completed++;
             if (fields.dailyTask) completed++;
 
-            const dropdownFields = ['gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'];
+            const dropdownFields = [
+                'gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 
+                'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'
+            ];
+            
             dropdownFields.forEach(key => {
                 if (fields[key] === 'Done' || fields[key] === 'Not Applicable') completed++;
             });
@@ -746,8 +818,16 @@
 
         // --- Firebase Sync Helpers ---
         window.syncEventToFirestore = async (task) => {
-            try { await setDoc(doc(db, "events", task.id), task); } 
-            catch(e) { window.showToast("Error syncing to Firebase", "error"); console.error(e); }
+            if (!db) {
+                window.showToast("Cannot sync: Firebase is not configured.", "error");
+                return;
+            }
+            try { 
+                await setDoc(doc(db, "events", task.id), task); 
+            } catch(e) { 
+                window.showToast("Error syncing to Firebase", "error"); 
+                console.error(e); 
+            }
         }
 
         window.saveEvent = async (e) => {
@@ -761,12 +841,18 @@
             const endDate = document.getElementById('event-end-date').value;
             const campaignType = document.getElementById('event-campaign-type').value;
             
-            if (endDate < startDate) { window.showToast("End date cannot be before start date", "error"); return; }
+            if (endDate < startDate) { 
+                window.showToast("End date cannot be before start date", "error"); 
+                return; 
+            }
 
             const assignees = [];
             document.querySelectorAll('input[name="assignees"]:checked').forEach(cb => assignees.push(cb.value));
 
-            if (assignees.length === 0) { window.showToast("Assignees cannot be blank. Please select at least one.", "error"); return; }
+            if (assignees.length === 0) { 
+                window.showToast("Assignees cannot be blank. Please select at least one.", "error"); 
+                return; 
+            }
 
             const status = window.calculateStatus(startDate, endDate);
             const existingEvent = window.events.find(ev => ev.id === id);
@@ -777,26 +863,42 @@
             
             const eventId = id ? id : Date.now().toString();
             const eventData = {
-                id: eventId, title, startDate, endDate, campaignType, status, assignees,
-                fields: fieldsToSave, progress: progress, updatedAt: new Date().toISOString()
+                id: eventId, 
+                title, 
+                startDate, 
+                endDate, 
+                campaignType, 
+                status, 
+                assignees,
+                fields: fieldsToSave, 
+                progress: progress, 
+                updatedAt: new Date().toISOString()
             };
 
             const btn = document.getElementById('save-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
             btn.disabled = true;
 
-            await window.syncEventToFirestore(eventData);
-            window.showToast(id ? "Task updated" : "Task created", "success");
-            window.closeAddModal();
-            btn.innerHTML = 'Save Task';
-            btn.disabled = false;
+            try {
+                await window.syncEventToFirestore(eventData);
+                window.showToast(id ? "Task updated" : "Task created", "success");
+                window.closeAddModal();
+            } catch (err) {
+                console.error("Save Event Error:", err);
+            } finally {
+                btn.innerHTML = 'Save Task';
+                btn.disabled = false;
+            }
         }
 
         window.deleteTask = async (id) => {
+            if (!db) return;
             try {
                 await deleteDoc(doc(db, "events", id));
                 window.showToast("Task deleted", "success");
-            } catch(e) { window.showToast("Error deleting", "error"); }
+            } catch(e) { 
+                window.showToast("Error deleting", "error"); 
+            }
         }
 
         window.triggerReminder = (id, title, assigneesStr) => {
@@ -811,6 +913,8 @@
 
         window.clearAllData = async () => {
             if(!confirm("Are you sure? This deletes ALL events and budgets globally from Firebase.")) return;
+            if (!db) return;
+            
             window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
             window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
             window.showToast("Data clearing initiated", "success");
@@ -842,17 +946,32 @@
                     .join(' | ');
 
                 return {
-                    "Task Title": e.title || '', "Start Date": e.startDate || '', "End Date": e.endDate || '',
-                    "Campaign Type": e.campaignType || '', "Status": e.status || '',
+                    "Task Title": e.title || '', 
+                    "Start Date": e.startDate || '', 
+                    "End Date": e.endDate || '',
+                    "Campaign Type": e.campaignType || '', 
+                    "Status": e.status || '',
                     "Assignees": (e.assignees || []).join(', '),
                     "Progress (%)": parseFloat((e.progress || 0).toFixed(2)),
-                    "Document Link": f.document || '', "Daily Data Report Link": f.dailyDataReport || '', "Post-Mortem Report Link": f.postMortemReport || '',
-                    "Hashtags": (f.hashtags || []).join(', '), "Post IDs": posts,
-                    "Game Review": f.gameReview || 'Pending', "Content Writers": f.contentWriters || 'Pending',
-                    "IM Channels": f.imChannels || 'Pending', "Trackable Links": f.trackableLinks || 'Pending',
-                    "SMS": f.sms || 'Pending', "Post Pinned": f.postPinned || 'Pending',
-                    "Reward Distributed": f.rewardDistributed || 'Pending', "Rewards Banner": f.rewardsBanner || 'Pending',
-                    "Ignore Listed": f.ignoreListed ? 'Yes' : 'No', "Daily Task": f.dailyTask ? 'Yes' : 'No',
+                    
+                    "Document Link": f.document || '', 
+                    "Daily Data Report Link": f.dailyDataReport || '', 
+                    "Post-Mortem Report Link": f.postMortemReport || '',
+                    
+                    "Hashtags": (f.hashtags || []).join(', '), 
+                    "Post IDs": posts,
+                    
+                    "Game Review": f.gameReview || 'Pending', 
+                    "Content Writers": f.contentWriters || 'Pending',
+                    "IM Channels": f.imChannels || 'Pending', 
+                    "Trackable Links": f.trackableLinks || 'Pending',
+                    "SMS": f.sms || 'Pending', 
+                    "Post Pinned": f.postPinned || 'Pending',
+                    "Reward Distributed": f.rewardDistributed || 'Pending', 
+                    "Rewards Banner": f.rewardsBanner || 'Pending',
+                    "Ignore Listed": f.ignoreListed ? 'Yes' : 'No', 
+                    "Daily Task": f.dailyTask ? 'Yes' : 'No',
+                    
                     "Dashboard Status Tracker": dashStr
                 };
             });
@@ -876,9 +995,13 @@
                 const alloc = parseFloat(b.allocated) || 0;
                 const spent = parseFloat(b.spent) || 0;
                 return {
-                    "Month": b.month || '', "Campaign / Project Name": b.name || '',
-                    "Type": b.type || '', "Owner": b.owner || '', "Allocated Budget": alloc,
-                    "Amount Spent": spent, "Remaining Balance": alloc - spent
+                    "Month": b.month || '', 
+                    "Campaign / Project Name": b.name || '',
+                    "Type": b.type || '', 
+                    "Owner": b.owner || '', 
+                    "Allocated Budget": alloc,
+                    "Amount Spent": spent, 
+                    "Remaining Balance": alloc - spent
                 };
             });
 
@@ -897,17 +1020,20 @@
                     el.classList.toggle('hidden', v !== viewName);
                     el.classList.toggle('block', v === viewName);
                 }
+                
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-indigo-50', 'text-indigo-700');
                         nav.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
-                        icon.classList.add('text-indigo-500'); icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                        icon.classList.add('text-indigo-500'); 
+                        icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
                     } else {
                         nav.classList.remove('bg-indigo-50', 'text-indigo-700');
                         nav.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
-                        icon.classList.remove('text-indigo-500'); icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                        icon.classList.remove('text-indigo-500'); 
+                        icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
                     }
                 }
             });
@@ -937,7 +1063,10 @@
             
             let totalSpent = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
-            activeMonthBudgets.forEach(b => { totalSpent += parseFloat(b.spent) || 0; });
+            
+            activeMonthBudgets.forEach(b => { 
+                totalSpent += parseFloat(b.spent) || 0; 
+            });
             const limitForMonth = window.budgetSettings.limits[currStr] || 0;
             const available = limitForMonth - totalSpent;
             
@@ -960,7 +1089,8 @@
             const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
             const currentDay = today.getDate();
 
-            let weeks = []; let currentWeek = [];
+            let weeks = []; 
+            let currentWeek = [];
             const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
             const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
             const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
@@ -974,7 +1104,10 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 currentWeek.push({ day, dateStr, isMuted: false });
-                if (currentWeek.length === 7) { weeks.push(currentWeek); currentWeek = []; }
+                if (currentWeek.length === 7) { 
+                    weeks.push(currentWeek); 
+                    currentWeek = []; 
+                }
             }
             
             if (currentWeek.length > 0) {
@@ -989,7 +1122,8 @@
             }
 
             weeks.forEach(week => {
-                let weekStart = week[0].dateStr; let weekEnd = week[6].dateStr;
+                let weekStart = week[0].dateStr; 
+                let weekEnd = week[6].dateStr;
                 let weekEvents = window.events.filter(e => e.startDate <= weekEnd && e.endDate >= weekStart);
                 weekEvents = window.filterEventsByGlobalCategory(weekEvents);
                 weekEvents.sort((a, b) => {
@@ -997,7 +1131,8 @@
                     return new Date(b.endDate) - new Date(a.endDate);
                 });
 
-                let tracks = []; let placements = [];
+                let tracks = []; 
+                let placements = [];
                 weekEvents.forEach(evt => {
                     let sIdx = 0;
                     for(let i=0; i<7; i++) {
@@ -1013,7 +1148,9 @@
                     while(true) {
                         if (!tracks[trackIdx]) tracks[trackIdx] = [false,false,false,false,false,false,false];
                         let conflict = false;
-                        for(let i = sIdx; i <= eIdx; i++) { if(tracks[trackIdx][i]) conflict = true; }
+                        for(let i = sIdx; i <= eIdx; i++) { 
+                            if(tracks[trackIdx][i]) conflict = true; 
+                        }
                         if (!conflict) {
                             for(let i = sIdx; i <= eIdx; i++) tracks[trackIdx][i] = true;
                             placements.push({evt, sIdx, eIdx, trackIdx});
@@ -1030,8 +1167,16 @@
 
                 week.forEach((dayObj, i) => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
-                    bgGridHtml += `<div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openAddModalWithDate('${dayObj.dateStr}')"></div>`;
-                    contentGridHtml += `<div class="col-start-${i+1} row-start-1 p-1 pointer-events-auto flex justify-end"><span class="text-sm font-semibold ${isToday ? 'text-indigo-600 bg-indigo-50 rounded-full h-7 w-7 flex items-center justify-center' : (dayObj.isMuted ? 'text-gray-400 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">${dayObj.day}</span></div>`;
+                    
+                    bgGridHtml += `
+                        <div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openAddModalWithDate('${dayObj.dateStr}')"></div>
+                    `;
+                    
+                    contentGridHtml += `
+                        <div class="col-start-${i+1} row-start-1 p-1 pointer-events-auto flex justify-end">
+                            <span class="text-sm font-semibold ${isToday ? 'text-indigo-600 bg-indigo-50 rounded-full h-7 w-7 flex items-center justify-center' : (dayObj.isMuted ? 'text-gray-400 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">${dayObj.day}</span>
+                        </div>
+                    `;
                 });
                 bgGridHtml += `</div>`;
 
@@ -1042,7 +1187,14 @@
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
                     const formattedTitle = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
-                    contentGridHtml += `<div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="Status: ${evt.status}"><div class="text-xs whitespace-normal break-words leading-tight font-medium">${formattedTitle}</div></div>`;
+                    
+                    contentGridHtml += `
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="Status: ${evt.status}">
+                            <div class="text-xs whitespace-normal break-words leading-tight font-medium">
+                                ${formattedTitle}
+                            </div>
+                        </div>
+                    `;
                 });
                 contentGridHtml += `</div>`;
                 weekEl.innerHTML = bgGridHtml + contentGridHtml;
@@ -1063,11 +1215,19 @@
             document.getElementById('ongoing-count').innerText = monthlyEvents.length;
 
             if (monthlyEvents.length === 0) {
-                ongoingList.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-center text-gray-500 py-10"><i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300"></i><p>No tasks this month.</p></div>`;
+                ongoingList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 py-10">
+                        <i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300"></i>
+                        <p>No tasks this month.</p>
+                    </div>
+                `;
                 return;
             }
 
-            const formatShortDate = (dStr) => { const d = new Date(dStr); return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`; };
+            const formatShortDate = (dStr) => { 
+                const d = new Date(dStr); 
+                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`; 
+            };
 
             monthlyEvents.forEach(evt => {
                 const dateObj = new Date(evt.endDate);
@@ -1083,8 +1243,12 @@
                 let avatarsHtml = '';
                 if (assigns.length > 0) {
                     const maxDisplay = 2;
-                    assigns.slice(0, maxDisplay).forEach(name => { avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-800 -ml-2 first:ml-0" title="${name}">${name.charAt(0)}</div>`; });
-                    if (assigns.length > maxDisplay) { avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2">+${assigns.length - maxDisplay}</div>`; }
+                    assigns.slice(0, maxDisplay).forEach(name => { 
+                        avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-800 -ml-2 first:ml-0" title="${name}">${name.charAt(0)}</div>`; 
+                    });
+                    if (assigns.length > maxDisplay) { 
+                        avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2">+${assigns.length - maxDisplay}</div>`; 
+                    }
                 } else {
                     avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user-ghost"></i></div>`;
                 }
@@ -1098,24 +1262,48 @@
                 el.innerHTML = `
                     <div class="flex-1 min-w-0 mr-3">
                         <p class="text-sm font-semibold text-gray-900 truncate" title="${formattedTitle.replace(/"/g, '&quot;')}">${formattedTitle}</p>
-                        <div class="flex items-center mt-1"><span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span><span class="mx-2 text-gray-300 text-xs">|</span><span class="text-xs text-gray-500">${evt.status}</span></div>
+                        <div class="flex items-center mt-1">
+                            <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
+                            <span class="mx-2 text-gray-300 text-xs">|</span>
+                            <span class="text-xs text-gray-500">${evt.status}</span>
+                        </div>
                     </div>
                     <div class="flex flex-col items-end self-center shrink-0 ml-3 min-w-[80px]">
-                        <div class="flex items-center justify-end mb-1.5 w-full"><span class="text-[10px] font-bold text-gray-600 mr-2">${pFormatted}%</span><div class="flex">${avatarsHtml}</div></div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div></div>
+                        <div class="flex items-center justify-end mb-1.5 w-full">
+                            <span class="text-[10px] font-bold text-gray-600 mr-2">${pFormatted}%</span>
+                            <div class="flex">${avatarsHtml}</div>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                        </div>
                     </div>
                 `;
                 ongoingList.appendChild(el);
             });
         }
 
-        window.setAssigneeFilter = (val) => { window.assigneeFilter = val; window.renderTasksTable(); };
-        window.setFilter = (val) => { window.statusFilter = val; window.renderTasksTable(); };
-        window.setSearch = (val) => { window.searchQuery = val; window.renderTasksTable(); };
+        window.setAssigneeFilter = (val) => { 
+            window.assigneeFilter = val; 
+            window.renderTasksTable(); 
+        };
+        
+        window.setFilter = (val) => { 
+            window.statusFilter = val; 
+            window.renderTasksTable(); 
+        };
+        
+        window.setSearch = (val) => { 
+            window.searchQuery = val; 
+            window.renderTasksTable(); 
+        };
 
         window.handleSort = (col) => {
-            if (window.sortCol === col) { window.sortAsc = !window.sortAsc; } 
-            else { window.sortCol = col; window.sortAsc = true; }
+            if (window.sortCol === col) { 
+                window.sortAsc = !window.sortAsc; 
+            } else { 
+                window.sortCol = col; 
+                window.sortAsc = true; 
+            }
             window.renderTasksTable();
         };
 
@@ -1128,7 +1316,9 @@
 
             ['title', 'assignees', 'status', 'progress'].forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
-                if (icon) { icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300 group-hover:text-gray-500'); }
+                if (icon) { 
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300 group-hover:text-gray-500'); 
+                }
             });
 
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
@@ -1140,11 +1330,21 @@
             });
 
             filteredEvents.sort((a, b) => {
-                let valA = a[window.sortCol]; let valB = b[window.sortCol];
-                if (window.sortCol === 'assignees') { valA = (a.assignees || []).join(', '); valB = (b.assignees || []).join(', '); } 
-                else if (window.sortCol === 'progress') { valA = a.progress || 0; valB = b.progress || 0; } 
-                else if (window.sortCol === 'title' || window.sortCol === 'status') { valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase(); } 
-                else if (window.sortCol === 'date') { valA = new Date(a.startDate).getTime(); valB = new Date(b.startDate).getTime(); }
+                let valA = a[window.sortCol]; 
+                let valB = b[window.sortCol];
+                if (window.sortCol === 'assignees') { 
+                    valA = (a.assignees || []).join(', '); 
+                    valB = (b.assignees || []).join(', '); 
+                } else if (window.sortCol === 'progress') { 
+                    valA = a.progress || 0; 
+                    valB = b.progress || 0; 
+                } else if (window.sortCol === 'title' || window.sortCol === 'status') { 
+                    valA = (valA || '').toLowerCase(); 
+                    valB = (valB || '').toLowerCase(); 
+                } else if (window.sortCol === 'date') { 
+                    valA = new Date(a.startDate).getTime(); 
+                    valB = new Date(b.startDate).getTime(); 
+                }
 
                 if (valA < valB) return window.sortAsc ? -1 : 1;
                 if (valA > valB) return window.sortAsc ? 1 : -1;
@@ -1160,34 +1360,93 @@
                 const tr = document.createElement('tr');
                 tr.id = `task-row-${evt.id}`;
                 tr.className = 'hover:bg-indigo-50 cursor-pointer transition-colors duration-200 group';
-                tr.onclick = (e) => { if(e.target.closest('button') || e.target.closest('input')) return; window.openTaskDrawer(evt.id); };
+                tr.onclick = (e) => { 
+                    if(e.target.closest('button') || e.target.closest('input')) return; 
+                    window.openTaskDrawer(evt.id); 
+                };
                 
-                const p = evt.progress || 0; const pFormatted = p.toFixed(2);
+                const p = evt.progress || 0; 
+                const pFormatted = p.toFixed(2);
                 const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
-                const formatShortDate = (dStr) => { if (!dStr) return ''; const d = new Date(dStr); return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`; };
+                
+                const formatShortDate = (dStr) => { 
+                    if (!dStr) return ''; 
+                    const d = new Date(dStr); 
+                    return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`; 
+                };
+                
                 const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
-                const assigns = evt.assignees || []; const assignsStr = assigns.length > 0 ? assigns.join(', ') : 'Unassigned';
+                const assigns = evt.assignees || []; 
+                const assignsStr = assigns.length > 0 ? assigns.join(', ') : 'Unassigned';
                 const formattedTitle = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
-                const escTitle = formattedTitle.replace(/'/g, "\\'"); const escAssigns = assignsStr.replace(/'/g, "\\'");
+                const escTitle = formattedTitle.replace(/'/g, "\\'"); 
+                const escAssigns = assignsStr.replace(/'/g, "\\'");
                 
                 tr.innerHTML = `
-                    <td class="px-6 py-4"><div class="flex flex-col"><div class="flex items-center"><span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle}</span></div><span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span></div></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap"><div class="flex flex-col w-full max-w-[150px]"><div class="flex items-center mb-1"><span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div></div></div></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><div class="flex justify-end space-x-2"><button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-1.5 rounded transition-colors" title="Send Reminder"><i class="fa-regular fa-bell"></i></button><button onclick="openEditById('${evt.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button><button onclick="deleteTask('${evt.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete"><i class="fa-solid fa-trash-can"></i></button></div></td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle}</span>
+                            </div>
+                            <span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-col w-full max-w-[150px]">
+                            <div class="flex items-center mb-1">
+                                <span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-1.5 rounded transition-colors" title="Send Reminder">
+                                <i class="fa-regular fa-bell"></i>
+                            </button>
+                            <button onclick="openEditById('${evt.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
                 `;
                 tasksTable.appendChild(tr);
             });
         }
 
-        window.setBudgetOwnerFilter = (val) => { window.budgetFilterOwner = val; window.renderBudgetTable(); };
-        window.setBudgetSearch = (val) => { window.budgetSearchQuery = val; window.renderBudgetTable(); }
-        window.setBudgetMonthFilter = (val) => { window.budgetFilterMonth = val; window.renderBudgetTable(); }
+        window.setBudgetOwnerFilter = (val) => { 
+            window.budgetFilterOwner = val; 
+            window.renderBudgetTable(); 
+        };
+        
+        window.setBudgetSearch = (val) => { 
+            window.budgetSearchQuery = val; 
+            window.renderBudgetTable(); 
+        }
+        
+        window.setBudgetMonthFilter = (val) => { 
+            window.budgetFilterMonth = val; 
+            window.renderBudgetTable(); 
+        }
         
         window.handleBudgetSort = (col) => {
-            if (window.budgetSortCol === col) { window.budgetSortAsc = !window.budgetSortAsc; } 
-            else { window.budgetSortCol = col; window.budgetSortAsc = true; }
+            if (window.budgetSortCol === col) { 
+                window.budgetSortAsc = !window.budgetSortAsc; 
+            } else { 
+                window.budgetSortCol = col; 
+                window.budgetSortAsc = true; 
+            }
             window.renderBudgetTable();
         }
 
@@ -1198,7 +1457,9 @@
             
             ['month', 'name', 'type', 'owner', 'allocated', 'spent'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
-                if (icon) { icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); }
+                if (icon) { 
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); 
+                }
             });
 
             let filteredBudgets = window.budgets.filter(b => {
@@ -1209,9 +1470,17 @@
             });
 
             filteredBudgets.sort((a, b) => {
-                let valA = a[window.budgetSortCol]; let valB = b[window.budgetSortCol];
-                if (['allocated', 'spent'].includes(window.budgetSortCol)) { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; } 
-                else { valA = (valA || '').toLowerCase(); valB = (valB || '').toLowerCase(); }
+                let valA = a[window.budgetSortCol]; 
+                let valB = b[window.budgetSortCol];
+                
+                if (['allocated', 'spent'].includes(window.budgetSortCol)) { 
+                    valA = parseFloat(valA) || 0; 
+                    valB = parseFloat(valB) || 0; 
+                } else { 
+                    valA = (valA || '').toLowerCase(); 
+                    valB = (valB || '').toLowerCase(); 
+                }
+                
                 if (valA < valB) return window.budgetSortAsc ? -1 : 1;
                 if (valA > valB) return window.budgetSortAsc ? 1 : -1;
                 return 0;
@@ -1225,13 +1494,23 @@
                 return;
             }
 
-            let totalAllocated = 0; let totalSpent = 0;
+            let totalAllocated = 0; 
+            let totalSpent = 0;
+            
             filteredBudgets.forEach(b => {
-                const alloc = parseFloat(b.allocated) || 0; const spent = parseFloat(b.spent) || 0; const remaining = alloc - spent;
-                totalAllocated += alloc; totalSpent += spent;
-                const escName = b.name.replace(/"/g, '&quot;'); const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
+                const alloc = parseFloat(b.allocated) || 0; 
+                const spent = parseFloat(b.spent) || 0; 
+                const remaining = alloc - spent;
+                
+                totalAllocated += alloc; 
+                totalSpent += spent;
+                
+                const escName = b.name.replace(/"/g, '&quot;'); 
+                const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
+                
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
@@ -1240,7 +1519,16 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><div class="flex justify-end space-x-2"><button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit"><i class="fa-solid fa-pen"></i></button><button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete"><i class="fa-solid fa-trash-can"></i></button></div></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
                 `;
                 table.appendChild(tr);
             });
@@ -1248,6 +1536,7 @@
             const totalRemaining = totalAllocated - totalSpent;
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
             document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
+            
             const remainingEl = document.getElementById('budget-total-remaining');
             remainingEl.innerText = window.formatCurrency(totalRemaining);
             remainingEl.className = `px-6 py-4 text-right text-sm font-bold ${totalRemaining < 0 ? 'text-red-600' : 'text-blue-600'}`;
@@ -1267,20 +1556,41 @@
             const spent = document.getElementById('budget-spent').value || 0;
 
             const entryId = id ? id : Date.now().toString();
-            const entryData = { id: entryId, name, type, owner, month, allocated: parseFloat(allocated), spent: parseFloat(spent) };
+            const entryData = { 
+                id: entryId, 
+                name, 
+                type, 
+                owner, 
+                month, 
+                allocated: parseFloat(allocated), 
+                spent: parseFloat(spent) 
+            };
+
+            const btn = document.getElementById('save-budget-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
 
             try {
+                if (!db) throw new Error("Firebase not configured");
                 await setDoc(doc(db, "budgets", entryId), entryData);
                 window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
                 window.closeBudgetModal();
-            } catch(e) { window.showToast("Error saving budget", "error"); }
+            } catch(e) { 
+                window.showToast("Error saving budget", "error"); 
+            } finally {
+                btn.innerHTML = 'Save Entry';
+                btn.disabled = false;
+            }
         };
 
         window.deleteBudgetEntry = async (id) => {
+            if (!db) return;
             try {
                 await deleteDoc(doc(db, "budgets", id));
                 window.showToast("Budget entry deleted", "success");
-            } catch(e) { window.showToast("Error deleting", "error"); }
+            } catch(e) { 
+                window.showToast("Error deleting", "error"); 
+            }
         };
 
         window.openBudgetModal = (id = null) => {
@@ -1303,34 +1613,58 @@
                     document.getElementById('budget-modal-title').innerText = 'Edit Budget Entry';
                 }
             }
+            
             document.getElementById('budget-modal').classList.remove('hidden');
         };
 
-        window.closeBudgetModal = () => { document.getElementById('budget-modal').classList.add('hidden'); };
+        window.closeBudgetModal = () => {
+            document.getElementById('budget-modal').classList.add('hidden');
+        };
 
         window.openBudgetDrawer = () => {
             const overlay = document.getElementById('budget-drawer-overlay');
             const drawer = document.getElementById('budget-drawer');
-            const years = new Set(); years.add(currentYear.toString());
-            window.budgets.forEach(b => { if (b.month) years.add(b.month.split('-')[0]); });
+            
+            const years = new Set(); 
+            years.add(currentYear.toString());
+            window.budgets.forEach(b => { 
+                if (b.month) years.add(b.month.split('-')[0]); 
+            });
+            
             const yearSelect = document.getElementById('budget-drawer-year');
             yearSelect.innerHTML = Array.from(years).sort().reverse().map(y => `<option value="${y}" ${y === currentYear.toString() ? 'selected' : ''}>${y}</option>`).join('');
+            
             window.renderBudgetDrawerContent(currentYear.toString());
-            overlay.classList.remove('hidden'); void overlay.offsetWidth; overlay.classList.remove('opacity-0'); drawer.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden'); 
+            void overlay.offsetWidth; 
+            overlay.classList.remove('opacity-0'); 
+            drawer.classList.remove('translate-x-full');
         };
 
         window.closeBudgetDrawer = () => {
             const overlay = document.getElementById('budget-drawer-overlay');
             const drawer = document.getElementById('budget-drawer');
-            overlay.classList.add('opacity-0'); drawer.classList.add('translate-x-full');
-            setTimeout(() => { overlay.classList.add('hidden'); }, 300);
+            
+            overlay.classList.add('opacity-0'); 
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => { 
+                overlay.classList.add('hidden'); 
+            }, 300);
         };
 
         window.renderBudgetDrawerContent = (year) => {
             const content = document.getElementById('budget-drawer-content');
             const monthsInYear = [];
-            for (let m = 1; m <= 12; m++) { monthsInYear.push(`${year}-${String(m).padStart(2, '0')}`); }
-            window.budgets.forEach(b => { if (b.month && b.month.startsWith(year) && !monthsInYear.includes(b.month)) { monthsInYear.push(b.month); } });
+            
+            for (let m = 1; m <= 12; m++) { 
+                monthsInYear.push(`${year}-${String(m).padStart(2, '0')}`); 
+            }
+            
+            window.budgets.forEach(b => { 
+                if (b.month && b.month.startsWith(year) && !monthsInYear.includes(b.month)) { 
+                    monthsInYear.push(b.month); 
+                } 
+            });
 
             const activeMonths = monthsInYear.filter(m => {
                 const hasBudget = window.budgets.some(b => b.month === m);
@@ -1339,12 +1673,19 @@
             });
 
             activeMonths.sort().reverse();
-            if (activeMonths.length === 0) { content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>'; return; }
+
+            if (activeMonths.length === 0) { 
+                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>'; 
+                return; 
+            }
 
             let html = '';
             activeMonths.forEach(m => {
                 let spent = 0;
-                window.budgets.filter(b => b.month === m).forEach(b => { spent += (parseFloat(b.spent) || 0); });
+                window.budgets.filter(b => b.month === m).forEach(b => { 
+                    spent += (parseFloat(b.spent) || 0); 
+                });
+                
                 const limit = window.budgetSettings.limits[m] || 0;
                 const d = new Date(m + '-01');
                 const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -1353,8 +1694,14 @@
                     <div class="bg-white border-b border-gray-200 p-4">
                         <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-gray-50 p-2 rounded border border-gray-100"><span class="block text-xs text-gray-500">Total Spent</span><span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span></div>
-                            <div class="bg-gray-50 p-2 rounded border border-gray-100"><span class="block text-xs text-gray-500">Month Limit</span><span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span></div>
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Total Spent</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                            </div>
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Month Limit</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1364,13 +1711,20 @@
 
         window.changeMonth = (dir) => {
             currentMonth += dir;
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-            else if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { 
+                currentMonth = 11; 
+                currentYear--; 
+            } else if (currentMonth > 11) { 
+                currentMonth = 0; 
+                currentYear++; 
+            }
             window.renderUI();
         };
 
         window.resetToToday = () => {
-            currentMonth = new Date().getMonth(); currentYear = new Date().getFullYear(); window.renderUI();
+            currentMonth = new Date().getMonth(); 
+            currentYear = new Date().getFullYear(); 
+            window.renderUI();
         };
 
         window.openAddModal = () => {
@@ -1385,64 +1739,117 @@
 
         window.openAddModalWithDate = (dateStr) => {
             window.openAddModal();
-            document.getElementById('event-start-date').value = dateStr; document.getElementById('event-end-date').value = dateStr;
+            document.getElementById('event-start-date').value = dateStr; 
+            document.getElementById('event-end-date').value = dateStr;
         }
 
-        window.openEditById = (id) => { const evt = window.events.find(e => e.id === id); if (evt) window.openEditModal(evt); }
+        window.openEditById = (id) => { 
+            const evt = window.events.find(e => e.id === id); 
+            if (evt) window.openEditModal(evt); 
+        }
 
         window.openEditModal = (evt) => {
-            document.getElementById('event-form').reset(); document.getElementById('event-id').value = evt.id;
-            document.getElementById('modal-title').innerText = 'Edit Content Task'; document.getElementById('event-title').value = evt.title;
-            document.getElementById('event-start-date').value = evt.startDate; document.getElementById('event-end-date').value = evt.endDate;
+            document.getElementById('event-form').reset(); 
+            document.getElementById('event-id').value = evt.id;
+            document.getElementById('modal-title').innerText = 'Edit Content Task'; 
+            document.getElementById('event-title').value = evt.title;
+            document.getElementById('event-start-date').value = evt.startDate; 
+            document.getElementById('event-end-date').value = evt.endDate;
             document.getElementById('event-campaign-type').value = evt.campaignType || 'Slot';
+            
             const assigns = evt.assignees || [];
-            document.querySelectorAll('input[name="assignees"]').forEach(cb => { cb.checked = assigns.includes(cb.value); });
+            document.querySelectorAll('input[name="assignees"]').forEach(cb => { 
+                cb.checked = assigns.includes(cb.value); 
+            });
             document.getElementById('event-modal').classList.remove('hidden');
         }
 
-        window.closeAddModal = () => { document.getElementById('event-modal').classList.add('hidden'); }
+        window.closeAddModal = () => { 
+            document.getElementById('event-modal').classList.add('hidden'); 
+        }
 
         window.openTaskDrawer = (taskId) => {
             const evt = window.events.find(e => e.id === taskId);
             if (!evt) return;
             
             window.currentDrawerTaskId = taskId;
-            if (document.getElementById('assignee-filter-select')) document.getElementById('assignee-filter-select').value = 'All';
+            if (document.getElementById('assignee-filter-select')) {
+                document.getElementById('assignee-filter-select').value = 'All';
+            }
             window.assigneeFilter = 'All';
             
             const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
             document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
-            window.updateDrawerProgressUI(evt); window.renderDrawerChecklist(evt);
+            
+            window.updateDrawerProgressUI(evt); 
+            window.renderDrawerChecklist(evt);
 
-            const overlay = document.getElementById('drawer-overlay'); const drawer = document.getElementById('task-drawer');
-            overlay.classList.remove('hidden'); void overlay.offsetWidth; overlay.classList.remove('opacity-0'); drawer.classList.remove('translate-x-full');
+            const overlay = document.getElementById('drawer-overlay'); 
+            const drawer = document.getElementById('task-drawer');
+            
+            overlay.classList.remove('hidden'); 
+            void overlay.offsetWidth; 
+            overlay.classList.remove('opacity-0'); 
+            drawer.classList.remove('translate-x-full');
         };
 
         window.closeTaskDrawer = () => {
-            const overlay = document.getElementById('drawer-overlay'); const drawer = document.getElementById('task-drawer');
-            overlay.classList.add('opacity-0'); drawer.classList.add('translate-x-full');
-            setTimeout(() => { overlay.classList.add('hidden'); window.currentDrawerTaskId = null; }, 300);
+            const overlay = document.getElementById('drawer-overlay'); 
+            const drawer = document.getElementById('task-drawer');
+            
+            overlay.classList.add('opacity-0'); 
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => { 
+                overlay.classList.add('hidden'); 
+                window.currentDrawerTaskId = null; 
+            }, 300);
         };
 
         window.updateDrawerProgressUI = (evt) => {
-            const p = evt.progress || 0; const pFormatted = p.toFixed(2);
+            const p = evt.progress || 0; 
+            const pFormatted = p.toFixed(2);
             document.getElementById('drawer-progress-text').innerText = `${pFormatted}%`;
+            
             const bar = document.getElementById('drawer-progress-bar');
-            bar.style.width = `${p}%`; bar.classList.remove('bg-emerald-500', 'bg-indigo-600', 'bg-gray-400');
-            if (p === 100) bar.classList.add('bg-emerald-500'); else if (p > 0) bar.classList.add('bg-indigo-600'); else bar.classList.add('bg-gray-400');
+            bar.style.width = `${p}%`; 
+            bar.classList.remove('bg-emerald-500', 'bg-indigo-600', 'bg-gray-400');
+            
+            if (p === 100) {
+                bar.classList.add('bg-emerald-500'); 
+            } else if (p > 0) {
+                bar.classList.add('bg-indigo-600'); 
+            } else {
+                bar.classList.add('bg-gray-400');
+            }
         }
 
         window.handleHashtagEnter = (e, taskId) => {
             if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault(); const input = e.target; const val = input.value.trim(); if (!val) return;
-                const task = window.events.find(ev => ev.id === taskId); if (!task) return;
+                e.preventDefault(); 
+                const input = e.target; 
+                const val = input.value.trim(); 
+                if (!val) return;
+                
+                const task = window.events.find(ev => ev.id === taskId); 
+                if (!task) return;
+                
                 if (!Array.isArray(task.fields.hashtags)) task.fields.hashtags = [];
+                
                 const newTags = val.split(/\s+/).filter(t => t.length > 0);
-                newTags.forEach(tag => { if (task.fields.hashtags.length < 10) { task.fields.hashtags.push(tag); } });
-                input.value = ''; task.progress = window.calcProgress(task);
+                newTags.forEach(tag => { 
+                    if (task.fields.hashtags.length < 10) { 
+                        task.fields.hashtags.push(tag); 
+                    } 
+                });
+                
+                input.value = ''; 
+                task.progress = window.calcProgress(task);
                 
                 window.syncEventToFirestore(task);
-                window.updateDrawerProgressUI(task); window.renderDrawerChecklist(task); window.renderUI();
+                window.updateDrawerProgressUI(task); 
+                window.renderDrawerChecklist(task); 
+                window.renderUI();
+                
                 setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
             }
         };
@@ -1450,109 +1857,256 @@
         window.removeHashtag = (taskId, idx) => {
             const task = window.events.find(ev => ev.id === taskId);
             if (!task || !Array.isArray(task.fields.hashtags)) return;
-            task.fields.hashtags.splice(idx, 1); task.progress = window.calcProgress(task);
+            
+            task.fields.hashtags.splice(idx, 1); 
+            task.progress = window.calcProgress(task);
             
             window.syncEventToFirestore(task);
-            window.updateDrawerProgressUI(task); window.renderDrawerChecklist(task); window.renderUI();
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderUI();
+            
             setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
         };
 
         window.updateDashboardStatus = (taskId, changedDateStr, value) => {
-            const task = window.events.find(e => e.id === taskId); if (!task) return;
+            const task = window.events.find(e => e.id === taskId); 
+            if (!task) return;
             if (!task.fields.dashboardStatus) task.fields.dashboardStatus = {};
-            let numVal = parseFloat(value); if (isNaN(numVal)) numVal = 0; if (numVal > 100) numVal = 100; if (numVal < 0) numVal = 0;
+            
+            let numVal = parseFloat(value); 
+            if (isNaN(numVal)) numVal = 0; 
+            if (numVal > 100) numVal = 100; 
+            if (numVal < 0) numVal = 0;
+            
             task.fields.dashboardStatus[changedDateStr] = numVal;
+            
             if (numVal === 100) {
                 const dates = window.getDatesInRange(task.startDate, task.endDate);
                 let hit = false;
-                dates.forEach(d => { if (d === changedDateStr) hit = true; else if (hit) { task.fields.dashboardStatus[d] = 100; } });
+                dates.forEach(d => { 
+                    if (d === changedDateStr) hit = true; 
+                    else if (hit) { task.fields.dashboardStatus[d] = 100; } 
+                });
             }
+            
             task.progress = window.calcProgress(task);
             
             window.syncEventToFirestore(task);
-            window.updateDrawerProgressUI(task); window.renderDrawerChecklist(task); window.renderUI();
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderUI();
         };
 
         window.renderDrawerChecklist = (evt) => {
             const list = document.getElementById('drawer-checklist');
+            
+            // Capture existing accordion states before re-rendering
             const existingDetails = list.querySelectorAll('details');
             if (existingDetails.length === 4) {
-                drawerAccordionStates.links = existingDetails[0].open; drawerAccordionStates.media = existingDetails[1].open;
-                drawerAccordionStates.ops = existingDetails[2].open; drawerAccordionStates.dash = existingDetails[3].open;
+                drawerAccordionStates.links = existingDetails[0].open; 
+                drawerAccordionStates.media = existingDetails[1].open;
+                drawerAccordionStates.ops = existingDetails[2].open; 
+                drawerAccordionStates.dash = existingDetails[3].open;
             }
+            
             const f = evt.fields || { ...defaultFields };
             
             const makeAccordion = (title, content, isOpen = true) => `
                 <details class="group mb-3 border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden" ${isOpen ? 'open' : ''}>
                     <summary class="cursor-pointer bg-gray-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-gray-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
-                        <span>${title}</span><i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
+                        <span>${title}</span>
+                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
                     </summary>
-                    <div class="p-4 space-y-4 border-t border-gray-200">${content}</div>
-                </details>`;
+                    <div class="p-4 space-y-4 border-t border-gray-200">
+                        ${content}
+                    </div>
+                </details>
+            `;
             
             const makeSelectHtml = (key, label) => {
                 const val = f[key] || 'Pending';
-                return `<div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><label class="text-sm font-medium text-gray-700">${label}</label><select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 py-1 pl-2 pr-8 bg-gray-50 border"><option value="Pending" ${val === 'Pending' ? 'selected' : ''}>Pending</option><option value="Not Applicable" ${val === 'Not Applicable' ? 'selected' : ''}>Not Applicable</option><option value="Done" ${val === 'Done' ? 'selected' : ''}>Done</option></select></div>`;
+                return `
+                    <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="text-sm font-medium text-gray-700">${label}</label>
+                        <select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 py-1 pl-2 pr-8 bg-gray-50 border">
+                            <option value="Pending" ${val === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Not Applicable" ${val === 'Not Applicable' ? 'selected' : ''}>Not Applicable</option>
+                            <option value="Done" ${val === 'Done' ? 'selected' : ''}>Done</option>
+                        </select>
+                    </div>
+                `;
             };
 
             const makeUrlLinkHtml = (key, label) => {
-                const val = f[key] || ''; const escVal = val.replace(/"/g, '&quot;'); const isUrlValid = val === '' || window.isValidURL(val);
+                const val = f[key] || ''; 
+                const escVal = val.replace(/"/g, '&quot;'); 
+                const isUrlValid = val === '' || window.isValidURL(val);
                 const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
-                return `<div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><label class="block text-sm font-medium text-gray-700 mb-1">${label}</label><input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-md shadow-sm py-1.5 px-3 ${borderClass}">${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format. 0% assigned.</p>` : ''}</div>`;
+                
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
+                        <input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-md shadow-sm py-1.5 px-3 ${borderClass}">
+                        ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format. 0% assigned.</p>` : ''}
+                    </div>
+                `;
             };
 
             const makeHashtagsHtml = () => {
                 const tags = Array.isArray(f.hashtags) ? f.hashtags : [];
-                let pills = tags.map((t, i) => `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">${t}<button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
-                return `<div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label><div class="flex flex-wrap mb-1">${pills}</div><input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"></div>`;
+                let pills = tags.map((t, i) => `
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                        ${t}
+                        <button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `).join('');
+                
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                        <div class="flex flex-wrap mb-1">${pills}</div>
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
+                    </div>
+                `;
             };
 
             const makePostIdsHtml = () => {
                 const posts = Array.isArray(f.postIds) ? f.postIds : [];
-                let rowsHtml = posts.map((p, i) => `<div class="flex flex-col space-y-2 mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md relative"><button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button><div class="flex items-center space-x-2 pr-8"><input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white"><input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white"></div><div><input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white"></div></div>`).join('');
-                return `<div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><div class="flex justify-between items-center mb-1 border-b border-gray-100 pb-2"><label class="block text-sm font-medium text-gray-700">Post IDs</label><button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button></div>${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}</div>`;
+                let rowsHtml = posts.map((p, i) => `
+                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md relative">
+                        <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="flex items-center space-x-2 pr-8">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                        </div>
+                        <div>
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center mb-1 border-b border-gray-100 pb-2">
+                            <label class="block text-sm font-medium text-gray-700">Post IDs</label>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                        </div>
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
+                    </div>
+                `;
             };
 
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
-                return `<div class="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"><input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded cursor-pointer"><label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label></div>`;
+                return `
+                    <div class="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded cursor-pointer">
+                        <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
+                    </div>
+                `;
             };
 
             const makeDashboardStatusHtml = () => {
-                const dates = window.getDatesInRange(evt.startDate, evt.endDate); const statuses = f.dashboardStatus || {};
-                let maxVal = 0; let maxDate = '-';
+                const dates = window.getDatesInRange(evt.startDate, evt.endDate); 
+                const statuses = f.dashboardStatus || {};
+                
+                let maxVal = 0; 
+                let maxDate = '-';
+                
                 let dateInputsHtml = dates.map(d => {
                     let val = statuses[d] !== undefined ? statuses[d] : '';
-                    if (parseFloat(val) > maxVal) { maxVal = parseFloat(val); } if (parseFloat(val) === 100 && maxDate === '-') { maxDate = d; }
-                    return `<div class="flex items-center justify-between text-sm py-1"><span class="text-gray-600">${d}</span><div class="flex items-center w-28"><input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-md shadow-sm py-1 px-2 focus:ring-indigo-500 mr-1"><span class="text-gray-500 font-medium">%</span></div></div>`;
+                    if (parseFloat(val) > maxVal) { maxVal = parseFloat(val); } 
+                    if (parseFloat(val) === 100 && maxDate === '-') { maxDate = d; }
+                    return `
+                        <div class="flex items-center justify-between text-sm py-1">
+                            <span class="text-gray-600">${d}</span>
+                            <div class="flex items-center w-28">
+                                <input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-md shadow-sm py-1 px-2 focus:ring-indigo-500 mr-1">
+                                <span class="text-gray-500 font-medium">%</span>
+                            </div>
+                        </div>
+                    `;
                 }).join('');
-                return `<div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><div class="mb-2"><label class="block text-sm font-medium text-gray-700">Dashboard Status Tracker</label><p class="text-xs text-gray-500">Highest: <span class="font-bold text-indigo-600">${maxVal.toFixed(2)}%</span> ${maxVal === 100 ? `on ${maxDate}` : ''}</p></div><div class="space-y-1 mt-3 border-t border-gray-100 pt-3 max-h-48 overflow-y-auto pr-1">${dateInputsHtml}</div></div>`;
+                
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="mb-2">
+                            <label class="block text-sm font-medium text-gray-700">Dashboard Status Tracker</label>
+                            <p class="text-xs text-gray-500">Highest: <span class="font-bold text-indigo-600">${maxVal.toFixed(2)}%</span> ${maxVal === 100 ? `on ${maxDate}` : ''}</p>
+                        </div>
+                        <div class="space-y-1 mt-3 border-t border-gray-100 pt-3 max-h-48 overflow-y-auto pr-1">
+                            ${dateInputsHtml}
+                        </div>
+                    </div>
+                `;
             };
 
-            const linksContent = `${makeUrlLinkHtml('document', 'Document Link')} ${makeUrlLinkHtml('dailyDataReport', 'Daily Data Report Link')} ${makeUrlLinkHtml('postMortemReport', 'Post-Mortem Report Link')}`;
-            const mediaContent = `${makeHashtagsHtml()} ${makePostIdsHtml()}`;
-            const operationsContent = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${makeSelectHtml('gameReview', 'Game Review')} ${makeSelectHtml('contentWriters', 'Content Writers')} ${makeSelectHtml('imChannels', 'IM Channels')} ${makeSelectHtml('trackableLinks', 'Trackable Links')} ${makeSelectHtml('sms', 'SMS')} ${makeSelectHtml('postPinned', 'Post Pinned')} ${makeSelectHtml('rewardDistributed', 'Reward Distributed')} ${makeSelectHtml('rewardsBanner', 'Rewards Banner')}</div><div class="flex space-x-4 mt-4"><div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div><div class="flex-1">${makeCheckboxHtml('dailyTask', 'Daily Task')}</div></div>`;
+            const linksContent = `
+                ${makeUrlLinkHtml('document', 'Document Link')} 
+                ${makeUrlLinkHtml('dailyDataReport', 'Daily Data Report Link')} 
+                ${makeUrlLinkHtml('postMortemReport', 'Post-Mortem Report Link')}
+            `;
+            
+            const mediaContent = `
+                ${makeHashtagsHtml()} 
+                ${makePostIdsHtml()}
+            `;
+            
+            const operationsContent = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${makeSelectHtml('gameReview', 'Game Review')} 
+                    ${makeSelectHtml('contentWriters', 'Content Writers')} 
+                    ${makeSelectHtml('imChannels', 'IM Channels')} 
+                    ${makeSelectHtml('trackableLinks', 'Trackable Links')} 
+                    ${makeSelectHtml('sms', 'SMS')} 
+                    ${makeSelectHtml('postPinned', 'Post Pinned')} 
+                    ${makeSelectHtml('rewardDistributed', 'Reward Distributed')} 
+                    ${makeSelectHtml('rewardsBanner', 'Rewards Banner')}
+                </div>
+                <div class="flex space-x-4 mt-4">
+                    <div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div>
+                    <div class="flex-1">${makeCheckboxHtml('dailyTask', 'Daily Task')}</div>
+                </div>
+            `;
+            
             const dashboardContent = `${makeDashboardStatusHtml()}`;
 
-            list.innerHTML = `<div class="pb-8">${makeAccordion('Important Links', linksContent, drawerAccordionStates.links)} ${makeAccordion('Content & Publishing', mediaContent, drawerAccordionStates.media)} ${makeAccordion('Operations Checklist', operationsContent, drawerAccordionStates.ops)} ${makeAccordion('Daily Tracking', dashboardContent, drawerAccordionStates.dash)}</div>`;
+            list.innerHTML = `
+                <div class="pb-8">
+                    ${makeAccordion('Important Links', linksContent, drawerAccordionStates.links)} 
+                    ${makeAccordion('Content & Publishing', mediaContent, drawerAccordionStates.media)} 
+                    ${makeAccordion('Operations Checklist', operationsContent, drawerAccordionStates.ops)} 
+                    ${makeAccordion('Daily Tracking', dashboardContent, drawerAccordionStates.dash)}
+                </div>
+            `;
         }
 
         window.updateTaskField = (taskId, fieldName, val) => {
-            const taskIdx = window.events.findIndex(e => e.id === taskId); if (taskIdx === -1) return;
-            const task = window.events[taskIdx]; if (!task.fields) task.fields = { ...defaultFields };
+            const taskIdx = window.events.findIndex(e => e.id === taskId); 
+            if (taskIdx === -1) return;
+            
+            const task = window.events[taskIdx]; 
+            if (!task.fields) task.fields = { ...defaultFields };
             
             task.fields[fieldName] = val;
             task.progress = window.calcProgress(task);
             
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
-            if (['document', 'dailyDataReport', 'postMortemReport'].includes(fieldName)) { window.renderDrawerChecklist(task); }
-            window.renderTasksTable(); window.renderOngoingEvents(); 
+            
+            if (['document', 'dailyDataReport', 'postMortemReport'].includes(fieldName)) { 
+                window.renderDrawerChecklist(task); 
+            }
+            window.renderTasksTable(); 
+            window.renderOngoingEvents(); 
         };
 
         window.addPostId = (taskId) => {
-            const task = window.events.find(e => e.id === taskId); if (!task) return;
+            const task = window.events.find(e => e.id === taskId); 
+            if (!task) return;
             if (!Array.isArray(task.fields.postIds)) task.fields.postIds = [];
+            
             task.fields.postIds.push({ type: '', id: '', imgUrl: '' });
             window.syncEventToFirestore(task);
             window.renderDrawerChecklist(task);
@@ -1561,33 +2115,83 @@
         window.updatePostIdField = (taskId, idx, key, val) => {
             const task = window.events.find(e => e.id === taskId);
             if (!task || !Array.isArray(task.fields.postIds) || !task.fields.postIds[idx]) return;
-            task.fields.postIds[idx][key] = val; task.progress = window.calcProgress(task);
+            
+            task.fields.postIds[idx][key] = val; 
+            task.progress = window.calcProgress(task);
+            
             window.syncEventToFirestore(task);
-            window.updateDrawerProgressUI(task); window.renderTasksTable();
+            window.updateDrawerProgressUI(task); 
+            window.renderTasksTable();
         };
 
         window.removePostId = (taskId, idx) => {
             const task = window.events.find(e => e.id === taskId);
             if (!task || !Array.isArray(task.fields.postIds)) return;
-            task.fields.postIds.splice(idx, 1); task.progress = window.calcProgress(task);
+            
+            task.fields.postIds.splice(idx, 1); 
+            task.progress = window.calcProgress(task);
+            
             window.syncEventToFirestore(task);
-            window.updateDrawerProgressUI(task); window.renderDrawerChecklist(task); window.renderTasksTable();
+            window.updateDrawerProgressUI(task); 
+            window.renderDrawerChecklist(task); 
+            window.renderTasksTable();
         };
 
         window.jumpToTask = (id) => {
             window.switchView('tasks');
+            
             const searchInput = document.getElementById('search-input');
-            if (searchInput) searchInput.value = ''; window.searchQuery = '';
+            if (searchInput) searchInput.value = ''; 
+            window.searchQuery = '';
+            
             window.renderTasksTable();
             
             setTimeout(() => {
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-gray-50'); row.classList.add('bg-indigo-100');
-                    setTimeout(() => { row.classList.remove('bg-indigo-100'); row.classList.add('hover:bg-gray-50'); }, 2000);
+                    row.classList.remove('hover:bg-gray-50'); 
+                    row.classList.add('bg-indigo-100');
+                    setTimeout(() => { 
+                        row.classList.remove('bg-indigo-100'); 
+                        row.classList.add('hover:bg-gray-50'); 
+                    }, 2000);
                 }
             }, 100);
+        }
+
+        window.showToast = (message, type = "info", iconOverride = null) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bg = 'bg-gray-800';
+            let icon = 'fa-circle-info';
+            let iconColor = 'text-blue-400';
+            
+            if (type === 'success') { icon = 'fa-circle-check'; iconColor = 'text-emerald-400'; }
+            if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
+            if (iconOverride) { icon = iconOverride; }
+
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-lg shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
+            toast.innerHTML = `
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                    <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
+                </div>
+                <div class="ml-3 text-sm font-normal">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-enter-active');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                toast.classList.add('toast-exit-active');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
         window.onload = window.initApp;
