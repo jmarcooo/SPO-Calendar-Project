@@ -48,10 +48,10 @@
                     <option value="Bingo">Bingo</option>
                 </select>
             </div>
-            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
-            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
                 <i class="fa-solid fa-plus mr-2"></i> New Event
             </button>
         </div>
@@ -159,7 +159,7 @@
                     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="text-lg leading-6 font-bold text-gray-900">Detailed Progress Tracking</h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events are excluded)</p>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
                         </div>
                     </div>
                     
@@ -237,10 +237,10 @@
                         <div class="flex space-x-2">
                             <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">Save Limit</button>
                             <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate Local Data
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
                             </button>
                             <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium transition-colors">
-                                <i class="fa-solid fa-trash-can mr-1"></i> Clear Budgets
+                                <i class="fa-solid fa-trash-can mr-1"></i> Clear
                             </button>
                         </div>
                     </div>
@@ -274,7 +274,7 @@
                         </select>
                         <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-md cursor-pointer">
                         <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export to Excel
+                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
                         </button>
                     </div>
 
@@ -305,7 +305,6 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="budget-table-body">
-                                <tr><td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Loading budget data...</td></tr>
                             </tbody>
                             <tfoot class="bg-gray-50 font-medium">
                                 <tr>
@@ -321,21 +320,52 @@
                 </div>
             </div>
 
-            <!-- Campaign Details View (Coming Soon) -->
+            <!-- Campaign Details View -->
             <div id="view-campaign" class="hidden">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center mt-10 max-w-3xl mx-auto">
-                    <div class="inline-flex items-center justify-center h-24 w-24 rounded-full bg-indigo-100 mb-6">
-                        <i class="fa-solid fa-bullhorn text-4xl text-indigo-600"></i>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Campaign Details</h3>
+                        <p class="text-xs text-gray-500">Select a task to view its campaign creatives and progress.</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Campaign Details Dashboard</h3>
-                    <p class="text-gray-500 text-base max-w-lg mx-auto">This module is currently under development. Soon, you'll be able to view deep analytics, performance charts, and detailed metrics for each of your campaigns here.</p>
-                    <div class="mt-8">
-                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-800">
-                            <i class="fa-solid fa-person-digging mr-2"></i> Coming Soon
-                        </span>
+                    <div class="w-1/3 min-w-[250px]">
+                        <select id="campaign-task-selector" onchange="renderCampaignDetails(this.value)" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 sm:text-sm">
+                            <option value="">-- Select a Task --</option>
+                        </select>
                     </div>
                 </div>
+                
+                <!-- 3-COLUMN LAYOUT -->
+                <div id="campaign-content-area" class="hidden grid-cols-1 lg:grid-cols-4 gap-6">
+                    
+                    <!-- 50%: Visuals & Links (Spans 2 columns) -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-2">
+                        <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                            <h4 class="text-sm font-bold text-gray-900"><i class="fa-regular fa-image mr-2 text-indigo-500"></i>Creatives & Links</h4>
+                            <span id="carousel-counter" class="text-xs font-medium text-gray-500">0 / 0</span>
+                        </div>
+                        <div class="p-4 flex-1 flex flex-col items-center justify-center relative min-h-[500px]" id="campaign-carousel-container">
+                        </div>
+                    </div>
+
+                    <!-- 25%: Execution Summary (Spans 1 column) -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-stats-container">
+                    </div>
+
+                    <!-- 25%: Post Performance (Spans 1 column) -->
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-performance-container">
+                    </div>
+
+                </div>
+                
+                <div id="campaign-empty-state" class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center mt-6">
+                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gray-100 mb-4">
+                        <i class="fa-solid fa-bullseye text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">No Task Selected</h3>
+                    <p class="text-gray-500 text-sm mt-1">Please select a task from the dropdown above to view its details.</p>
+                </div>
             </div>
+
         </main>
     </div>
 
@@ -344,11 +374,14 @@
         <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Create New...</h3>
             <div class="space-y-3">
-                <button onclick="selectEventType(false)" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-list-check mr-2"></i> Content Task
                 </button>
-                <button onclick="selectEventType(true)" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                     <i class="fa-solid fa-calendar-day mr-2"></i> Offline Event / Reminder
+                </button>
+                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-rose-200 text-sm font-medium rounded-md shadow-sm text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors">
+                    <i class="fa-solid fa-gamepad mr-2"></i> New Game Launch
                 </button>
             </div>
             <div class="mt-5">
@@ -369,7 +402,7 @@
             <div class="overflow-y-auto p-6 flex-1">
                 <form id="event-form" class="space-y-4">
                     <input type="hidden" id="event-id">
-                    <input type="hidden" id="event-is-offline" value="false">
+                    <input type="hidden" id="event-item-type" value="task">
                     
                     <div>
                         <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Event Title <span class="text-red-500">*</span></label>
@@ -532,18 +565,15 @@
             measurementId: "G-B81BZ4X1Y1"
         };
 
-        // Initialize Firebase variables
         let app, analytics, db;
         try {
             app = initializeApp(firebaseConfig);
             analytics = getAnalytics(app);
             db = getFirestore(app);
         } catch (err) {
-            console.error("Firebase initialization error:", err);
-            alert("Firebase configuration error. The app cannot load your data.");
+            console.error("Firebase init error:", err);
         }
 
-        // --- App State ---
         const TEAM_MEMBERS = ['Kenneth', 'Renee', 'Liezl', 'Nami', 'Lim', 'Marco'];
         window.events = []; 
         window.budgets = []; 
@@ -551,10 +581,8 @@
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let currentDateObj = new Date();
-        let defaultMonthStr = `${currentDateObj.getFullYear()}-${String(currentDateObj.getMonth() + 1).padStart(2, '0')}`;
         
         window.tempSelectedDate = null;
-
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
         window.globalCategoryFilter = 'All';
         
@@ -568,12 +596,7 @@
             }
         };
 
-        let drawerAccordionStates = { 
-            links: true, 
-            media: false, 
-            ops: false, 
-            dash: false 
-        };
+        let drawerAccordionStates = { links: true, media: false, ops: false, dash: false };
         
         window.budgetSearchQuery = '';
         window.budgetFilterOwner = 'All';
@@ -586,48 +609,26 @@
         window.statusFilter = 'All';
         window.sortCol = 'date'; 
         window.sortAsc = false;
+
+        window.currentCampaignPosts = [];
+        window.currentCarouselIndex = 0;
         
         const defaultFields = {
-            document: '', 
-            dailyDataReport: '', 
-            postMortemReport: '',
-            hashtags: [], 
-            postIds: [], 
-            ignoreListed: false,
-            gameReview: 'Pending', 
-            dailyTask: false, 
-            contentWriters: 'Pending',
-            imChannels: 'Pending', 
-            trackableLinks: 'Pending', 
-            sms: 'Pending',
-            postPinned: 'Pending', 
-            rewardDistributed: 'Pending', 
-            rewardsBanner: 'Pending',
+            document: '', dailyDataReport: '', postMortemReport: '',
+            hashtags: [], postIds: [], ignoreListed: false,
+            gameReview: 'Pending', dailyTask: false, contentWriters: 'Pending',
+            imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
+            postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending',
             dashboardStatus: {}
         };
 
-        document.getElementById('budget-allocated').addEventListener('input', function() {
-            if (document.getElementById('budget-type').value === 'Monthly Expenses') {
-                document.getElementById('budget-spent').value = this.value;
-            }
-        });
-
-        document.getElementById('budget-type').addEventListener('change', function() {
-            if (this.value === 'Monthly Expenses') {
-                document.getElementById('budget-spent').value = document.getElementById('budget-allocated').value;
-            }
-        });
-
-        // Time Formatter for YYYY-MM-DD HH:MM:SS
         window.getFormattedCreatedTime = () => {
             const now = new Date();
             const pad = (n) => n.toString().padStart(2, '0');
             return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
         }
 
-        window.getCurrentMonthStr = () => {
-            return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-        }
+        window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
 
         window.calculateStatus = (startDate, endDate) => {
             const today = new Date().toISOString().split('T')[0];
@@ -651,31 +652,64 @@
             return dates;
         }
 
-        window.downloadCSV = (csvContent, fileName) => {
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", fileName);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        window.getPendingSummary = (task) => {
+            const itemType = task.itemType || (task.isEventOnly ? 'event' : 'task');
+            if (itemType === 'event') return "Offline Event";
+            if (itemType === 'game') return "New Game Launch";
+            if (task.progress === 100) return "All tasks completed!";
+            
+            const f = task.fields || {};
+            let pending = [];
+            
+            if (!(f.document && window.isValidURL(f.document))) pending.push("Document Link");
+            if (!(f.dailyDataReport && window.isValidURL(f.dailyDataReport))) pending.push("Daily Data Report");
+            if (!(f.postMortemReport && window.isValidURL(f.postMortemReport))) pending.push("Post-Mortem Report");
+            
+            if (!(Array.isArray(f.hashtags) && f.hashtags.length > 0)) pending.push("Hashtags");
+            if (!(Array.isArray(f.postIds) && f.postIds.some(p => p.id && p.id.trim() !== ''))) pending.push("Post IDs");
+            
+            const ops = [
+                {k: 'gameReview', l: 'Game Review'}, {k: 'contentWriters', l: 'Content Writers'},
+                {k: 'imChannels', l: 'IM Channels'}, {k: 'trackableLinks', l: 'Trackable Links'},
+                {k: 'sms', l: 'SMS'}, {k: 'postPinned', l: 'Post Pinned'},
+                {k: 'rewardDistributed', l: 'Reward Dist.'}, {k: 'rewardsBanner', l: 'Rewards Banner'}
+            ];
+            ops.forEach(op => {
+                if (f[op.k] !== 'Done' && f[op.k] !== 'Not Applicable') pending.push(op.l);
+            });
+            
+            let maxDash = 0;
+            if (f.dashboardStatus) {
+                for(let d in f.dashboardStatus) {
+                    let v = parseFloat(f.dashboardStatus[d])||0;
+                    if(v>maxDash) maxDash=v;
+                }
+            }
+            if (maxDash < 100) pending.push(`Daily Tracking (${maxDash.toFixed(0)}%)`);
+            
+            if (pending.length === 0) return "All tasks completed!";
+            return "Pending Items:\n• " + pending.join("\n• ");
+        };
 
-        // --- Initialization with Firebase ---
         window.initApp = () => {
             setupTeamMembersUI();
             
-            // Force an initial UI render so the calendar isn't blank while waiting for Firebase
-            window.renderUI();
+            // Try loading local data immediately so UI isn't blank
+            const localEventsStr = localStorage.getItem('spo_content_calendar_events');
+            if (localEventsStr) {
+                try {
+                    window.events = JSON.parse(localEventsStr);
+                } catch(e) {}
+            }
+            
+            const calGrid = document.getElementById('calendar-grid');
+            if(calGrid) window.renderUI();
             
             if (!db) {
-                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error.</div>`;
+                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error. Running locally.</div>`;
                 return;
             }
 
-            // 1. Listen to Settings
             onSnapshot(doc(db, "settings", "budgetSettings"), (docSnap) => {
                 if (docSnap.exists()) {
                     window.budgetSettings = { ...window.budgetSettings, ...docSnap.data() };
@@ -684,11 +718,8 @@
                     updateCurrencySymbols();
                     window.renderUI();
                 }
-            }, (error) => {
-                console.error("Settings Error:", error);
             });
 
-            // 2. Listen to Events
             onSnapshot(collection(db, "events"), (snapshot) => {
                 let tempEvents = [];
                 snapshot.forEach((doc) => {
@@ -698,44 +729,324 @@
                     e.status = window.calculateStatus(e.startDate, e.endDate);
                     
                     if (!e.fields) e.fields = { ...defaultFields };
-                    if (typeof e.fields.hashtags === 'string') {
-                        e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
-                    }
+                    if (typeof e.fields.hashtags === 'string') e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
                     if (!e.fields.dashboardStatus) e.fields.dashboardStatus = {};
                     e.progress = window.calcProgress(e);
                     tempEvents.push(e);
                 });
                 
+                // AUTO MIGRATE: If cloud is empty but local storage has events, push them!
+                const localStr = localStorage.getItem('spo_content_calendar_events');
+                if (tempEvents.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let e of localData) {
+                            setDoc(doc(db, "events", e.id), e); 
+                        }
+                        localStorage.removeItem('spo_content_calendar_events');
+                        window.showToast("Local events synced to cloud!", "success");
+                    }
+                }
+
                 window.events = tempEvents;
                 window.renderUI();
-                
+                window.updateCampaignDropdown();
+
                 if (window.currentDrawerTaskId) {
                     const t = window.events.find(ev => ev.id === window.currentDrawerTaskId);
-                    if(t && t.isEventOnly !== true) {
+                    const iType = t ? (t.itemType || (t.isEventOnly ? 'event' : 'task')) : null;
+                    if(t && iType === 'task') {
                         window.updateDrawerProgressUI(t);
                         window.renderDrawerChecklist(t);
                     }
                 }
             }, (error) => {
                 console.error("Events Error:", error);
-                window.showToast("Database connection failed. Please ensure Firestore is enabled in Test Mode.", "error");
-                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm text-balance px-4">Database Error:<br>${error.message}</div>`;
+                window.showToast("Database connection failed.", "error");
             });
 
-            // 3. Listen to Budgets
             onSnapshot(collection(db, "budgets"), (snapshot) => {
                 let tempBudgets = [];
-                snapshot.forEach((doc) => {
-                    tempBudgets.push(doc.data());
-                });
+                snapshot.forEach((doc) => tempBudgets.push(doc.data()));
+                
+                // AUTO MIGRATE
+                const localStr = localStorage.getItem('spo_budget_data');
+                if (tempBudgets.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let b of localData) {
+                            setDoc(doc(db, "budgets", b.id), b);
+                        }
+                        localStorage.removeItem('spo_budget_data');
+                        window.showToast("Local budgets synced to cloud!", "success");
+                    }
+                }
                 
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
-            }, (error) => {
-                console.error("Budgets Error:", error);
             });
         }
+
+        window.updateCampaignDropdown = () => {
+            const select = document.getElementById('campaign-task-selector');
+            if (!select) return;
+            
+            const currVal = select.value;
+            let options = '<option value="">-- Select a Task --</option>';
+            
+            const tasksOnly = window.events.filter(e => {
+                const iType = e.itemType || (e.isEventOnly ? 'event' : 'task');
+                return iType === 'task';
+            });
+            tasksOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
+            
+            tasksOnly.forEach(e => {
+                options += `<option value="${e.id}">[${e.campaignType || 'All'}] ${e.title}</option>`;
+            });
+            
+            select.innerHTML = options;
+            
+            if(currVal && tasksOnly.find(e => e.id === currVal)) {
+                select.value = currVal;
+            } else {
+                const contentArea = document.getElementById('campaign-content-area');
+                if (contentArea) {
+                    contentArea.classList.add('hidden');
+                    contentArea.classList.remove('grid');
+                    document.getElementById('campaign-empty-state').style.display = 'block';
+                }
+            }
+        };
+
+        window.renderCampaignDetails = (taskId) => {
+            const contentArea = document.getElementById('campaign-content-area');
+            const emptyState = document.getElementById('campaign-empty-state');
+            
+            if (!taskId) {
+                contentArea.classList.add('hidden');
+                contentArea.classList.remove('grid');
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            const task = window.events.find(e => e.id === taskId);
+            if (!task) return;
+
+            contentArea.classList.remove('hidden');
+            contentArea.classList.add('grid');
+            emptyState.style.display = 'none';
+
+            window.currentCampaignPosts = task.fields.postIds || [];
+            window.currentCarouselIndex = 0;
+            
+            window.renderCampaignCarousel();
+            window.renderCampaignRightSide(task);
+            window.renderCampaignPerformance();
+        };
+
+        window.getGeneratedPostLink = (idStr) => {
+            if (!idStr) return '#';
+            idStr = idStr.trim();
+            if (idStr.startsWith('http://') || idStr.startsWith('https://')) {
+                return idStr;
+            }
+            return `https://bingoplus.com/community/Detail?id=${idStr}&type=Feed`;
+        };
+
+        window.renderCampaignCarousel = () => {
+            const container = document.getElementById('campaign-carousel-container');
+            const counter = document.getElementById('carousel-counter');
+            if(!container) return;
+            
+            if (window.currentCampaignPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-gray-400 flex flex-col items-center">
+                        <i class="fa-regular fa-image text-4xl mb-2"></i>
+                        <p class="text-sm">No Post IDs/Visuals added to this task.</p>
+                    </div>
+                `;
+                counter.innerText = '0 / 0';
+                return;
+            }
+
+            const post = window.currentCampaignPosts[window.currentCarouselIndex];
+            counter.innerText = `${window.currentCarouselIndex + 1} / ${window.currentCampaignPosts.length}`;
+            
+            const link = window.getGeneratedPostLink(post.id);
+            const hasImg = post.imgUrl && window.isValidURL(post.imgUrl);
+
+            let html = `
+                <div class="w-full flex flex-col items-center h-full justify-center pb-4">
+                    <div class="w-full max-w-md aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center mb-6 relative shadow-inner">
+                        ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
+                        
+                        ${window.currentCampaignPosts.length > 1 ? `
+                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="w-full max-w-md bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
+                            <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
+                        </div>
+                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
+                            <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
+                        </a>
+                    </div>
+                    
+                    ${window.currentCampaignPosts.length > 1 ? `
+                        <div class="flex space-x-1.5 mt-5">
+                            ${window.currentCampaignPosts.map((_, i) => `
+                                <button onclick="window.goToCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            container.innerHTML = html;
+        };
+
+        window.changeCarouselSlide = (dir) => {
+            window.currentCarouselIndex += dir;
+            if (window.currentCarouselIndex < 0) window.currentCarouselIndex = window.currentCampaignPosts.length - 1;
+            if (window.currentCarouselIndex >= window.currentCampaignPosts.length) window.currentCarouselIndex = 0;
+            window.renderCampaignCarousel();
+            window.renderCampaignPerformance();
+        };
+
+        window.goToCarouselSlide = (idx) => {
+            window.currentCarouselIndex = idx;
+            window.renderCampaignCarousel();
+            window.renderCampaignPerformance();
+        };
+
+        window.renderCampaignRightSide = (task) => {
+            const container = document.getElementById('campaign-stats-container');
+            if(!container) return;
+
+            const pFormatted = (task.progress || 0).toFixed(2);
+            const assignsStr = (task.assignees && task.assignees.length > 0) ? task.assignees.join(', ') : 'Unassigned';
+            
+            const fields = task.fields || {};
+            const operations = [
+                { key: 'gameReview', label: 'Game Review' },
+                { key: 'contentWriters', label: 'Content Writers' },
+                { key: 'imChannels', label: 'IM Channels' },
+                { key: 'trackableLinks', label: 'Trackable Links' },
+                { key: 'sms', label: 'SMS' },
+                { key: 'postPinned', label: 'Post Pinned' },
+                { key: 'rewardDistributed', label: 'Reward Distributed' },
+                { key: 'rewardsBanner', label: 'Rewards Banner' }
+            ];
+            
+            let opsHtml = operations.map(op => {
+                const val = fields[op.key] || 'Pending';
+                let color = 'text-gray-500';
+                let icon = 'fa-circle text-[8px]';
+                if (val === 'Done') { color = 'text-emerald-600'; icon = 'fa-check'; }
+                if (val === 'Not Applicable') { color = 'text-gray-400'; icon = 'fa-minus'; }
+                return `<div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
+                </div>
+                <div class="p-5 flex-1 overflow-y-auto space-y-6">
+                    <div>
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
+                            <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Timeline</span>
+                            <span class="text-sm font-medium text-gray-900">${task.startDate} to ${task.endDate}</span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Status</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${task.status}</span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
+                            <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
+                        <div class="bg-white border border-gray-200 rounded-md px-3 py-1 shadow-sm">
+                            ${opsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.renderCampaignPerformance = () => {
+            const container = document.getElementById('campaign-performance-container');
+            if (!container) return;
+
+            if (window.currentCampaignPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                        <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
+                        <i class="fa-solid fa-chart-area text-4xl mb-3 text-gray-300"></i>
+                        <p class="text-sm">Add a Post ID to view performance data.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const post = window.currentCampaignPosts[window.currentCarouselIndex];
+            const postIdDisplay = post.id || 'Pending ID';
+
+            container.innerHTML = `
+                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
+                </div>
+                <div class="p-5 flex-1 overflow-y-auto space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
+                        <span class="text-xs font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
+                        <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
+                    </div>
+                </div>
+            `;
+        };
 
         window.migrateLocalData = async () => {
             if(!confirm("This will upload all tasks and budgets saved locally on this browser to your Firebase Cloud Database. Do you want to proceed?")) return;
@@ -762,6 +1073,8 @@
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
+                localStorage.removeItem('spo_content_calendar_events');
+                localStorage.removeItem('spo_budget_data');
                 window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
             } catch (err) {
                 console.error(err);
@@ -801,8 +1114,10 @@
 
         function updateCurrencySymbols() {
             const sym = window.budgetSettings.currency === 'PHP' ? '₱' : '$';
-            document.getElementById('curr-symbol-1').innerText = sym;
-            document.getElementById('curr-symbol-2').innerText = sym;
+            const s1 = document.getElementById('curr-symbol-1');
+            const s2 = document.getElementById('curr-symbol-2');
+            if(s1) s1.innerText = sym;
+            if(s2) s2.innerText = sym;
         }
 
         window.saveBudgetSettings = async () => {
@@ -813,6 +1128,14 @@
             window.budgetSettings.limits[targetMonth] = parseFloat(limitInput.value) || 0;
             window.budgetSettings.currency = currInput.value;
             
+            if (!db) {
+                localStorage.setItem('spo_budget_settings', JSON.stringify(window.budgetSettings));
+                window.showToast("Saved Locally", "success");
+                updateCurrencySymbols();
+                window.renderUI();
+                return;
+            }
+
             try {
                 await setDoc(doc(db, "settings", "budgetSettings"), window.budgetSettings);
                 window.showToast("Budget settings saved", "success");
@@ -857,7 +1180,8 @@
         }
 
         window.calcProgress = (evt) => {
-            if (evt.isEventOnly) return 0;
+            const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+            if (itemType === 'event' || itemType === 'game') return 0;
 
             const fields = evt.fields || {};
             let completed = 0;
@@ -894,16 +1218,17 @@
             return (completed / totalItems) * 100;
         }
 
-        // --- Firebase Sync Helpers ---
         window.syncEventToFirestore = async (task) => {
-            if (!db) {
-                window.showToast("Cannot sync: Firebase is not configured.", "error");
-                return;
-            }
+            // Local fallback
+            const idx = window.events.findIndex(e => e.id === task.id);
+            if (idx > -1) window.events[idx] = task;
+            else window.events.push(task);
+            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+
+            if (!db) return;
             try { 
                 await setDoc(doc(db, "events", task.id), task); 
             } catch(e) { 
-                window.showToast("Error syncing to Firebase", "error"); 
                 console.error(e); 
             }
         }
@@ -913,14 +1238,15 @@
             const form = document.getElementById('event-form');
             if (!form.reportValidity()) return;
 
-            const isOffline = document.getElementById('event-is-offline').value === 'true';
+            const itemType = document.getElementById('event-item-type').value; 
+            const isNonTask = (itemType === 'event' || itemType === 'game');
 
             const id = document.getElementById('event-id').value;
             const title = document.getElementById('event-title').value.trim();
             const startDate = document.getElementById('event-start-date').value;
             const endDate = document.getElementById('event-end-date').value;
             
-            let campaignType = isOffline ? 'All' : document.getElementById('event-campaign-type').value;
+            let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
             
             if (endDate < startDate) { 
                 window.showToast("End date cannot be before start date", "error"); 
@@ -928,7 +1254,7 @@
             }
 
             const assignees = [];
-            if (!isOffline) {
+            if (!isNonTask) {
                 document.querySelectorAll('input[name="assignees"]:checked').forEach(cb => assignees.push(cb.value));
                 if (assignees.length === 0) { 
                     window.showToast("Assignees cannot be blank. Please select at least one.", "error"); 
@@ -940,13 +1266,14 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
-            const tempEventForCalc = { startDate, endDate, fields: fieldsToSave, isEventOnly: isOffline };
+            const tempEventForCalc = { itemType, startDate, endDate, fields: fieldsToSave, isEventOnly: itemType === 'event' };
             const progress = window.calcProgress(tempEventForCalc);
             
             const eventId = id ? id : Date.now().toString();
             const eventData = {
                 id: eventId,
-                isEventOnly: isOffline,
+                itemType: itemType,
+                isEventOnly: itemType === 'event', 
                 title, 
                 startDate, 
                 endDate, 
@@ -958,7 +1285,6 @@
                 updatedAt: new Date().toISOString()
             };
 
-            // Maintain or inject the CreatedTime Timestamp
             if (!id) {
                 eventData.CreatedTime = window.getFormattedCreatedTime();
             } else if (existingEvent && existingEvent.CreatedTime) {
@@ -972,13 +1298,12 @@
             btn.disabled = true;
 
             try {
-                if (!db) throw new Error("Firebase not initialized");
                 await window.syncEventToFirestore(eventData);
                 window.showToast(id ? "Item updated" : "Item created", "success");
                 window.closeAddModal();
+                window.renderUI();
             } catch (err) {
                 console.error("Save Event Error:", err);
-                window.showToast("Could not save to database.", "error");
             } finally {
                 btn.innerHTML = 'Save';
                 btn.disabled = false;
@@ -986,14 +1311,16 @@
         }
 
         window.deleteTask = async (id) => {
-            if (!db) return;
-            try {
-                await deleteDoc(doc(db, "events", id));
-                window.showToast("Item deleted", "success");
-                window.closeAddModal();
-            } catch(e) { 
-                window.showToast("Error deleting", "error"); 
+            window.events = window.events.filter(e => e.id !== id);
+            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+            
+            if (db) {
+                try { await deleteDoc(doc(db, "events", id)); } 
+                catch(e) {}
             }
+            window.showToast("Item deleted", "success");
+            window.closeAddModal();
+            window.renderUI();
         }
 
         window.triggerReminder = (id, title, assigneesStr) => {
@@ -1008,24 +1335,35 @@
 
         window.clearAllData = async () => {
             if(!confirm("Are you sure? This deletes ALL events globally from Firebase.")) return;
-            if (!db) return;
-            
-            window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
+            localStorage.removeItem('spo_content_calendar_events');
+            window.events = [];
+            if (db) {
+                try {
+                    window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
+                } catch(err) {}
+            }
             window.showToast("Data clearing initiated", "success");
+            window.renderUI();
         };
 
         window.clearAllBudgets = async () => {
             if(!confirm("Are you sure? This deletes ALL budget entries globally from Firebase.")) return;
-            if (!db) return;
-            
-            window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
+            localStorage.removeItem('spo_budget_data');
+            window.budgets = [];
+            if (db) {
+                try {
+                    window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
+                } catch(e){}
+            }
             window.showToast("All budgets cleared", "success");
+            window.renderUI();
         };
 
-        // --- Exports ---
         window.exportTasksExcel = () => {
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
-                if (evt.isEventOnly) return false; // Exclude simple events
+                const iType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+                if (iType === 'event' || iType === 'game') return false; 
+                
                 const searchLower = window.searchQuery.toLowerCase();
                 const matchesSearch = evt.title.toLowerCase().includes(searchLower) || 
                                       (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
@@ -1034,10 +1372,15 @@
                 return matchesSearch && matchesStatus && matchesAssignee;
             });
 
-            // APPLY CURRENT SORTING BEFORE EXPORTING
             filteredEvents.sort((a, b) => {
+                const aStart = a.startDate || '';
+                const bStart = b.startDate || '';
+                const aEnd = a.endDate || '';
+                const bEnd = b.endDate || '';
+
                 let valA = a[window.sortCol]; 
                 let valB = b[window.sortCol];
+
                 if (window.sortCol === 'assignees') { 
                     valA = (a.assignees || []).join(', '); 
                     valB = (b.assignees || []).join(', '); 
@@ -1048,10 +1391,10 @@
                     valA = (valA || '').toLowerCase(); 
                     valB = (valB || '').toLowerCase(); 
                 } else if (window.sortCol === 'date') { 
-                    valA = new Date(a.startDate).getTime(); 
-                    valB = new Date(b.startDate).getTime(); 
+                    valA = new Date(aStart).getTime(); 
+                    valB = new Date(bStart).getTime(); 
                 }
-
+                
                 if (valA < valB) return window.sortAsc ? -1 : 1;
                 if (valA > valB) return window.sortAsc ? 1 : -1;
                 return 0;
@@ -1118,11 +1461,9 @@
                 return matchesSearch && matchesMonth && matchesOwner;
             });
             
-            // APPLY CURRENT SORTING BEFORE EXPORTING
             filteredBudgets.sort((a, b) => {
                 let valA = a[window.budgetSortCol]; 
                 let valB = b[window.budgetSortCol];
-                
                 if (['allocated', 'spent'].includes(window.budgetSortCol)) { 
                     valA = parseFloat(valA) || 0; 
                     valB = parseFloat(valB) || 0; 
@@ -1130,7 +1471,6 @@
                     valA = (valA || '').toLowerCase(); 
                     valB = (valB || '').toLowerCase(); 
                 }
-                
                 if (valA < valB) return window.budgetSortAsc ? -1 : 1;
                 if (valA > valB) return window.budgetSortAsc ? 1 : -1;
                 return 0;
@@ -1157,7 +1497,6 @@
             XLSX.writeFile(workbook, "SPO_Budget_Export.xlsx");
         };
 
-        // --- Navigation Logic ---
         window.switchView = (viewName) => {
             const views = ['dashboard', 'tasks', 'budget', 'campaign'];
             views.forEach(v => {
@@ -1197,40 +1536,34 @@
             window.renderOngoingEvents();
             window.renderTasksTable();
             window.renderBudgetTable();
+            if(window.updateCampaignDropdown) window.updateCampaignDropdown();
         }
 
         window.updateStats = () => {
             const filtered = window.filterEventsByGlobalCategory(window.events);
             const currStr = window.getCurrentMonthStr();
             
-            // Get boundaries for currently viewed month
             const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
             const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
             const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-            // Filter events strictly to what is shown on the currently viewed calendar month
             const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
 
-            // Update Labels
-            document.querySelectorAll('.stat-month-label').forEach(el => {
-                el.innerText = currStr;
-            });
+            document.querySelectorAll('.stat-month-label').forEach(el => { el.innerText = currStr; });
             
             const statTotal = document.getElementById('stat-total');
-            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done' && !e.isEventOnly).length;
+            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done' && e.itemType === 'task').length;
             
             const statProgress = document.getElementById('stat-progress');
-            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing' && !e.isEventOnly).length;
+            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing' && e.itemType === 'task').length;
             
             const statCompleted = document.getElementById('stat-completed');
-            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done' && !e.isEventOnly).length;
+            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done' && e.itemType === 'task').length;
             
             let totalSpent = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
             
-            activeMonthBudgets.forEach(b => { 
-                totalSpent += parseFloat(b.spent) || 0; 
-            });
+            activeMonthBudgets.forEach(b => { totalSpent += parseFloat(b.spent) || 0; });
             const limitForMonth = window.budgetSettings.limits[currStr] || 0;
             const available = limitForMonth - totalSpent;
             
@@ -1297,9 +1630,14 @@
                 let weekEnd = week[6].dateStr;
                 let weekEvents = window.events.filter(e => e.startDate <= weekEnd && e.endDate >= weekStart);
                 weekEvents = window.filterEventsByGlobalCategory(weekEvents);
+                
                 weekEvents.sort((a, b) => {
-                    if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
-                    return new Date(b.endDate) - new Date(a.endDate);
+                    const aStart = a.startDate || '';
+                    const bStart = b.startDate || '';
+                    const aEnd = a.endDate || '';
+                    const bEnd = b.endDate || '';
+                    if (aStart !== bStart) return aStart.localeCompare(bStart);
+                    return new Date(bEnd) - new Date(aEnd);
                 });
 
                 let tracks = []; 
@@ -1353,28 +1691,29 @@
 
                 placements.forEach(p => {
                     const evt = p.evt;
+                    const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
                     
                     let statusColor = '';
-                    if (evt.isEventOnly) {
+                    let formattedTitle = '';
+
+                    if (itemType === 'event') {
                         statusColor = 'bg-purple-100 text-purple-800 border border-purple-200';
+                        formattedTitle = `<i class="fa-solid fa-star text-[10px] mr-1 opacity-70"></i>${evt.title}`;
+                    } else if (itemType === 'game') {
+                        statusColor = 'bg-rose-100 text-rose-800 border border-rose-200';
+                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 opacity-70"></i>${evt.title}`;
                     } else {
                         statusColor = evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 
                                       (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-amber-100 text-amber-800 border border-amber-200');
-                    }
-                    
-                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
-                    
-                    let formattedTitle = '';
-                    if (evt.isEventOnly) {
-                        formattedTitle = `<i class="fa-solid fa-star text-[10px] mr-1 opacity-70"></i>${evt.title}`;
-                    } else {
+                        const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
                         formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
                     }
                     
+                    let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${evt.isEventOnly ? 'Event' : 'Status: ' + evt.status}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${titleAttr}">
                             <div class="text-xs whitespace-normal break-words leading-tight font-medium">
                                 ${formattedTitle}
                             </div>
@@ -1419,6 +1758,7 @@
             };
 
             monthlyEvents.forEach(evt => {
+                const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
                 const dateObj = new Date(evt.endDate);
                 const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
                 const daysDiff = Math.ceil((dateObj - new Date()) / (1000 * 60 * 60 * 24));
@@ -1426,16 +1766,23 @@
 
                 const el = document.createElement('div');
                 el.className = 'flex items-start p-3 hover:bg-gray-50 rounded-lg mb-2 border border-gray-100 transition-colors cursor-pointer';
+                el.title = window.getPendingSummary(evt);
                 
-                if (evt.isEventOnly) {
+                if (itemType === 'event' || itemType === 'game') {
                     el.onclick = () => window.openEditById(evt.id);
+                    
+                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-star text-purple-500';
+                    let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-purple-900';
+                    let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
+                    let labelColor = itemType === 'game' ? 'text-rose-600' : 'text-purple-600';
+
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 mr-3">
-                            <p class="text-sm font-semibold text-purple-900 truncate" title="${evt.title.replace(/"/g, '&quot;')}"><i class="fa-solid fa-star text-purple-500 mr-1.5 opacity-70"></i>${evt.title}</p>
+                            <p class="text-sm font-semibold ${titleColor} truncate"><i class="fa-solid ${iconClass} mr-1.5 opacity-70"></i>${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-center mt-1">
                                 <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
                                 <span class="mx-2 text-gray-300 text-xs">|</span>
-                                <span class="text-xs text-purple-600 font-medium">Offline Event</span>
+                                <span class="text-xs ${labelColor} font-medium">${typeLabel}</span>
                             </div>
                         </div>
                     `;
@@ -1464,7 +1811,7 @@
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 mr-3">
-                            <p class="text-sm font-semibold text-gray-900 truncate" title="${formattedTitle.replace(/"/g, '&quot;')}">${formattedTitle}</p>
+                            <p class="text-sm font-semibold text-gray-900 truncate">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-center mt-1">
                                 <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
                                 <span class="mx-2 text-gray-300 text-xs">|</span>
@@ -1529,7 +1876,8 @@
             });
 
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
-                if (evt.isEventOnly) return false; // Exclude offline events from task tracking
+                const iType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+                if (iType !== 'task') return false; 
                 
                 const searchLower = window.searchQuery.toLowerCase();
                 const matchesSearch = evt.title.toLowerCase().includes(searchLower) || (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
@@ -1539,6 +1887,11 @@
             });
 
             filteredEvents.sort((a, b) => {
+                const aStart = a.startDate || '';
+                const bStart = b.startDate || '';
+                const aEnd = a.endDate || '';
+                const bEnd = b.endDate || '';
+
                 let valA = a[window.sortCol]; 
                 let valB = b[window.sortCol];
                 if (window.sortCol === 'assignees') { 
@@ -1551,8 +1904,8 @@
                     valA = (valA || '').toLowerCase(); 
                     valB = (valB || '').toLowerCase(); 
                 } else if (window.sortCol === 'date') { 
-                    valA = new Date(a.startDate).getTime(); 
-                    valB = new Date(b.startDate).getTime(); 
+                    valA = new Date(aStart).getTime(); 
+                    valB = new Date(bStart).getTime(); 
                 }
 
                 if (valA < valB) return window.sortAsc ? -1 : 1;
@@ -1569,6 +1922,7 @@
                 const tr = document.createElement('tr');
                 tr.id = `task-row-${evt.id}`;
                 tr.className = 'hover:bg-indigo-50 cursor-pointer transition-colors duration-200 group';
+                tr.title = window.getPendingSummary(evt);
                 tr.onclick = (e) => { 
                     if(e.target.closest('button') || e.target.closest('input')) return; 
                     window.openTaskDrawer(evt.id); 
@@ -1595,7 +1949,7 @@
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
                             <div class="flex items-center">
-                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle}</span>
+                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
                             </div>
                             <span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span>
                         </div>
@@ -1775,7 +2129,6 @@
                 spent: parseFloat(spent) 
             };
             
-            // Maintain or inject the CreatedTime Timestamp
             if (!id) {
                 entryData.CreatedTime = window.getFormattedCreatedTime();
             } else {
@@ -1792,10 +2145,19 @@
             btn.disabled = true;
 
             try {
-                if (!db) throw new Error("Firebase not configured");
-                await setDoc(doc(db, "budgets", entryId), entryData);
+                // Update Local Storage Fallback Immediately
+                const idx = window.budgets.findIndex(b => b.id === entryId);
+                if (idx > -1) window.budgets[idx] = entryData;
+                else window.budgets.push(entryData);
+                localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+                
+                if (db) {
+                    await setDoc(doc(db, "budgets", entryId), entryData);
+                }
+                
                 window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
                 window.closeBudgetModal();
+                window.renderUI();
             } catch(e) { 
                 window.showToast("Error saving budget", "error"); 
             } finally {
@@ -1805,13 +2167,14 @@
         };
 
         window.deleteBudgetEntry = async (id) => {
-            if (!db) return;
-            try {
-                await deleteDoc(doc(db, "budgets", id));
-                window.showToast("Budget entry deleted", "success");
-            } catch(e) { 
-                window.showToast("Error deleting", "error"); 
+            window.budgets = window.budgets.filter(b => b.id !== id);
+            localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+            
+            if (db) {
+                try { await deleteDoc(doc(db, "budgets", id)); } catch(e) {}
             }
+            window.showToast("Budget entry deleted", "success");
+            window.renderUI();
         };
 
         window.openBudgetModal = (id = null) => {
@@ -1958,18 +2321,21 @@
             window.tempSelectedDate = null;
         }
 
-        window.selectEventType = (isOffline) => {
+        window.selectEventType = (type) => {
             document.getElementById('type-modal').classList.add('hidden');
-            window.openAddModal(isOffline, window.tempSelectedDate);
+            window.openAddModal(type, window.tempSelectedDate);
             window.tempSelectedDate = null;
         }
 
-        window.openAddModal = (isOffline = false, dateStr = null) => {
+        window.openAddModal = (itemType = 'task', dateStr = null) => {
             document.getElementById('event-form').reset();
             document.getElementById('event-id').value = '';
-            document.getElementById('event-is-offline').value = isOffline ? 'true' : 'false';
+            document.getElementById('event-item-type').value = itemType;
             
-            document.getElementById('modal-title').innerText = isOffline ? 'Add Offline Event' : 'Add New Content Task';
+            let titleTxt = 'Add New Content Task';
+            if (itemType === 'event') titleTxt = 'Add Offline Event';
+            if (itemType === 'game') titleTxt = 'Add New Game Launch';
+            document.getElementById('modal-title').innerText = titleTxt;
             
             const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
             document.getElementById('event-start-date').value = startDate;
@@ -1981,7 +2347,9 @@
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
 
-            if (isOffline) {
+            const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (isNonTask) {
                 campContainer.style.display = 'none';
                 assignContainer.style.display = 'none';
                 campInput.removeAttribute('required');
@@ -2007,10 +2375,14 @@
             document.getElementById('event-form').reset(); 
             document.getElementById('event-id').value = evt.id;
             
-            const isOffline = evt.isEventOnly === true;
-            document.getElementById('event-is-offline').value = isOffline ? 'true' : 'false';
+            const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+            document.getElementById('event-item-type').value = itemType;
             
-            document.getElementById('modal-title').innerText = isOffline ? 'Edit Offline Event' : 'Edit Content Task'; 
+            let titleTxt = 'Edit Content Task';
+            if (itemType === 'event') titleTxt = 'Edit Offline Event';
+            if (itemType === 'game') titleTxt = 'Edit New Game Launch';
+            document.getElementById('modal-title').innerText = titleTxt; 
+            
             document.getElementById('event-title').value = evt.title;
             document.getElementById('event-start-date').value = evt.startDate; 
             document.getElementById('event-end-date').value = evt.endDate;
@@ -2020,7 +2392,9 @@
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
 
-            if (isOffline) {
+            const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (isNonTask) {
                 campContainer.style.display = 'none';
                 assignContainer.style.display = 'none';
                 campInput.removeAttribute('required');
@@ -2174,7 +2548,6 @@
         window.renderDrawerChecklist = (evt) => {
             const list = document.getElementById('drawer-checklist');
             
-            // Capture existing accordion states before re-rendering
             const existingDetails = list.querySelectorAll('details');
             if (existingDetails.length === 4) {
                 drawerAccordionStates.links = existingDetails[0].open; 
@@ -2185,17 +2558,49 @@
             
             const f = evt.fields || { ...defaultFields };
             
-            const makeAccordion = (title, content, isOpen = true) => `
-                <details class="group mb-3 border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden" ${isOpen ? 'open' : ''}>
-                    <summary class="cursor-pointer bg-gray-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-gray-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
-                        <span>${title}</span>
-                        <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
-                    </summary>
-                    <div class="p-4 space-y-4 border-t border-gray-200">
-                        ${content}
-                    </div>
-                </details>
-            `;
+            let linksDone = 0;
+            if (f.document && window.isValidURL(f.document)) linksDone++;
+            if (f.dailyDataReport && window.isValidURL(f.dailyDataReport)) linksDone++;
+            if (f.postMortemReport && window.isValidURL(f.postMortemReport)) linksDone++;
+
+            let mediaDone = 0;
+            if (Array.isArray(f.hashtags) && f.hashtags.length > 0) mediaDone++;
+            if (Array.isArray(f.postIds) && f.postIds.some(p => p.id && p.id.trim() !== '')) mediaDone++;
+
+            let opsDone = 0;
+            ['gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'].forEach(k => {
+                if (f[k] === 'Done' || f[k] === 'Not Applicable') opsDone++;
+            });
+            if (f.ignoreListed) opsDone++;
+            if (f.dailyTask) opsDone++;
+
+            let maxDash = 0;
+            if (f.dashboardStatus) {
+                for(let d in f.dashboardStatus) {
+                    let v = parseFloat(f.dashboardStatus[d])||0;
+                    if(v > maxDash) maxDash = v;
+                }
+            }
+            let dashDone = maxDash === 100 ? 1 : 0;
+            
+            const makeAccordion = (title, done, total, content, isOpen = true) => {
+                const isAllDone = done === total;
+                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700';
+                return `
+                    <details class="group mb-3 border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden" ${isOpen ? 'open' : ''}>
+                        <summary class="cursor-pointer bg-gray-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-gray-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                            <div class="flex items-center">
+                                <span>${title}</span>
+                                <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
+                        </summary>
+                        <div class="p-4 space-y-4 border-t border-gray-200">
+                            ${content}
+                        </div>
+                    </details>
+                `;
+            };
             
             const makeSelectHtml = (key, label) => {
                 const val = f[key] || 'Pending';
@@ -2347,10 +2752,10 @@
 
             list.innerHTML = `
                 <div class="pb-8">
-                    ${makeAccordion('Important Links', linksContent, drawerAccordionStates.links)} 
-                    ${makeAccordion('Content & Publishing', mediaContent, drawerAccordionStates.media)} 
-                    ${makeAccordion('Operations Checklist', operationsContent, drawerAccordionStates.ops)} 
-                    ${makeAccordion('Daily Tracking', dashboardContent, drawerAccordionStates.dash)}
+                    ${makeAccordion('Important Links', linksDone, 3, linksContent, drawerAccordionStates.links)} 
+                    ${makeAccordion('Content & Publishing', mediaDone, 2, mediaContent, drawerAccordionStates.media)} 
+                    ${makeAccordion('Operations Checklist', opsDone, 10, operationsContent, drawerAccordionStates.ops)} 
+                    ${makeAccordion('Daily Tracking', dashDone, 1, dashboardContent, drawerAccordionStates.dash)}
                 </div>
             `;
         }
@@ -2367,10 +2772,7 @@
             
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
-            
-            if (['document', 'dailyDataReport', 'postMortemReport'].includes(fieldName)) { 
-                window.renderDrawerChecklist(task); 
-            }
+            window.renderDrawerChecklist(task); 
             window.renderTasksTable(); 
             window.renderOngoingEvents(); 
         };
