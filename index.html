@@ -51,7 +51,7 @@
             <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
-            <button onclick="openAddModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                 <i class="fa-solid fa-plus mr-2"></i> New Event
             </button>
         </div>
@@ -142,7 +142,7 @@
                     <div class="xl:col-span-1">
                         <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
                             <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                                <h2 class="text-lg font-bold text-gray-900">Tasks</h2>
+                                <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
                             </div>
                             <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
@@ -159,7 +159,7 @@
                     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="text-lg leading-6 font-bold text-gray-900">Detailed Progress Tracking</h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders.</p>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events are excluded)</p>
                         </div>
                     </div>
                     
@@ -336,6 +336,24 @@
         </main>
     </div>
 
+    <!-- Type Selection Modal -->
+    <div id="type-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Create New...</h3>
+            <div class="space-y-3">
+                <button onclick="selectEventType(false)" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                    <i class="fa-solid fa-list-check mr-2"></i> Content Task
+                </button>
+                <button onclick="selectEventType(true)" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    <i class="fa-solid fa-calendar-day mr-2"></i> Offline Event / Reminder
+                </button>
+            </div>
+            <div class="mt-5">
+                <button onclick="closeTypeModal()" class="text-sm font-medium text-gray-500 hover:text-gray-700">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add/Edit Event Modal -->
     <div id="event-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
@@ -348,8 +366,10 @@
             <div class="overflow-y-auto p-6 flex-1">
                 <form id="event-form" class="space-y-4">
                     <input type="hidden" id="event-id">
+                    <input type="hidden" id="event-is-offline" value="false">
+                    
                     <div>
-                        <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Content Title <span class="text-red-500">*</span></label>
+                        <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Event Title <span class="text-red-500">*</span></label>
                         <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                     </div>
                     <div class="flex space-x-4">
@@ -362,7 +382,7 @@
                             <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                         </div>
                     </div>
-                    <div>
+                    <div id="campaign-type-container">
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
                         <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                             <option value="All">All</option>
@@ -374,7 +394,7 @@
                             <option value="Bingo">Bingo</option>
                         </select>
                     </div>
-                    <div>
+                    <div id="assignees-container">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Assign To (Team) <span class="text-red-500">*</span></label>
                         <div class="space-y-2" id="assignee-checkboxes"></div>
                     </div>
@@ -382,7 +402,7 @@
             </div>
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3 bg-gray-50 shrink-0">
                 <button type="button" onclick="closeAddModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
-                <button type="button" onclick="saveEvent(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700" id="save-btn">Save Task</button>
+                <button type="button" onclick="saveEvent(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700" id="save-btn">Save</button>
             </div>
         </div>
     </div>
@@ -530,6 +550,8 @@
         let currentDateObj = new Date();
         let defaultMonthStr = `${currentDateObj.getFullYear()}-${String(currentDateObj.getMonth() + 1).padStart(2, '0')}`;
         
+        window.tempSelectedDate = null;
+
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
         window.globalCategoryFilter = 'All';
         
@@ -679,7 +701,7 @@
                 
                 if (window.currentDrawerTaskId) {
                     const t = window.events.find(ev => ev.id === window.currentDrawerTaskId);
-                    if(t) {
+                    if(t && t.isEventOnly !== true) {
                         window.updateDrawerProgressUI(t);
                         window.renderDrawerChecklist(t);
                     }
@@ -725,21 +747,11 @@
             window.showToast("Migrating data to cloud... Please wait.", "info");
 
             try {
-                // Upload Events
-                for (let e of localEvents) {
-                    await setDoc(doc(db, "events", e.id), e);
-                }
-                
-                // Upload Budgets
-                for (let b of localBudgets) {
-                    await setDoc(doc(db, "budgets", b.id), b);
-                }
-
-                // Upload Settings
+                for (let e of localEvents) { await setDoc(doc(db, "events", e.id), e); }
+                for (let b of localBudgets) { await setDoc(doc(db, "budgets", b.id), b); }
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
-
                 window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
             } catch (err) {
                 console.error(err);
@@ -835,6 +847,8 @@
         }
 
         window.calcProgress = (evt) => {
+            if (evt.isEventOnly) return 0;
+
             const fields = evt.fields || {};
             let completed = 0;
             const totalItems = 16; 
@@ -889,11 +903,14 @@
             const form = document.getElementById('event-form');
             if (!form.reportValidity()) return;
 
+            const isOffline = document.getElementById('event-is-offline').value === 'true';
+
             const id = document.getElementById('event-id').value;
             const title = document.getElementById('event-title').value.trim();
             const startDate = document.getElementById('event-start-date').value;
             const endDate = document.getElementById('event-end-date').value;
-            const campaignType = document.getElementById('event-campaign-type').value;
+            
+            let campaignType = isOffline ? 'All' : document.getElementById('event-campaign-type').value;
             
             if (endDate < startDate) { 
                 window.showToast("End date cannot be before start date", "error"); 
@@ -901,23 +918,25 @@
             }
 
             const assignees = [];
-            document.querySelectorAll('input[name="assignees"]:checked').forEach(cb => assignees.push(cb.value));
-
-            if (assignees.length === 0) { 
-                window.showToast("Assignees cannot be blank. Please select at least one.", "error"); 
-                return; 
+            if (!isOffline) {
+                document.querySelectorAll('input[name="assignees"]:checked').forEach(cb => assignees.push(cb.value));
+                if (assignees.length === 0) { 
+                    window.showToast("Assignees cannot be blank. Please select at least one.", "error"); 
+                    return; 
+                }
             }
 
             const status = window.calculateStatus(startDate, endDate);
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
-            const tempEventForCalc = { startDate, endDate, fields: fieldsToSave };
+            const tempEventForCalc = { startDate, endDate, fields: fieldsToSave, isEventOnly: isOffline };
             const progress = window.calcProgress(tempEventForCalc);
             
             const eventId = id ? id : Date.now().toString();
             const eventData = {
-                id: eventId, 
+                id: eventId,
+                isEventOnly: isOffline,
                 title, 
                 startDate, 
                 endDate, 
@@ -936,13 +955,13 @@
             try {
                 if (!db) throw new Error("Firebase not initialized");
                 await window.syncEventToFirestore(eventData);
-                window.showToast(id ? "Task updated" : "Task created", "success");
+                window.showToast(id ? "Item updated" : "Item created", "success");
                 window.closeAddModal();
             } catch (err) {
                 console.error("Save Event Error:", err);
                 window.showToast("Could not save to database.", "error");
             } finally {
-                btn.innerHTML = 'Save Task';
+                btn.innerHTML = 'Save';
                 btn.disabled = false;
             }
         }
@@ -951,7 +970,8 @@
             if (!db) return;
             try {
                 await deleteDoc(doc(db, "events", id));
-                window.showToast("Task deleted", "success");
+                window.showToast("Item deleted", "success");
+                window.closeAddModal();
             } catch(e) { 
                 window.showToast("Error deleting", "error"); 
             }
@@ -979,6 +999,7 @@
         // --- Exports ---
         window.exportTasksExcel = () => {
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
+                if (evt.isEventOnly) return false; // Exclude simple events
                 const searchLower = window.searchQuery.toLowerCase();
                 const matchesSearch = evt.title.toLowerCase().includes(searchLower) || 
                                       (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
@@ -1110,6 +1131,12 @@
 
         // --- Render UI ---
         window.switchView = (viewName) => {
+            if (viewName === 'dashboard') {
+                currentMonth = new Date().getMonth();
+                currentYear = new Date().getFullYear();
+                window.renderUI();
+            }
+
             const views = ['dashboard', 'tasks', 'budget', 'campaign'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -1168,13 +1195,13 @@
             });
             
             const statTotal = document.getElementById('stat-total');
-            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done').length;
+            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done' && !e.isEventOnly).length;
             
             const statProgress = document.getElementById('stat-progress');
-            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing').length;
+            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing' && !e.isEventOnly).length;
             
             const statCompleted = document.getElementById('stat-completed');
-            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done').length;
+            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done' && !e.isEventOnly).length;
             
             let totalSpent = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
@@ -1291,7 +1318,7 @@
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
                     
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openAddModalWithDate('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
                     
                     contentGridHtml += `
@@ -1304,14 +1331,28 @@
 
                 placements.forEach(p => {
                     const evt = p.evt;
-                    const statusColor = evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 
+                    
+                    let statusColor = '';
+                    if (evt.isEventOnly) {
+                        statusColor = 'bg-purple-100 text-purple-800 border border-purple-200';
+                    } else {
+                        statusColor = evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 
                                       (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-amber-100 text-amber-800 border border-amber-200');
-                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
-                    const formattedTitle = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
+                    }
+                    
+                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
+                    
+                    let formattedTitle = '';
+                    if (evt.isEventOnly) {
+                        formattedTitle = `<i class="fa-solid fa-star text-[10px] mr-1 opacity-70"></i>${evt.title}`;
+                    } else {
+                        formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
+                    }
+                    
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="Status: ${evt.status}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${evt.isEventOnly ? 'Event' : 'Status: ' + evt.status}">
                             <div class="text-xs whitespace-normal break-words leading-tight font-medium">
                                 ${formattedTitle}
                             </div>
@@ -1344,7 +1385,7 @@
                 ongoingList.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 py-10">
                         <i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300"></i>
-                        <p>No tasks this month.</p>
+                        <p>No records this month.</p>
                     </div>
                 `;
                 return;
@@ -1363,47 +1404,62 @@
 
                 const el = document.createElement('div');
                 el.className = 'flex items-start p-3 hover:bg-gray-50 rounded-lg mb-2 border border-gray-100 transition-colors cursor-pointer';
-                el.onclick = () => window.jumpToTask(evt.id);
                 
-                const assigns = evt.assignees || [];
-                let avatarsHtml = '';
-                if (assigns.length > 0) {
-                    const maxDisplay = 2;
-                    assigns.slice(0, maxDisplay).forEach(name => { 
-                        avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-800 -ml-2 first:ml-0" title="${name}">${name.charAt(0)}</div>`; 
-                    });
-                    if (assigns.length > maxDisplay) { 
-                        avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2">+${assigns.length - maxDisplay}</div>`; 
-                    }
+                if (evt.isEventOnly) {
+                    el.onclick = () => window.openEditById(evt.id);
+                    el.innerHTML = `
+                        <div class="flex-1 min-w-0 mr-3">
+                            <p class="text-sm font-semibold text-purple-900 truncate" title="${evt.title.replace(/"/g, '&quot;')}"><i class="fa-solid fa-star text-purple-500 mr-1.5 opacity-70"></i>${evt.title}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
+                                <span class="mx-2 text-gray-300 text-xs">|</span>
+                                <span class="text-xs text-purple-600 font-medium">Offline Event</span>
+                            </div>
+                        </div>
+                    `;
                 } else {
-                    avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user-ghost"></i></div>`;
+                    el.onclick = () => window.jumpToTask(evt.id);
+                    
+                    const assigns = evt.assignees || [];
+                    let avatarsHtml = '';
+                    if (assigns.length > 0) {
+                        const maxDisplay = 2;
+                        assigns.slice(0, maxDisplay).forEach(name => { 
+                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-800 -ml-2 first:ml-0" title="${name}">${name.charAt(0)}</div>`; 
+                        });
+                        if (assigns.length > maxDisplay) { 
+                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2">+${assigns.length - maxDisplay}</div>`; 
+                        }
+                    } else {
+                        avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user-ghost"></i></div>`;
+                    }
+
+                    const p = evt.progress || 0;
+                    const pFormatted = p.toFixed(2);
+                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
+                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
+                    const formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
+
+                    el.innerHTML = `
+                        <div class="flex-1 min-w-0 mr-3">
+                            <p class="text-sm font-semibold text-gray-900 truncate" title="${formattedTitle.replace(/"/g, '&quot;')}">${formattedTitle}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
+                                <span class="mx-2 text-gray-300 text-xs">|</span>
+                                <span class="text-xs text-gray-500">${evt.status}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end self-center shrink-0 ml-3 min-w-[80px]">
+                            <div class="flex items-center justify-end mb-1.5 w-full">
+                                <span class="text-[10px] font-bold text-gray-600 mr-2">${pFormatted}%</span>
+                                <div class="flex">${avatarsHtml}</div>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                            </div>
+                        </div>
+                    `;
                 }
-
-                const p = evt.progress || 0;
-                const pFormatted = p.toFixed(2);
-                const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
-                const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
-                const formattedTitle = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
-
-                el.innerHTML = `
-                    <div class="flex-1 min-w-0 mr-3">
-                        <p class="text-sm font-semibold text-gray-900 truncate" title="${formattedTitle.replace(/"/g, '&quot;')}">${formattedTitle}</p>
-                        <div class="flex items-center mt-1">
-                            <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
-                            <span class="mx-2 text-gray-300 text-xs">|</span>
-                            <span class="text-xs text-gray-500">${evt.status}</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end self-center shrink-0 ml-3 min-w-[80px]">
-                        <div class="flex items-center justify-end mb-1.5 w-full">
-                            <span class="text-[10px] font-bold text-gray-600 mr-2">${pFormatted}%</span>
-                            <div class="flex">${avatarsHtml}</div>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5">
-                            <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
-                        </div>
-                    </div>
-                `;
                 ongoingList.appendChild(el);
             });
         }
@@ -1451,6 +1507,8 @@
             });
 
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
+                if (evt.isEventOnly) return false; // Exclude offline events from task tracking
+                
                 const searchLower = window.searchQuery.toLowerCase();
                 const matchesSearch = evt.title.toLowerCase().includes(searchLower) || (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
                 const matchesStatus = window.statusFilter === 'All' || evt.status === window.statusFilter;
@@ -1507,7 +1565,7 @@
                 const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
                 const assigns = evt.assignees || []; 
                 const assignsStr = assigns.length > 0 ? assigns.join(', ') : 'Unassigned';
-                const formattedTitle = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
+                const formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
                 const escTitle = formattedTitle.replace(/'/g, "\\'"); 
                 const escAssigns = assignsStr.replace(/'/g, "\\'");
                 
@@ -1856,20 +1914,54 @@
             window.renderUI();
         };
 
-        window.openAddModal = () => {
+        window.openTypeModal = (dateStr = null) => {
+            window.tempSelectedDate = dateStr;
+            document.getElementById('type-modal').classList.remove('hidden');
+        }
+
+        window.closeTypeModal = () => {
+            document.getElementById('type-modal').classList.add('hidden');
+            window.tempSelectedDate = null;
+        }
+
+        window.selectEventType = (isOffline) => {
+            document.getElementById('type-modal').classList.add('hidden');
+            window.openAddModal(isOffline, window.tempSelectedDate);
+            window.tempSelectedDate = null;
+        }
+
+        window.openAddModal = (isOffline = false, dateStr = null) => {
             document.getElementById('event-form').reset();
             document.getElementById('event-id').value = '';
-            document.getElementById('modal-title').innerText = 'Add New Content Task';
-            document.getElementById('event-start-date').value = new Date().toISOString().split('T')[0];
-            document.getElementById('event-end-date').value = new Date().toISOString().split('T')[0];
-            document.getElementById('event-campaign-type').value = 'Slot';
+            document.getElementById('event-is-offline').value = isOffline ? 'true' : 'false';
+            
+            document.getElementById('modal-title').innerText = isOffline ? 'Add Offline Event' : 'Add New Content Task';
+            
+            const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
+            document.getElementById('event-start-date').value = startDate;
+            document.getElementById('event-end-date').value = startDate;
+            
+            document.getElementById('event-campaign-type').value = 'All';
+
+            const campContainer = document.getElementById('campaign-type-container');
+            const assignContainer = document.getElementById('assignees-container');
+            const campInput = document.getElementById('event-campaign-type');
+
+            if (isOffline) {
+                campContainer.style.display = 'none';
+                assignContainer.style.display = 'none';
+                campInput.removeAttribute('required');
+            } else {
+                campContainer.style.display = 'block';
+                assignContainer.style.display = 'block';
+                campInput.setAttribute('required', 'required');
+            }
+
             document.getElementById('event-modal').classList.remove('hidden');
         }
 
         window.openAddModalWithDate = (dateStr) => {
-            window.openAddModal();
-            document.getElementById('event-start-date').value = dateStr; 
-            document.getElementById('event-end-date').value = dateStr;
+            window.openTypeModal(dateStr);
         }
 
         window.openEditById = (id) => { 
@@ -1880,12 +1972,30 @@
         window.openEditModal = (evt) => {
             document.getElementById('event-form').reset(); 
             document.getElementById('event-id').value = evt.id;
-            document.getElementById('modal-title').innerText = 'Edit Content Task'; 
+            
+            const isOffline = evt.isEventOnly === true;
+            document.getElementById('event-is-offline').value = isOffline ? 'true' : 'false';
+            
+            document.getElementById('modal-title').innerText = isOffline ? 'Edit Offline Event' : 'Edit Content Task'; 
             document.getElementById('event-title').value = evt.title;
             document.getElementById('event-start-date').value = evt.startDate; 
             document.getElementById('event-end-date').value = evt.endDate;
-            document.getElementById('event-campaign-type').value = evt.campaignType || 'Slot';
+            document.getElementById('event-campaign-type').value = evt.campaignType || 'All';
             
+            const campContainer = document.getElementById('campaign-type-container');
+            const assignContainer = document.getElementById('assignees-container');
+            const campInput = document.getElementById('event-campaign-type');
+
+            if (isOffline) {
+                campContainer.style.display = 'none';
+                assignContainer.style.display = 'none';
+                campInput.removeAttribute('required');
+            } else {
+                campContainer.style.display = 'block';
+                assignContainer.style.display = 'block';
+                campInput.setAttribute('required', 'required');
+            }
+
             const assigns = evt.assignees || [];
             document.querySelectorAll('input[name="assignees"]').forEach(cb => { 
                 cb.checked = assigns.includes(cb.value); 
@@ -1908,7 +2018,7 @@
             window.assigneeFilter = 'All';
             
             const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
-            document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'Slot'}] ${evt.title} - ${assignsStr}`;
+            document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
             
             window.updateDrawerProgressUI(evt); 
             window.renderDrawerChecklist(evt);
