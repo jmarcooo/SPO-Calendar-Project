@@ -237,7 +237,10 @@
                         <div class="flex space-x-2">
                             <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">Save Limit</button>
                             <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate Local Data to Cloud
+                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate Local Data
+                            </button>
+                            <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Clear Budgets
                             </button>
                         </div>
                     </div>
@@ -615,6 +618,13 @@
             }
         });
 
+        // Time Formatter for YYYY-MM-DD HH:MM:SS
+        window.getFormattedCreatedTime = () => {
+            const now = new Date();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+
         window.getCurrentMonthStr = () => {
             return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
         }
@@ -948,6 +958,15 @@
                 updatedAt: new Date().toISOString()
             };
 
+            // Maintain or inject the CreatedTime Timestamp
+            if (!id) {
+                eventData.CreatedTime = window.getFormattedCreatedTime();
+            } else if (existingEvent && existingEvent.CreatedTime) {
+                eventData.CreatedTime = existingEvent.CreatedTime;
+            } else {
+                eventData.CreatedTime = window.getFormattedCreatedTime();
+            }
+
             const btn = document.getElementById('save-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
             btn.disabled = true;
@@ -988,12 +1007,19 @@
         }
 
         window.clearAllData = async () => {
-            if(!confirm("Are you sure? This deletes ALL events and budgets globally from Firebase.")) return;
+            if(!confirm("Are you sure? This deletes ALL events globally from Firebase.")) return;
             if (!db) return;
             
             window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
-            window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
             window.showToast("Data clearing initiated", "success");
+        };
+
+        window.clearAllBudgets = async () => {
+            if(!confirm("Are you sure? This deletes ALL budget entries globally from Firebase.")) return;
+            if (!db) return;
+            
+            window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
+            window.showToast("All budgets cleared", "success");
         };
 
         // --- Exports ---
@@ -1053,6 +1079,7 @@
                     "Status": e.status || '',
                     "Assignees": (e.assignees || []).join(', '),
                     "Progress (%)": parseFloat((e.progress || 0).toFixed(2)),
+                    "Created Time": e.CreatedTime || '',
                     
                     "Document Link": f.document || '', 
                     "Daily Data Report Link": f.dailyDataReport || '', 
@@ -1113,6 +1140,7 @@
                 const alloc = parseFloat(b.allocated) || 0;
                 const spent = parseFloat(b.spent) || 0;
                 return {
+                    "Created Time": b.CreatedTime || '',
                     "Month": b.month || '', 
                     "Campaign / Project Name": b.name || '',
                     "Type": b.type || '', 
@@ -1129,14 +1157,8 @@
             XLSX.writeFile(workbook, "SPO_Budget_Export.xlsx");
         };
 
-        // --- Render UI ---
+        // --- Navigation Logic ---
         window.switchView = (viewName) => {
-            if (viewName === 'dashboard') {
-                currentMonth = new Date().getMonth();
-                currentYear = new Date().getFullYear();
-                window.renderUI();
-            }
-
             const views = ['dashboard', 'tasks', 'budget', 'campaign'];
             views.forEach(v => {
                 const el = document.getElementById(`view-${v}`);
@@ -1752,6 +1774,18 @@
                 allocated: parseFloat(allocated), 
                 spent: parseFloat(spent) 
             };
+            
+            // Maintain or inject the CreatedTime Timestamp
+            if (!id) {
+                entryData.CreatedTime = window.getFormattedCreatedTime();
+            } else {
+                const existingBudget = window.budgets.find(b => b.id === id);
+                if (existingBudget && existingBudget.CreatedTime) {
+                    entryData.CreatedTime = existingBudget.CreatedTime;
+                } else {
+                    entryData.CreatedTime = window.getFormattedCreatedTime();
+                }
+            }
 
             const btn = document.getElementById('save-budget-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
