@@ -18,6 +18,9 @@
         .calendar-cell {
             min-height: 80px;
         }
+        .cal-row {
+            min-height: 120px;
+        }
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -66,7 +69,7 @@
             <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
-            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none transition-colors">
                 <i class="fa-solid fa-plus mr-2"></i> New Event
             </button>
         </div>
@@ -176,12 +179,12 @@
 
                     <!-- Right Column: Ongoing Events -->
                     <div class="xl:col-span-1">
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
-                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-14rem)]">
+                            <div class="p-4 border-b border-gray-200 flex justify-between items-center shrink-0">
                                 <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
                             </div>
-                            <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
+                            <div class="p-4 flex-1 overflow-y-auto min-h-0" id="ongoing-events-list">
                                 <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
                             </div>
                         </div>
@@ -1770,9 +1773,11 @@
                 });
 
                 let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white min-h-[120px] flex-1';
+                weekEl.className = 'relative bg-white flex-1 cal-row';
                 let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 pointer-events-none">`;
-                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
+                let maxTrack = 0;
+                placements.forEach(p => { if (p.trackIdx > maxTrack) maxTrack = p.trackIdx; });
+                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none z-10" style="grid-template-rows: repeat(${Math.max(5, maxTrack + 2)}, minmax(0, 1fr));">`;
 
                 week.forEach((dayObj, i) => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
@@ -1800,11 +1805,11 @@
                     let formattedTitle = '';
 
                     if (itemType === 'event') {
-                        statusColor = 'bg-purple-50 text-purple-800 border-purple-200';
-                        formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-purple-500"></i>${evt.title}`;
-                    } else if (itemType === 'game') {
                         statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
+                        formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
+                    } else if (itemType === 'game') {
+                        statusColor = 'bg-rose-50 text-rose-800 border-rose-200';
+                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-rose-500"></i>${evt.title}`;
                     } else {
                         statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
@@ -1873,10 +1878,10 @@
                 if (itemType === 'event' || itemType === 'game') {
                     el.onclick = () => window.openEditById(evt.id);
                     
-                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-purple-500';
-                    let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-purple-900';
+                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-emerald-500';
+                    let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-emerald-900';
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
-                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-purple-50 border-purple-200 text-purple-700';
+                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700';
 
                     el.className = 'flex items-start p-4 bg-white hover:bg-gray-50 rounded-xl mb-3 border border-gray-200 shadow-sm transition-all cursor-pointer';
 
