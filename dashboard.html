@@ -59,12 +59,12 @@
 
     <!-- Main Wrapper -->
     <div class="flex flex-1 overflow-hidden">
-        
+
         <!-- Sidebar -->
         <aside class="w-64 bg-white border-r border-gray-200 flex-col overflow-y-auto shrink-0 hidden md:flex">
             <nav class="flex-1 p-4 space-y-1">
-                <a href="dashboard.html" id="nav-dashboard" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-chart-pie mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Calendar Dashboard
+                <a href="dashboard.html" id="nav-dashboard" class="flex items-center px-3 py-2 bg-indigo-50 text-indigo-700 rounded-md group font-medium nav-item">
+                    <i class="fa-solid fa-chart-pie mr-3 text-indigo-500 nav-icon"></i> Calendar Dashboard
                 </a>
                 <a href="tasks.html" id="nav-tasks" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-tasks mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Tasks & Progress
@@ -72,63 +72,89 @@
                 <a href="budget.html" id="nav-budget" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-wallet mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Team Budget
                 </a>
-                <a href="campaign.html" id="nav-campaign" class="flex items-center px-3 py-2 bg-indigo-50 text-indigo-700 rounded-md group font-medium nav-item">
-                    <i class="fa-solid fa-bullhorn mr-3 text-indigo-500 nav-icon"></i> Campaign Details
+                <a href="campaign.html" id="nav-campaign" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-bullhorn mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Campaign Details
                 </a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative">
-            
+
             <!-- Dashboard View -->
-            
-            <div id="view-campaign" class="block">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5 flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900">Campaign Details</h3>
-                        <p class="text-xs text-gray-500">Select a task to view its campaign creatives and progress.</p>
+            <div id="view-dashboard" class="block">
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+                        <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-1 text-3xl font-semibold text-gray-900" id="stat-total">0</div>
                     </div>
-                    <div class="w-1/3 min-w-[250px]">
-                        <select id="campaign-task-selector" onchange="renderCampaignDetails(this.value)" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 sm:text-sm">
-                            <option value="">-- Select a Task --</option>
-                        </select>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+                        <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-1 text-3xl font-semibold text-indigo-600" id="stat-progress">0</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+                        <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-1 text-3xl font-semibold text-emerald-600" id="stat-completed">0</div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative">
+                        <div class="text-sm font-medium text-gray-500 truncate">Available Budget (<span id="stat-budget-month-label"></span>)</div>
+                        <div class="mt-1 text-3xl font-semibold text-blue-600" id="stat-budget">$0.00</div>
                     </div>
                 </div>
 
-                <!-- 3-COLUMN LAYOUT -->
-                <div id="campaign-content-area" class="hidden grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <!-- Left Column: Calendar -->
+                    <div class="xl:col-span-2 space-y-6">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6" id="calendar-view">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-bold text-gray-900" id="calendar-month-year">Month Year</h2>
+                                <div class="flex space-x-2">
+                                    <button onclick="changeMonth(-1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                    </button>
+                                    <button onclick="resetToToday()" class="px-3 py-1 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                                        Today
+                                    </button>
+                                    <button onclick="changeMonth(1)" class="p-2 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                    <!-- 50%: Visuals & Links (Spans 2 columns) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-2">
-                        <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
-                            <h4 class="text-sm font-bold text-gray-900"><i class="fa-regular fa-image mr-2 text-indigo-500"></i>Creatives & Links</h4>
-                            <span id="carousel-counter" class="text-xs font-medium text-gray-500">0 / 0</span>
+                            <!-- Calendar Grid -->
+                            <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden border border-gray-200">
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">TUE</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">WED</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">THU</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">FRI</div>
+                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
+                            </div>
+                            <div id="calendar-grid" class="flex flex-col gap-px bg-gray-200 border-l border-r border-b border-gray-200 rounded-b-lg">
+                                <!-- Dynamically generated days -->
+                            </div>
                         </div>
-                        <div class="p-4 flex-1 flex flex-col items-center justify-center relative min-h-[500px]" id="campaign-carousel-container">
+                    </div>
+
+                    <!-- Right Column: Ongoing Events -->
+                    <div class="xl:col-span-1">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
+                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                                <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
+                            </div>
+                            <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
+                                <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- 25%: Execution Summary (Spans 1 column) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-stats-container">
-                    </div>
-
-                    <!-- 25%: Post Performance (Spans 1 column) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-performance-container">
-                    </div>
-
-                </div>
-
-                <div id="campaign-empty-state" class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center mt-6">
-                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gray-100 mb-4">
-                        <i class="fa-solid fa-bullseye text-3xl text-gray-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">No Task Selected</h3>
-                    <p class="text-gray-500 text-sm mt-1">Please select a task from the dropdown above to view its details.</p>
                 </div>
             </div>
 
-        </main>
+
+            </main>
     </div>
 
     <!-- Type Selection Modal -->
@@ -165,7 +191,7 @@
                 <form id="event-form" class="space-y-4">
                     <input type="hidden" id="event-id">
                     <input type="hidden" id="event-item-type" value="task">
-                    
+
                     <div>
                         <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Event Title <span class="text-red-500">*</span></label>
                         <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">

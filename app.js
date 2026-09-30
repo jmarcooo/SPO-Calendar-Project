@@ -1,0 +1,2314 @@
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnVAW0iDK1RVvgHppwrfyaXP0ZQIl0wqs",
+            authDomain: "spo-calendar-project.firebaseapp.com",
+            projectId: "spo-calendar-project",
+            storageBucket: "spo-calendar-project.firebasestorage.app",
+            messagingSenderId: "375136175643",
+            appId: "1:375136175643:web:4f307eebeb3f56a040dabe",
+            measurementId: "G-B81BZ4X1Y1"
+        };
+
+        let app, analytics, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            analytics = getAnalytics(app);
+            db = getFirestore(app);
+        } catch (err) {
+            console.error("Firebase init error:", err);
+        }
+
+        const TEAM_MEMBERS = ['Kenneth', 'Renee', 'Liezl', 'Nami', 'Lim', 'Marco'];
+        window.events = [];
+        window.budgets = [];
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let currentDateObj = new Date();
+
+        window.tempSelectedDate = null;
+        window.budgetSettings = { limits: {}, currency: 'PHP' };
+        window.globalCategoryFilter = 'All';
+
+        let logoClickCount = 0;
+        window.handleLogoClick = () => {
+            logoClickCount++;
+            if (logoClickCount === 20) {
+                document.getElementById('btn-clear-data').style.display = 'inline-flex';
+                document.getElementById('budget-config-section').style.display = 'block';
+                window.showToast("Admin settings unlocked!", "success", "fa-unlock");
+            }
+        };
+
+        let drawerAccordionStates = { links: true, media: false, ops: false, dash: false };
+
+        window.budgetSearchQuery = '';
+        window.budgetFilterOwner = 'All';
+        window.budgetFilterMonth = '';
+        window.budgetSortCol = 'month';
+        window.budgetSortAsc = false;
+
+        window.assigneeFilter = 'All';
+        window.searchQuery = '';
+        window.statusFilter = 'All';
+        window.sortCol = 'date';
+        window.sortAsc = false;
+
+        window.currentCampaignPosts = [];
+        window.currentCarouselIndex = 0;
+
+        const defaultFields = {
+            document: '', dailyDataReport: '', postMortemReport: '',
+            hashtags: [], postIds: [], ignoreListed: false,
+            gameReview: 'Pending', dailyTask: false, contentWriters: 'Pending',
+            imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
+            postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending',
+            dashboardStatus: {}
+        };
+
+        window.getFormattedCreatedTime = () => {
+            const now = new Date();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+
+        window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+
+        window.calculateStatus = (startDate, endDate) => {
+            const today = new Date().toISOString().split('T')[0];
+            if (today < startDate) return 'Upcoming';
+            if (today > endDate) return 'Done';
+            return 'Ongoing';
+        }
+
+        window.isValidURL = (string) => {
+            try { new URL(string); return true; } catch (_) { return false; }
+        }
+
+        window.getDatesInRange = (startStr, endStr) => {
+            const dates = [];
+            let curr = new Date(startStr + 'T00:00:00');
+            let end = new Date(endStr + 'T00:00:00');
+            while(curr <= end) {
+                dates.push(curr.toISOString().split('T')[0]);
+                curr.setDate(curr.getDate() + 1);
+            }
+            return dates;
+        }
+
+        window.getPendingSummary = (task) => {
+            const itemType = task.itemType || (task.isEventOnly ? 'event' : 'task');
+            if (itemType === 'event') return "Offline Event";
+            if (itemType === 'game') return "New Game Launch";
+            if (task.progress === 100) return "All tasks completed!";
+
+            const f = task.fields || {};
+            let pending = [];
+
+            if (!(f.document && window.isValidURL(f.document))) pending.push("Document Link");
+            if (!(f.dailyDataReport && window.isValidURL(f.dailyDataReport))) pending.push("Daily Data Report");
+            if (!(f.postMortemReport && window.isValidURL(f.postMortemReport))) pending.push("Post-Mortem Report");
+
+            if (!(Array.isArray(f.hashtags) && f.hashtags.length > 0)) pending.push("Hashtags");
+            if (!(Array.isArray(f.postIds) && f.postIds.some(p => p.id && p.id.trim() !== ''))) pending.push("Post IDs");
+
+            const ops = [
+                {k: 'gameReview', l: 'Game Review'}, {k: 'contentWriters', l: 'Content Writers'},
+                {k: 'imChannels', l: 'IM Channels'}, {k: 'trackableLinks', l: 'Trackable Links'},
+                {k: 'sms', l: 'SMS'}, {k: 'postPinned', l: 'Post Pinned'},
+                {k: 'rewardDistributed', l: 'Reward Dist.'}, {k: 'rewardsBanner', l: 'Rewards Banner'}
+            ];
+            ops.forEach(op => {
+                if (f[op.k] !== 'Done' && f[op.k] !== 'Not Applicable') pending.push(op.l);
+            });
+
+            let maxDash = 0;
+            if (f.dashboardStatus) {
+                for(let d in f.dashboardStatus) {
+                    let v = parseFloat(f.dashboardStatus[d])||0;
+                    if(v>maxDash) maxDash=v;
+                }
+            }
+            if (maxDash < 100) pending.push(`Daily Tracking (${maxDash.toFixed(0)}%)`);
+
+            if (pending.length === 0) return "All tasks completed!";
+            return "Pending Items:\n• " + pending.join("\n• ");
+        };
+
+        window.initApp = () => {
+            setupTeamMembersUI();
+
+            // Try loading local data immediately so UI isn't blank
+            const localEventsStr = localStorage.getItem('spo_content_calendar_events');
+            if (localEventsStr) {
+                try {
+                    window.events = JSON.parse(localEventsStr);
+                } catch(e) {}
+            }
+
+            const calGrid = document.getElementById('calendar-grid');
+            if(calGrid) window.renderUI();
+
+            if (!db) {
+                document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error. Running locally.</div>`;
+                return;
+            }
+
+            onSnapshot(doc(db, "settings", "budgetSettings"), (docSnap) => {
+                if (docSnap.exists()) {
+                    window.budgetSettings = { ...window.budgetSettings, ...docSnap.data() };
+                    const currInput = document.getElementById('setting-budget-currency');
+                    if (currInput) currInput.value = window.budgetSettings.currency;
+                    updateCurrencySymbols();
+                    window.renderUI();
+                }
+            });
+
+            onSnapshot(collection(db, "events"), (snapshot) => {
+                let tempEvents = [];
+                snapshot.forEach((doc) => {
+                    let e = doc.data();
+                    if (!e.startDate) e.startDate = e.date || new Date().toISOString().split('T')[0];
+                    if (!e.endDate) e.endDate = e.date || new Date().toISOString().split('T')[0];
+                    e.status = window.calculateStatus(e.startDate, e.endDate);
+
+                    if (!e.fields) e.fields = { ...defaultFields };
+                    if (typeof e.fields.hashtags === 'string') e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
+                    if (!e.fields.dashboardStatus) e.fields.dashboardStatus = {};
+                    e.progress = window.calcProgress(e);
+                    tempEvents.push(e);
+                });
+
+                // AUTO MIGRATE: If cloud is empty but local storage has events, push them!
+                const localStr = localStorage.getItem('spo_content_calendar_events');
+                if (tempEvents.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let e of localData) {
+                            setDoc(doc(db, "events", e.id), e);
+                        }
+                        localStorage.removeItem('spo_content_calendar_events');
+                        window.showToast("Local events synced to cloud!", "success");
+                    }
+                }
+
+                window.events = tempEvents;
+                window.renderUI();
+                window.updateCampaignDropdown();
+
+                if (window.currentDrawerTaskId) {
+                    const t = window.events.find(ev => ev.id === window.currentDrawerTaskId);
+                    const iType = t ? (t.itemType || (t.isEventOnly ? 'event' : 'task')) : null;
+                    if(t && iType === 'task') {
+                        window.updateDrawerProgressUI(t);
+                        window.renderDrawerChecklist(t);
+                    }
+                }
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const taskId = urlParams.get('taskId');
+                if (taskId) {
+                    window.openTaskDrawer(taskId);
+                    setTimeout(() => {
+                        const row = document.getElementById(`task-row-${taskId}`);
+                        if (row) {
+                            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            row.classList.add('bg-indigo-100');
+                            setTimeout(() => {
+                                row.classList.remove('bg-indigo-100');
+                            }, 2000);
+                        }
+                    }, 100);
+                }
+            }, (error) => {
+                console.error("Events Error:", error);
+                window.showToast("Database connection failed.", "error");
+            });
+
+            onSnapshot(collection(db, "budgets"), (snapshot) => {
+                let tempBudgets = [];
+                snapshot.forEach((doc) => tempBudgets.push(doc.data()));
+
+                // AUTO MIGRATE
+                const localStr = localStorage.getItem('spo_budget_data');
+                if (tempBudgets.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let b of localData) {
+                            setDoc(doc(db, "budgets", b.id), b);
+                        }
+                        localStorage.removeItem('spo_budget_data');
+                        window.showToast("Local budgets synced to cloud!", "success");
+                    }
+                }
+
+                window.budgets = tempBudgets;
+                updateBudgetOwnerDropdown();
+                window.renderUI();
+            });
+        }
+
+        window.updateCampaignDropdown = () => {
+            const select = document.getElementById('campaign-task-selector');
+            if (!select) return;
+
+            const currVal = select.value;
+            let options = '<option value="">-- Select a Task --</option>';
+
+            const tasksOnly = window.events.filter(e => {
+                const iType = e.itemType || (e.isEventOnly ? 'event' : 'task');
+                return iType === 'task';
+            });
+            tasksOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
+
+            tasksOnly.forEach(e => {
+                options += `<option value="${e.id}">[${e.campaignType || 'All'}] ${e.title}</option>`;
+            });
+
+            select.innerHTML = options;
+
+            if(currVal && tasksOnly.find(e => e.id === currVal)) {
+                select.value = currVal;
+            } else {
+                const contentArea = document.getElementById('campaign-content-area');
+                if (contentArea) {
+                    contentArea.classList.add('hidden');
+                    contentArea.classList.remove('grid');
+                    document.getElementById('campaign-empty-state').style.display = 'block';
+                }
+            }
+        };
+
+        window.renderCampaignDetails = (taskId) => {
+            const contentArea = document.getElementById('campaign-content-area');
+            const emptyState = document.getElementById('campaign-empty-state');
+
+            if (!taskId) {
+                contentArea.classList.add('hidden');
+                contentArea.classList.remove('grid');
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            const task = window.events.find(e => e.id === taskId);
+            if (!task) return;
+
+            contentArea.classList.remove('hidden');
+            contentArea.classList.add('grid');
+            emptyState.style.display = 'none';
+
+            window.currentCampaignPosts = task.fields.postIds || [];
+            window.currentCarouselIndex = 0;
+
+            window.renderCampaignCarousel();
+            window.renderCampaignRightSide(task);
+            window.renderCampaignPerformance();
+        };
+
+        window.getGeneratedPostLink = (idStr) => {
+            if (!idStr) return '#';
+            idStr = idStr.trim();
+            if (idStr.startsWith('http://') || idStr.startsWith('https://')) {
+                return idStr;
+            }
+            return `https://bingoplus.com/community/Detail?id=${idStr}&type=Feed`;
+        };
+
+        window.renderCampaignCarousel = () => {
+            const container = document.getElementById('campaign-carousel-container');
+            const counter = document.getElementById('carousel-counter');
+            if(!container) return;
+
+            if (window.currentCampaignPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-gray-400 flex flex-col items-center">
+                        <i class="fa-regular fa-image text-4xl mb-2"></i>
+                        <p class="text-sm">No Post IDs/Visuals added to this task.</p>
+                    </div>
+                `;
+                counter.innerText = '0 / 0';
+                return;
+            }
+
+            const post = window.currentCampaignPosts[window.currentCarouselIndex];
+            counter.innerText = `${window.currentCarouselIndex + 1} / ${window.currentCampaignPosts.length}`;
+
+            const link = window.getGeneratedPostLink(post.id);
+            const hasImg = post.imgUrl && window.isValidURL(post.imgUrl);
+
+            let html = `
+                <div class="w-full flex flex-col items-center h-full justify-center pb-4">
+                    <div class="w-full max-w-md aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center mb-6 relative shadow-inner">
+                        ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
+
+                        ${window.currentCampaignPosts.length > 1 ? `
+                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
+                        ` : ''}
+                    </div>
+
+                    <div class="w-full max-w-md bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
+                            <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
+                        </div>
+                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
+                            <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
+                        </a>
+                    </div>
+
+                    ${window.currentCampaignPosts.length > 1 ? `
+                        <div class="flex space-x-1.5 mt-5">
+                            ${window.currentCampaignPosts.map((_, i) => `
+                                <button onclick="window.goToCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            container.innerHTML = html;
+        };
+
+        window.changeCarouselSlide = (dir) => {
+            window.currentCarouselIndex += dir;
+            if (window.currentCarouselIndex < 0) window.currentCarouselIndex = window.currentCampaignPosts.length - 1;
+            if (window.currentCarouselIndex >= window.currentCampaignPosts.length) window.currentCarouselIndex = 0;
+            window.renderCampaignCarousel();
+            window.renderCampaignPerformance();
+        };
+
+        window.goToCarouselSlide = (idx) => {
+            window.currentCarouselIndex = idx;
+            window.renderCampaignCarousel();
+            window.renderCampaignPerformance();
+        };
+
+        window.renderCampaignRightSide = (task) => {
+            const container = document.getElementById('campaign-stats-container');
+            if(!container) return;
+
+            const pFormatted = (task.progress || 0).toFixed(2);
+            const assignsStr = (task.assignees && task.assignees.length > 0) ? task.assignees.join(', ') : 'Unassigned';
+
+            const fields = task.fields || {};
+            const operations = [
+                { key: 'gameReview', label: 'Game Review' },
+                { key: 'contentWriters', label: 'Content Writers' },
+                { key: 'imChannels', label: 'IM Channels' },
+                { key: 'trackableLinks', label: 'Trackable Links' },
+                { key: 'sms', label: 'SMS' },
+                { key: 'postPinned', label: 'Post Pinned' },
+                { key: 'rewardDistributed', label: 'Reward Distributed' },
+                { key: 'rewardsBanner', label: 'Rewards Banner' }
+            ];
+
+            let opsHtml = operations.map(op => {
+                const val = fields[op.key] || 'Pending';
+                let color = 'text-gray-500';
+                let icon = 'fa-circle text-[8px]';
+                if (val === 'Done') { color = 'text-emerald-600'; icon = 'fa-check'; }
+                if (val === 'Not Applicable') { color = 'text-gray-400'; icon = 'fa-minus'; }
+                return `<div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
+                </div>
+                <div class="p-5 flex-1 overflow-y-auto space-y-6">
+                    <div>
+                        <div class="flex justify-between items-end mb-1">
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
+                            <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Timeline</span>
+                            <span class="text-sm font-medium text-gray-900">${task.startDate} to ${task.endDate}</span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Status</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${task.status}</span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                            <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
+                            <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
+                        <div class="bg-white border border-gray-200 rounded-md px-3 py-1 shadow-sm">
+                            ${opsHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.renderCampaignPerformance = () => {
+            const container = document.getElementById('campaign-performance-container');
+            if (!container) return;
+
+            if (window.currentCampaignPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                        <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
+                        <i class="fa-solid fa-chart-area text-4xl mb-3 text-gray-300"></i>
+                        <p class="text-sm">Add a Post ID to view performance data.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const post = window.currentCampaignPosts[window.currentCarouselIndex];
+            const postIdDisplay = post.id || 'Pending ID';
+
+            container.innerHTML = `
+                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
+                </div>
+                <div class="p-5 flex-1 overflow-y-auto space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
+                        <span class="text-xs font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
+                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
+                        <span class="text-2xl font-bold text-gray-900">--</span>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
+                        <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.migrateLocalData = async () => {
+            if(!confirm("This will upload all tasks and budgets saved locally on this browser to your Firebase Cloud Database. Do you want to proceed?")) return;
+
+            if (!db) {
+                window.showToast("Firebase is not connected.", "error");
+                return;
+            }
+
+            const localEvents = JSON.parse(localStorage.getItem('spo_content_calendar_events') || '[]');
+            const localBudgets = JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            const localSettings = JSON.parse(localStorage.getItem('spo_budget_settings') || '{}');
+
+            if (localEvents.length === 0 && localBudgets.length === 0) {
+                window.showToast("No local data found on this computer to migrate.", "info");
+                return;
+            }
+
+            window.showToast("Migrating data to cloud... Please wait.", "info");
+
+            try {
+                for (let e of localEvents) { await setDoc(doc(db, "events", e.id), e); }
+                for (let b of localBudgets) { await setDoc(doc(db, "budgets", b.id), b); }
+                if (Object.keys(localSettings).length > 0) {
+                    await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
+                }
+                localStorage.removeItem('spo_content_calendar_events');
+                localStorage.removeItem('spo_budget_data');
+                window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error migrating data to cloud. Check console for details.", "error");
+            }
+        };
+
+        function setupTeamMembersUI() {
+            const container = document.getElementById('assignee-checkboxes');
+            const filterSelect = document.getElementById('assignee-filter-select');
+
+            TEAM_MEMBERS.forEach(member => {
+                const id = `chk-${member}`;
+                if (container) {
+                    container.innerHTML += `
+                        <div class="flex items-center">
+                            <input id="${id}" name="assignees" type="checkbox" value="${member}" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="${id}" class="ml-2 block text-sm text-gray-700">${member}</label>
+                        </div>
+                    `;
+                }
+                if (filterSelect) {
+                    filterSelect.innerHTML += `<option value="${member}">${member}</option>`;
+                }
+            });
+        }
+
+        window.setGlobalCategoryFilter = (val) => {
+            window.globalCategoryFilter = val;
+            window.renderUI();
+        }
+
+        window.filterEventsByGlobalCategory = (eventList) => {
+            if (window.globalCategoryFilter === 'All') return eventList;
+            return eventList.filter(e => e.campaignType === window.globalCategoryFilter);
+        }
+
+        function updateCurrencySymbols() {
+            const sym = window.budgetSettings.currency === 'PHP' ? '₱' : '$';
+            const s1 = document.getElementById('curr-symbol-1');
+            const s2 = document.getElementById('curr-symbol-2');
+            if(s1) s1.innerText = sym;
+            if(s2) s2.innerText = sym;
+        }
+
+        window.saveBudgetSettings = async () => {
+            const limitInput = document.getElementById('setting-budget-limit');
+            const currInput = document.getElementById('setting-budget-currency');
+            const targetMonth = document.getElementById('setting-budget-month').value;
+
+            window.budgetSettings.limits[targetMonth] = parseFloat(limitInput.value) || 0;
+            window.budgetSettings.currency = currInput.value;
+
+            if (!db) {
+                localStorage.setItem('spo_budget_settings', JSON.stringify(window.budgetSettings));
+                window.showToast("Saved Locally", "success");
+                updateCurrencySymbols();
+                window.renderUI();
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "settings", "budgetSettings"), window.budgetSettings);
+                window.showToast("Budget settings saved", "success");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Failed to save settings", "error");
+            }
+        }
+
+        window.syncBudgetMonth = (val) => {
+            if (val) {
+                const parts = val.split('-');
+                currentYear = parseInt(parts[0]);
+                currentMonth = parseInt(parts[1]) - 1;
+                window.renderUI();
+            }
+        }
+
+        function updateBudgetOwnerDropdown() {
+            const ownerSelect = document.getElementById('budget-filter-owner');
+            if (!ownerSelect) return;
+
+            const currentVal = window.budgetFilterOwner;
+            let options = `<option value="All">All Owners</option>`;
+
+            const owners = [...new Set(window.budgets.map(b => (b.owner || '').trim()).filter(o => o !== ''))].sort();
+            owners.forEach(o => {
+                options += `<option value="${o}">${o}</option>`;
+            });
+            ownerSelect.innerHTML = options;
+
+            if (owners.includes(currentVal) || currentVal === 'All') {
+                ownerSelect.value = currentVal;
+            } else {
+                ownerSelect.value = 'All';
+                window.budgetFilterOwner = 'All';
+            }
+        }
+
+        window.formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-PH', { style: 'currency', currency: window.budgetSettings.currency }).format(amount || 0);
+        }
+
+        window.calcProgress = (evt) => {
+            const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+            if (itemType === 'event' || itemType === 'game') return 0;
+
+            const fields = evt.fields || {};
+            let completed = 0;
+            const totalItems = 16;
+
+            if (fields.document && window.isValidURL(fields.document)) completed++;
+            if (fields.dailyDataReport && window.isValidURL(fields.dailyDataReport)) completed++;
+            if (fields.postMortemReport && window.isValidURL(fields.postMortemReport)) completed++;
+
+            if (Array.isArray(fields.hashtags) && fields.hashtags.length > 0) completed++;
+            if (Array.isArray(fields.postIds) && fields.postIds.some(p => p.id && p.id.trim() !== '')) completed++;
+
+            if (fields.ignoreListed) completed++;
+            if (fields.dailyTask) completed++;
+
+            const dropdownFields = [
+                'gameReview', 'contentWriters', 'imChannels', 'trackableLinks',
+                'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'
+            ];
+
+            dropdownFields.forEach(key => {
+                if (fields[key] === 'Done' || fields[key] === 'Not Applicable') completed++;
+            });
+
+            let maxDashStatus = 0;
+            if (fields.dashboardStatus) {
+                for (let date in fields.dashboardStatus) {
+                    let val = parseFloat(fields.dashboardStatus[date]) || 0;
+                    if (val > maxDashStatus) maxDashStatus = val;
+                }
+            }
+            completed += Math.min(100, maxDashStatus) / 100;
+
+            return (completed / totalItems) * 100;
+        }
+
+        window.syncEventToFirestore = async (task) => {
+            // Local fallback
+            const idx = window.events.findIndex(e => e.id === task.id);
+            if (idx > -1) window.events[idx] = task;
+            else window.events.push(task);
+            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+
+            if (!db) return;
+            try {
+                await setDoc(doc(db, "events", task.id), task);
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        window.saveEvent = async (e) => {
+            e.preventDefault();
+            const form = document.getElementById('event-form');
+            if (!form.reportValidity()) return;
+
+            const itemType = document.getElementById('event-item-type').value;
+            const isNonTask = (itemType === 'event' || itemType === 'game');
+
+            const id = document.getElementById('event-id').value;
+            const title = document.getElementById('event-title').value.trim();
+            const startDate = document.getElementById('event-start-date').value;
+            const endDate = document.getElementById('event-end-date').value;
+
+            let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
+
+            if (endDate < startDate) {
+                window.showToast("End date cannot be before start date", "error");
+                return;
+            }
+
+            const assignees = [];
+            if (!isNonTask) {
+                document.querySelectorAll('input[name="assignees"]:checked').forEach(cb => assignees.push(cb.value));
+                if (assignees.length === 0) {
+                    window.showToast("Assignees cannot be blank. Please select at least one.", "error");
+                    return;
+                }
+            }
+
+            const status = window.calculateStatus(startDate, endDate);
+            const existingEvent = window.events.find(ev => ev.id === id);
+            const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
+
+            const tempEventForCalc = { itemType, startDate, endDate, fields: fieldsToSave, isEventOnly: itemType === 'event' };
+            const progress = window.calcProgress(tempEventForCalc);
+
+            const eventId = id ? id : Date.now().toString();
+            const eventData = {
+                id: eventId,
+                itemType: itemType,
+                isEventOnly: itemType === 'event',
+                title,
+                startDate,
+                endDate,
+                campaignType,
+                status,
+                assignees,
+                fields: fieldsToSave,
+                progress: progress,
+                updatedAt: new Date().toISOString()
+            };
+
+            if (!id) {
+                eventData.CreatedTime = window.getFormattedCreatedTime();
+            } else if (existingEvent && existingEvent.CreatedTime) {
+                eventData.CreatedTime = existingEvent.CreatedTime;
+            } else {
+                eventData.CreatedTime = window.getFormattedCreatedTime();
+            }
+
+            const btn = document.getElementById('save-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                await window.syncEventToFirestore(eventData);
+                window.showToast(id ? "Item updated" : "Item created", "success");
+                window.closeAddModal();
+                window.renderUI();
+            } catch (err) {
+                console.error("Save Event Error:", err);
+            } finally {
+                btn.innerHTML = 'Save';
+                btn.disabled = false;
+            }
+        }
+
+        window.deleteTask = async (id) => {
+            window.events = window.events.filter(e => e.id !== id);
+            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+
+            if (db) {
+                try { await deleteDoc(doc(db, "events", id)); }
+                catch(e) {}
+            }
+            window.showToast("Item deleted", "success");
+            window.closeAddModal();
+            window.renderUI();
+        }
+
+        window.triggerReminder = (id, title, assigneesStr) => {
+            const task = window.events.find(ev => ev.id === id);
+            if (task) {
+                task.lastReminded = new Date().toISOString();
+                window.syncEventToFirestore(task);
+                const names = assigneesStr ? assigneesStr : 'the team';
+                window.showToast(`Reminder sent to ${names} for "${title}"!`, "success", "fa-bell");
+            }
+        }
+
+        window.clearAllData = async () => {
+            if(!confirm("Are you sure? This deletes ALL events globally from Firebase.")) return;
+            localStorage.removeItem('spo_content_calendar_events');
+            window.events = [];
+            if (db) {
+                try {
+                    window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
+                } catch(err) {}
+            }
+            window.showToast("Data clearing initiated", "success");
+            window.renderUI();
+        };
+
+        window.clearAllBudgets = async () => {
+            if(!confirm("Are you sure? This deletes ALL budget entries globally from Firebase.")) return;
+            localStorage.removeItem('spo_budget_data');
+            window.budgets = [];
+            if (db) {
+                try {
+                    window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
+                } catch(e){}
+            }
+            window.showToast("All budgets cleared", "success");
+            window.renderUI();
+        };
+
+        window.exportTasksExcel = () => {
+            let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
+                const iType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+                if (iType === 'event' || iType === 'game') return false;
+
+                const searchLower = window.searchQuery.toLowerCase();
+                const matchesSearch = evt.title.toLowerCase().includes(searchLower) ||
+                                      (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
+                const matchesStatus = window.statusFilter === 'All' || evt.status === window.statusFilter;
+                const matchesAssignee = window.assigneeFilter === 'All' || (evt.assignees || []).includes(window.assigneeFilter);
+                return matchesSearch && matchesStatus && matchesAssignee;
+            });
+
+            filteredEvents.sort((a, b) => {
+                const aStart = a.startDate || '';
+                const bStart = b.startDate || '';
+                const aEnd = a.endDate || '';
+                const bEnd = b.endDate || '';
+
+                let valA = a[window.sortCol];
+                let valB = b[window.sortCol];
+
+                if (window.sortCol === 'assignees') {
+                    valA = (a.assignees || []).join(', ');
+                    valB = (b.assignees || []).join(', ');
+                } else if (window.sortCol === 'progress') {
+                    valA = a.progress || 0;
+                    valB = b.progress || 0;
+                } else if (window.sortCol === 'title' || window.sortCol === 'status') {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                } else if (window.sortCol === 'date') {
+                    valA = new Date(aStart).getTime();
+                    valB = new Date(bStart).getTime();
+                }
+
+                if (valA < valB) return window.sortAsc ? -1 : 1;
+                if (valA > valB) return window.sortAsc ? 1 : -1;
+                return 0;
+            });
+
+            const data = filteredEvents.map(e => {
+                const f = e.fields || {};
+                const posts = (f.postIds || []).map(p => {
+                    let s = `${p.type || 'N/A'}: ${p.id || 'N/A'}`;
+                    if (p.imgUrl) s += ` (${p.imgUrl})`;
+                    return s;
+                }).join(' | ');
+
+                const dashStatuses = f.dashboardStatus || {};
+                const dashStr = Object.keys(dashStatuses)
+                    .sort()
+                    .map(date => `${date}: ${dashStatuses[date]}%`)
+                    .join(' | ');
+
+                return {
+                    "Task Title": e.title || '',
+                    "Start Date": e.startDate || '',
+                    "End Date": e.endDate || '',
+                    "Campaign Type": e.campaignType || '',
+                    "Status": e.status || '',
+                    "Assignees": (e.assignees || []).join(', '),
+                    "Progress (%)": parseFloat((e.progress || 0).toFixed(2)),
+                    "Created Time": e.CreatedTime || '',
+
+                    "Document Link": f.document || '',
+                    "Daily Data Report Link": f.dailyDataReport || '',
+                    "Post-Mortem Report Link": f.postMortemReport || '',
+
+                    "Hashtags": (f.hashtags || []).join(', '),
+                    "Post IDs": posts,
+
+                    "Game Review": f.gameReview || 'Pending',
+                    "Content Writers": f.contentWriters || 'Pending',
+                    "IM Channels": f.imChannels || 'Pending',
+                    "Trackable Links": f.trackableLinks || 'Pending',
+                    "SMS": f.sms || 'Pending',
+                    "Post Pinned": f.postPinned || 'Pending',
+                    "Reward Distributed": f.rewardDistributed || 'Pending',
+                    "Rewards Banner": f.rewardsBanner || 'Pending',
+                    "Ignore Listed": f.ignoreListed ? 'Yes' : 'No',
+                    "Daily Task": f.dailyTask ? 'Yes' : 'No',
+
+                    "Dashboard Status Tracker": dashStr
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks & Progress");
+            XLSX.writeFile(workbook, "SPO_Tasks_Export.xlsx");
+        };
+
+        window.exportBudgetExcel = () => {
+            let filteredBudgets = window.budgets.filter(b => {
+                const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) ||
+                                      (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
+                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+                return matchesSearch && matchesMonth && matchesOwner;
+            });
+
+            filteredBudgets.sort((a, b) => {
+                let valA = a[window.budgetSortCol];
+                let valB = b[window.budgetSortCol];
+                if (['allocated', 'spent'].includes(window.budgetSortCol)) {
+                    valA = parseFloat(valA) || 0;
+                    valB = parseFloat(valB) || 0;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                }
+                if (valA < valB) return window.budgetSortAsc ? -1 : 1;
+                if (valA > valB) return window.budgetSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            const data = filteredBudgets.map(b => {
+                const alloc = parseFloat(b.allocated) || 0;
+                const spent = parseFloat(b.spent) || 0;
+                return {
+                    "Created Time": b.CreatedTime || '',
+                    "Month": b.month || '',
+                    "Campaign / Project Name": b.name || '',
+                    "Type": b.type || '',
+                    "Owner": b.owner || '',
+                    "Allocated Budget": alloc,
+                    "Amount Spent": spent,
+                    "Remaining Balance": alloc - spent
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Team Budget");
+            XLSX.writeFile(workbook, "SPO_Budget_Export.xlsx");
+        };
+
+        window.renderUI = () => {
+            const currStr = window.getCurrentMonthStr();
+            const monthInput = document.getElementById('setting-budget-month');
+            const limitInput = document.getElementById('setting-budget-limit');
+            if (monthInput) monthInput.value = currStr;
+            if (limitInput) limitInput.value = window.budgetSettings.limits[currStr] || 0;
+
+            if (document.getElementById('stats-container')) window.updateStats();
+            if (document.getElementById('calendar-grid')) window.renderCalendar();
+            if (document.getElementById('ongoing-events-list')) window.renderOngoingEvents();
+            if (document.getElementById('tasks-table-body')) window.renderTasksTable();
+            if (document.getElementById('budget-table-body')) window.renderBudgetTable();
+            if (document.getElementById('campaign-task-selector') && window.updateCampaignDropdown) window.updateCampaignDropdown();
+        }
+
+        window.updateStats = () => {
+            const filtered = window.filterEventsByGlobalCategory(window.events);
+            const currStr = window.getCurrentMonthStr();
+
+            const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+            const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
+
+            document.querySelectorAll('.stat-month-label').forEach(el => { el.innerText = currStr; });
+
+            const statTotal = document.getElementById('stat-total');
+            if (statTotal) statTotal.innerText = monthlyEvents.filter(e => e.status !== 'Done' && e.itemType === 'task').length;
+
+            const statProgress = document.getElementById('stat-progress');
+            if (statProgress) statProgress.innerText = monthlyEvents.filter(e => e.status === 'Ongoing' && e.itemType === 'task').length;
+
+            const statCompleted = document.getElementById('stat-completed');
+            if (statCompleted) statCompleted.innerText = monthlyEvents.filter(e => e.status === 'Done' && e.itemType === 'task').length;
+
+            let totalSpent = 0;
+            const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
+
+            activeMonthBudgets.forEach(b => { totalSpent += parseFloat(b.spent) || 0; });
+            const limitForMonth = window.budgetSettings.limits[currStr] || 0;
+            const available = limitForMonth - totalSpent;
+
+            const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
+            if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
+
+            const budgetStatEl = document.getElementById('stat-budget');
+            if(budgetStatEl) {
+                budgetStatEl.innerText = window.formatCurrency(available);
+                budgetStatEl.className = `mt-1 text-3xl font-semibold ${available < 0 ? 'text-red-600' : 'text-blue-600'}`;
+            }
+        }
+
+        window.renderCalendar = () => {
+            const calGrid = document.getElementById('calendar-grid');
+            const calMonthYear = document.getElementById('calendar-month-year');
+
+            if (!calGrid || !calMonthYear) return;
+
+            calGrid.innerHTML = '';
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            calMonthYear.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+            const currentDay = today.getDate();
+
+            let weeks = [];
+            let currentWeek = [];
+            const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+            for (let i = 0; i < firstDay; i++) {
+                const pDay = prevMonthDays - firstDay + i + 1;
+                const pDateStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(pDay).padStart(2, '0')}`;
+                currentWeek.push({ day: pDay, dateStr: pDateStr, isMuted: true });
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                currentWeek.push({ day, dateStr, isMuted: false });
+                if (currentWeek.length === 7) {
+                    weeks.push(currentWeek);
+                    currentWeek = [];
+                }
+            }
+
+            if (currentWeek.length > 0) {
+                let nextDayCounter = 1;
+                const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+                const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+                while (currentWeek.length < 7) {
+                    const nDateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextDayCounter).padStart(2, '0')}`;
+                    currentWeek.push({ day: nextDayCounter++, dateStr: nDateStr, isMuted: true });
+                }
+                weeks.push(currentWeek);
+            }
+
+            weeks.forEach(week => {
+                let weekStart = week[0].dateStr;
+                let weekEnd = week[6].dateStr;
+                let weekEvents = window.events.filter(e => e.startDate <= weekEnd && e.endDate >= weekStart);
+                weekEvents = window.filterEventsByGlobalCategory(weekEvents);
+
+                weekEvents.sort((a, b) => {
+                    const aStart = a.startDate || '';
+                    const bStart = b.startDate || '';
+                    const aEnd = a.endDate || '';
+                    const bEnd = b.endDate || '';
+                    if (aStart !== bStart) return aStart.localeCompare(bStart);
+                    return new Date(bEnd) - new Date(aEnd);
+                });
+
+                let tracks = [];
+                let placements = [];
+                weekEvents.forEach(evt => {
+                    let sIdx = 0;
+                    for(let i=0; i<7; i++) {
+                        if(week[i] && week[i].dateStr === evt.startDate) { sIdx = i; break; }
+                        if(week[i] && week[i].dateStr > evt.startDate) { sIdx = 0; break; }
+                    }
+                    let eIdx = 6;
+                    for(let i=6; i>=0; i--) {
+                        if(week[i] && week[i].dateStr === evt.endDate) { eIdx = i; break; }
+                        if(week[i] && week[i].dateStr < evt.endDate) { eIdx = 6; break; }
+                    }
+                    let trackIdx = 0;
+                    while(true) {
+                        if (!tracks[trackIdx]) tracks[trackIdx] = [false,false,false,false,false,false,false];
+                        let conflict = false;
+                        for(let i = sIdx; i <= eIdx; i++) {
+                            if(tracks[trackIdx][i]) conflict = true;
+                        }
+                        if (!conflict) {
+                            for(let i = sIdx; i <= eIdx; i++) tracks[trackIdx][i] = true;
+                            placements.push({evt, sIdx, eIdx, trackIdx});
+                            break;
+                        }
+                        trackIdx++;
+                    }
+                });
+
+                let weekEl = document.createElement('div');
+                weekEl.className = 'relative bg-white min-h-[120px] flex-1';
+                let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 pointer-events-none">`;
+                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
+
+                week.forEach((dayObj, i) => {
+                    const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
+
+                    bgGridHtml += `
+                        <div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                    `;
+
+                    contentGridHtml += `
+                        <div class="col-start-${i+1} row-start-1 p-1 pointer-events-auto flex justify-end">
+                            <span class="text-sm font-semibold ${isToday ? 'text-indigo-600 bg-indigo-50 rounded-full h-7 w-7 flex items-center justify-center' : (dayObj.isMuted ? 'text-gray-400 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">${dayObj.day}</span>
+                        </div>
+                    `;
+                });
+                bgGridHtml += `</div>`;
+
+                placements.forEach(p => {
+                    const evt = p.evt;
+                    const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+
+                    let statusColor = '';
+                    let formattedTitle = '';
+
+                    if (itemType === 'event') {
+                        statusColor = 'bg-purple-100 text-purple-800 border border-purple-200';
+                        formattedTitle = `<i class="fa-solid fa-star text-[10px] mr-1 opacity-70"></i>${evt.title}`;
+                    } else if (itemType === 'game') {
+                        statusColor = 'bg-rose-100 text-rose-800 border border-rose-200';
+                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 opacity-70"></i>${evt.title}`;
+                    } else {
+                        statusColor = evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                                      (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-amber-100 text-amber-800 border border-amber-200');
+                        const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
+                        formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
+                    }
+
+                    let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
+                    const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
+
+                    contentGridHtml += `
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${titleAttr}">
+                            <div class="text-xs whitespace-normal break-words leading-tight font-medium">
+                                ${formattedTitle}
+                            </div>
+                        </div>
+                    `;
+                });
+                contentGridHtml += `</div>`;
+                weekEl.innerHTML = bgGridHtml + contentGridHtml;
+                calGrid.appendChild(weekEl);
+            });
+        }
+
+        window.renderOngoingEvents = () => {
+            const ongoingList = document.getElementById('ongoing-events-list');
+            if (!ongoingList) return;
+
+            ongoingList.innerHTML = '';
+            const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+            let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
+            monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
+            monthlyEvents.sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+            const ongoingCountEl = document.getElementById('ongoing-count');
+            if (ongoingCountEl) ongoingCountEl.innerText = monthlyEvents.length;
+
+            if (monthlyEvents.length === 0) {
+                ongoingList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 py-10">
+                        <i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300"></i>
+                        <p>No records this month.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const formatShortDate = (dStr) => {
+                const d = new Date(dStr);
+                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+            };
+
+            monthlyEvents.forEach(evt => {
+                const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+                const dateObj = new Date(evt.endDate);
+                const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
+                const daysDiff = Math.ceil((dateObj - new Date()) / (1000 * 60 * 60 * 24));
+                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500';
+
+                const el = document.createElement('div');
+                el.className = 'flex items-start p-3 hover:bg-gray-50 rounded-lg mb-2 border border-gray-100 transition-colors cursor-pointer';
+                el.title = window.getPendingSummary(evt);
+
+                if (itemType === 'event' || itemType === 'game') {
+                    el.onclick = () => window.openEditById(evt.id);
+
+                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-star text-purple-500';
+                    let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-purple-900';
+                    let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
+                    let labelColor = itemType === 'game' ? 'text-rose-600' : 'text-purple-600';
+
+                    el.innerHTML = `
+                        <div class="flex-1 min-w-0 mr-3">
+                            <p class="text-sm font-semibold ${titleColor} truncate"><i class="fa-solid ${iconClass} mr-1.5 opacity-70"></i>${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
+                                <span class="mx-2 text-gray-300 text-xs">|</span>
+                                <span class="text-xs ${labelColor} font-medium">${typeLabel}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    el.onclick = () => window.jumpToTask(evt.id);
+
+                    const assigns = evt.assignees || [];
+                    let avatarsHtml = '';
+                    if (assigns.length > 0) {
+                        const maxDisplay = 2;
+                        assigns.slice(0, maxDisplay).forEach(name => {
+                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-200 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-800 -ml-2 first:ml-0" title="${name}">${name.charAt(0)}</div>`;
+                        });
+                        if (assigns.length > maxDisplay) {
+                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2">+${assigns.length - maxDisplay}</div>`;
+                        }
+                    } else {
+                        avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user-ghost"></i></div>`;
+                    }
+
+                    const p = evt.progress || 0;
+                    const pFormatted = p.toFixed(2);
+                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
+                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
+                    const formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
+
+                    el.innerHTML = `
+                        <div class="flex-1 min-w-0 mr-3">
+                            <p class="text-sm font-semibold text-gray-900 truncate">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
+                                <span class="mx-2 text-gray-300 text-xs">|</span>
+                                <span class="text-xs text-gray-500">${evt.status}</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end self-center shrink-0 ml-3 min-w-[80px]">
+                            <div class="flex items-center justify-end mb-1.5 w-full">
+                                <span class="text-[10px] font-bold text-gray-600 mr-2">${pFormatted}%</span>
+                                <div class="flex">${avatarsHtml}</div>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                ongoingList.appendChild(el);
+            });
+        }
+
+        window.setAssigneeFilter = (val) => {
+            window.assigneeFilter = val;
+            window.renderTasksTable();
+        };
+
+        window.setFilter = (val) => {
+            window.statusFilter = val;
+            window.renderTasksTable();
+        };
+
+        window.setSearch = (val) => {
+            window.searchQuery = val;
+            window.renderTasksTable();
+        };
+
+        window.handleSort = (col) => {
+            if (window.sortCol === col) {
+                window.sortAsc = !window.sortAsc;
+            } else {
+                window.sortCol = col;
+                window.sortAsc = true;
+            }
+            window.renderTasksTable();
+        };
+
+        window.renderTasksTable = () => {
+            const tasksTable = document.getElementById('tasks-table-body');
+            if (!tasksTable) return;
+
+            tasksTable.innerHTML = '';
+            if (window.events.length === 0) {
+                tasksTable.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No content tasks found. Create one to get started.</td></tr>`;
+                return;
+            }
+
+            ['title', 'assignees', 'status', 'progress'].forEach(col => {
+                const icon = document.getElementById(`sort-icon-${col}`);
+                if (icon) {
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300 group-hover:text-gray-500');
+                }
+            });
+
+            let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
+                const iType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+                if (iType !== 'task') return false;
+
+                const searchLower = window.searchQuery.toLowerCase();
+                const matchesSearch = evt.title.toLowerCase().includes(searchLower) || (evt.assignees || []).join(' ').toLowerCase().includes(searchLower);
+                const matchesStatus = window.statusFilter === 'All' || evt.status === window.statusFilter;
+                const matchesAssignee = window.assigneeFilter === 'All' || (evt.assignees || []).includes(window.assigneeFilter);
+                return matchesSearch && matchesStatus && matchesAssignee;
+            });
+
+            filteredEvents.sort((a, b) => {
+                const aStart = a.startDate || '';
+                const bStart = b.startDate || '';
+                const aEnd = a.endDate || '';
+                const bEnd = b.endDate || '';
+
+                let valA = a[window.sortCol];
+                let valB = b[window.sortCol];
+                if (window.sortCol === 'assignees') {
+                    valA = (a.assignees || []).join(', ');
+                    valB = (b.assignees || []).join(', ');
+                } else if (window.sortCol === 'progress') {
+                    valA = a.progress || 0;
+                    valB = b.progress || 0;
+                } else if (window.sortCol === 'title' || window.sortCol === 'status') {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                } else if (window.sortCol === 'date') {
+                    valA = new Date(aStart).getTime();
+                    valB = new Date(bStart).getTime();
+                }
+
+                if (valA < valB) return window.sortAsc ? -1 : 1;
+                if (valA > valB) return window.sortAsc ? 1 : -1;
+                return 0;
+            });
+
+            if (filteredEvents.length === 0) {
+                tasksTable.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No tasks match your filters.</td></tr>`;
+                return;
+            }
+
+            filteredEvents.forEach(evt => {
+                const tr = document.createElement('tr');
+                tr.id = `task-row-${evt.id}`;
+                tr.className = 'hover:bg-indigo-50 cursor-pointer transition-colors duration-200 group';
+                tr.title = window.getPendingSummary(evt);
+                tr.onclick = (e) => {
+                    if(e.target.closest('button') || e.target.closest('input')) return;
+                    window.openTaskDrawer(evt.id);
+                };
+
+                const p = evt.progress || 0;
+                const pFormatted = p.toFixed(2);
+                const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
+
+                const formatShortDate = (dStr) => {
+                    if (!dStr) return '';
+                    const d = new Date(dStr);
+                    return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+                };
+
+                const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
+                const assigns = evt.assignees || [];
+                const assignsStr = assigns.length > 0 ? assigns.join(', ') : 'Unassigned';
+                const formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
+                const escTitle = formattedTitle.replace(/'/g, "\\'");
+                const escAssigns = assignsStr.replace(/'/g, "\\'");
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
+                            </div>
+                            <span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex flex-col w-full max-w-[150px]">
+                            <div class="flex items-center mb-1">
+                                <span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-1.5 rounded transition-colors" title="Send Reminder">
+                                <i class="fa-regular fa-bell"></i>
+                            </button>
+                            <button onclick="openEditById('${evt.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tasksTable.appendChild(tr);
+            });
+        }
+
+        window.setBudgetOwnerFilter = (val) => {
+            window.budgetFilterOwner = val;
+            window.renderBudgetTable();
+        };
+
+        window.setBudgetSearch = (val) => {
+            window.budgetSearchQuery = val;
+            window.renderBudgetTable();
+        }
+
+        window.setBudgetMonthFilter = (val) => {
+            window.budgetFilterMonth = val;
+            window.renderBudgetTable();
+        }
+
+        window.handleBudgetSort = (col) => {
+            if (window.budgetSortCol === col) {
+                window.budgetSortAsc = !window.budgetSortAsc;
+            } else {
+                window.budgetSortCol = col;
+                window.budgetSortAsc = true;
+            }
+            window.renderBudgetTable();
+        }
+
+        window.renderBudgetTable = () => {
+            const table = document.getElementById('budget-table-body');
+            if (!table) return;
+            table.innerHTML = '';
+
+            ['month', 'name', 'type', 'owner', 'allocated', 'spent'].forEach(col => {
+                const icon = document.getElementById(`budget-sort-icon-${col}`);
+                if (icon) {
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300');
+                }
+            });
+
+            let filteredBudgets = window.budgets.filter(b => {
+                const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
+                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+                return matchesSearch && matchesMonth && matchesOwner;
+            });
+
+            filteredBudgets.sort((a, b) => {
+                let valA = a[window.budgetSortCol];
+                let valB = b[window.budgetSortCol];
+
+                if (['allocated', 'spent'].includes(window.budgetSortCol)) {
+                    valA = parseFloat(valA) || 0;
+                    valB = parseFloat(valB) || 0;
+                } else {
+                    valA = (valA || '').toLowerCase();
+                    valB = (valB || '').toLowerCase();
+                }
+
+                if (valA < valB) return window.budgetSortAsc ? -1 : 1;
+                if (valA > valB) return window.budgetSortAsc ? 1 : -1;
+                return 0;
+            });
+
+            if (filteredBudgets.length === 0) {
+                table.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
+                document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
+                document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
+                document.getElementById('budget-total-remaining').innerText = window.formatCurrency(0);
+                return;
+            }
+
+            let totalAllocated = 0;
+            let totalSpent = 0;
+
+            filteredBudgets.forEach(b => {
+                const alloc = parseFloat(b.allocated) || 0;
+                const spent = parseFloat(b.spent) || 0;
+                const remaining = alloc - spent;
+
+                totalAllocated += alloc;
+                totalSpent += spent;
+
+                const escName = b.name.replace(/"/g, '&quot;');
+                const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="${escOwner}">${escOwner}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+
+            const totalRemaining = totalAllocated - totalSpent;
+            document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
+            document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
+
+            const remainingEl = document.getElementById('budget-total-remaining');
+            remainingEl.innerText = window.formatCurrency(totalRemaining);
+            remainingEl.className = `px-6 py-4 text-right text-sm font-bold ${totalRemaining < 0 ? 'text-red-600' : 'text-blue-600'}`;
+        }
+
+        window.saveBudgetEntry = async (e) => {
+            e.preventDefault();
+            const form = document.getElementById('budget-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('budget-id').value;
+            const month = document.getElementById('budget-month').value;
+            const owner = document.getElementById('budget-owner').value.trim();
+            const name = document.getElementById('budget-name').value.trim();
+            const type = document.getElementById('budget-type').value;
+            const allocated = document.getElementById('budget-allocated').value;
+            const spent = document.getElementById('budget-spent').value || 0;
+
+            const entryId = id ? id : Date.now().toString();
+            const entryData = {
+                id: entryId,
+                name,
+                type,
+                owner,
+                month,
+                allocated: parseFloat(allocated),
+                spent: parseFloat(spent)
+            };
+
+            if (!id) {
+                entryData.CreatedTime = window.getFormattedCreatedTime();
+            } else {
+                const existingBudget = window.budgets.find(b => b.id === id);
+                if (existingBudget && existingBudget.CreatedTime) {
+                    entryData.CreatedTime = existingBudget.CreatedTime;
+                } else {
+                    entryData.CreatedTime = window.getFormattedCreatedTime();
+                }
+            }
+
+            const btn = document.getElementById('save-budget-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                // Update Local Storage Fallback Immediately
+                const idx = window.budgets.findIndex(b => b.id === entryId);
+                if (idx > -1) window.budgets[idx] = entryData;
+                else window.budgets.push(entryData);
+                localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+
+                if (db) {
+                    await setDoc(doc(db, "budgets", entryId), entryData);
+                }
+
+                window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
+                window.closeBudgetModal();
+                window.renderUI();
+            } catch(e) {
+                window.showToast("Error saving budget", "error");
+            } finally {
+                btn.innerHTML = 'Save Entry';
+                btn.disabled = false;
+            }
+        };
+
+        window.deleteBudgetEntry = async (id) => {
+            window.budgets = window.budgets.filter(b => b.id !== id);
+            localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+
+            if (db) {
+                try { await deleteDoc(doc(db, "budgets", id)); } catch(e) {}
+            }
+            window.showToast("Budget entry deleted", "success");
+            window.renderUI();
+        };
+
+        window.openBudgetModal = (id = null) => {
+            document.getElementById('budget-form').reset();
+            document.getElementById('budget-id').value = '';
+            document.getElementById('budget-modal-title').innerText = 'Add Budget Entry';
+            document.getElementById('budget-month').value = window.getCurrentMonthStr();
+            document.getElementById('budget-type').value = 'UGC Rewards';
+
+            if (id) {
+                const b = window.budgets.find(x => x.id === id);
+                if (b) {
+                    document.getElementById('budget-id').value = b.id;
+                    document.getElementById('budget-month').value = b.month || window.getCurrentMonthStr();
+                    document.getElementById('budget-owner').value = b.owner || '';
+                    document.getElementById('budget-name').value = b.name;
+                    if(b.type) document.getElementById('budget-type').value = b.type;
+                    document.getElementById('budget-allocated').value = b.allocated;
+                    document.getElementById('budget-spent').value = b.spent;
+                    document.getElementById('budget-modal-title').innerText = 'Edit Budget Entry';
+                }
+            }
+
+            document.getElementById('budget-modal').classList.remove('hidden');
+        };
+
+        window.closeBudgetModal = () => {
+            document.getElementById('budget-modal').classList.add('hidden');
+        };
+
+        window.openBudgetDrawer = () => {
+            const overlay = document.getElementById('budget-drawer-overlay');
+            const drawer = document.getElementById('budget-drawer');
+
+            const years = new Set();
+            years.add(currentYear.toString());
+            window.budgets.forEach(b => {
+                if (b.month) years.add(b.month.split('-')[0]);
+            });
+
+            const yearSelect = document.getElementById('budget-drawer-year');
+            yearSelect.innerHTML = Array.from(years).sort().reverse().map(y => `<option value="${y}" ${y === currentYear.toString() ? 'selected' : ''}>${y}</option>`).join('');
+
+            window.renderBudgetDrawerContent(currentYear.toString());
+            overlay.classList.remove('hidden');
+            void overlay.offsetWidth;
+            overlay.classList.remove('opacity-0');
+            drawer.classList.remove('translate-x-full');
+        };
+
+        window.closeBudgetDrawer = () => {
+            const overlay = document.getElementById('budget-drawer-overlay');
+            const drawer = document.getElementById('budget-drawer');
+
+            overlay.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        };
+
+        window.renderBudgetDrawerContent = (year) => {
+            const content = document.getElementById('budget-drawer-content');
+            const monthsInYear = [];
+
+            for (let m = 1; m <= 12; m++) {
+                monthsInYear.push(`${year}-${String(m).padStart(2, '0')}`);
+            }
+
+            window.budgets.forEach(b => {
+                if (b.month && b.month.startsWith(year) && !monthsInYear.includes(b.month)) {
+                    monthsInYear.push(b.month);
+                }
+            });
+
+            const activeMonths = monthsInYear.filter(m => {
+                const hasBudget = window.budgets.some(b => b.month === m);
+                const hasLimit = (window.budgetSettings.limits[m] || 0) > 0;
+                return hasBudget || hasLimit;
+            });
+
+            activeMonths.sort().reverse();
+
+            if (activeMonths.length === 0) {
+                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>';
+                return;
+            }
+
+            let html = '';
+            activeMonths.forEach(m => {
+                let spent = 0;
+                window.budgets.filter(b => b.month === m).forEach(b => {
+                    spent += (parseFloat(b.spent) || 0);
+                });
+
+                const limit = window.budgetSettings.limits[m] || 0;
+                const d = new Date(m + '-01');
+                const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+                html += `
+                    <div class="bg-white border-b border-gray-200 p-4">
+                        <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Total Spent</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                            </div>
+                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                                <span class="block text-xs text-gray-500">Month Limit</span>
+                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            content.innerHTML = html;
+        };
+
+        window.changeMonth = (dir) => {
+            currentMonth += dir;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            window.renderUI();
+        };
+
+        window.resetToToday = () => {
+            currentMonth = new Date().getMonth();
+            currentYear = new Date().getFullYear();
+            window.renderUI();
+        };
+
+        window.openTypeModal = (dateStr = null) => {
+            window.tempSelectedDate = dateStr;
+            document.getElementById('type-modal').classList.remove('hidden');
+        }
+
+        window.closeTypeModal = () => {
+            document.getElementById('type-modal').classList.add('hidden');
+            window.tempSelectedDate = null;
+        }
+
+        window.selectEventType = (type) => {
+            document.getElementById('type-modal').classList.add('hidden');
+            window.openAddModal(type, window.tempSelectedDate);
+            window.tempSelectedDate = null;
+        }
+
+        window.openAddModal = (itemType = 'task', dateStr = null) => {
+            document.getElementById('event-form').reset();
+            document.getElementById('event-id').value = '';
+            document.getElementById('event-item-type').value = itemType;
+
+            let titleTxt = 'Add New Content Task';
+            if (itemType === 'event') titleTxt = 'Add Offline Event';
+            if (itemType === 'game') titleTxt = 'Add New Game Launch';
+            document.getElementById('modal-title').innerText = titleTxt;
+
+            const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
+            document.getElementById('event-start-date').value = startDate;
+            document.getElementById('event-end-date').value = startDate;
+
+            document.getElementById('event-campaign-type').value = 'All';
+
+            const campContainer = document.getElementById('campaign-type-container');
+            const assignContainer = document.getElementById('assignees-container');
+            const campInput = document.getElementById('event-campaign-type');
+
+            const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (isNonTask) {
+                campContainer.style.display = 'none';
+                assignContainer.style.display = 'none';
+                campInput.removeAttribute('required');
+            } else {
+                campContainer.style.display = 'block';
+                assignContainer.style.display = 'block';
+                campInput.setAttribute('required', 'required');
+            }
+
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        window.openAddModalWithDate = (dateStr) => {
+            window.openTypeModal(dateStr);
+        }
+
+        window.openEditById = (id) => {
+            const evt = window.events.find(e => e.id === id);
+            if (evt) window.openEditModal(evt);
+        }
+
+        window.openEditModal = (evt) => {
+            document.getElementById('event-form').reset();
+            document.getElementById('event-id').value = evt.id;
+
+            const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+            document.getElementById('event-item-type').value = itemType;
+
+            let titleTxt = 'Edit Content Task';
+            if (itemType === 'event') titleTxt = 'Edit Offline Event';
+            if (itemType === 'game') titleTxt = 'Edit New Game Launch';
+            document.getElementById('modal-title').innerText = titleTxt;
+
+            document.getElementById('event-title').value = evt.title;
+            document.getElementById('event-start-date').value = evt.startDate;
+            document.getElementById('event-end-date').value = evt.endDate;
+            document.getElementById('event-campaign-type').value = evt.campaignType || 'All';
+
+            const campContainer = document.getElementById('campaign-type-container');
+            const assignContainer = document.getElementById('assignees-container');
+            const campInput = document.getElementById('event-campaign-type');
+
+            const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (isNonTask) {
+                campContainer.style.display = 'none';
+                assignContainer.style.display = 'none';
+                campInput.removeAttribute('required');
+            } else {
+                campContainer.style.display = 'block';
+                assignContainer.style.display = 'block';
+                campInput.setAttribute('required', 'required');
+            }
+
+            const assigns = evt.assignees || [];
+            document.querySelectorAll('input[name="assignees"]').forEach(cb => {
+                cb.checked = assigns.includes(cb.value);
+            });
+            document.getElementById('event-modal').classList.remove('hidden');
+        }
+
+        window.closeAddModal = () => {
+            document.getElementById('event-modal').classList.add('hidden');
+        }
+
+        window.openTaskDrawer = (taskId) => {
+            const evt = window.events.find(e => e.id === taskId);
+            if (!evt) return;
+
+            window.currentDrawerTaskId = taskId;
+            if (document.getElementById('assignee-filter-select')) {
+                document.getElementById('assignee-filter-select').value = 'All';
+            }
+            window.assigneeFilter = 'All';
+
+            const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
+            document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
+
+            window.updateDrawerProgressUI(evt);
+            window.renderDrawerChecklist(evt);
+
+            const overlay = document.getElementById('drawer-overlay');
+            const drawer = document.getElementById('task-drawer');
+
+            overlay.classList.remove('hidden');
+            void overlay.offsetWidth;
+            overlay.classList.remove('opacity-0');
+            drawer.classList.remove('translate-x-full');
+        };
+
+        window.closeTaskDrawer = () => {
+            const overlay = document.getElementById('drawer-overlay');
+            const drawer = document.getElementById('task-drawer');
+
+            overlay.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                window.currentDrawerTaskId = null;
+            }, 300);
+        };
+
+        window.updateDrawerProgressUI = (evt) => {
+            const p = evt.progress || 0;
+            const pFormatted = p.toFixed(2);
+            document.getElementById('drawer-progress-text').innerText = `${pFormatted}%`;
+
+            const bar = document.getElementById('drawer-progress-bar');
+            bar.style.width = `${p}%`;
+            bar.classList.remove('bg-emerald-500', 'bg-indigo-600', 'bg-gray-400');
+
+            if (p === 100) {
+                bar.classList.add('bg-emerald-500');
+            } else if (p > 0) {
+                bar.classList.add('bg-indigo-600');
+            } else {
+                bar.classList.add('bg-gray-400');
+            }
+        }
+
+        window.handleHashtagEnter = (e, taskId) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const input = e.target;
+                const val = input.value.trim();
+                if (!val) return;
+
+                const task = window.events.find(ev => ev.id === taskId);
+                if (!task) return;
+
+                if (!Array.isArray(task.fields.hashtags)) task.fields.hashtags = [];
+
+                const newTags = val.split(/\s+/).filter(t => t.length > 0);
+                newTags.forEach(tag => {
+                    if (task.fields.hashtags.length < 10) {
+                        task.fields.hashtags.push(tag);
+                    }
+                });
+
+                input.value = '';
+                task.progress = window.calcProgress(task);
+
+                window.syncEventToFirestore(task);
+                window.updateDrawerProgressUI(task);
+                window.renderDrawerChecklist(task);
+                window.renderUI();
+
+                setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
+            }
+        };
+
+        window.removeHashtag = (taskId, idx) => {
+            const task = window.events.find(ev => ev.id === taskId);
+            if (!task || !Array.isArray(task.fields.hashtags)) return;
+
+            task.fields.hashtags.splice(idx, 1);
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderDrawerChecklist(task);
+            window.renderUI();
+
+            setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
+        };
+
+        window.updateDashboardStatus = (taskId, changedDateStr, value) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task) return;
+            if (!task.fields.dashboardStatus) task.fields.dashboardStatus = {};
+
+            let numVal = parseFloat(value);
+            if (isNaN(numVal)) numVal = 0;
+            if (numVal > 100) numVal = 100;
+            if (numVal < 0) numVal = 0;
+
+            task.fields.dashboardStatus[changedDateStr] = numVal;
+
+            if (numVal === 100) {
+                const dates = window.getDatesInRange(task.startDate, task.endDate);
+                let hit = false;
+                dates.forEach(d => {
+                    if (d === changedDateStr) hit = true;
+                    else if (hit) { task.fields.dashboardStatus[d] = 100; }
+                });
+            }
+
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderDrawerChecklist(task);
+            window.renderUI();
+        };
+
+        window.renderDrawerChecklist = (evt) => {
+            const list = document.getElementById('drawer-checklist');
+
+            const existingDetails = list.querySelectorAll('details');
+            if (existingDetails.length === 4) {
+                drawerAccordionStates.links = existingDetails[0].open;
+                drawerAccordionStates.media = existingDetails[1].open;
+                drawerAccordionStates.ops = existingDetails[2].open;
+                drawerAccordionStates.dash = existingDetails[3].open;
+            }
+
+            const f = evt.fields || { ...defaultFields };
+
+            let linksDone = 0;
+            if (f.document && window.isValidURL(f.document)) linksDone++;
+            if (f.dailyDataReport && window.isValidURL(f.dailyDataReport)) linksDone++;
+            if (f.postMortemReport && window.isValidURL(f.postMortemReport)) linksDone++;
+
+            let mediaDone = 0;
+            if (Array.isArray(f.hashtags) && f.hashtags.length > 0) mediaDone++;
+            if (Array.isArray(f.postIds) && f.postIds.some(p => p.id && p.id.trim() !== '')) mediaDone++;
+
+            let opsDone = 0;
+            ['gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'].forEach(k => {
+                if (f[k] === 'Done' || f[k] === 'Not Applicable') opsDone++;
+            });
+            if (f.ignoreListed) opsDone++;
+            if (f.dailyTask) opsDone++;
+
+            let maxDash = 0;
+            if (f.dashboardStatus) {
+                for(let d in f.dashboardStatus) {
+                    let v = parseFloat(f.dashboardStatus[d])||0;
+                    if(v > maxDash) maxDash = v;
+                }
+            }
+            let dashDone = maxDash === 100 ? 1 : 0;
+
+            const makeAccordion = (title, done, total, content, isOpen = true) => {
+                const isAllDone = done === total;
+                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700';
+                return `
+                    <details class="group mb-3 border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden" ${isOpen ? 'open' : ''}>
+                        <summary class="cursor-pointer bg-gray-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-gray-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                            <div class="flex items-center">
+                                <span>${title}</span>
+                                <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
+                        </summary>
+                        <div class="p-4 space-y-4 border-t border-gray-200">
+                            ${content}
+                        </div>
+                    </details>
+                `;
+            };
+
+            const makeSelectHtml = (key, label) => {
+                const val = f[key] || 'Pending';
+                return `
+                    <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="text-sm font-medium text-gray-700">${label}</label>
+                        <select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 py-1 pl-2 pr-8 bg-gray-50 border">
+                            <option value="Pending" ${val === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Not Applicable" ${val === 'Not Applicable' ? 'selected' : ''}>Not Applicable</option>
+                            <option value="Done" ${val === 'Done' ? 'selected' : ''}>Done</option>
+                        </select>
+                    </div>
+                `;
+            };
+
+            const makeUrlLinkHtml = (key, label) => {
+                const val = f[key] || '';
+                const escVal = val.replace(/"/g, '&quot;');
+                const isUrlValid = val === '' || window.isValidURL(val);
+                const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
+
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
+                        <input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-md shadow-sm py-1.5 px-3 ${borderClass}">
+                        ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format. 0% assigned.</p>` : ''}
+                    </div>
+                `;
+            };
+
+            const makeHashtagsHtml = () => {
+                const tags = Array.isArray(f.hashtags) ? f.hashtags : [];
+                let pills = tags.map((t, i) => `
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                        ${t}
+                        <button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `).join('');
+
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                        <div class="flex flex-wrap mb-1">${pills}</div>
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
+                    </div>
+                `;
+            };
+
+            const makePostIdsHtml = () => {
+                const posts = Array.isArray(f.postIds) ? f.postIds : [];
+                let rowsHtml = posts.map((p, i) => `
+                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md relative">
+                        <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="flex items-center space-x-2 pr-8">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                        </div>
+                        <div>
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center mb-1 border-b border-gray-100 pb-2">
+                            <label class="block text-sm font-medium text-gray-700">Post IDs</label>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                        </div>
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
+                    </div>
+                `;
+            };
+
+            const makeCheckboxHtml = (key, label) => {
+                const isChecked = f[key] ? 'checked' : '';
+                return `
+                    <div class="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded cursor-pointer">
+                        <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
+                    </div>
+                `;
+            };
+
+            const makeDashboardStatusHtml = () => {
+                const dates = window.getDatesInRange(evt.startDate, evt.endDate);
+                const statuses = f.dashboardStatus || {};
+
+                let maxVal = 0;
+                let maxDate = '-';
+
+                let dateInputsHtml = dates.map(d => {
+                    let val = statuses[d] !== undefined ? statuses[d] : '';
+                    if (parseFloat(val) > maxVal) { maxVal = parseFloat(val); }
+                    if (parseFloat(val) === 100 && maxDate === '-') { maxDate = d; }
+                    return `
+                        <div class="flex items-center justify-between text-sm py-1">
+                            <span class="text-gray-600">${d}</span>
+                            <div class="flex items-center w-28">
+                                <input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-md shadow-sm py-1 px-2 focus:ring-indigo-500 mr-1">
+                                <span class="text-gray-500 font-medium">%</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="mb-2">
+                            <label class="block text-sm font-medium text-gray-700">Dashboard Status Tracker</label>
+                            <p class="text-xs text-gray-500">Highest: <span class="font-bold text-indigo-600">${maxVal.toFixed(2)}%</span> ${maxVal === 100 ? `on ${maxDate}` : ''}</p>
+                        </div>
+                        <div class="space-y-1 mt-3 border-t border-gray-100 pt-3 max-h-48 overflow-y-auto pr-1">
+                            ${dateInputsHtml}
+                        </div>
+                    </div>
+                `;
+            };
+
+            const linksContent = `
+                ${makeUrlLinkHtml('document', 'Document Link')}
+                ${makeUrlLinkHtml('dailyDataReport', 'Daily Data Report Link')}
+                ${makeUrlLinkHtml('postMortemReport', 'Post-Mortem Report Link')}
+            `;
+
+            const mediaContent = `
+                ${makeHashtagsHtml()}
+                ${makePostIdsHtml()}
+            `;
+
+            const operationsContent = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${makeSelectHtml('gameReview', 'Game Review')}
+                    ${makeSelectHtml('contentWriters', 'Content Writers')}
+                    ${makeSelectHtml('imChannels', 'IM Channels')}
+                    ${makeSelectHtml('trackableLinks', 'Trackable Links')}
+                    ${makeSelectHtml('sms', 'SMS')}
+                    ${makeSelectHtml('postPinned', 'Post Pinned')}
+                    ${makeSelectHtml('rewardDistributed', 'Reward Distributed')}
+                    ${makeSelectHtml('rewardsBanner', 'Rewards Banner')}
+                </div>
+                <div class="flex space-x-4 mt-4">
+                    <div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div>
+                    <div class="flex-1">${makeCheckboxHtml('dailyTask', 'Daily Task')}</div>
+                </div>
+            `;
+
+            const dashboardContent = `${makeDashboardStatusHtml()}`;
+
+            list.innerHTML = `
+                <div class="pb-8">
+                    ${makeAccordion('Important Links', linksDone, 3, linksContent, drawerAccordionStates.links)}
+                    ${makeAccordion('Content & Publishing', mediaDone, 2, mediaContent, drawerAccordionStates.media)}
+                    ${makeAccordion('Operations Checklist', opsDone, 10, operationsContent, drawerAccordionStates.ops)}
+                    ${makeAccordion('Daily Tracking', dashDone, 1, dashboardContent, drawerAccordionStates.dash)}
+                </div>
+            `;
+        }
+
+        window.updateTaskField = (taskId, fieldName, val) => {
+            const taskIdx = window.events.findIndex(e => e.id === taskId);
+            if (taskIdx === -1) return;
+
+            const task = window.events[taskIdx];
+            if (!task.fields) task.fields = { ...defaultFields };
+
+            task.fields[fieldName] = val;
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderDrawerChecklist(task);
+            window.renderTasksTable();
+            window.renderOngoingEvents();
+        };
+
+        window.addPostId = (taskId) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task) return;
+            if (!Array.isArray(task.fields.postIds)) task.fields.postIds = [];
+
+            task.fields.postIds.push({ type: '', id: '', imgUrl: '' });
+            window.syncEventToFirestore(task);
+            window.renderDrawerChecklist(task);
+        };
+
+        window.updatePostIdField = (taskId, idx, key, val) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.postIds) || !task.fields.postIds[idx]) return;
+
+            task.fields.postIds[idx][key] = val;
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderTasksTable();
+        };
+
+        window.removePostId = (taskId, idx) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.postIds)) return;
+
+            task.fields.postIds.splice(idx, 1);
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderDrawerChecklist(task);
+            window.renderTasksTable();
+        };
+
+        window.jumpToTask = (id) => {
+            if (window.location.pathname.indexOf('tasks.html') === -1 && window.location.pathname.indexOf('tasks') === -1) {
+                window.location.href = 'tasks.html?taskId=' + id;
+                return;
+            }
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = '';
+            window.searchQuery = '';
+
+            window.renderTasksTable();
+
+            setTimeout(() => {
+                const row = document.getElementById(`task-row-${id}`);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    row.classList.remove('hover:bg-gray-50');
+                    row.classList.add('bg-indigo-100');
+                    setTimeout(() => {
+                        row.classList.remove('bg-indigo-100');
+                        row.classList.add('hover:bg-gray-50');
+                    }, 2000);
+                } else {
+                    window.openTaskDrawer(id);
+                }
+            }, 100);
+        }
+
+        window.showToast = (message, type = "info", iconOverride = null) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            let bg = 'bg-gray-800';
+            let icon = 'fa-circle-info';
+            let iconColor = 'text-blue-400';
+
+            if (type === 'success') { icon = 'fa-circle-check'; iconColor = 'text-emerald-400'; }
+            if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
+            if (iconOverride) { icon = iconOverride; }
+
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-lg shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
+            toast.innerHTML = `
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                    <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
+                </div>
+                <div class="ml-3 text-sm font-normal">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-enter-active');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                toast.classList.add('toast-exit-active');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = window.initApp;
