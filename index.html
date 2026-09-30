@@ -107,9 +107,6 @@
                             <span class="text-4xl font-bold text-gray-900" id="stat-total">0</span>
                             <span class="ml-2 text-sm font-medium text-gray-400">scheduled</span>
                         </div>
-                        <div class="w-full bg-gray-100 rounded-full h-1.5 mt-auto">
-                            <div class="bg-gray-800 h-1.5 rounded-full" style="width: 100%" id="stat-total-bar"></div>
-                        </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
                         <div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-indigo-500"></div>
@@ -118,9 +115,6 @@
                             <span class="text-4xl font-bold text-indigo-600" id="stat-progress">0</span>
                             <span class="ml-2 text-sm font-medium text-indigo-400">in progress</span>
                         </div>
-                        <div class="w-full bg-indigo-50 rounded-full h-1.5 mt-auto">
-                            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 0%" id="stat-progress-bar"></div>
-                        </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
                         <div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-emerald-500"></div>
@@ -128,9 +122,6 @@
                         <div class="mt-2 flex items-baseline">
                             <span class="text-4xl font-bold text-emerald-600" id="stat-completed">0</span>
                             <span class="ml-2 text-sm font-medium text-emerald-400">finalized</span>
-                        </div>
-                        <div class="w-full bg-emerald-50 rounded-full h-1.5 mt-auto">
-                            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 0%" id="stat-completed-bar"></div>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
@@ -164,12 +155,6 @@
                                             <i class="fa-solid fa-chevron-right text-sm"></i>
                                         </button>
                                     </div>
-                                </div>
-                                <div class="flex items-center space-x-3 text-xs font-medium text-gray-500">
-                                    <div class="flex items-center"><div class="w-2.5 h-2.5 rounded-full bg-amber-500 mr-1.5"></div>Slot</div>
-                                    <div class="flex items-center"><div class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-1.5"></div>Casino</div>
-                                    <div class="flex items-center"><div class="w-2.5 h-2.5 rounded-full bg-purple-500 mr-1.5"></div>Poker</div>
-                                    <div class="flex items-center"><div class="w-2.5 h-2.5 rounded-full bg-pink-500 mr-1.5"></div>Perya</div>
                                 </div>
                             </div>
                             
@@ -1821,25 +1806,16 @@
                         statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
                         formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else {
-                        let dotColor = 'bg-gray-400';
-                        let pillBg = 'bg-gray-50';
-                        let pillBorder = 'border-gray-200';
-                        let pillText = 'text-gray-800';
-
-                        if(evt.campaignType === 'Slot') { dotColor = 'bg-amber-500'; pillBg = 'bg-amber-50'; pillBorder = 'border-amber-200'; pillText = 'text-amber-900'; }
-                        else if(evt.campaignType === 'Casino') { dotColor = 'bg-blue-500'; pillBg = 'bg-blue-50'; pillBorder = 'border-blue-200'; pillText = 'text-blue-900'; }
-                        else if(evt.campaignType === 'Poker') { dotColor = 'bg-purple-500'; pillBg = 'bg-purple-50'; pillBorder = 'border-purple-200'; pillText = 'text-purple-900'; }
-                        else if(evt.campaignType === 'Perya') { dotColor = 'bg-pink-500'; pillBg = 'bg-pink-50'; pillBorder = 'border-pink-200'; pillText = 'text-pink-900'; }
-
-                        statusColor = `${pillBg} ${pillText} border-${pillBorder}`;
-                        formattedTitle = `<div class="w-1.5 h-1.5 rounded-full ${dotColor} mr-1.5 inline-block shrink-0"></div><span class="truncate">${evt.title}</span>`;
+                        statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
+                        const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
+                        formattedTitle = `<i class="fa-solid fa-list-check text-[10px] mr-1 opacity-70"></i>[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
                     }
                     
                     let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-full px-2 py-0.5 shadow-sm hover:shadow-md transition-shadow border ${statusColor} mx-1 mb-1 flex items-center" onclick="openEditById('${evt.id}')" title="${titleAttr}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor} mx-1 mb-1" onclick="openEditById('${evt.id}')" title="${titleAttr}">
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
@@ -1936,15 +1912,10 @@
                         avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user"></i></div>`;
                     }
 
-                    let dotColor = 'bg-gray-400';
-                    let pillBg = 'bg-gray-50';
-                    let pillBorder = 'border-gray-200';
-                    let pillText = 'text-gray-700';
-
-                    if(evt.campaignType === 'Slot') { dotColor = 'bg-amber-500'; pillBg = 'bg-amber-50'; pillBorder = 'border-amber-200'; pillText = 'text-amber-700'; }
-                    else if(evt.campaignType === 'Casino') { dotColor = 'bg-blue-500'; pillBg = 'bg-blue-50'; pillBorder = 'border-blue-200'; pillText = 'text-blue-700'; }
-                    else if(evt.campaignType === 'Poker') { dotColor = 'bg-purple-500'; pillBg = 'bg-purple-50'; pillBorder = 'border-purple-200'; pillText = 'text-purple-700'; }
-                    else if(evt.campaignType === 'Perya') { dotColor = 'bg-pink-500'; pillBg = 'bg-pink-50'; pillBorder = 'border-pink-200'; pillText = 'text-pink-700'; }
+                    const p = evt.progress || 0;
+                    const pFormatted = p.toFixed(2);
+                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
+                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
                     let statusBg = 'bg-gray-100 text-gray-600 border-gray-200';
                     if (evt.status === 'Ongoing') statusBg = 'bg-indigo-50 text-indigo-600 border-indigo-200';
@@ -1955,16 +1926,21 @@
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-2 h-2 rounded-full ${dotColor} mr-2"></div>
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${pillBg} ${pillBorder} ${pillText}">${evt.campaignType || 'Task'}</span>
-                                </div>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${statusBg}">${evt.status}</span>
                             </div>
-                            <p class="text-sm font-bold text-gray-900 truncate mb-2">${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-                            <div class="flex items-center justify-between w-full mt-1">
+                            <p class="text-sm font-bold text-gray-900 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")} - ${assignsStr}</p>
+                            <div class="flex items-center justify-between w-full mt-1 mb-2">
                                 <span class="text-xs ${urgency} font-medium flex items-center"><i class="fa-regular fa-calendar mr-1.5"></i>${displayDate}</span>
                                 <div class="flex pl-2">${avatarsHtml}</div>
+                            </div>
+                            <div class="flex flex-col items-end w-full">
+                                <div class="flex items-center justify-between mb-1.5 w-full">
+                                    <span class="text-[10px] font-bold text-gray-600">Progress</span>
+                                    <span class="text-[10px] font-bold text-gray-600">${pFormatted}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                    <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                                </div>
                             </div>
                         </div>
                     `;
