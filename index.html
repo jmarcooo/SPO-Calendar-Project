@@ -37,6 +37,15 @@
         </div>
         <div class="flex-1 flex justify-end items-center space-x-3">
             <div class="flex items-center space-x-2 mr-2 border-r border-gray-200 pr-4">
+                <span class="text-sm font-medium text-gray-700 hidden sm:inline">Type:</span>
+                <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
+                    <option value="All">All Types</option>
+                    <option value="task">Tasks</option>
+                    <option value="event">Offline Events</option>
+                    <option value="game">New Games</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-2 mr-2 border-r border-gray-200 pr-4">
                 <span class="text-sm font-medium text-gray-700 hidden sm:inline">Category:</span>
                 <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
                     <option value="All">All</option>
@@ -585,6 +594,7 @@
         window.tempSelectedDate = null;
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
         window.globalCategoryFilter = 'All';
+        window.globalTypeFilter = 'All';
         
         let logoClickCount = 0;
         window.handleLogoClick = () => {
@@ -1102,14 +1112,28 @@
             });
         }
 
+        window.setGlobalTypeFilter = (val) => {
+            window.globalTypeFilter = val;
+            window.renderUI();
+        }
+
         window.setGlobalCategoryFilter = (val) => { 
             window.globalCategoryFilter = val; 
             window.renderUI(); 
         }
 
         window.filterEventsByGlobalCategory = (eventList) => {
-            if (window.globalCategoryFilter === 'All') return eventList;
-            return eventList.filter(e => e.campaignType === window.globalCategoryFilter);
+            let filteredList = eventList;
+            if (window.globalCategoryFilter !== 'All') {
+                filteredList = filteredList.filter(e => e.campaignType === window.globalCategoryFilter);
+            }
+            if (window.globalTypeFilter !== 'All') {
+                filteredList = filteredList.filter(e => {
+                    const itemType = e.itemType || (e.isEventOnly ? 'event' : 'task');
+                    return itemType === window.globalTypeFilter;
+                });
+            }
+            return filteredList;
         }
 
         function updateCurrencySymbols() {
@@ -1698,7 +1722,7 @@
 
                     if (itemType === 'event') {
                         statusColor = 'bg-purple-100 text-purple-800 border border-purple-200';
-                        formattedTitle = `<i class="fa-solid fa-star text-[10px] mr-1 opacity-70"></i>${evt.title}`;
+                        formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 opacity-70"></i>${evt.title}`;
                     } else if (itemType === 'game') {
                         statusColor = 'bg-rose-100 text-rose-800 border border-rose-200';
                         formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 opacity-70"></i>${evt.title}`;
@@ -1706,7 +1730,7 @@
                         statusColor = evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 
                                       (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-amber-100 text-amber-800 border border-amber-200');
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
-                        formattedTitle = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
+                        formattedTitle = `<i class="fa-solid fa-list-check text-[10px] mr-1 opacity-70"></i>[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
                     }
                     
                     let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
@@ -1771,7 +1795,7 @@
                 if (itemType === 'event' || itemType === 'game') {
                     el.onclick = () => window.openEditById(evt.id);
                     
-                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-star text-purple-500';
+                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-purple-500';
                     let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-purple-900';
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let labelColor = itemType === 'game' ? 'text-rose-600' : 'text-purple-600';
@@ -1811,7 +1835,7 @@
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 mr-3">
-                            <p class="text-sm font-semibold text-gray-900 truncate">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                            <p class="text-sm font-semibold text-gray-900 truncate"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-center mt-1">
                                 <span class="text-xs ${urgency}"><i class="fa-regular fa-clock mr-1"></i>${displayDate}</span>
                                 <span class="mx-2 text-gray-300 text-xs">|</span>
@@ -1949,7 +1973,7 @@
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
                             <div class="flex items-center">
-                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
+                                <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
                             </div>
                             <span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span>
                         </div>
