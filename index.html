@@ -413,10 +413,10 @@
                 <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-list-check mr-2"></i> Content Task
                 </button>
-                <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-calendar-day mr-2"></i> Offline Event / Reminder
                 </button>
-                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-rose-200 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors">
+                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-gamepad mr-2"></i> New Game Launch
                 </button>
             </div>
@@ -453,6 +453,10 @@
                             <label for="event-end-date" class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
                             <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
+                    </div>
+                    <div id="image-link-container" style="display: none;">
+                        <label for="event-image-link" class="block text-sm font-medium text-gray-700">Image URL <span class="text-xs text-gray-500">(Optional)</span></label>
+                        <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div id="campaign-type-container">
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
@@ -584,6 +588,15 @@
 
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
+    <!-- Tooltip Modal for Events -->
+    <div id="event-hover-tooltip" class="fixed z-50 hidden bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-sm w-64 transform transition-opacity duration-200 opacity-0 pointer-events-none">
+        <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate"></h4>
+        <div id="tooltip-image-container" class="hidden w-full h-32 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-cover">
+        </div>
+        <p id="tooltip-date" class="text-xs text-gray-500 mt-2"></p>
+    </div>
+
     <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -614,6 +627,61 @@
         window.events = []; 
         window.budgets = []; 
         
+        let tooltipTimeout;
+
+        window.showEventTooltip = (evtId, e) => {
+            const evt = window.events.find(ev => ev.id === evtId);
+            if (!evt) return;
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            const titleEl = document.getElementById('tooltip-title');
+            const imgContainer = document.getElementById('tooltip-image-container');
+            const imgEl = document.getElementById('tooltip-image');
+            const dateEl = document.getElementById('tooltip-date');
+
+            titleEl.innerText = evt.title;
+            dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+
+            if (evt.itemType === 'event' && evt.imageLink && window.isValidURL(evt.imageLink)) {
+                imgEl.src = evt.imageLink;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            tooltip.classList.remove('hidden');
+            window.moveEventTooltip(e);
+
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('opacity-0');
+            }, 50);
+        };
+
+        window.hideEventTooltip = () => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            tooltip.classList.add('opacity-0');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.add('hidden');
+            }, 200);
+        };
+
+        window.moveEventTooltip = (e) => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            if (tooltip.classList.contains('hidden')) return;
+
+            let x = e.clientX + 15;
+            let y = e.clientY + 15;
+
+            const rect = tooltip.getBoundingClientRect();
+            if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 15;
+            if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 15;
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        };
+
         let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : new Date().getMonth();
         let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : new Date().getFullYear();
         let currentDateObj = new Date();
@@ -1307,6 +1375,7 @@
             const title = document.getElementById('event-title').value.trim();
             const startDate = document.getElementById('event-start-date').value;
             const endDate = document.getElementById('event-end-date').value;
+            const imageLink = document.getElementById('event-image-link').value.trim();
             
             let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
             
@@ -1346,6 +1415,9 @@
                 progress: progress, 
                 updatedAt: new Date().toISOString()
             };
+            if (itemType === 'event') {
+                eventData.imageLink = imageLink;
+            }
 
             if (!id) {
                 eventData.CreatedTime = window.getFormattedCreatedTime();
@@ -1815,7 +1887,7 @@
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${titleAttr}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)">
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
@@ -2459,14 +2531,22 @@
             const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
             document.getElementById('event-start-date').value = startDate;
             document.getElementById('event-end-date').value = startDate;
+            document.getElementById('event-image-link').value = '';
             
             document.getElementById('event-campaign-type').value = 'All';
 
             const campContainer = document.getElementById('campaign-type-container');
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
+            const imageContainer = document.getElementById('image-link-container');
 
             const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (itemType === 'event') {
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
 
             if (isNonTask) {
                 campContainer.style.display = 'none';
@@ -2506,12 +2586,20 @@
             document.getElementById('event-start-date').value = evt.startDate; 
             document.getElementById('event-end-date').value = evt.endDate;
             document.getElementById('event-campaign-type').value = evt.campaignType || 'All';
+            document.getElementById('event-image-link').value = evt.imageLink || '';
             
             const campContainer = document.getElementById('campaign-type-container');
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
+            const imageContainer = document.getElementById('image-link-container');
 
             const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (itemType === 'event') {
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
 
             if (isNonTask) {
                 campContainer.style.display = 'none';
