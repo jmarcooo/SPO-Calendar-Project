@@ -18,9 +18,6 @@
         .calendar-cell {
             min-height: 80px;
         }
-        .cal-row {
-            min-height: 120px;
-        }
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -104,7 +101,7 @@
                 <!-- Quick Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-                        <div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-gray-400"></div>
+
                         <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
                             <span class="text-4xl font-bold text-gray-900" id="stat-total">0</span>
@@ -112,7 +109,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-                        <div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-indigo-500"></div>
+
                         <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
                             <span class="text-4xl font-bold text-indigo-600" id="stat-progress">0</span>
@@ -120,7 +117,7 @@
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-                        <div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-emerald-500"></div>
+
                         <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
                             <span class="text-4xl font-bold text-emerald-600" id="stat-completed">0</span>
@@ -140,9 +137,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                     <!-- Left Column: Calendar -->
-                    <div class="xl:col-span-7 space-y-6">
+                    <div class="xl:col-span-2 space-y-6">
                         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6" id="calendar-view">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center space-x-4">
@@ -178,13 +175,13 @@
                     </div>
 
                     <!-- Right Column: Ongoing Events -->
-                    <div class="xl:col-span-5">
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-14rem)]">
-                            <div class="p-4 border-b border-gray-200 flex justify-between items-center shrink-0">
+                    <div class="xl:col-span-1">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
+                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                                 <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
                             </div>
-                            <div class="p-4 flex-1 overflow-y-auto min-h-0" id="ongoing-events-list">
+                            <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
                                 <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
                             </div>
                         </div>
@@ -413,13 +410,13 @@
         <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Create New...</h3>
             <div class="space-y-3">
-                <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-list-check mr-2"></i> Content Task
                 </button>
                 <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                     <i class="fa-solid fa-calendar-day mr-2"></i> Offline Event / Reminder
                 </button>
-                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-rose-200 text-sm font-medium rounded-md shadow-sm text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors">
                     <i class="fa-solid fa-gamepad mr-2"></i> New Game Launch
                 </button>
             </div>
@@ -1773,11 +1770,9 @@
                 });
 
                 let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white flex-1 cal-row';
+                weekEl.className = 'relative bg-white min-h-[120px] flex-1';
                 let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 pointer-events-none">`;
-                let maxTrack = 0;
-                placements.forEach(p => { if (p.trackIdx > maxTrack) maxTrack = p.trackIdx; });
-                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none z-10" style="grid-template-rows: repeat(${Math.max(5, maxTrack + 2)}, minmax(0, 1fr));">`;
+                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
 
                 week.forEach((dayObj, i) => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
@@ -1808,8 +1803,8 @@
                         statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
                         formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else if (itemType === 'game') {
-                        statusColor = 'bg-rose-50 text-rose-800 border-rose-200';
-                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-rose-500"></i>${evt.title}`;
+                        statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else {
                         statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
@@ -1820,7 +1815,7 @@
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded-md p-1.5 shadow-sm hover:shadow-md transition-shadow ${statusColor} mx-1 mb-1" onclick="openEditById('${evt.id}')" title="${titleAttr}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-sm mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${titleAttr}">
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
@@ -1889,7 +1884,6 @@
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
-                                    <div class="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${typeBg}">${typeLabel}</span>
                                 </div>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-gray-100 text-gray-600 border border-gray-200">Pending</span>
@@ -1933,7 +1927,7 @@
                             <div class="flex items-center justify-between mb-2">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${statusBg}">${evt.status}</span>
                             </div>
-                            <p class="text-sm font-bold text-gray-900 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")} - ${assignsStr}</p>
+                            <p class="text-sm font-bold text-indigo-500 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")} - ${assignsStr}</p>
                             <div class="flex items-center justify-between w-full mt-1 mb-2">
                                 <span class="text-xs ${urgency} font-medium flex items-center"><i class="fa-regular fa-calendar mr-1.5"></i>${displayDate}</span>
                                 <div class="flex pl-2">${avatarsHtml}</div>
