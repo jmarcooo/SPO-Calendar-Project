@@ -685,6 +685,81 @@
             tooltip.style.top = `${y}px`;
         };
 
+        let taskTooltipInterval = null;
+
+        window.showTaskTooltip = (taskId, e) => {
+            const task = window.events.find(ev => ev.id === taskId);
+            if (!task) return;
+
+            let images = [];
+            if (task.fields && Array.isArray(task.fields.postIds)) {
+                images = task.fields.postIds.filter(p => p.imgUrl && (window.isValidURL ? window.isValidURL(p.imgUrl) : p.imgUrl.startsWith('http'))).map(p => p.imgUrl);
+            }
+            if (task.imageLink && (window.isValidURL ? window.isValidURL(task.imageLink) : task.imageLink.startsWith('http'))) {
+                images.push(task.imageLink);
+            }
+
+            if (images.length === 0) return;
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            const titleEl = document.getElementById('tooltip-title');
+            const imgContainer = document.getElementById('tooltip-image-container');
+            const imgEl = document.getElementById('tooltip-image');
+            const dateEl = document.getElementById('tooltip-date');
+
+            titleEl.innerText = task.title;
+            dateEl.innerText = images.length > 1 ? `Image 1 of ${images.length}` : `Task Image`;
+
+            imgEl.src = images[0];
+            imgContainer.classList.remove('hidden');
+
+            tooltip.classList.remove('hidden');
+            window.moveTaskTooltip(e);
+
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('opacity-0');
+            }, 50);
+
+            if (images.length > 1) {
+                let currentIndex = 0;
+                taskTooltipInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    imgEl.src = images[currentIndex];
+                    dateEl.innerText = `Image ${currentIndex + 1} of ${images.length}`;
+                }, 2000);
+            }
+        };
+
+        window.hideTaskTooltip = () => {
+            if (taskTooltipInterval) {
+                clearInterval(taskTooltipInterval);
+                taskTooltipInterval = null;
+            }
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            tooltip.classList.add('opacity-0');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.add('hidden');
+            }, 200);
+        };
+
+        window.moveTaskTooltip = (e) => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            if (tooltip.classList.contains('hidden')) return;
+
+            let x = e.clientX + 15;
+            let y = e.clientY + 15;
+
+            const rect = tooltip.getBoundingClientRect();
+            if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 15;
+            if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 15;
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        };
+
         let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : new Date().getMonth();
         let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : new Date().getFullYear();
         let currentDateObj = new Date();
@@ -2100,6 +2175,10 @@
                     window.openTaskDrawer(evt.id); 
                 };
                 
+                tr.onmouseenter = (e) => { window.showTaskTooltip(evt.id, e); };
+                tr.onmouseleave = () => { window.hideTaskTooltip(); };
+                tr.onmousemove = (e) => { window.moveTaskTooltip(e); };
+
                 const p = evt.progress || 0; 
                 const pFormatted = p.toFixed(2);
                 const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
