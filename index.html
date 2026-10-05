@@ -674,12 +674,12 @@
             const tooltip = document.getElementById('event-hover-tooltip');
             if (tooltip.classList.contains('hidden')) return;
 
-            let x = e.clientX + 15;
-            let y = e.clientY + 15;
-
             const rect = tooltip.getBoundingClientRect();
-            if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 15;
-            if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 15;
+            let x = (window.innerWidth - rect.width) / 2;
+            let y = (window.innerHeight - rect.height) / 2;
+
+            if (x < 10) x = 10;
+            if (y < 10) y = 10;
 
             tooltip.style.left = `${x}px`;
             tooltip.style.top = `${y}px`;
@@ -749,12 +749,12 @@
             const tooltip = document.getElementById('event-hover-tooltip');
             if (tooltip.classList.contains('hidden')) return;
 
-            let x = e.clientX + 15;
-            let y = e.clientY + 15;
-
             const rect = tooltip.getBoundingClientRect();
-            if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 15;
-            if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 15;
+            let x = (window.innerWidth - rect.width) / 2;
+            let y = (window.innerHeight - rect.height) / 2;
+
+            if (x < 10) x = 10;
+            if (y < 10) y = 10;
 
             tooltip.style.left = `${x}px`;
             tooltip.style.top = `${y}px`;
@@ -1441,6 +1441,19 @@
             }
         }
 
+        window.deleteTask = (id) => {
+            if (!id) return;
+            if (confirm('Are you sure you want to delete this event/task?')) {
+                window.events = window.events.filter(evt => evt.id !== id);
+                window.saveToLocalStorage();
+                window.closeAddModal();
+                window.renderCalendar();
+                window.renderTasksList();
+                window.renderOngoingEvents();
+                window.showToast("Deleted successfully", "success");
+            }
+        };
+
         window.saveEvent = async (e) => {
             e.preventDefault();
             const form = document.getElementById('event-form');
@@ -1964,8 +1977,12 @@
                     let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
+                    const tooltipEvents = itemType === 'task'
+                        ? `onmouseenter="showTaskTooltip('${evt.id}', event)" onmouseleave="hideTaskTooltip()" onmousemove="moveTaskTooltip(event)"`
+                        : `onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)"`;
+
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
