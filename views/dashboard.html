@@ -1,0 +1,93 @@
+            <div id="view-dashboard" class="block">
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+
+                        <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-4xl font-bold text-gray-900" id="stat-total">0</span>
+                            <span class="ml-2 text-sm font-medium text-gray-400">scheduled</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+
+                        <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-4xl font-bold text-indigo-600" id="stat-progress">0</span>
+                            <span class="ml-2 text-sm font-medium text-indigo-400">in progress</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+
+                        <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-4xl font-bold text-emerald-600" id="stat-completed">0</span>
+                            <span class="ml-2 text-sm font-medium text-emerald-400">finalized</span>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-center w-full">
+                            <div class="text-sm font-medium text-gray-500 truncate">Available Budget (<span id="stat-budget-month-label"></span>)</div>
+                            <div class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 uppercase border border-blue-100" id="stat-budget-currency">PHP</div>
+                        </div>
+                        <div class="mt-2 text-4xl font-bold text-blue-600" id="stat-budget">₱0.00</div>
+                        <div class="flex justify-between items-center text-xs mt-auto">
+                            <span class="text-gray-400 font-medium">Limit: <span id="stat-budget-limit">₱0.00</span></span>
+                            <span class="font-semibold text-blue-600" id="stat-budget-pct">0% remaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <!-- Left Column: Calendar -->
+                    <div class="xl:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-4 sm:p-6" id="calendar-view">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center space-x-4">
+                                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight" id="calendar-month-year">Month Year</h2>
+                                    <div class="flex bg-slate-100 rounded-xl p-0.5 border border-slate-200/60">
+                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
+                                            <i class="fa-solid fa-chevron-left text-sm"></i>
+                                        </button>
+                                        <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 hover:bg-white hover:shadow-md shadow-slate-200/50 rounded-xl transition-all">
+                                            Today
+                                        </button>
+                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
+                                            <i class="fa-solid fa-chevron-right text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calendar Grid -->
+                            <div class="grid grid-cols-7 gap-px bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60">
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">TUE</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">WED</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">THU</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">FRI</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
+                            </div>
+                            <div id="calendar-grid" class="flex flex-col gap-px bg-slate-100 border-l border-r border-b border-slate-200/60 rounded-b-lg">
+                                <!-- Dynamically generated days -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Ongoing Events -->
+                    <div class="xl:col-span-1">
+                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col" style="height: calc(100vh - 200px); max-height: calc(100vh - 200px); overflow: hidden;">
+                            <div class="p-4 border-b border-slate-200/60 flex justify-between items-center">
+                                <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
+                            </div>
+                            <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
+                                <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks & Progress View -->

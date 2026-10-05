@@ -90,318 +90,21 @@
                 <a href="#" id="nav-campaign" onclick="switchView('campaign')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-bullhorn mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Campaign Details
                 </a>
+                <a href="#" id="nav-daily_task" onclick="switchView('daily_task')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-clipboard-check mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Daily Task
+                </a>
+                <a href="#" id="nav-sms" onclick="switchView('sms')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
+                </a>
+                <a href="#" id="nav-content_writer" onclick="switchView('content_writer')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Content Writer
+                </a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative">
-            
-            <!-- Dashboard View -->
-            <div id="view-dashboard" class="block">
-                <!-- Quick Stats -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-
-                        <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
-                        <div class="mt-2 flex items-baseline">
-                            <span class="text-4xl font-bold text-gray-900" id="stat-total">0</span>
-                            <span class="ml-2 text-sm font-medium text-gray-400">scheduled</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-
-                        <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
-                        <div class="mt-2 flex items-baseline">
-                            <span class="text-4xl font-bold text-indigo-600" id="stat-progress">0</span>
-                            <span class="ml-2 text-sm font-medium text-indigo-400">in progress</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-
-                        <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
-                        <div class="mt-2 flex items-baseline">
-                            <span class="text-4xl font-bold text-emerald-600" id="stat-completed">0</span>
-                            <span class="ml-2 text-sm font-medium text-emerald-400">finalized</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
-                        <div class="flex justify-between items-center w-full">
-                            <div class="text-sm font-medium text-gray-500 truncate">Available Budget (<span id="stat-budget-month-label"></span>)</div>
-                            <div class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 uppercase border border-blue-100" id="stat-budget-currency">PHP</div>
-                        </div>
-                        <div class="mt-2 text-4xl font-bold text-blue-600" id="stat-budget">₱0.00</div>
-                        <div class="flex justify-between items-center text-xs mt-auto">
-                            <span class="text-gray-400 font-medium">Limit: <span id="stat-budget-limit">₱0.00</span></span>
-                            <span class="font-semibold text-blue-600" id="stat-budget-pct">0% remaining</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    <!-- Left Column: Calendar -->
-                    <div class="xl:col-span-2 space-y-6">
-                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-4 sm:p-6" id="calendar-view">
-                            <div class="flex items-center justify-between mb-6">
-                                <div class="flex items-center space-x-4">
-                                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight" id="calendar-month-year">Month Year</h2>
-                                    <div class="flex bg-slate-100 rounded-xl p-0.5 border border-slate-200/60">
-                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
-                                            <i class="fa-solid fa-chevron-left text-sm"></i>
-                                        </button>
-                                        <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 hover:bg-white hover:shadow-md shadow-slate-200/50 rounded-xl transition-all">
-                                            Today
-                                        </button>
-                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
-                                            <i class="fa-solid fa-chevron-right text-sm"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Calendar Grid -->
-                            <div class="grid grid-cols-7 gap-px bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60">
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">TUE</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">WED</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">THU</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">FRI</div>
-                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
-                            </div>
-                            <div id="calendar-grid" class="flex flex-col gap-px bg-slate-100 border-l border-r border-b border-slate-200/60 rounded-b-lg">
-                                <!-- Dynamically generated days -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Ongoing Events -->
-                    <div class="xl:col-span-1">
-                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col" style="height: calc(100vh - 200px); max-height: calc(100vh - 200px); overflow: hidden;">
-                            <div class="p-4 border-b border-slate-200/60 flex justify-between items-center">
-                                <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
-                            </div>
-                            <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
-                                <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tasks & Progress View -->
-            <div id="view-tasks" class="hidden">
-                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60" id="progress-tracking">
-                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="text-lg leading-6 font-bold text-gray-900">Detailed Progress Tracking</h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
-                        </div>
-                    </div>
-                    
-                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                        <div class="relative flex-1 max-w-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-search text-gray-400"></i>
-                            </div>
-                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
-                            <option value="All">All Assignees</option>
-                        </select>
-                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
-                            <option value="All">All Statuses</option>
-                            <option value="Upcoming">Upcoming</option>
-                            <option value="Ongoing">Ongoing</option>
-                            <option value="Done">Done</option>
-                        </select>
-                        <button onclick="exportTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export to Excel
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th scope="col" onclick="handleSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                                        Content Task <i id="sort-icon-title" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleSort('assignees')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                                        Assignees <i id="sort-icon-assignees" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleSort('status')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                                        Status <i id="sort-icon-status" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleSort('progress')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                                        Progress <i id="sort-icon-progress" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="tasks-table-body">
-                                <tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Loading tasks...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Team Budget View -->
-            <div id="view-budget" class="hidden">
-                <div id="budget-config-section" style="display: none;" class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 mb-6 p-4 sm:p-5">
-                    <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
-                        <div class="mr-2">
-                            <label class="block text-sm font-bold text-gray-900 mb-1">Budget Configuration <span class="text-xs font-normal text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded">Admin</span></label>
-                            <p class="text-xs text-gray-500">Synced with Calendar Dashboard view.</p>
-                        </div>
-                        <div>
-                            <label for="setting-budget-month" class="block text-xs font-medium text-gray-700 mb-1">Active Month</label>
-                            <input type="month" id="setting-budget-month" onchange="syncBudgetMonth(this.value)" class="block w-full sm:w-40 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="setting-budget-limit" class="block text-xs font-medium text-gray-700 mb-1">Limit (Selected Month)</label>
-                            <input type="number" step="0.01" min="0" id="setting-budget-limit" class="block w-full sm:w-36 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="setting-budget-currency" class="block text-xs font-medium text-gray-700 mb-1">Currency</label>
-                            <select id="setting-budget-currency" class="block w-full sm:w-24 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
-                                <option value="PHP">PHP</option>
-                                <option value="USD">USD</option>
-                            </select>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium">Save Limit</button>
-                            <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
-                            </button>
-                            <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium transition-colors">
-                                <i class="fa-solid fa-trash-can mr-1"></i> Clear
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60">
-                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="text-lg leading-6 font-bold text-gray-900">Team Budget Allocation</h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500" id="budget-table-subtitle">Track campaign budgets, expenses, and remaining balances.</p>
-                        </div>
-                        <div class="mt-4 sm:mt-0 flex space-x-3">
-                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50">
-                                <i class="fa-solid fa-list-ul mr-2"></i> View All Months
-                            </button>
-                            <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700">
-                                <i class="fa-solid fa-plus mr-2"></i> Add Budget Entry
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                        <div class="relative flex-1 max-w-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-search text-gray-400"></i>
-                            </div>
-                            <input type="text" id="budget-search-input" oninput="setBudgetSearch(this.value)" placeholder="Search by campaign name or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <select id="budget-filter-owner" onchange="setBudgetOwnerFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-xl cursor-pointer">
-                            <option value="All">All Owners</option>
-                        </select>
-                        <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-xl cursor-pointer">
-                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th scope="col" onclick="handleBudgetSort('month')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Month <i id="budget-sort-icon-month" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Campaign / Project Name <i id="budget-sort-icon-name" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('type')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Type <i id="budget-sort-icon-type" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('owner')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Owner <i id="budget-sort-icon-owner" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('allocated')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Allocated Budget <i id="budget-sort-icon-allocated" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('spent')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Amount Spent <i id="budget-sort-icon-spent" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Remaining Balance</th>
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200" id="budget-table-body">
-                            </tbody>
-                            <tfoot class="bg-slate-50 font-medium">
-                                <tr>
-                                    <td colspan="4" class="px-6 py-4 text-left text-sm text-gray-900 uppercase">Total</td>
-                                    <td class="px-6 py-4 text-right text-sm text-gray-900" id="budget-total-allocated">₱0.00</td>
-                                    <td class="px-6 py-4 text-right text-sm text-gray-900" id="budget-total-spent">₱0.00</td>
-                                    <td class="px-6 py-4 text-right text-sm text-blue-600 font-bold" id="budget-total-remaining">₱0.00</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Campaign Details View -->
-            <div id="view-campaign" class="hidden">
-                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 mb-6 p-4 sm:p-5 flex justify-between items-center">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900">Campaign Details</h3>
-                        <p class="text-xs text-gray-500">Select a task to view its campaign creatives and progress.</p>
-                    </div>
-                    <div class="w-1/3 min-w-[250px]">
-                        <select id="campaign-task-selector" onchange="renderCampaignDetails(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 focus:ring-indigo-500 sm:text-sm">
-                            <option value="">-- Select a Task --</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- 3-COLUMN LAYOUT -->
-                <div id="campaign-content-area" class="hidden grid-cols-1 lg:grid-cols-4 gap-6">
-                    
-                    <!-- 50%: Visuals & Links (Spans 2 columns) -->
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-2">
-                        <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                            <h4 class="text-sm font-bold text-gray-900"><i class="fa-regular fa-image mr-2 text-indigo-500"></i>Creatives & Links</h4>
-                            <span id="carousel-counter" class="text-xs font-medium text-gray-500">0 / 0</span>
-                        </div>
-                        <div class="p-4 flex-1 flex flex-col items-center justify-center relative min-h-[500px]" id="campaign-carousel-container">
-                        </div>
-                    </div>
-
-                    <!-- 25%: Execution Summary (Spans 1 column) -->
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-1" id="campaign-stats-container">
-                    </div>
-
-                    <!-- 25%: Post Performance (Spans 1 column) -->
-                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-1" id="campaign-performance-container">
-                    </div>
-
-                </div>
-                
-                <div id="campaign-empty-state" class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-12 text-center mt-6">
-                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-slate-100 mb-4">
-                        <i class="fa-solid fa-bullseye text-3xl text-gray-400"></i>
-                    </div>
-                    <h3 class="text-lg font-medium text-gray-900">No Task Selected</h3>
-                    <p class="text-gray-500 text-sm mt-1">Please select a task from the dropdown above to view its details.</p>
-                </div>
-            </div>
-
+            <div id="main-content-container" class="w-full h-full"></div>
         </main>
     </div>
 
@@ -1724,30 +1427,50 @@
 
         window.switchView = (viewName) => {
             localStorage.setItem('spo_active_view', viewName);
-            const views = ['dashboard', 'tasks', 'budget', 'campaign'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'sms', 'content_writer'];
             views.forEach(v => {
-                const el = document.getElementById(`view-${v}`);
-                if(el) {
-                    el.classList.toggle('hidden', v !== viewName);
-                    el.classList.toggle('block', v === viewName);
-                }
-                
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-indigo-50', 'text-indigo-700');
                         nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
-                        icon.classList.add('text-indigo-500'); 
-                        icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                        if(icon) {
+                            icon.classList.add('text-indigo-500');
+                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                        }
                     } else {
                         nav.classList.remove('bg-indigo-50', 'text-indigo-700');
                         nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
-                        icon.classList.remove('text-indigo-500'); 
-                        icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                        if(icon) {
+                            icon.classList.remove('text-indigo-500');
+                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                        }
                     }
                 }
             });
+
+            fetch(`views/${viewName}.html`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Could not load view");
+                    return res.text();
+                })
+                .then(html => {
+                    document.getElementById('main-content-container').innerHTML = html;
+                    if (viewName === 'dashboard') {
+                        window.renderUI();
+                    } else if (viewName === 'tasks') {
+                        window.renderTasksTable();
+                    } else if (viewName === 'budget') {
+                        window.renderBudgetTable();
+                    } else if (viewName === 'campaign') {
+                        if(window.updateCampaignDropdown) window.updateCampaignDropdown();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('main-content-container').innerHTML = `<div class="p-8 text-center text-red-500">Failed to load view.</div>`;
+                });
         };
 
         window.renderUI = () => {
