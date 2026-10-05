@@ -30,8 +30,8 @@
         .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 300ms ease-in; }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col overflow-hidden bg-gray-50">
-    <header class="h-16 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0 z-10 w-full border-b border-gray-200">
+<body class="text-gray-800 h-screen flex flex-col overflow-hidden bg-slate-50">
+    <header class="h-16 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0 z-10 w-full border-b border-slate-200/60">
         <div class="flex items-center w-64 shrink-0">
             <div class="h-10 w-10 rounded-xl bg-indigo-500 flex items-center justify-center cursor-pointer select-none mr-3" onclick="handleLogoClick()">
                 <i class="fa-solid fa-calendar-days text-white text-xl"></i>
@@ -42,18 +42,18 @@
             </div>
         </div>
         <div class="flex-1 flex justify-end items-center space-x-3">
-            <div class="flex items-center space-x-2 mr-2 border-r border-gray-200 pr-4">
+            <div class="flex items-center space-x-2 mr-2 border-r border-slate-200/60 pr-4">
                 <span class="text-sm font-medium text-gray-700 hidden sm:inline">Type:</span>
-                <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
+                <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
                     <option value="All">All Types</option>
                     <option value="task">Tasks</option>
                     <option value="event">Offline Events</option>
                     <option value="game">New Games</option>
                 </select>
             </div>
-            <div class="flex items-center space-x-2 mr-2 border-r border-gray-200 pr-4">
+            <div class="flex items-center space-x-2 mr-2 border-r border-slate-200/60 pr-4">
                 <span class="text-sm font-medium text-gray-700 hidden sm:inline">Category:</span>
-                <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
+                <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
                     <option value="All">All</option>
                     <option value="Slot">Slot</option>
                     <option value="Casino">Casino</option>
@@ -63,10 +63,10 @@
                     <option value="Bingo">Bingo</option>
                 </select>
             </div>
-            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
-            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
                 <i class="fa-solid fa-plus mr-2"></i> New Event
             </button>
         </div>
@@ -76,18 +76,18 @@
     <div class="flex flex-1 overflow-hidden">
         
         <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex-col overflow-y-auto shrink-0 hidden md:flex">
+        <aside class="w-64 bg-white border-r border-slate-200/60 flex-col overflow-y-auto shrink-0 hidden md:flex">
             <nav class="flex-1 p-4 space-y-1">
-                <a href="#" id="nav-dashboard" onclick="switchView('dashboard')" class="flex items-center px-3 py-2 bg-indigo-50 text-indigo-700 rounded-md group font-medium nav-item">
+                <a href="#" id="nav-dashboard" onclick="switchView('dashboard')" class="flex items-center px-3 py-2 bg-indigo-50 text-indigo-700 rounded-xl group font-medium nav-item">
                     <i class="fa-solid fa-chart-pie mr-3 text-indigo-500 nav-icon"></i> Calendar Dashboard
                 </a>
-                <a href="#" id="nav-tasks" onclick="switchView('tasks')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
+                <a href="#" id="nav-tasks" onclick="switchView('tasks')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-tasks mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Tasks & Progress
                 </a>
-                <a href="#" id="nav-budget" onclick="switchView('budget')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
+                <a href="#" id="nav-budget" onclick="switchView('budget')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-wallet mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Team Budget
                 </a>
-                <a href="#" id="nav-campaign" onclick="switchView('campaign')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md group font-medium transition-colors nav-item">
+                <a href="#" id="nav-campaign" onclick="switchView('campaign')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-bullhorn mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Campaign Details
                 </a>
             </nav>
@@ -100,7 +100,7 @@
             <div id="view-dashboard" class="block">
                 <!-- Quick Stats -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="stats-container">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
 
                         <div class="text-sm font-medium text-gray-500 truncate">Total Active Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
@@ -108,7 +108,7 @@
                             <span class="ml-2 text-sm font-medium text-gray-400">scheduled</span>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
 
                         <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
@@ -116,7 +116,7 @@
                             <span class="ml-2 text-sm font-medium text-indigo-400">in progress</span>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
 
                         <div class="text-sm font-medium text-gray-500 truncate">Completed (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
@@ -124,7 +124,7 @@
                             <span class="ml-2 text-sm font-medium text-emerald-400">finalized</span>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5 relative overflow-hidden flex flex-col justify-between h-32">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
                         <div class="flex justify-between items-center w-full">
                             <div class="text-sm font-medium text-gray-500 truncate">Available Budget (<span id="stat-budget-month-label"></span>)</div>
                             <div class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 uppercase border border-blue-100" id="stat-budget-currency">PHP</div>
@@ -140,18 +140,18 @@
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                     <!-- Left Column: Calendar -->
                     <div class="xl:col-span-2 space-y-6">
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6" id="calendar-view">
+                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-4 sm:p-6" id="calendar-view">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center space-x-4">
                                     <h2 class="text-2xl font-bold text-gray-900 tracking-tight" id="calendar-month-year">Month Year</h2>
-                                    <div class="flex bg-gray-100 rounded-lg p-0.5 border border-gray-200">
-                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-md hover:bg-white hover:shadow-sm text-gray-600 transition-all">
+                                    <div class="flex bg-slate-100 rounded-xl p-0.5 border border-slate-200/60">
+                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
                                             <i class="fa-solid fa-chevron-left text-sm"></i>
                                         </button>
-                                        <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 hover:bg-white hover:shadow-sm rounded-md transition-all">
+                                        <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 hover:bg-white hover:shadow-md shadow-slate-200/50 rounded-xl transition-all">
                                             Today
                                         </button>
-                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-md hover:bg-white hover:shadow-sm text-gray-600 transition-all">
+                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 text-gray-600 transition-all">
                                             <i class="fa-solid fa-chevron-right text-sm"></i>
                                         </button>
                                     </div>
@@ -159,16 +159,16 @@
                             </div>
                             
                             <!-- Calendar Grid -->
-                            <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden border border-gray-200">
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">TUE</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">WED</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">THU</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">FRI</div>
-                                <div class="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
+                            <div class="grid grid-cols-7 gap-px bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60">
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SUN</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">MON</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">TUE</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">WED</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">THU</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">FRI</div>
+                                <div class="bg-slate-50 py-2 text-center text-xs font-semibold text-gray-500 tracking-wider">SAT</div>
                             </div>
-                            <div id="calendar-grid" class="flex flex-col gap-px bg-gray-200 border-l border-r border-b border-gray-200 rounded-b-lg">
+                            <div id="calendar-grid" class="flex flex-col gap-px bg-slate-100 border-l border-r border-b border-slate-200/60 rounded-b-lg">
                                 <!-- Dynamically generated days -->
                             </div>
                         </div>
@@ -176,8 +176,8 @@
 
                     <!-- Right Column: Ongoing Events -->
                     <div class="xl:col-span-1">
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 h-full flex flex-col">
-                            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                        <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col" style="height: calc(100vh - 200px); max-height: calc(100vh - 200px); overflow: hidden;">
+                            <div class="p-4 border-b border-slate-200/60 flex justify-between items-center">
                                 <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
                             </div>
@@ -191,49 +191,49 @@
 
             <!-- Tasks & Progress View -->
             <div id="view-tasks" class="hidden">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200" id="progress-tracking">
-                    <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60" id="progress-tracking">
+                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="text-lg leading-6 font-bold text-gray-900">Detailed Progress Tracking</h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
                         </div>
                     </div>
                     
-                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <div class="relative flex-1 max-w-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
-                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer">
+                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
                             <option value="All">All Assignees</option>
                         </select>
-                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md cursor-pointer">
+                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
                             <option value="All">All Statuses</option>
                             <option value="Upcoming">Upcoming</option>
                             <option value="Ongoing">Ongoing</option>
                             <option value="Done">Done</option>
                         </select>
-                        <button onclick="exportTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                        <button onclick="exportTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export to Excel
                         </button>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-slate-50">
                                 <tr>
-                                    <th scope="col" onclick="handleSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors group">
+                                    <th scope="col" onclick="handleSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
                                         Content Task <i id="sort-icon-title" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleSort('assignees')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors group">
+                                    <th scope="col" onclick="handleSort('assignees')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
                                         Assignees <i id="sort-icon-assignees" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleSort('status')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors group">
+                                    <th scope="col" onclick="handleSort('status')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
                                         Status <i id="sort-icon-status" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleSort('progress')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors group">
+                                    <th scope="col" onclick="handleSort('progress')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
                                         Progress <i id="sort-icon-progress" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -249,7 +249,7 @@
 
             <!-- Team Budget View -->
             <div id="view-budget" class="hidden">
-                <div id="budget-config-section" style="display: none;" class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5">
+                <div id="budget-config-section" style="display: none;" class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 mb-6 p-4 sm:p-5">
                     <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
                         <div class="mr-2">
                             <label class="block text-sm font-bold text-gray-900 mb-1">Budget Configuration <span class="text-xs font-normal text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded">Admin</span></label>
@@ -257,83 +257,83 @@
                         </div>
                         <div>
                             <label for="setting-budget-month" class="block text-xs font-medium text-gray-700 mb-1">Active Month</label>
-                            <input type="month" id="setting-budget-month" onchange="syncBudgetMonth(this.value)" class="block w-full sm:w-40 border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                            <input type="month" id="setting-budget-month" onchange="syncBudgetMonth(this.value)" class="block w-full sm:w-40 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
                         </div>
                         <div>
                             <label for="setting-budget-limit" class="block text-xs font-medium text-gray-700 mb-1">Limit (Selected Month)</label>
-                            <input type="number" step="0.01" min="0" id="setting-budget-limit" class="block w-full sm:w-36 border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                            <input type="number" step="0.01" min="0" id="setting-budget-limit" class="block w-full sm:w-36 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
                         </div>
                         <div>
                             <label for="setting-budget-currency" class="block text-xs font-medium text-gray-700 mb-1">Currency</label>
-                            <select id="setting-budget-currency" class="block w-full sm:w-24 border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                            <select id="setting-budget-currency" class="block w-full sm:w-24 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:outline-none focus:ring-indigo-500 sm:text-sm">
                                 <option value="PHP">PHP</option>
                                 <option value="USD">USD</option>
                             </select>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">Save Limit</button>
-                            <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium">
+                            <button onclick="saveBudgetSettings()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium">Save Limit</button>
+                            <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium">
                                 <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
                             </button>
-                            <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-md shadow-sm text-sm font-medium transition-colors">
+                            <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium transition-colors">
                                 <i class="fa-solid fa-trash-can mr-1"></i> Clear
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60">
+                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="text-lg leading-6 font-bold text-gray-900">Team Budget Allocation</h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500" id="budget-table-subtitle">Track campaign budgets, expenses, and remaining balances.</p>
                         </div>
                         <div class="mt-4 sm:mt-0 flex space-x-3">
-                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
+                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50">
                                 <i class="fa-solid fa-list-ul mr-2"></i> View All Months
                             </button>
-                            <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                            <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700">
                                 <i class="fa-solid fa-plus mr-2"></i> Add Budget Entry
                             </button>
                         </div>
                     </div>
                     
-                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <div class="relative flex-1 max-w-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" id="budget-search-input" oninput="setBudgetSearch(this.value)" placeholder="Search by campaign name or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:ring-indigo-500 sm:text-sm">
+                            <input type="text" id="budget-search-input" oninput="setBudgetSearch(this.value)" placeholder="Search by campaign name or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:ring-indigo-500 sm:text-sm">
                         </div>
-                        <select id="budget-filter-owner" onchange="setBudgetOwnerFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-md cursor-pointer">
+                        <select id="budget-filter-owner" onchange="setBudgetOwnerFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-xl cursor-pointer">
                             <option value="All">All Owners</option>
                         </select>
-                        <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-md cursor-pointer">
-                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                        <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 bg-white focus:ring-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
                         </button>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-slate-50">
                                 <tr>
-                                    <th scope="col" onclick="handleBudgetSort('month')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('month')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Month <i id="budget-sort-icon-month" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleBudgetSort('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Campaign / Project Name <i id="budget-sort-icon-name" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleBudgetSort('type')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('type')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Type <i id="budget-sort-icon-type" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleBudgetSort('owner')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('owner')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Owner <i id="budget-sort-icon-owner" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleBudgetSort('allocated')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('allocated')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Allocated Budget <i id="budget-sort-icon-allocated" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
-                                    <th scope="col" onclick="handleBudgetSort('spent')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-200 group">
+                                    <th scope="col" onclick="handleBudgetSort('spent')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-slate-100 group">
                                         Amount Spent <i id="budget-sort-icon-spent" class="fa-solid fa-sort text-gray-300 ml-1"></i>
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Remaining Balance</th>
@@ -342,7 +342,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="budget-table-body">
                             </tbody>
-                            <tfoot class="bg-gray-50 font-medium">
+                            <tfoot class="bg-slate-50 font-medium">
                                 <tr>
                                     <td colspan="4" class="px-6 py-4 text-left text-sm text-gray-900 uppercase">Total</td>
                                     <td class="px-6 py-4 text-right text-sm text-gray-900" id="budget-total-allocated">₱0.00</td>
@@ -358,13 +358,13 @@
 
             <!-- Campaign Details View -->
             <div id="view-campaign" class="hidden">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 p-4 sm:p-5 flex justify-between items-center">
+                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 mb-6 p-4 sm:p-5 flex justify-between items-center">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">Campaign Details</h3>
                         <p class="text-xs text-gray-500">Select a task to view its campaign creatives and progress.</p>
                     </div>
                     <div class="w-1/3 min-w-[250px]">
-                        <select id="campaign-task-selector" onchange="renderCampaignDetails(this.value)" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 sm:text-sm">
+                        <select id="campaign-task-selector" onchange="renderCampaignDetails(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 focus:ring-indigo-500 sm:text-sm">
                             <option value="">-- Select a Task --</option>
                         </select>
                     </div>
@@ -374,8 +374,8 @@
                 <div id="campaign-content-area" class="hidden grid-cols-1 lg:grid-cols-4 gap-6">
                     
                     <!-- 50%: Visuals & Links (Spans 2 columns) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-2">
-                        <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-2">
+                        <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
                             <h4 class="text-sm font-bold text-gray-900"><i class="fa-regular fa-image mr-2 text-indigo-500"></i>Creatives & Links</h4>
                             <span id="carousel-counter" class="text-xs font-medium text-gray-500">0 / 0</span>
                         </div>
@@ -384,17 +384,17 @@
                     </div>
 
                     <!-- 25%: Execution Summary (Spans 1 column) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-stats-container">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-1" id="campaign-stats-container">
                     </div>
 
                     <!-- 25%: Post Performance (Spans 1 column) -->
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col lg:col-span-1" id="campaign-performance-container">
+                    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col lg:col-span-1" id="campaign-performance-container">
                     </div>
 
                 </div>
                 
-                <div id="campaign-empty-state" class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center mt-6">
-                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-gray-100 mb-4">
+                <div id="campaign-empty-state" class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-12 text-center mt-6">
+                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-slate-100 mb-4">
                         <i class="fa-solid fa-bullseye text-3xl text-gray-400"></i>
                     </div>
                     <h3 class="text-lg font-medium text-gray-900">No Task Selected</h3>
@@ -407,16 +407,16 @@
 
     <!-- Type Selection Modal -->
     <div id="type-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Create New...</h3>
             <div class="space-y-3">
-                <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-list-check mr-2"></i> Content Task
                 </button>
-                <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                <button onclick="selectEventType('event')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-calendar-day mr-2"></i> Offline Event / Reminder
                 </button>
-                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-rose-200 text-sm font-medium rounded-md shadow-sm text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors">
+                <button onclick="selectEventType('game')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     <i class="fa-solid fa-gamepad mr-2"></i> New Game Launch
                 </button>
             </div>
@@ -428,8 +428,8 @@
 
     <!-- Add/Edit Event Modal -->
     <div id="event-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
                 <h3 class="text-lg font-bold text-gray-900" id="modal-title">Add New Content</h3>
                 <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -442,21 +442,25 @@
                     
                     <div>
                         <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Event Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                        <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div class="flex space-x-4">
                         <div class="flex-1">
                             <label for="event-start-date" class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="flex-1">
                             <label for="event-end-date" class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
+                    </div>
+                    <div id="image-link-container" style="display: none;">
+                        <label for="event-image-link" class="block text-sm font-medium text-gray-700">Image URL <span class="text-xs text-gray-500">(Optional)</span></label>
+                        <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div id="campaign-type-container">
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
-                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                             <option value="All">All</option>
                             <option value="Slot">Slot</option>
                             <option value="Casino">Casino</option>
@@ -472,17 +476,18 @@
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3 bg-gray-50 shrink-0">
-                <button type="button" onclick="closeAddModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
-                <button type="button" onclick="saveEvent(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700" id="save-btn">Save</button>
+            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
+                <button type="button" id="delete-btn" style="display: none;" onclick="deleteTask(document.getElementById('event-id').value)" class="bg-red-50 text-red-600 hover:bg-red-100 py-2 px-4 border border-red-200 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium mr-auto">Delete</button>
+                <button type="button" onclick="closeAddModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+                <button type="button" onclick="saveEvent(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-white hover:bg-indigo-700" id="save-btn">Save</button>
             </div>
         </div>
     </div>
 
     <!-- Budget Add/Edit Modal -->
     <div id="budget-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center shrink-0">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
                 <h3 class="text-lg font-bold text-gray-900" id="budget-modal-title">Add Budget Entry</h3>
                 <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -494,20 +499,20 @@
                     <div class="flex space-x-4">
                         <div class="w-1/2">
                             <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
-                            <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="w-1/2">
                             <label for="budget-owner" class="block text-sm font-medium text-gray-700">Owner</label>
-                            <input type="text" id="budget-owner" placeholder="e.g. John Doe" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="text" id="budget-owner" placeholder="e.g. John Doe" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
                     <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                        <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
-                        <select id="budget-type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                        <select id="budget-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                             <option value="UGC Rewards">UGC Rewards</option>
                             <option value="Game Review">Game Review</option>
                             <option value="Daily Task">Daily Task</option>
@@ -517,46 +522,46 @@
                     </div>
                     <div>
                         <label for="budget-allocated" class="block text-sm font-medium text-gray-700">Allocated Budget <span class="text-red-500">*</span></label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 sm:text-sm" id="curr-symbol-1">₱</span>
                             </div>
-                            <input type="number" step="0.01" min="0" id="budget-allocated" required class="block w-full pl-7 border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="number" step="0.01" min="0" id="budget-allocated" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
                     <div>
                         <label for="budget-spent" class="block text-sm font-medium text-gray-700">Amount Spent</label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 sm:text-sm" id="curr-symbol-2">₱</span>
                             </div>
-                            <input type="number" step="0.01" min="0" id="budget-spent" value="0" class="block w-full pl-7 border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                            <input type="number" step="0.01" min="0" id="budget-spent" value="0" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3 bg-gray-50 shrink-0">
-                <button type="button" onclick="closeBudgetModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
-                <button type="button" onclick="saveBudgetEntry(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700" id="save-budget-btn">Save Entry</button>
+            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
+                <button type="button" onclick="closeBudgetModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+                <button type="button" onclick="saveBudgetEntry(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-white hover:bg-indigo-700" id="save-budget-btn">Save Entry</button>
             </div>
         </div>
     </div>
 
     <!-- Right Drawer for Task Checklist Progress -->
     <div id="drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeTaskDrawer()"></div>
-    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-start bg-gray-50 shrink-0">
+    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60">
+        <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-start bg-slate-50 shrink-0">
             <h2 id="drawer-title" class="text-xl font-bold text-gray-900 leading-tight pr-4">Task Title</h2>
             <button onclick="closeTaskDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
-        <div class="px-6 py-5 border-b border-gray-200 shrink-0">
+        <div class="px-6 py-5 border-b border-slate-200/60 shrink-0">
             <div class="flex justify-between items-end mb-2">
                 <span class="text-sm font-medium text-gray-700">Overall Progress</span>
                 <span id="drawer-progress-text" class="text-lg font-bold text-indigo-600">0.00%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="w-full bg-slate-100 rounded-full h-2.5">
                 <div id="drawer-progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
         </div>
@@ -568,21 +573,30 @@
 
     <!-- Right Drawer for View All Budgets -->
     <div id="budget-drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeBudgetDrawer()"></div>
-    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 shrink-0">
+    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60">
+        <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center bg-slate-50 shrink-0">
             <h2 class="text-lg font-bold text-gray-900 leading-tight">All Months Budget</h2>
             <button onclick="closeBudgetDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
-        <div class="p-4 border-b border-gray-200 shrink-0 bg-white">
+        <div class="p-4 border-b border-slate-200/60 shrink-0 bg-white">
             <label class="block text-sm font-medium text-gray-700 mb-1">Select Year</label>
-            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 sm:text-sm bg-white"></select>
+            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 focus:ring-indigo-500 sm:text-sm bg-white"></select>
         </div>
-        <div class="p-0 flex-1 overflow-y-auto bg-gray-50" id="budget-drawer-content"></div>
+        <div class="p-0 flex-1 overflow-y-auto bg-slate-50" id="budget-drawer-content"></div>
     </div>
 
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Tooltip Modal for Events -->
+    <div id="event-hover-tooltip" class="fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 w-[700px] h-[650px] transform transition-opacity duration-200 opacity-0 pointer-events-none">
+        <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+        <div id="tooltip-image-container" class="hidden w-full flex-1 min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
+        </div>
+        <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+    </div>
 
     <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
@@ -614,6 +628,138 @@
         window.events = []; 
         window.budgets = []; 
         
+        let tooltipTimeout;
+
+        window.showEventTooltip = (evtId, e) => {
+            const evt = window.events.find(ev => ev.id === evtId);
+            if (!evt) return;
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            const titleEl = document.getElementById('tooltip-title');
+            const imgContainer = document.getElementById('tooltip-image-container');
+            const imgEl = document.getElementById('tooltip-image');
+            const dateEl = document.getElementById('tooltip-date');
+
+            titleEl.innerText = evt.title;
+            dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+
+            const hasValidImage = evt.itemType === 'event' && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+
+            if (hasValidImage) {
+                imgEl.src = evt.imageLink;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            tooltip.classList.remove('hidden');
+            window.moveEventTooltip(e);
+
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('opacity-0');
+            }, 50);
+        };
+
+        window.hideEventTooltip = () => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            tooltip.classList.add('opacity-0');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.add('hidden');
+            }, 200);
+        };
+
+        window.moveEventTooltip = (e) => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            if (tooltip.classList.contains('hidden')) return;
+
+            const rect = tooltip.getBoundingClientRect();
+            let x = (window.innerWidth - rect.width) / 2;
+            let y = (window.innerHeight - rect.height) / 2;
+
+            if (x < 10) x = 10;
+            if (y < 10) y = 10;
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        };
+
+        let taskTooltipInterval = null;
+
+        window.showTaskTooltip = (taskId, e) => {
+            const task = window.events.find(ev => ev.id === taskId);
+            if (!task) return;
+
+            let images = [];
+            if (task.fields && Array.isArray(task.fields.postIds)) {
+                images = task.fields.postIds.filter(p => p.imgUrl && (window.isValidURL ? window.isValidURL(p.imgUrl) : p.imgUrl.startsWith('http'))).map(p => p.imgUrl);
+            }
+            if (task.imageLink && (window.isValidURL ? window.isValidURL(task.imageLink) : task.imageLink.startsWith('http'))) {
+                images.push(task.imageLink);
+            }
+
+            if (images.length === 0) return;
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            const titleEl = document.getElementById('tooltip-title');
+            const imgContainer = document.getElementById('tooltip-image-container');
+            const imgEl = document.getElementById('tooltip-image');
+            const dateEl = document.getElementById('tooltip-date');
+
+            titleEl.innerText = task.title;
+            dateEl.innerText = images.length > 1 ? `Image 1 of ${images.length}` : `Task Image`;
+
+            imgEl.src = images[0];
+            imgContainer.classList.remove('hidden');
+
+            tooltip.classList.remove('hidden');
+            window.moveTaskTooltip(e);
+
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('opacity-0');
+            }, 50);
+
+            if (images.length > 1) {
+                let currentIndex = 0;
+                taskTooltipInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    imgEl.src = images[currentIndex];
+                    dateEl.innerText = `Image ${currentIndex + 1} of ${images.length}`;
+                }, 2000);
+            }
+        };
+
+        window.hideTaskTooltip = () => {
+            if (taskTooltipInterval) {
+                clearInterval(taskTooltipInterval);
+                taskTooltipInterval = null;
+            }
+
+            const tooltip = document.getElementById('event-hover-tooltip');
+            tooltip.classList.add('opacity-0');
+            clearTimeout(tooltipTimeout);
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.add('hidden');
+            }, 200);
+        };
+
+        window.moveTaskTooltip = (e) => {
+            const tooltip = document.getElementById('event-hover-tooltip');
+            if (tooltip.classList.contains('hidden')) return;
+
+            const rect = tooltip.getBoundingClientRect();
+            let x = (window.innerWidth - rect.width) / 2;
+            let y = (window.innerHeight - rect.height) / 2;
+
+            if (x < 10) x = 10;
+            if (y < 10) y = 10;
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        };
+
         let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : new Date().getMonth();
         let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : new Date().getFullYear();
         let currentDateObj = new Date();
@@ -924,7 +1070,7 @@
 
             let html = `
                 <div class="w-full flex flex-col items-center h-full justify-center pb-4">
-                    <div class="w-full max-w-md aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center mb-6 relative shadow-inner">
+                    <div class="w-full max-w-md aspect-[4/5] bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60 flex items-center justify-center mb-6 relative shadow-inner">
                         ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
                         
                         ${window.currentCampaignPosts.length > 1 ? `
@@ -933,12 +1079,12 @@
                         ` : ''}
                     </div>
                     
-                    <div class="w-full max-w-md bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
+                    <div class="w-full max-w-md bg-slate-50 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
                             <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
                         </div>
-                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
+                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
                             <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
                         </a>
                     </div>
@@ -994,11 +1140,11 @@
                 let icon = 'fa-circle text-[8px]';
                 if (val === 'Done') { color = 'text-emerald-600'; icon = 'fa-check'; }
                 if (val === 'Not Applicable') { color = 'text-gray-400'; icon = 'fa-minus'; }
-                return `<div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
+                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
             }).join('');
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-6">
@@ -1007,21 +1153,21 @@
                             <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
                             <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="w-full bg-slate-100 rounded-full h-2">
                             <div class="bg-indigo-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
                         </div>
                     </div>
                     
                     <div class="space-y-3">
-                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <span class="block text-xs text-gray-500 mb-1">Timeline</span>
                             <span class="text-sm font-medium text-gray-900">${task.startDate} to ${task.endDate}</span>
                         </div>
-                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <span class="block text-xs text-gray-500 mb-1">Status</span>
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${task.status}</span>
                         </div>
-                        <div class="bg-gray-50 p-3 rounded-md border border-gray-100">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
                             <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
                         </div>
@@ -1029,7 +1175,7 @@
 
                     <div>
                         <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
-                        <div class="bg-white border border-gray-200 rounded-md px-3 py-1 shadow-sm">
+                        <div class="bg-white border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
                             ${opsHtml}
                         </div>
                     </div>
@@ -1043,7 +1189,7 @@
 
             if (window.currentCampaignPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                    <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
                         <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     </div>
                     <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
@@ -1058,35 +1204,35 @@
             const postIdDisplay = post.id || 'Pending ID';
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-4">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
-                        <span class="text-xs font-mono text-gray-700 bg-gray-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
+                        <span class="text-xs font-mono text-gray-700 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
                         <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
                         <span class="text-2xl font-bold text-gray-900">--</span>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
                         <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
                         <span class="text-2xl font-bold text-gray-900">--</span>
                     </div>
                     
-                    <div class="bg-white p-4 rounded-md border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
                         <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
                         <span class="text-2xl font-bold text-gray-900">--</span>
                     </div>
                     
-                    <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100 text-center">
+                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
                         <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
                         <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
                     </div>
@@ -1295,6 +1441,19 @@
             }
         }
 
+        window.deleteTask = (id) => {
+            if (!id) return;
+            if (confirm('Are you sure you want to delete this event/task?')) {
+                window.events = window.events.filter(evt => evt.id !== id);
+                window.saveToLocalStorage();
+                window.closeAddModal();
+                window.renderCalendar();
+                window.renderTasksList();
+                window.renderOngoingEvents();
+                window.showToast("Deleted successfully", "success");
+            }
+        };
+
         window.saveEvent = async (e) => {
             e.preventDefault();
             const form = document.getElementById('event-form');
@@ -1307,6 +1466,7 @@
             const title = document.getElementById('event-title').value.trim();
             const startDate = document.getElementById('event-start-date').value;
             const endDate = document.getElementById('event-end-date').value;
+            const imageLink = document.getElementById('event-image-link').value.trim();
             
             let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
             
@@ -1346,6 +1506,9 @@
                 progress: progress, 
                 updatedAt: new Date().toISOString()
             };
+            if (itemType === 'event') {
+                eventData.imageLink = imageLink;
+            }
 
             if (!id) {
                 eventData.CreatedTime = window.getFormattedCreatedTime();
@@ -1574,12 +1737,12 @@
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-indigo-50', 'text-indigo-700');
-                        nav.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
                         icon.classList.add('text-indigo-500'); 
                         icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
                     } else {
                         nav.classList.remove('bg-indigo-50', 'text-indigo-700');
-                        nav.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
                         icon.classList.remove('text-indigo-500'); 
                         icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
                     }
@@ -1778,7 +1941,7 @@
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
                     
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-gray-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-gray-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-slate-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
                     
                     contentGridHtml += `
@@ -1803,8 +1966,8 @@
                         statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
                         formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else if (itemType === 'game') {
-                        statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
+                        statusColor = 'bg-red-50 text-red-800 border-red-200';
+                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-red-500"></i>${evt.title}`;
                     } else {
                         statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
@@ -1814,8 +1977,12 @@
                     let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
                     
+                    const tooltipEvents = itemType === 'task'
+                        ? `onmouseenter="showTaskTooltip('${evt.id}', event)" onmouseleave="hideTaskTooltip()" onmousemove="moveTaskTooltip(event)"`
+                        : `onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)"`;
+
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-sm mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" title="${titleAttr}">
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
@@ -1867,7 +2034,7 @@
                 const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500';
 
                 const el = document.createElement('div');
-                el.className = 'flex items-start p-3 hover:bg-gray-50 rounded-lg mb-2 border border-gray-100 transition-colors cursor-pointer';
+                el.className = 'flex items-start p-3 hover:bg-slate-50 rounded-xl mb-2 border border-slate-100 transition-colors cursor-pointer';
                 el.title = window.getPendingSummary(evt);
                 
                 if (itemType === 'event' || itemType === 'game') {
@@ -1878,7 +2045,7 @@
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700';
 
-                    el.className = 'flex items-start p-4 bg-white hover:bg-gray-50 rounded-xl mb-3 border border-gray-200 shadow-sm transition-all cursor-pointer';
+                    el.className = 'flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer';
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -1886,7 +2053,7 @@
                                 <div class="flex items-center">
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${typeBg}">${typeLabel}</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-gray-100 text-gray-600 border border-gray-200">Pending</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-gray-600 border border-slate-200/60">Pending</span>
                             </div>
                             <p class="text-sm font-bold ${titleColor} truncate mb-2">${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-center justify-between w-full">
@@ -1897,48 +2064,30 @@
                 } else {
                     el.onclick = () => window.jumpToTask(evt.id);
                     
-                    const assigns = evt.assignees || [];
-                    let avatarsHtml = '';
-                    if (assigns.length > 0) {
-                        const maxDisplay = 2;
-                        assigns.slice(0, maxDisplay).forEach(name => { 
-                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[10px] font-bold text-indigo-700 -ml-2 first:ml-0 shadow-sm" title="${name}">${name.substring(0, 2).toUpperCase()}</div>`;
-                        });
-                        if (assigns.length > maxDisplay) { 
-                            avatarsHtml += `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600 -ml-2 shadow-sm">+${assigns.length - maxDisplay}</div>`;
-                        }
-                    } else {
-                        avatarsHtml = `<div class="h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400"><i class="fa-solid fa-user"></i></div>`;
-                    }
-
                     const p = evt.progress || 0;
                     const pFormatted = p.toFixed(2);
                     const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    let statusBg = 'bg-gray-100 text-gray-600 border-gray-200';
-                    if (evt.status === 'Ongoing') statusBg = 'bg-indigo-50 text-indigo-600 border-indigo-200';
-                    if (evt.status === 'Done') statusBg = 'bg-emerald-50 text-emerald-600 border-emerald-200';
-
-                    el.className = 'flex items-start p-4 bg-white hover:bg-gray-50 rounded-xl mb-3 border border-gray-200 shadow-sm transition-all cursor-pointer';
+                    el.className = 'flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer';
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${statusBg}">${evt.status}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-indigo-50 text-indigo-500 border-indigo-200">Task</span>
+                                <span class="text-sm font-bold text-indigo-500">${assignsStr}</span>
                             </div>
-                            <p class="text-sm font-bold text-indigo-500 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")} - ${assignsStr}</p>
-                            <div class="flex items-center justify-between w-full mt-1 mb-2">
-                                <span class="text-xs ${urgency} font-medium flex items-center"><i class="fa-regular fa-calendar mr-1.5"></i>${displayDate}</span>
-                                <div class="flex pl-2">${avatarsHtml}</div>
-                            </div>
-                            <div class="flex flex-col items-end w-full">
-                                <div class="flex items-center justify-between mb-1.5 w-full">
-                                    <span class="text-[10px] font-bold text-gray-600">Progress</span>
-                                    <span class="text-[10px] font-bold text-gray-600">${pFormatted}%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                    <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                            <p class="text-sm font-bold text-indigo-500 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                            <div class="flex items-end justify-between w-full mt-1">
+                                <span class="text-xs ${urgency} font-medium flex items-center mb-1"><i class="fa-regular fa-calendar mr-1.5 text-red-500"></i><span class="text-red-500">${displayDate}</span></span>
+                                <div class="flex flex-col items-end w-2/3">
+                                    <div class="flex items-center justify-between mb-1.5 w-full">
+                                        <span class="text-[10px] font-bold text-gray-600">Progress</span>
+                                        <span class="text-[10px] font-bold text-gray-600">${pFormatted}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                        <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2043,6 +2192,10 @@
                     window.openTaskDrawer(evt.id); 
                 };
                 
+                tr.onmouseenter = (e) => { window.showTaskTooltip(evt.id, e); };
+                tr.onmouseleave = () => { window.hideTaskTooltip(); };
+                tr.onmousemove = (e) => { window.moveTaskTooltip(e); };
+
                 const p = evt.progress || 0; 
                 const pFormatted = p.toFixed(2);
                 const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
@@ -2070,7 +2223,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
+                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
@@ -2080,7 +2233,7 @@
                             <div class="flex items-center mb-1">
                                 <span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span>
                             </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="w-full bg-slate-100 rounded-full h-2">
                                 <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
                             </div>
                         </div>
@@ -2187,7 +2340,7 @@
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
                 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 transition-colors duration-200';
+                tr.className = 'hover:bg-slate-50 transition-colors duration-200';
                 
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
@@ -2390,14 +2543,14 @@
                 const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
 
                 html += `
-                    <div class="bg-white border-b border-gray-200 p-4">
+                    <div class="bg-white border-b border-slate-200/60 p-4">
                         <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                            <div class="bg-slate-50 p-2 rounded border border-slate-100">
                                 <span class="block text-xs text-gray-500">Total Spent</span>
                                 <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
                             </div>
-                            <div class="bg-gray-50 p-2 rounded border border-gray-100">
+                            <div class="bg-slate-50 p-2 rounded border border-slate-100">
                                 <span class="block text-xs text-gray-500">Month Limit</span>
                                 <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
                             </div>
@@ -2459,14 +2612,22 @@
             const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
             document.getElementById('event-start-date').value = startDate;
             document.getElementById('event-end-date').value = startDate;
+            document.getElementById('event-image-link').value = '';
             
             document.getElementById('event-campaign-type').value = 'All';
 
             const campContainer = document.getElementById('campaign-type-container');
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
+            const imageContainer = document.getElementById('image-link-container');
 
             const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (itemType === 'event') {
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
 
             if (isNonTask) {
                 campContainer.style.display = 'none';
@@ -2478,6 +2639,7 @@
                 campInput.setAttribute('required', 'required');
             }
 
+            document.getElementById('delete-btn').style.display = 'none';
             document.getElementById('event-modal').classList.remove('hidden');
         }
 
@@ -2506,12 +2668,20 @@
             document.getElementById('event-start-date').value = evt.startDate; 
             document.getElementById('event-end-date').value = evt.endDate;
             document.getElementById('event-campaign-type').value = evt.campaignType || 'All';
+            document.getElementById('event-image-link').value = evt.imageLink || '';
             
             const campContainer = document.getElementById('campaign-type-container');
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
+            const imageContainer = document.getElementById('image-link-container');
 
             const isNonTask = itemType === 'event' || itemType === 'game';
+
+            if (itemType === 'event') {
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
 
             if (isNonTask) {
                 campContainer.style.display = 'none';
@@ -2527,6 +2697,7 @@
             document.querySelectorAll('input[name="assignees"]').forEach(cb => { 
                 cb.checked = assigns.includes(cb.value); 
             });
+            document.getElementById('delete-btn').style.display = 'inline-block';
             document.getElementById('event-modal').classList.remove('hidden');
         }
 
@@ -2704,17 +2875,17 @@
             
             const makeAccordion = (title, done, total, content, isOpen = true) => {
                 const isAllDone = done === total;
-                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700';
+                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700';
                 return `
-                    <details class="group mb-3 border border-gray-200 rounded-lg bg-white shadow-sm overflow-hidden" ${isOpen ? 'open' : ''}>
-                        <summary class="cursor-pointer bg-gray-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-gray-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
+                        <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
                                 <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
                             </div>
                             <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
                         </summary>
-                        <div class="p-4 space-y-4 border-t border-gray-200">
+                        <div class="p-4 space-y-4 border-t border-slate-200/60">
                             ${content}
                         </div>
                     </details>
@@ -2724,9 +2895,9 @@
             const makeSelectHtml = (key, label) => {
                 const val = f[key] || 'Pending';
                 return `
-                    <div class="flex justify-between items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <label class="text-sm font-medium text-gray-700">${label}</label>
-                        <select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 py-1 pl-2 pr-8 bg-gray-50 border">
+                        <select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-xl shadow-md shadow-slate-200/50 focus:ring-indigo-500 py-1 pl-2 pr-8 bg-slate-50 border">
                             <option value="Pending" ${val === 'Pending' ? 'selected' : ''}>Pending</option>
                             <option value="Not Applicable" ${val === 'Not Applicable' ? 'selected' : ''}>Not Applicable</option>
                             <option value="Done" ${val === 'Done' ? 'selected' : ''}>Done</option>
@@ -2742,9 +2913,9 @@
                 const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
                 
                 return `
-                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <label class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
-                        <input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-md shadow-sm py-1.5 px-3 ${borderClass}">
+                        <input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass}">
                         ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format. 0% assigned.</p>` : ''}
                     </div>
                 `;
@@ -2760,10 +2931,10 @@
                 `).join('');
                 
                 return `
-                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
                         <div class="flex flex-wrap mb-1">${pills}</div>
-                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
                     </div>
                 `;
             };
@@ -2771,21 +2942,21 @@
             const makePostIdsHtml = () => {
                 const posts = Array.isArray(f.postIds) ? f.postIds : [];
                 let rowsHtml = posts.map((p, i) => `
-                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md relative">
+                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                         <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
-                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
-                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
                         </div>
                         <div>
-                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-md shadow-sm py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
                         </div>
                     </div>
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                        <div class="flex justify-between items-center mb-1 border-b border-gray-100 pb-2">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
                             <label class="block text-sm font-medium text-gray-700">Post IDs</label>
                             <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
@@ -2797,8 +2968,8 @@
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
-                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded cursor-pointer">
+                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 transition-colors">
+                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-slate-100 border-gray-300 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
                     </div>
                 `;
@@ -2819,7 +2990,7 @@
                         <div class="flex items-center justify-between text-sm py-1">
                             <span class="text-gray-600">${d}</span>
                             <div class="flex items-center w-28">
-                                <input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-md shadow-sm py-1 px-2 focus:ring-indigo-500 mr-1">
+                                <input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1 px-2 focus:ring-indigo-500 mr-1">
                                 <span class="text-gray-500 font-medium">%</span>
                             </div>
                         </div>
@@ -2827,12 +2998,12 @@
                 }).join('');
                 
                 return `
-                    <div class="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <div class="mb-2">
                             <label class="block text-sm font-medium text-gray-700">Dashboard Status Tracker</label>
                             <p class="text-xs text-gray-500">Highest: <span class="font-bold text-indigo-600">${maxVal.toFixed(2)}%</span> ${maxVal === 100 ? `on ${maxDate}` : ''}</p>
                         </div>
-                        <div class="space-y-1 mt-3 border-t border-gray-100 pt-3 max-h-48 overflow-y-auto pr-1">
+                        <div class="space-y-1 mt-3 border-t border-slate-100 pt-3 max-h-48 overflow-y-auto pr-1">
                             ${dateInputsHtml}
                         </div>
                     </div>
@@ -2944,11 +3115,11 @@
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-gray-50'); 
+                    row.classList.remove('hover:bg-slate-50');
                     row.classList.add('bg-indigo-100');
                     setTimeout(() => { 
                         row.classList.remove('bg-indigo-100'); 
-                        row.classList.add('hover:bg-gray-50'); 
+                        row.classList.add('hover:bg-slate-50');
                     }, 2000);
                 }
             }, 100);
@@ -2966,9 +3137,9 @@
             if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
             if (iconOverride) { icon = iconOverride; }
 
-            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-lg shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-xl shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
             toast.innerHTML = `
-                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-xl">
                     <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
                 </div>
                 <div class="ml-3 text-sm font-normal">${message}</div>
