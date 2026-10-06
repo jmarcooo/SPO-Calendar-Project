@@ -2340,6 +2340,73 @@
             XLSX.writeFile(workbook, "SPO_Daily_Tasks_Export.xlsx");
         };
 
+
+        window.openDailyTaskDetails = (id) => {
+            const task = window.dailyTasks.find(t => t.id === id);
+            if (!task) return;
+
+            window.currentDetailTaskId = id;
+
+            document.getElementById('detail-task-title').innerText = task.taskTitle || 'Untitled Task';
+            document.getElementById('detail-event-title').innerText = task.eventTitle || 'No Event';
+            document.getElementById('detail-status-select').value = task.status || 'Not Started';
+            document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
+            document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
+            document.getElementById('detail-requestor').innerText = task.requestor || 'Unknown';
+            document.getElementById('detail-task-desc').innerText = task.taskDesc || 'No description provided.';
+            document.getElementById('detail-template-title').innerText = task.templateTitle || 'N/A';
+            document.getElementById('detail-template-id').innerText = task.templateId || 'N/A';
+            document.getElementById('detail-template-caption').innerText = task.templateCaption || 'N/A';
+            document.getElementById('detail-hashtags').innerText = task.hashtags || 'N/A';
+
+            const linkPost = document.getElementById('detail-linked-post');
+            if (task.linkedPost) {
+                linkPost.href = task.linkedPost;
+                linkPost.innerText = task.linkedPost;
+            } else {
+                linkPost.removeAttribute('href');
+                linkPost.innerText = 'N/A';
+            }
+
+            const docLink = document.getElementById('detail-doc-link');
+            if (task.docLink) {
+                docLink.href = task.docLink;
+                docLink.innerText = task.docLink;
+            } else {
+                docLink.removeAttribute('href');
+                docLink.innerText = 'N/A';
+            }
+
+            document.getElementById('detail-created-time').innerText = task.createdTime || 'Unknown';
+
+            // Remove previous listener if exists to prevent duplicates
+            const selectEl = document.getElementById('detail-status-select');
+            const newSelectEl = selectEl.cloneNode(true);
+            selectEl.parentNode.replaceChild(newSelectEl, selectEl);
+
+            newSelectEl.addEventListener('change', (e) => {
+                window.updateDailyTaskStatus(window.currentDetailTaskId, e.target.value);
+            });
+
+            document.getElementById('daily-task-details-modal').classList.remove('hidden');
+        };
+
+        window.closeDailyTaskDetails = () => {
+            document.getElementById('daily-task-details-modal').classList.add('hidden');
+            window.currentDetailTaskId = null;
+        };
+
+        window.updateDailyTaskStatus = (id, newStatus) => {
+            const task = window.dailyTasks.find(t => t.id === id);
+            if (task) {
+                task.status = newStatus;
+                localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+                if (window.currentView === 'daily_task') {
+                    window.renderDailyTasksTable();
+                }
+            }
+        };
+
         window.openDailyTaskModal = () => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
@@ -2484,7 +2551,7 @@
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="hover:bg-slate-50 transition-colors cursor-pointer group" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${task.taskTitle}</div>
                             <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
@@ -3100,6 +3167,82 @@
         window.onload = window.initApp;
 
     </script>
+
+
+    <!-- Daily Task Details Modal -->
+    <div id="daily-task-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Daily Task Details</h3>
+                <button onclick="closeDailyTaskDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-900" id="detail-task-title">Task Title</h4>
+                            <p class="text-sm text-gray-500" id="detail-event-title">Event Title</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-700">Status:</span>
+                            <select id="detail-status-select" class="block w-full sm:w-32 pl-3 pr-8 py-1.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Dates</span>
+                            <div class="mt-1 text-gray-900"><span id="detail-start-date"></span> to <span id="detail-end-date"></span></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requestor</span>
+                            <div class="mt-1 text-gray-900 flex items-center">
+                                <i class="fa-solid fa-user-circle text-gray-400 mr-1.5"></i> <span id="detail-requestor"></span>
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Description</span>
+                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-task-desc"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template Title</span>
+                            <div class="mt-1 text-gray-900" id="detail-template-title"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template ID</span>
+                            <div class="mt-1 text-gray-900 font-mono text-xs" id="detail-template-id"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template Caption</span>
+                            <div class="mt-1 text-gray-900 italic" id="detail-template-caption"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Hashtags</span>
+                            <div class="mt-1 text-indigo-600 font-medium" id="detail-hashtags"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Linked Post URL</span>
+                            <div class="mt-1"><a href="#" id="detail-linked-post" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Document Link</span>
+                            <div class="mt-1"><a href="#" id="detail-doc-link" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-200">
+                         <span class="text-xs text-gray-400">Created: <span id="detail-created-time"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Daily Task Request Modal -->
     <div id="daily-task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
