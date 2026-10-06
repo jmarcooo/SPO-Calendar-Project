@@ -57,6 +57,29 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-medium text-gray-700 hidden sm:inline">Type:</span>
+                                        <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
+                                            <option value="All">All Types</option>
+                                            <option value="task">Tasks</option>
+                                            <option value="event">Offline Events</option>
+                                            <option value="game">New Games</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-medium text-gray-700 hidden sm:inline">Category:</span>
+                                        <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
+                                            <option value="All">All</option>
+                                            <option value="Slot">Slot</option>
+                                            <option value="Casino">Casino</option>
+                                            <option value="Poker">Poker</option>
+                                            <option value="Perya">Perya</option>
+                                            <option value="Arcade">Arcade</option>
+                                            <option value="Bingo">Bingo</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Calendar Grid -->
