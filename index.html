@@ -2308,7 +2308,68 @@
         };
 
 
+
+        window.exportDailyTasksExcel = () => {
+            if (!window.dailyTasks || window.dailyTasks.length === 0) {
+                alert("No daily tasks to export.");
+                return;
+            }
+
+            const data = window.dailyTasks.map(t => {
+                return {
+                    "Title": t.taskTitle,
+                    "Event Title": t.eventTitle,
+                    "Start Date": t.startDate,
+                    "End Date": t.endDate,
+                    "Task Description": t.taskDesc,
+                    "Template Title": t.templateTitle,
+                    "Template ID": t.templateId,
+                    "Template Caption": t.templateCaption,
+                    "Hashtags": t.hashtags,
+                    "Linked Post URL": t.linkedPost,
+                    "Document Link": t.docLink,
+                    "Requested By": t.requestor,
+                    "Created Time": t.createdTime,
+                    "Status": t.status
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Daily Tasks");
+            XLSX.writeFile(workbook, "SPO_Daily_Tasks_Export.xlsx");
+        };
+
         window.openDailyTaskModal = () => {
+            document.getElementById('daily-task-form').reset();
+            document.getElementById('dt-id').value = '';
+            document.getElementById('dt-status').value = 'Not Started';
+            document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
+            document.getElementById('daily-task-modal').classList.remove('hidden');
+        }
+
+        window.openEditDailyTask = (id) => {
+            const task = window.dailyTasks.find(t => t.id === id);
+            if (!task) return;
+
+            document.getElementById('daily-task-form').reset();
+            document.getElementById('dt-id').value = task.id;
+            document.getElementById('daily-task-modal-title').innerText = 'Edit Daily Task Request';
+
+            document.getElementById('dt-event-title').value = task.eventTitle || '';
+            document.getElementById('dt-start-date').value = task.startDate || '';
+            document.getElementById('dt-end-date').value = task.endDate || '';
+            document.getElementById('dt-task-title').value = task.taskTitle || '';
+            document.getElementById('dt-task-desc').value = task.taskDesc || '';
+            document.getElementById('dt-template-title').value = task.templateTitle || '';
+            document.getElementById('dt-template-id').value = task.templateId || '';
+            document.getElementById('dt-template-caption').value = task.templateCaption || '';
+            document.getElementById('dt-hashtags').value = task.hashtags || '';
+            document.getElementById('dt-linked-post').value = task.linkedPost || '';
+            document.getElementById('dt-doc-link').value = task.docLink || '';
+            document.getElementById('dt-requestor').value = task.requestor || '';
+            document.getElementById('dt-status').value = task.status || 'Not Started';
+
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
@@ -2333,25 +2394,40 @@
                 String(now.getMinutes()).padStart(2, '0') + ":" +
                 String(now.getSeconds()).padStart(2, '0');
 
-            const newTask = {
-                id: Date.now().toString(),
-                eventTitle,
-                startDate,
-                endDate,
-                taskTitle,
-                taskDesc: document.getElementById('dt-task-desc').value.trim(),
-                templateTitle: document.getElementById('dt-template-title').value.trim(),
-                templateId: document.getElementById('dt-template-id').value.trim(),
-                templateCaption: document.getElementById('dt-template-caption').value.trim(),
-                hashtags: document.getElementById('dt-hashtags').value.trim(),
-                linkedPost: document.getElementById('dt-linked-post').value.trim(),
-                docLink: document.getElementById('dt-doc-link').value.trim(),
-                requestor,
-                createdTime,
-                status: "Not Started"
-            };
+            const dtId = document.getElementById('dt-id').value;
+            let targetTask = null;
+            let isNew = false;
 
-            window.dailyTasks.push(newTask);
+            if (dtId) {
+                targetTask = window.dailyTasks.find(t => t.id === dtId);
+            }
+
+            if (!targetTask) {
+                isNew = true;
+                targetTask = {
+                    id: Date.now().toString(),
+                    createdTime: createdTime,
+                    status: "Not Started"
+                };
+            }
+
+            targetTask.eventTitle = eventTitle;
+            targetTask.startDate = startDate;
+            targetTask.endDate = endDate;
+            targetTask.taskTitle = taskTitle;
+            targetTask.taskDesc = document.getElementById('dt-task-desc').value.trim();
+            targetTask.templateTitle = document.getElementById('dt-template-title').value.trim();
+            targetTask.templateId = document.getElementById('dt-template-id').value.trim();
+            targetTask.templateCaption = document.getElementById('dt-template-caption').value.trim();
+            targetTask.hashtags = document.getElementById('dt-hashtags').value.trim();
+            targetTask.linkedPost = document.getElementById('dt-linked-post').value.trim();
+            targetTask.docLink = document.getElementById('dt-doc-link').value.trim();
+            targetTask.requestor = requestor;
+            targetTask.status = document.getElementById('dt-status').value;
+
+            if (isNew) {
+                window.dailyTasks.push(targetTask);
+            }
             localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
 
             document.getElementById('daily-task-form').reset();
@@ -2366,13 +2442,40 @@
             const tbody = document.getElementById('daily-tasks-table-body');
             if (!tbody) return;
 
-            if (window.dailyTasks.length === 0) {
+            // Build requestor dropdown
+            const requestorFilter = document.getElementById('daily-requestor-filter');
+            if (requestorFilter) {
+                const currentVal = requestorFilter.value;
+                let requestors = [...new Set(window.dailyTasks.map(t => t.requestor).filter(r => r))].sort();
+                let opts = '<option value="All">All Requestors</option>';
+                requestors.forEach(r => opts += `<option value="${r}">${r}</option>`);
+                requestorFilter.innerHTML = opts;
+                requestorFilter.value = currentVal || 'All';
+            }
+
+            let searchVal = document.getElementById('daily-search-input') ? document.getElementById('daily-search-input').value.toLowerCase() : '';
+            let reqVal = requestorFilter ? requestorFilter.value : 'All';
+            let statusVal = document.getElementById('daily-status-filter') ? document.getElementById('daily-status-filter').value : 'All';
+
+            let filtered = window.dailyTasks.filter(t => {
+                if (reqVal !== 'All' && t.requestor !== reqVal) return false;
+                if (statusVal !== 'All' && t.status !== statusVal) return false;
+                if (searchVal) {
+                    const matchTitle = t.taskTitle && t.taskTitle.toLowerCase().includes(searchVal);
+                    const matchEvent = t.eventTitle && t.eventTitle.toLowerCase().includes(searchVal);
+                    const matchReq = t.requestor && t.requestor.toLowerCase().includes(searchVal);
+                    return matchTitle || matchEvent || matchReq;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
                 return;
             }
 
             let html = '';
-            window.dailyTasks.forEach(task => {
+            filtered.forEach(task => {
                 let statusBadge = '';
                 if (task.status === 'Done') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>';
                 else if (task.status === 'In Progress') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>';
@@ -2396,7 +2499,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.openEditDailyTask('${task.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deleteDailyTask('${task.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
                     </tr>
@@ -3002,13 +3105,14 @@
     <div id="daily-task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Create Daily Task Request</h3>
+                <h3 class="text-lg font-bold text-gray-900" id="daily-task-modal-title">Create Daily Task Request</h3>
                 <button onclick="closeDailyTaskModal()" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
             <div class="overflow-y-auto p-6 flex-1">
                 <form id="daily-task-form" class="space-y-4">
+                    <input type="hidden" id="dt-id">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Event Title <span class="text-red-500">*</span></label>
@@ -3054,9 +3158,17 @@
                             <label class="block text-sm font-medium text-gray-700">Document Link</label>
                             <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div class="sm:col-span-2">
+                        <div>
                             <label class="block text-sm font-medium text-gray-700">Requestor <span class="text-red-500">*</span></label>
                             <input type="text" id="dt-requestor" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <select id="dt-status" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                            </select>
                         </div>
                     </div>
                 </form>
