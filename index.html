@@ -2288,6 +2288,15 @@
             window.renderUI();
         };
 
+
+        window.openDailyTaskModal = () => {
+            document.getElementById('daily-task-modal').classList.remove('hidden');
+        }
+
+        window.closeDailyTaskModal = () => {
+            document.getElementById('daily-task-modal').classList.add('hidden');
+        }
+
         window.openTypeModal = (dateStr = null) => {
             window.tempSelectedDate = dateStr;
             document.getElementById('type-modal').classList.remove('hidden');
@@ -2867,5 +2876,80 @@
         window.onload = window.initApp;
 
     </script>
+
+    <!-- Daily Task Request Modal -->
+    <div id="daily-task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Create Daily Task Request</h3>
+                <button onclick="closeDailyTaskModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1">
+                <form id="daily-task-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Event Title <span class="text-red-500">*</span></label>
+                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
+                            <input type="date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Task Title <span class="text-red-500">*</span></label>
+                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Task Description</label>
+                            <textarea rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Template Title</label>
+                            <input type="text" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Template ID</label>
+                            <input type="text" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Template Caption</label>
+                            <textarea rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Hashtags</label>
+                            <input type="text" placeholder="#tag1 #tag2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Linked Post URL</label>
+                            <input type="url" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Document Link</label>
+                            <input type="url" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Requestor <span class="text-red-500">*</span></label>
+                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                    Submit Request
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
