@@ -102,8 +102,13 @@
                     <div class="xl:col-span-1">
                         <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 flex flex-col" style="height: calc(100vh - 200px); max-height: calc(100vh - 200px); overflow: hidden;">
                             <div class="p-4 border-b border-slate-200/60 flex justify-between items-center">
-                                <h2 class="text-lg font-bold text-gray-900">Events & Tasks</h2>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
+                                <h2 class="text-lg font-bold text-gray-900 flex items-center space-x-2">
+                                    <span>Events & Tasks</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
+                                </h2>
+                                <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                                    <i class="fa-solid fa-plus mr-1"></i> New Event
+                                </button>
                             </div>
                             <div class="p-4 flex-1 overflow-y-auto" id="ongoing-events-list">
                                 <div class="text-center text-gray-500 py-8 text-sm">Loading events...</div>
