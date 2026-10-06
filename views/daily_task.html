@@ -1,0 +1,289 @@
+<div class="h-full flex flex-col bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 overflow-hidden text-sm">
+
+    <!-- Top Tabs -->
+    <div class="flex items-center px-4 pt-3 border-b border-slate-200/60 space-x-1 overflow-x-auto">
+        <button class="px-4 py-2 text-indigo-600 border-b-2 border-indigo-600 font-medium whitespace-nowrap">Fill in here - 2days in advance</button>
+        <button class="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium whitespace-nowrap">Example</button>
+        <button class="px-3 py-2 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="flex flex-wrap items-center px-4 py-2 border-b border-slate-200/60 space-x-2 text-gray-600 bg-slate-50">
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-1 whitespace-nowrap">
+            <i class="fa-solid fa-angles-right text-xs"></i> <span>Request pool</span>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-cog"></i> <span>Customize Field</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-regular fa-eye"></i> <span>View Settings</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-filter"></i> <span>Filter</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-layer-group"></i> <span>Group By</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-sort"></i> <span>Sort</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-arrows-up-down"></i> <span>Row Height</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-file-invoice"></i> <span>Generate Form</span>
+        </button>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-regular fa-comment"></i> <span>Comments</span>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="px-2 py-1.5 hover:bg-slate-200 rounded-md transition-colors">
+            <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button class="px-2 py-1.5 hover:bg-slate-200 rounded-md transition-colors">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <button class="px-2 py-1.5 hover:bg-slate-200 rounded-md transition-colors">
+            <i class="fa-solid fa-search"></i>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="px-3 py-1.5 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-2 whitespace-nowrap">
+            <i class="fa-solid fa-plus"></i> <span>Add Record</span>
+        </button>
+    </div>
+
+    <!-- Spreadsheet Table Container -->
+    <div class="flex-1 overflow-auto bg-white">
+        <table class="w-full border-collapse whitespace-nowrap table-fixed">
+            <thead class="sticky top-0 bg-slate-50 z-10 text-gray-500 shadow-sm">
+                <tr>
+                    <th class="w-10 border border-slate-200 px-2 py-1.5 font-normal text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                    </th>
+                    <th class="w-12 border border-slate-200 px-2 py-1.5 font-normal text-center">
+                        <i class="fa-solid fa-lock text-xs text-gray-400"></i>
+                    </th>
+                    <th class="w-40 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-font text-xs text-gray-400"></i> <span>Game Name</span></div>
+                    </th>
+                    <th class="w-28 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-regular fa-calendar text-xs text-gray-400"></i> <span>Start Date</span></div>
+                    </th>
+                    <th class="w-28 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-regular fa-calendar text-xs text-gray-400"></i> <span>End Date</span></div>
+                    </th>
+                    <th class="w-64 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-font text-xs text-gray-400"></i> <span>Task Title</span></div>
+                    </th>
+                    <th class="w-80 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-align-left text-xs text-gray-400"></i> <span>Task Description (<100)</span></div>
+                    </th>
+                    <th class="w-64 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-font text-xs text-gray-400"></i> <span>Template Title (<50)</span></div>
+                    </th>
+                    <th class="w-80 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-align-left text-xs text-gray-400"></i> <span>Template Caption (<150)</span></div>
+                    </th>
+                    <th class="w-48 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <span>Highlighted Hashtag</span>
+                    </th>
+                    <th class="w-40 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-hashtag text-xs text-gray-400"></i> <span>Template ID</span></div>
+                    </th>
+                    <th class="w-48 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-hashtag text-xs text-gray-400"></i> <span>Linked Card ID</span></div>
+                    </th>
+                    <th class="w-28 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <span>Owner</span>
+                    </th>
+                    <th class="w-40 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-solid fa-link text-xs text-gray-400"></i> <span>Doc Link</span></div>
+                    </th>
+                    <th class="w-32 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-regular fa-circle-check text-xs text-gray-400"></i> <span>Progress</span></div>
+                    </th>
+                    <th class="w-32 border border-slate-200 px-3 py-1.5 font-normal text-left">
+                        <div class="flex items-center space-x-1"><i class="fa-regular fa-copy text-xs text-gray-400"></i> <span>Parent</span></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 align-top">
+                <!-- Row 1 -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    </td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">1</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Arcade Quest</td>
+                    <td class="border border-slate-200 px-3 py-1.5">08/29/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/01/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Play & Post Your Arcade Game ...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">I-post ang lahat ng featured arcade game s...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">ARCADE QUEST ENTRY KO!</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Ito ang big win at game strategy ko sa {hashtag...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">{hashtag:ChickenGo...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">209331229913...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">3170534137671760686</td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">R</div>
+                            <span class="truncate">Rene...</span>
+                        </div>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">
+                        <a href="#" class="text-blue-500 hover:underline"><i class="fa-solid fa-list-ul mr-1"></i>[A level: Ar...</a>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate"></td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    </td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">2</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Super Ace Jac...</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/03/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/08/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Play & Post Your Pacquaio Selfie...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Mag-laro at I-post ang Pacquaio pose selfie...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">SUPER ACE JACKPOT PACQUIA...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Ito ang knockout pose at best gameplay momen...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">{hashtag:SuperAceJP...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">209508172919...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">4611686018430389792</td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">R</div>
+                            <span class="truncate">Rene...</span>
+                        </div>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">
+                        <a href="#" class="text-blue-500 hover:underline"><i class="fa-solid fa-list-ul mr-1"></i></a>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate"></td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    </td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">3</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">PABORITONG...</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/05/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/09/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Play & Post Your Paboritong Laro</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Mag laro sa featured game araw-araw at i-...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">PABORITONG LARO</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Sinubukan ko ang {hashtag:XXXtremeLightningB...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">{hashtag:XXXtremeLi...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">209544697006...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">7205759403795799960</td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold">L</div>
+                            <span class="truncate">Liezl ...</span>
+                        </div>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">
+                        <a href="#" class="text-blue-500 hover:underline"><i class="fa-solid fa-list-ul mr-1"></i>[CASINO] C...</a>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate"></td>
+                </tr>
+
+                <!-- Row 8 (Not Started example) -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    </td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">8</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">PLAY YOUR V...</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/24/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/27/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">I-click ang Play Now at laruin an...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Kumuha ng screenshot o video ng iyong be...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">PLAY YOUR VIBE</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Nilalaro ko ang {hashtag:FortuneCoinsUnli_7205...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">{hashtag:FortuneCoi...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">210296301969...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">6341068275340826099</td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold">L</div>
+                            <span class="truncate">Liezl ...</span>
+                        </div>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">
+                        <a href="#" class="text-blue-500 hover:underline"><i class="fa-solid fa-list-ul mr-1"></i>[SLOT] PL...</a>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">Not Started</span>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate"></td>
+                </tr>
+
+                <!-- Row 13 (In Progress example) -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center">
+                        <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    </td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">13</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">SUPER ACE H...</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/23/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5">09/27/2026</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">I-click ang Play Now at Mag-laro...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Maglaro ng super Ace Hula at mag-post ng ...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">SUPER ACE HULA CHALLENGE!</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">Share ko lang ang fantasy ko sa {hashtag:Super...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">{hashtag:SuperAceH...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">210231436111...</td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">2594073385368540983</td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-bold">L</div>
+                            <span class="truncate">Liezl ...</span>
+                        </div>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate">
+                        <a href="#" class="text-blue-500 hover:underline"><i class="fa-solid fa-list-ul mr-1"></i>[A-level ...</a>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>
+                    </td>
+                    <td class="border border-slate-200 px-3 py-1.5 truncate"></td>
+                </tr>
+
+                <!-- Extra empty rows to fill space -->
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center"><input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"></td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">14</td>
+                    <td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td>
+                </tr>
+                <tr class="hover:bg-slate-50 transition-colors group">
+                    <td class="border border-slate-200 px-2 py-1.5 text-center"><input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"></td>
+                    <td class="border border-slate-200 px-2 py-1.5 text-center text-gray-400">15</td>
+                    <td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td><td class="border border-slate-200 px-3 py-1.5"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer/Status Bar -->
+    <div class="px-4 py-2 border-t border-slate-200/60 bg-slate-50 text-xs text-gray-500 flex justify-between items-center">
+        <div>15 Records</div>
+        <div class="flex items-center space-x-4">
+            <span>Selected: 0</span>
+        </div>
+    </div>
+</div>
