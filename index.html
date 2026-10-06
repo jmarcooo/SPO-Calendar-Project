@@ -304,7 +304,10 @@
         }
 
         const TEAM_MEMBERS = ['Kenneth', 'Renee', 'Liezl', 'Nami', 'Lim', 'Marco'];
-        window.events = []; 
+
+        window.events = [];
+        window.dailyTasks = [];
+
         window.budgets = []; 
         
         let tooltipTimeout;
@@ -565,6 +568,7 @@
             const activeView = localStorage.getItem('spo_active_view') || 'dashboard';
             window.switchView(activeView);
 
+
             // Try loading local data immediately so UI isn't blank
             const localEventsStr = localStorage.getItem('spo_content_calendar_events');
             if (localEventsStr) {
@@ -572,6 +576,13 @@
                     window.events = JSON.parse(localEventsStr);
                 } catch(e) {}
             }
+            const localDailyTasksStr = localStorage.getItem('spo_daily_tasks');
+            if (localDailyTasksStr) {
+                try {
+                    window.dailyTasks = JSON.parse(localDailyTasksStr);
+                } catch(e) {}
+            }
+
             
             const calGrid = document.getElementById('calendar-grid');
             if(calGrid) window.renderUI();
@@ -1240,7 +1251,10 @@
         window.clearAllData = async () => {
             if(!confirm("Are you sure? This deletes ALL events globally from Firebase.")) return;
             localStorage.removeItem('spo_content_calendar_events');
-            window.events = [];
+
+        window.events = [];
+        window.dailyTasks = [];
+
             if (db) {
                 try {
                     window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
@@ -1402,6 +1416,7 @@
         };
 
         window.switchView = (viewName) => {
+            window.currentView = viewName;
             localStorage.setItem('spo_active_view', viewName);
             const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'sms', 'content_writer'];
             views.forEach(v => {
@@ -1441,9 +1456,13 @@
                         if (savedCategorySelect) savedCategorySelect.value = window.globalCategoryFilter;
 
                         window.renderUI();
+
                     } else if (viewName === 'tasks') {
                         window.renderTasksTable();
+                    } else if (viewName === 'daily_task') {
+                        if (window.renderDailyTasksTable) window.renderDailyTasksTable();
                     } else if (viewName === 'budget') {
+
                         window.renderBudgetTable();
                     } else if (viewName === 'campaign') {
                         if(window.updateCampaignDropdown) window.updateCampaignDropdown();
@@ -2293,9 +2312,111 @@
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
+
+        window.saveDailyTask = () => {
+            const eventTitle = document.getElementById('dt-event-title').value.trim();
+            const startDate = document.getElementById('dt-start-date').value;
+            const endDate = document.getElementById('dt-end-date').value;
+            const taskTitle = document.getElementById('dt-task-title').value.trim();
+            const requestor = document.getElementById('dt-requestor').value.trim();
+
+            if (!eventTitle || !startDate || !endDate || !taskTitle || !requestor) {
+                alert("Please fill in all required fields (*).");
+                return;
+            }
+
+            const now = new Date();
+            const createdTime = now.getFullYear() + "-" +
+                String(now.getMonth() + 1).padStart(2, '0') + "-" +
+                String(now.getDate()).padStart(2, '0') + " " +
+                String(now.getHours()).padStart(2, '0') + ":" +
+                String(now.getMinutes()).padStart(2, '0') + ":" +
+                String(now.getSeconds()).padStart(2, '0');
+
+            const newTask = {
+                id: Date.now().toString(),
+                eventTitle,
+                startDate,
+                endDate,
+                taskTitle,
+                taskDesc: document.getElementById('dt-task-desc').value.trim(),
+                templateTitle: document.getElementById('dt-template-title').value.trim(),
+                templateId: document.getElementById('dt-template-id').value.trim(),
+                templateCaption: document.getElementById('dt-template-caption').value.trim(),
+                hashtags: document.getElementById('dt-hashtags').value.trim(),
+                linkedPost: document.getElementById('dt-linked-post').value.trim(),
+                docLink: document.getElementById('dt-doc-link').value.trim(),
+                requestor,
+                createdTime,
+                status: "Not Started"
+            };
+
+            window.dailyTasks.push(newTask);
+            localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+
+            document.getElementById('daily-task-form').reset();
+            window.closeDailyTaskModal();
+
+            if (window.currentView === 'daily_task') {
+                window.renderDailyTasksTable();
+            }
+        };
+
+        window.renderDailyTasksTable = () => {
+            const tbody = document.getElementById('daily-tasks-table-body');
+            if (!tbody) return;
+
+            if (window.dailyTasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            window.dailyTasks.forEach(task => {
+                let statusBadge = '';
+                if (task.status === 'Done') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>';
+                else if (task.status === 'In Progress') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>';
+                else statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Not Started</span>';
+
+                let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${task.taskTitle}</div>
+                            <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.createdTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.startDate}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">${initial}</div>
+                                <span class="text-sm text-gray-900">${task.requestor}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
+        window.deleteDailyTask = (id) => {
+            if (confirm('Are you sure you want to delete this daily task request?')) {
+                window.dailyTasks = window.dailyTasks.filter(t => t.id !== id);
+                localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+                window.renderDailyTasksTable();
+            }
+        };
+
         window.closeDailyTaskModal = () => {
             document.getElementById('daily-task-modal').classList.add('hidden');
         }
+
 
         window.openTypeModal = (dateStr = null) => {
             window.tempSelectedDate = dateStr;
@@ -2891,51 +3012,51 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Event Title <span class="text-red-500">*</span></label>
-                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-event-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="dt-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                            <input type="date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="dt-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Task Title <span class="text-red-500">*</span></label>
-                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-task-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Task Description</label>
-                            <textarea rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                            <textarea id="dt-task-desc" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Template Title</label>
-                            <input type="text" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-template-title" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Template ID</label>
-                            <input type="text" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-template-id" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Template Caption</label>
-                            <textarea rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                            <textarea id="dt-template-caption" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Hashtags</label>
-                            <input type="text" placeholder="#tag1 #tag2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-hashtags" placeholder="#tag1 #tag2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Linked Post URL</label>
-                            <input type="url" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="dt-linked-post" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Document Link</label>
-                            <input type="url" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Requestor <span class="text-red-500">*</span></label>
-                            <input type="text" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-requestor" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
                 </form>
@@ -2944,7 +3065,7 @@
                 <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
                     Cancel
                 </button>
-                <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
+                <button type="button" onclick="window.saveDailyTask()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     Submit Request
                 </button>
             </div>
