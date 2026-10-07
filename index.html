@@ -2979,17 +2979,20 @@
 
             const data = window.pinRequests.map(p => {
                 return {
-                    "Campaign/Game Name": p.campaignName,
-                    "Start Date": p.startDate,
-                    "End Date": p.endDate,
+                    "CampaignGameName": p.campaignName,
+                    "CreatedDate": p.createdDate || p.createdTime || '',
+                    "StartDate": p.startDate,
+                    "EndDate": p.endDate,
+                    "UpdateDate": p.updateDate || p.updatedAt || '',
                     "Category": p.category,
-                    "Post ID": p.postId,
-                    "Post Title": p.postTitle,
-                    "Remark": p.remark,
+                    "PostID": p.postId,
+                    "PostTitle": p.postTitle,
                     "Priority": p.priority,
                     "Owner": p.owner,
-                    "Created Time": p.createdTime,
-                    "Last Updated": p.updatedAt
+                    "Status": p.status || 'Upcoming',
+                    "Page": p.page || '',
+                    "Position": p.position || '',
+                    "Sort": p.sort || ''
                 };
             });
 
@@ -3027,10 +3030,12 @@
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
                 const statusClass = p.status === 'Live' ? 'text-emerald-600 bg-emerald-100' : (p.status === 'Upcoming' ? 'text-indigo-600 bg-indigo-100' : 'text-gray-600 bg-gray-100');
 
+                const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'}-${p.position || '-'}-${p.sort || '-'}` : 'Pending';
+
                 html += `
                     <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-3 py-4 whitespace-nowrap">
-                            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
