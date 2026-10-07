@@ -482,9 +482,9 @@
         window.currentCarouselIndex = 0;
         
         const defaultFields = {
-            document: '', dailyDataReport: '', postMortemReport: '',
+            document: '', postMortemReport: '',
             hashtags: [], postIds: [], ignoreListed: false,
-            gameReview: 'Pending', dailyTask: false, contentWriters: 'Pending',
+            gameReview: 'Pending', dailyTaskLinked: false, contentWriters: 'Pending',
             imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
             postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending',
             dashboardStatus: {}
@@ -530,7 +530,6 @@
             let pending = [];
             
             if (!(f.document && window.isValidURL(f.document))) pending.push("Document Link");
-            if (!(f.dailyDataReport && window.isValidURL(f.dailyDataReport))) pending.push("Daily Data Report");
             if (!(f.postMortemReport && window.isValidURL(f.postMortemReport))) pending.push("Post-Mortem Report");
             
             if (!(Array.isArray(f.hashtags) && f.hashtags.length > 0)) pending.push("Hashtags");
@@ -1086,17 +1085,16 @@
 
             const fields = evt.fields || {};
             let completed = 0;
-            const totalItems = 16; 
+            const totalItems = 15;
 
             if (fields.document && window.isValidURL(fields.document)) completed++;
-            if (fields.dailyDataReport && window.isValidURL(fields.dailyDataReport)) completed++;
             if (fields.postMortemReport && window.isValidURL(fields.postMortemReport)) completed++;
             
             if (Array.isArray(fields.hashtags) && fields.hashtags.length > 0) completed++;
             if (Array.isArray(fields.postIds) && fields.postIds.some(p => p.id && p.id.trim() !== '')) completed++;
             
             if (fields.ignoreListed) completed++;
-            if (fields.dailyTask) completed++;
+            if (fields.dailyTaskLinked) completed++;
 
             const dropdownFields = [
                 'gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 
@@ -1181,6 +1179,18 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
+            if (existingEvent && existingEvent.startDate !== startDate) {
+                if (fieldsToSave.dashboardStatus) {
+                    const oldDates = Object.keys(fieldsToSave.dashboardStatus);
+                    const newDates = window.getDatesInRange(startDate, endDate);
+                    oldDates.forEach(d => {
+                        if (!newDates.includes(d)) {
+                            delete fieldsToSave.dashboardStatus[d];
+                        }
+                    });
+                }
+            }
+
             const tempEventForCalc = { itemType, startDate, endDate, fields: fieldsToSave, isEventOnly: itemType === 'event' };
             const progress = window.calcProgress(tempEventForCalc);
             
@@ -1346,7 +1356,6 @@
                     "Created Time": e.CreatedTime || '',
                     
                     "Document Link": f.document || '', 
-                    "Daily Data Report Link": f.dailyDataReport || '', 
                     "Post-Mortem Report Link": f.postMortemReport || '',
                     
                     "Hashtags": (f.hashtags || []).join(', '), 
@@ -2440,6 +2449,25 @@
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
+        window.openDailyTaskModalFromTask = (taskId) => {
+            document.getElementById('daily-task-form').reset();
+            document.getElementById('dt-id').value = '';
+            document.getElementById('dt-status').value = 'Not Started';
+            document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
+            window.populateLinkedTasksDropdown();
+
+            const task = window.events.find(e => e.id === taskId);
+            if (task) {
+                document.getElementById('dt-linked-task').value = taskId;
+                document.getElementById('dt-task-title').value = task.title || '';
+                document.getElementById('dt-event-title').value = task.campaignType || 'N/A';
+                document.getElementById('dt-start-date').value = task.startDate || '';
+                document.getElementById('dt-end-date').value = task.endDate || '';
+            }
+
+            document.getElementById('daily-task-modal').classList.remove('hidden');
+        };
+
         window.openEditDailyTask = (id) => {
             const task = window.dailyTasks.find(t => t.id === id);
             if (!task) return;
@@ -2533,6 +2561,21 @@
             if (window.currentView === 'daily_task') {
                 window.renderDailyTasksTable();
             }
+
+            if (linkedTaskId) {
+                const evt = window.events.find(e => e.id === linkedTaskId);
+                if (evt) {
+                    evt.progress = window.calcProgress(evt);
+                    window.syncEventToFirestore(evt);
+
+                    if (window.currentDrawerTaskId === linkedTaskId) {
+                        window.renderDrawerChecklist(evt);
+                        window.updateDrawerProgressUI(evt);
+                    }
+                    window.renderTasksTable();
+                    window.renderOngoingEvents();
+                }
+            }
         };
 
         window.renderDailyTasksTable = () => {
@@ -2607,9 +2650,26 @@
 
         window.deleteDailyTask = (id) => {
             if (confirm('Are you sure you want to delete this daily task request?')) {
+                const taskToDelete = window.dailyTasks.find(t => t.id === id);
+                const linkedTaskId = taskToDelete ? taskToDelete.linkedTaskId : null;
+
                 window.dailyTasks = window.dailyTasks.filter(t => t.id !== id);
                 localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
                 window.renderDailyTasksTable();
+
+                if (linkedTaskId) {
+                    const evt = window.events.find(e => e.id === linkedTaskId);
+                    if (evt) {
+                        evt.progress = window.calcProgress(evt);
+                        window.syncEventToFirestore(evt);
+                        if (window.currentDrawerTaskId === linkedTaskId) {
+                            window.renderDrawerChecklist(evt);
+                            window.updateDrawerProgressUI(evt);
+                        }
+                    }
+                    window.renderTasksTable();
+                    window.renderOngoingEvents();
+                }
             }
         };
 
@@ -2885,7 +2945,6 @@
             
             let linksDone = 0;
             if (f.document && window.isValidURL(f.document)) linksDone++;
-            if (f.dailyDataReport && window.isValidURL(f.dailyDataReport)) linksDone++;
             if (f.postMortemReport && window.isValidURL(f.postMortemReport)) linksDone++;
 
             let mediaDone = 0;
@@ -2897,7 +2956,15 @@
                 if (f[k] === 'Done' || f[k] === 'Not Applicable') opsDone++;
             });
             if (f.ignoreListed) opsDone++;
-            if (f.dailyTask) opsDone++;
+
+            // Check if there is a linked daily task in the dailyTasks list
+            const linkedDailyTask = window.dailyTasks.find(dt => dt.linkedTaskId === evt.id);
+            if (linkedDailyTask) {
+                f.dailyTaskLinked = true;
+            } else {
+                f.dailyTaskLinked = false;
+            }
+            if (f.dailyTaskLinked) opsDone++;
 
             let maxDash = 0;
             if (f.dashboardStatus) {
@@ -3047,7 +3114,6 @@
 
             const linksContent = `
                 ${makeUrlLinkHtml('document', 'Document Link')} 
-                ${makeUrlLinkHtml('dailyDataReport', 'Daily Data Report Link')} 
                 ${makeUrlLinkHtml('postMortemReport', 'Post-Mortem Report Link')}
             `;
             
@@ -3069,7 +3135,13 @@
                 </div>
                 <div class="flex space-x-4 mt-4">
                     <div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div>
-                    <div class="flex-1">${makeCheckboxHtml('dailyTask', 'Daily Task')}</div>
+                    <div class="flex-1 p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 flex flex-col justify-center">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Daily Task</label>
+                        ${f.dailyTaskLinked
+                            ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800"><i class="fa-solid fa-check mr-1"></i> Linked</span>`
+                            : `<button type="button" onclick="window.openDailyTaskModalFromTask('${evt.id}')" class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-1.5 px-3 rounded-md transition-colors shadow-sm">Create / Link</button>`
+                        }
+                    </div>
                 </div>
             `;
             
@@ -3077,7 +3149,7 @@
 
             list.innerHTML = `
                 <div class="pb-8">
-                    ${makeAccordion('Important Links', linksDone, 3, linksContent, drawerAccordionStates.links)} 
+                    ${makeAccordion('Important Links', linksDone, 2, linksContent, drawerAccordionStates.links)}
                     ${makeAccordion('Content & Publishing', mediaDone, 2, mediaContent, drawerAccordionStates.media)} 
                     ${makeAccordion('Operations Checklist', opsDone, 10, operationsContent, drawerAccordionStates.ops)} 
                     ${makeAccordion('Daily Tracking', dashDone, 1, dashboardContent, drawerAccordionStates.dash)}
