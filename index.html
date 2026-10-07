@@ -2449,6 +2449,38 @@
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
+        window.linkDailyTaskToTask = (taskId, dailyTaskId) => {
+            // First, remove link from any daily task currently linked to this task
+            window.dailyTasks.forEach(dt => {
+                if (dt.linkedTaskId === taskId) {
+                    dt.linkedTaskId = '';
+                }
+            });
+
+            // Link to the newly selected daily task (if not empty string)
+            if (dailyTaskId) {
+                const targetDailyTask = window.dailyTasks.find(dt => dt.id === dailyTaskId);
+                if (targetDailyTask) {
+                    targetDailyTask.linkedTaskId = taskId;
+                }
+            }
+
+            localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+
+            // Re-calc main task
+            const evt = window.events.find(e => e.id === taskId);
+            if (evt) {
+                evt.progress = window.calcProgress(evt);
+                window.syncEventToFirestore(evt);
+                if (window.currentDrawerTaskId === taskId) {
+                    window.renderDrawerChecklist(evt);
+                    window.updateDrawerProgressUI(evt);
+                }
+                window.renderTasksTable();
+                window.renderOngoingEvents();
+            }
+        };
+
         window.openDailyTaskModalFromTask = (taskId) => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
@@ -3137,10 +3169,31 @@
                     <div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div>
                     <div class="flex-1 p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 flex flex-col justify-center">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Daily Task</label>
-                        ${f.dailyTaskLinked
-                            ? `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 text-green-800"><i class="fa-solid fa-check mr-1"></i> Linked</span>`
-                            : `<button type="button" onclick="window.openDailyTaskModalFromTask('${evt.id}')" class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-1.5 px-3 rounded-md transition-colors shadow-sm">Create / Link</button>`
-                        }
+                        ${(() => {
+                            if (f.dailyTaskLinked) {
+                                return `
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800"><i class="fa-solid fa-check mr-1"></i> Linked</span>
+                                        <button onclick="window.linkDailyTaskToTask('${evt.id}', '')" class="text-xs text-red-500 hover:text-red-700 underline" title="Unlink">Unlink</button>
+                                    </div>
+                                `;
+                            } else {
+                                let dtOptions = '<option value="">Select Existing...</option>';
+                                window.dailyTasks.filter(dt => !dt.linkedTaskId).forEach(dt => {
+                                    dtOptions += \`<option value="\${dt.id}">\${dt.taskTitle || 'Untitled'}</option>\`;
+                                });
+                                return `
+                                    <div class="flex flex-col space-y-2">
+                                        <select onchange="window.linkDailyTaskToTask('${evt.id}', this.value)" class="w-full text-xs border border-gray-300 rounded-md py-1.5 px-2 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                            ${dtOptions}
+                                        </select>
+                                        <button type="button" onclick="window.openDailyTaskModalFromTask('${evt.id}')" class="w-full text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-1.5 px-3 rounded-md transition-colors shadow-sm flex justify-center items-center">
+                                            <i class="fa-solid fa-plus mr-1"></i> Create New
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        })()}
                     </div>
                 </div>
             `;
