@@ -2897,6 +2897,15 @@
             const remark = document.getElementById('pr-remark').value.trim();
 
             const reqId = id ? id : Date.now().toString();
+
+            // Calculate status mapping for simplicity
+            const today = new Date().toISOString().split('T')[0];
+            let status = 'Upcoming';
+            if (today >= startDate && today <= endDate) status = 'Live';
+            if (today > endDate) status = 'Ended';
+
+            const existing = id ? window.pinRequests.find(p => p.id === id) : null;
+
             const reqData = {
                 id: reqId,
                 campaignName,
@@ -2908,19 +2917,13 @@
                 postTitle,
                 owner,
                 remark,
-                updatedAt: window.getFormattedCreatedTime()
+                status,
+                createdDate: existing && existing.createdDate ? existing.createdDate : window.getFormattedCreatedTime(),
+                updateDate: window.getFormattedCreatedTime(),
+                page: existing && existing.page ? existing.page : '',
+                position: existing && existing.position ? existing.position : '',
+                sort: existing && existing.sort ? existing.sort : ''
             };
-
-            if (!id) {
-                reqData.createdTime = window.getFormattedCreatedTime();
-            } else {
-                const existing = window.pinRequests.find(p => p.id === id);
-                if (existing) {
-                    reqData.createdTime = existing.createdTime || window.getFormattedCreatedTime();
-                } else {
-                    reqData.createdTime = window.getFormattedCreatedTime();
-                }
-            }
 
             const btn = document.getElementById('save-pr-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -3022,6 +3025,7 @@
             let html = '';
             filtered.forEach(p => {
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+                const statusClass = p.status === 'Live' ? 'text-emerald-600 bg-emerald-100' : (p.status === 'Upcoming' ? 'text-indigo-600 bg-indigo-100' : 'text-gray-600 bg-gray-100');
 
                 html += `
                     <tr class="hover:bg-slate-50 transition-colors group">
@@ -3029,28 +3033,82 @@
                             <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]"><i class="fa-solid fa-lock text-gray-400 mr-1 text-xs"></i> ${p.campaignName}</div>
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.startDate}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.endDate}</td>
-                        <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border border-gray-200 bg-gray-50 text-gray-800">${p.category}</span>
-                        </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">${p.postId}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 truncate max-w-[150px]">${p.postTitle}</td>
-                        <td class="px-3 py-4 text-sm text-gray-500 truncate max-w-[150px]" title="${p.remark}">${p.remark || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.createdDate || p.createdTime || ''}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.owner}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Upcoming'}</span>
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <button onclick="window.openPinActionModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Action"><i class="fa-solid fa-thumbtack text-xs"></i></button>
+                            <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `;
             });
             tbody.innerHTML = html;
+        };
+
+        window.openPinActionModal = (id) => {
+            const form = document.getElementById('pin-action-form');
+            form.reset();
+            document.getElementById('pa-id').value = id;
+
+            const req = window.pinRequests.find(p => p.id === id);
+            if (req) {
+                document.getElementById('pa-page').value = req.page || '';
+                document.getElementById('pa-position').value = req.position || '';
+                document.getElementById('pa-sort').value = req.sort || '';
+            }
+
+            document.getElementById('pin-action-modal').classList.remove('hidden');
+        };
+
+        window.closePinActionModal = () => {
+            document.getElementById('pin-action-modal').classList.add('hidden');
+        };
+
+        window.savePinAction = async () => {
+            const form = document.getElementById('pin-action-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('pa-id').value;
+            const req = window.pinRequests.find(p => p.id === id);
+            if (!req) return;
+
+            req.page = document.getElementById('pa-page').value.trim();
+            req.position = document.getElementById('pa-position').value.trim();
+            req.sort = document.getElementById('pa-sort').value;
+            req.updateDate = window.getFormattedCreatedTime();
+
+            const btn = document.getElementById('save-pa-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+
+                if (db) {
+                    await setDoc(doc(db, "pin_requests", req.id), req);
+                }
+
+                window.showToast("Pin action saved", "success");
+                window.closePinActionModal();
+                if (window.currentView === 'pin_request') {
+                    window.renderPinRequestsTable();
+                }
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving pin action", "error");
+            } finally {
+                btn.innerHTML = 'Save';
+                btn.disabled = false;
+            }
         };
 
         window.deleteDailyTask = async (id) => {
@@ -3912,6 +3970,43 @@
                          <span class="text-xs text-gray-400">Created: <span id="detail-created-time"></span></span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pin Action Modal -->
+    <div id="pin-action-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Pin Details</h3>
+                <button onclick="closePinActionModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <form id="pin-action-form" class="space-y-4">
+                    <input type="hidden" id="pa-id">
+                    <div>
+                        <label for="pa-page" class="block text-sm font-medium text-gray-700">Page <span class="text-red-500">*</span></label>
+                        <input type="text" id="pa-page" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="pa-position" class="block text-sm font-medium text-gray-700">Position <span class="text-red-500">*</span></label>
+                        <input type="text" id="pa-position" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="pa-sort" class="block text-sm font-medium text-gray-700">Sort <span class="text-red-500">*</span></label>
+                        <input type="number" id="pa-sort" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePinActionModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="window.savePinAction()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pa-btn">
+                    Save
+                </button>
             </div>
         </div>
     </div>
