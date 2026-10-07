@@ -1,0 +1,63 @@
+            <div id="view-tasks" >
+                <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60" id="progress-tracking">
+                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h3 class="text-lg leading-6 font-bold text-gray-900">Detailed Progress Tracking</h3>
+                            <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 flex space-x-3">
+                            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                                <i class="fa-solid fa-plus mr-2"></i> New Task
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                        <div class="relative flex-1 max-w-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                            <option value="All">All Assignees</option>
+                        </select>
+                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                            <option value="All">All Statuses</option>
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Done">Done</option>
+                        </select>
+                        <button onclick="exportTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
+                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export to Excel
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" onclick="handleSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        Content Task <i id="sort-icon-title" class="fa-solid fa-sort text-gray-300 ml-1"></i>
+                                    </th>
+                                    <th scope="col" onclick="handleSort('assignees')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        Assignees <i id="sort-icon-assignees" class="fa-solid fa-sort text-gray-300 ml-1"></i>
+                                    </th>
+                                    <th scope="col" onclick="handleSort('status')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        Status <i id="sort-icon-status" class="fa-solid fa-sort text-gray-300 ml-1"></i>
+                                    </th>
+                                    <th scope="col" onclick="handleSort('progress')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                                        Progress <i id="sort-icon-progress" class="fa-solid fa-sort text-gray-300 ml-1"></i>
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="tasks-table-body">
+                                <tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Loading tasks...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Budget View -->
