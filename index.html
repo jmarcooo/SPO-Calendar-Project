@@ -84,6 +84,9 @@
                 <a href="#" id="nav-content_writer" onclick="switchView('content_writer')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Content Writer
                 </a>
+                <a href="#" id="nav-prize_distribution" onclick="switchView('prize_distribution')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-gift mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Prize Distribution
+                </a>
 
                 <div class="pt-4 mt-2 border-t border-slate-200/60"></div>
                 <div class="flex justify-between items-center px-3 mb-2">
@@ -1548,7 +1551,7 @@
         window.switchView = (viewName) => {
             window.currentView = viewName;
             localStorage.setItem('spo_active_view', viewName);
-            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
