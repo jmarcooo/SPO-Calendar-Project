@@ -69,6 +69,9 @@
                 <a href="#" id="nav-daily_task" onclick="switchView('daily_task')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-clipboard-check mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Daily Task
                 </a>
+                <a href="#" id="nav-pin_request" onclick="switchView('pin_request')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-thumbtack mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Pin Request
+                </a>
                 <a href="#" id="nav-sms" onclick="switchView('sms')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
                 </a>
@@ -1418,7 +1421,7 @@
         window.switchView = (viewName) => {
             window.currentView = viewName;
             localStorage.setItem('spo_active_view', viewName);
-            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'sms', 'content_writer'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
@@ -2353,6 +2356,15 @@
             document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
             document.getElementById('detail-requestor').innerText = task.requestor || 'Unknown';
+
+            const linkedTaskDisplay = document.getElementById('detail-linked-task');
+            if (task.linkedTaskId) {
+                const linkedTaskEvent = window.events.find(e => e.id === task.linkedTaskId);
+                linkedTaskDisplay.innerText = linkedTaskEvent ? linkedTaskEvent.title : 'Unknown Task';
+            } else {
+                linkedTaskDisplay.innerText = 'None';
+            }
+
             document.getElementById('detail-task-desc').innerText = task.taskDesc || 'No description provided.';
             document.getElementById('detail-template-title').innerText = task.templateTitle || 'N/A';
             document.getElementById('detail-template-id').innerText = task.templateId || 'N/A';
@@ -2407,11 +2419,24 @@
             }
         };
 
+        window.populateLinkedTasksDropdown = () => {
+            const dropdown = document.getElementById('dt-linked-task');
+            if (!dropdown) return;
+            dropdown.innerHTML = '<option value="">None</option>';
+            window.events.filter(e => e.type === 'task').forEach(task => {
+                const opt = document.createElement('option');
+                opt.value = task.id;
+                opt.textContent = task.title;
+                dropdown.appendChild(opt);
+            });
+        };
+
         window.openDailyTaskModal = () => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
             document.getElementById('dt-status').value = 'Not Started';
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
+            window.populateLinkedTasksDropdown();
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
@@ -2423,10 +2448,13 @@
             document.getElementById('dt-id').value = task.id;
             document.getElementById('daily-task-modal-title').innerText = 'Edit Daily Task Request';
 
+            window.populateLinkedTasksDropdown();
+
             document.getElementById('dt-event-title').value = task.eventTitle || '';
             document.getElementById('dt-start-date').value = task.startDate || '';
             document.getElementById('dt-end-date').value = task.endDate || '';
             document.getElementById('dt-task-title').value = task.taskTitle || '';
+            document.getElementById('dt-linked-task').value = task.linkedTaskId || '';
             document.getElementById('dt-task-desc').value = task.taskDesc || '';
             document.getElementById('dt-template-title').value = task.templateTitle || '';
             document.getElementById('dt-template-id').value = task.templateId || '';
@@ -2446,6 +2474,7 @@
             const startDate = document.getElementById('dt-start-date').value;
             const endDate = document.getElementById('dt-end-date').value;
             const taskTitle = document.getElementById('dt-task-title').value.trim();
+            const linkedTaskId = document.getElementById('dt-linked-task').value;
             const requestor = document.getElementById('dt-requestor').value.trim();
 
             if (!eventTitle || !startDate || !endDate || !taskTitle || !requestor) {
@@ -2484,6 +2513,7 @@
             targetTask.taskTitle = taskTitle;
             targetTask.taskDesc = document.getElementById('dt-task-desc').value.trim();
             targetTask.templateTitle = document.getElementById('dt-template-title').value.trim();
+            targetTask.linkedTaskId = linkedTaskId;
             targetTask.templateId = document.getElementById('dt-template-id').value.trim();
             targetTask.templateCaption = document.getElementById('dt-template-caption').value.trim();
             targetTask.hashtags = document.getElementById('dt-hashtags').value.trim();
@@ -3187,7 +3217,7 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="text-sm font-medium text-gray-700">Status:</span>
-                            <select id="detail-status-select" class="block w-full sm:w-32 pl-3 pr-8 py-1.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
+                            <select id="detail-status-select" class="block w-full sm:w-40 pl-3 pr-8 py-1.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
                                 <option value="Not Started">Not Started</option>
                                 <option value="In Progress">In Progress</option>
                                 <option value="Done">Done</option>
@@ -3205,6 +3235,10 @@
                             <div class="mt-1 text-gray-900 flex items-center">
                                 <i class="fa-solid fa-user-circle text-gray-400 mr-1.5"></i> <span id="detail-requestor"></span>
                             </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Linked Task</span>
+                            <div class="mt-1 text-gray-900 font-medium" id="detail-linked-task"></div>
                         </div>
                         <div class="sm:col-span-2">
                             <span class="block text-xs font-semibold text-gray-500 uppercase">Description</span>
@@ -3272,6 +3306,12 @@
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Task Title <span class="text-red-500">*</span></label>
                             <input type="text" id="dt-task-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Linked Task</label>
+                            <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm cursor-pointer">
+                                <option value="">None</option>
+                            </select>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Task Description</label>
