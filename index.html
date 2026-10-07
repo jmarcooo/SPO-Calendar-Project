@@ -416,8 +416,15 @@
             if (tooltip.classList.contains('hidden')) return;
 
             const rect = tooltip.getBoundingClientRect();
-            let x = (window.innerWidth - rect.width) / 2;
-            let y = (window.innerHeight - rect.height) / 2;
+            let x = e.clientX + 15;
+            let y = e.clientY + 15;
+
+            if (x + rect.width > window.innerWidth - 10) {
+                x = e.clientX - rect.width - 15;
+            }
+            if (y + rect.height > window.innerHeight - 10) {
+                y = e.clientY - rect.height - 15;
+            }
 
             if (x < 10) x = 10;
             if (y < 10) y = 10;
@@ -496,8 +503,15 @@
             if (tooltip.classList.contains('hidden')) return;
 
             const rect = tooltip.getBoundingClientRect();
-            let x = (window.innerWidth - rect.width) / 2;
-            let y = (window.innerHeight - rect.height) / 2;
+            let x = e.clientX + 15;
+            let y = e.clientY + 15;
+
+            if (x + rect.width > window.innerWidth - 10) {
+                x = e.clientX - rect.width - 15;
+            }
+            if (y + rect.height > window.innerHeight - 10) {
+                y = e.clientY - rect.height - 15;
+            }
 
             if (x < 10) x = 10;
             if (y < 10) y = 10;
