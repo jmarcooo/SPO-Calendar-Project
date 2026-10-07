@@ -184,7 +184,7 @@
                             <label for="event-start-date" class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
                             <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1" id="event-end-date-container">
                             <label for="event-end-date" class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
                             <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
@@ -325,9 +325,9 @@
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
     <!-- Tooltip Modal for Events -->
-    <div id="event-hover-tooltip" class="fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 w-[700px] h-[650px] transform transition-opacity duration-200 opacity-0 pointer-events-none">
+    <div id="event-hover-tooltip" class="fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none">
         <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
-        <div id="tooltip-image-container" class="hidden w-full flex-1 min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+        <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
             <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
         </div>
         <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
@@ -382,13 +382,15 @@
             titleEl.innerText = evt.title;
             dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
 
-            const hasValidImage = evt.itemType === 'event' && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+            const hasValidImage = (evt.itemType === 'event' || evt.itemType === 'game') && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
 
             if (hasValidImage) {
                 imgEl.src = evt.imageLink;
                 imgContainer.classList.remove('hidden');
+                tooltip.style.width = "700px";
             } else {
                 imgContainer.classList.add('hidden');
+                tooltip.style.width = "auto";
             }
 
             tooltip.classList.remove('hidden');
@@ -438,8 +440,6 @@
                 images.push(task.imageLink);
             }
 
-            if (images.length === 0) return;
-
             const tooltip = document.getElementById('event-hover-tooltip');
             const titleEl = document.getElementById('tooltip-title');
             const imgContainer = document.getElementById('tooltip-image-container');
@@ -447,10 +447,17 @@
             const dateEl = document.getElementById('tooltip-date');
 
             titleEl.innerText = task.title;
-            dateEl.innerText = images.length > 1 ? `Image 1 of ${images.length}` : `Task Image`;
 
-            imgEl.src = images[0];
-            imgContainer.classList.remove('hidden');
+            if (images.length === 0) {
+                imgContainer.classList.add('hidden');
+                tooltip.style.width = "auto";
+                dateEl.innerText = `Task`;
+            } else {
+                imgContainer.classList.remove('hidden');
+                tooltip.style.width = "700px";
+                dateEl.innerText = images.length > 1 ? `Image 1 of ${images.length}` : `Task Image`;
+                imgEl.src = images[0];
+            }
 
             tooltip.classList.remove('hidden');
             window.moveTaskTooltip(e);
@@ -1270,9 +1277,13 @@
             const id = document.getElementById('event-id').value;
             const title = document.getElementById('event-title').value.trim();
             const startDate = document.getElementById('event-start-date').value;
-            const endDate = document.getElementById('event-end-date').value;
+            let endDate = document.getElementById('event-end-date').value;
             const imageLink = document.getElementById('event-image-link').value.trim();
             
+            if (itemType === 'game') {
+                endDate = startDate;
+            }
+
             let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
             
             if (endDate < startDate) { 
@@ -3002,6 +3013,17 @@
                 imageContainer.style.display = 'none';
             }
 
+            const endDateContainer = document.getElementById('event-end-date-container');
+            const endDateInput = document.getElementById('event-end-date');
+
+            if (itemType === 'game') {
+                endDateContainer.style.display = 'none';
+                endDateInput.removeAttribute('required');
+            } else {
+                endDateContainer.style.display = 'block';
+                endDateInput.setAttribute('required', 'required');
+            }
+
             if (isNonTask) {
                 campContainer.style.display = 'none';
                 assignContainer.style.display = 'none';
@@ -3054,6 +3076,17 @@
                 imageContainer.style.display = 'block';
             } else {
                 imageContainer.style.display = 'none';
+            }
+
+            const endDateContainer = document.getElementById('event-end-date-container');
+            const endDateInput = document.getElementById('event-end-date');
+
+            if (itemType === 'game') {
+                endDateContainer.style.display = 'none';
+                endDateInput.removeAttribute('required');
+            } else {
+                endDateContainer.style.display = 'block';
+                endDateInput.setAttribute('required', 'required');
             }
 
             if (isNonTask) {
