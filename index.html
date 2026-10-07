@@ -95,7 +95,7 @@
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
-                <div id="quick-links-container" class="space-y-1">
+                <div id="quick-links-container" class="">
                     <!-- Quick links will be dynamically populated here -->
                 </div>
             </nav>
@@ -1827,7 +1827,7 @@
                     `;
                     
                     contentGridHtml += `
-                        <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-auto flex justify-start relative">
+                        <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-none flex justify-start relative">
                             <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-indigo-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">
                                 ${dayObj.day}
                             </span>
@@ -2857,7 +2857,7 @@
 
             window.quickLinks.forEach(link => {
                 const el = document.createElement('div');
-                el.className = "flex items-center justify-between px-3 py-2 hover:bg-slate-50 rounded-xl group transition-colors";
+                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 rounded-xl group transition-colors";
 
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
