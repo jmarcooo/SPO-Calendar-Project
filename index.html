@@ -364,6 +364,7 @@
         window.events = [];
         window.dailyTasks = [];
         window.quickLinks = [];
+        window.pinRequests = [];
 
         window.budgets = []; 
         
@@ -665,6 +666,12 @@
                     window.quickLinks = JSON.parse(localQuickLinksStr);
                 } catch(e) {}
             }
+            const localPinRequestsStr = localStorage.getItem('spo_pin_requests');
+            if (localPinRequestsStr) {
+                try {
+                    window.pinRequests = JSON.parse(localPinRequestsStr);
+                } catch(e) {}
+            }
 
             
             const calGrid = document.getElementById('calendar-grid');
@@ -724,6 +731,32 @@
                 window.renderQuickLinks();
             }, (error) => {
                 console.error("Quick Links Error:", error);
+            });
+
+            onSnapshot(collection(db, "pin_requests"), (snapshot) => {
+                let tempPinRequests = [];
+                snapshot.forEach((doc) => {
+                    tempPinRequests.push(doc.data());
+                });
+
+                const localPinsStr = localStorage.getItem('spo_pin_requests');
+                if (tempPinRequests.length === 0 && localPinsStr && localPinsStr !== '[]') {
+                    const localData = JSON.parse(localPinsStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) {
+                            setDoc(doc(db, "pin_requests", p.id), p);
+                        }
+                        localStorage.removeItem('spo_pin_requests');
+                        window.showToast("Local pin requests synced to cloud!", "success");
+                    }
+                }
+
+                window.pinRequests = tempPinRequests;
+                if (window.currentView === 'pin_request' && window.renderPinRequestsTable) {
+                    window.renderPinRequestsTable();
+                }
+            }, (error) => {
+                console.error("Pin Requests Error:", error);
             });
 
             onSnapshot(doc(db, "settings", "budgetSettings"), (docSnap) => {
@@ -1076,8 +1109,9 @@
             const localBudgets = JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
             const localSettings = JSON.parse(localStorage.getItem('spo_budget_settings') || '{}');
             const localDailyTasks = JSON.parse(localStorage.getItem('spo_daily_tasks') || '[]');
+            const localPinRequests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
 
-            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0) {
+            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0) {
                 window.showToast("No local data found on this computer to migrate.", "info");
                 return;
             }
@@ -1088,12 +1122,14 @@
                 for (let e of localEvents) { await setDoc(doc(db, "events", e.id), e); }
                 for (let b of localBudgets) { await setDoc(doc(db, "budgets", b.id), b); }
                 for (let t of localDailyTasks) { await setDoc(doc(db, "daily_tasks", t.id), t); }
+                for (let p of localPinRequests) { await setDoc(doc(db, "pin_requests", p.id), p); }
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
                 localStorage.removeItem('spo_content_calendar_events');
                 localStorage.removeItem('spo_budget_data');
                 localStorage.removeItem('spo_daily_tasks');
+                localStorage.removeItem('spo_pin_requests');
                 window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
             } catch (err) {
                 console.error(err);
@@ -1405,18 +1441,21 @@
             localStorage.removeItem('spo_content_calendar_events');
             localStorage.removeItem('spo_daily_tasks');
             localStorage.removeItem('spo_quick_links');
+            localStorage.removeItem('spo_pin_requests');
 
             if (db) {
                 try {
                     window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
                     window.dailyTasks.forEach(t => deleteDoc(doc(db, "daily_tasks", t.id)));
                     window.quickLinks.forEach(l => deleteDoc(doc(db, "quick_links", l.id)));
+                    window.pinRequests.forEach(p => deleteDoc(doc(db, "pin_requests", p.id)));
                 } catch(err) {}
             }
 
             window.events = [];
             window.dailyTasks = [];
             window.quickLinks = [];
+            window.pinRequests = [];
 
             window.showToast("Data clearing initiated", "success");
             window.renderUI();
@@ -2812,6 +2851,208 @@
             tbody.innerHTML = html;
         };
 
+        window.openPinRequestModal = (id = null) => {
+            const form = document.getElementById('pin-request-form');
+            form.reset();
+            document.getElementById('pr-id').value = '';
+            document.getElementById('pin-request-modal-title').innerText = 'Create Pin Request';
+
+            if (id) {
+                const req = window.pinRequests.find(p => p.id === id);
+                if (req) {
+                    document.getElementById('pr-id').value = req.id;
+                    document.getElementById('pr-campaign-name').value = req.campaignName || '';
+                    document.getElementById('pr-start-date').value = req.startDate || '';
+                    document.getElementById('pr-end-date').value = req.endDate || '';
+                    document.getElementById('pr-category').value = req.category || 'PGC';
+                    document.getElementById('pr-priority').value = req.priority || 'Medium';
+                    document.getElementById('pr-post-id').value = req.postId || '';
+                    document.getElementById('pr-post-title').value = req.postTitle || '';
+                    document.getElementById('pr-owner').value = req.owner || '';
+                    document.getElementById('pr-remark').value = req.remark || '';
+                    document.getElementById('pin-request-modal-title').innerText = 'Edit Pin Request';
+                }
+            }
+
+            document.getElementById('pin-request-modal').classList.remove('hidden');
+        };
+
+        window.closePinRequestModal = () => {
+            document.getElementById('pin-request-modal').classList.add('hidden');
+        };
+
+        window.savePinRequest = async () => {
+            const form = document.getElementById('pin-request-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('pr-id').value;
+            const campaignName = document.getElementById('pr-campaign-name').value.trim();
+            const startDate = document.getElementById('pr-start-date').value;
+            const endDate = document.getElementById('pr-end-date').value;
+            const category = document.getElementById('pr-category').value;
+            const priority = document.getElementById('pr-priority').value;
+            const postId = document.getElementById('pr-post-id').value.trim();
+            const postTitle = document.getElementById('pr-post-title').value.trim();
+            const owner = document.getElementById('pr-owner').value.trim();
+            const remark = document.getElementById('pr-remark').value.trim();
+
+            const reqId = id ? id : Date.now().toString();
+            const reqData = {
+                id: reqId,
+                campaignName,
+                startDate,
+                endDate,
+                category,
+                priority,
+                postId,
+                postTitle,
+                owner,
+                remark,
+                updatedAt: window.getFormattedCreatedTime()
+            };
+
+            if (!id) {
+                reqData.createdTime = window.getFormattedCreatedTime();
+            } else {
+                const existing = window.pinRequests.find(p => p.id === id);
+                if (existing) {
+                    reqData.createdTime = existing.createdTime || window.getFormattedCreatedTime();
+                } else {
+                    reqData.createdTime = window.getFormattedCreatedTime();
+                }
+            }
+
+            const btn = document.getElementById('save-pr-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                const idx = window.pinRequests.findIndex(p => p.id === reqId);
+                if (idx > -1) window.pinRequests[idx] = reqData;
+                else window.pinRequests.push(reqData);
+
+                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+
+                if (db) {
+                    await setDoc(doc(db, "pin_requests", reqId), reqData);
+                }
+
+                window.showToast(id ? "Pin request updated" : "Pin request added", "success");
+                window.closePinRequestModal();
+                if (window.currentView === 'pin_request') {
+                    window.renderPinRequestsTable();
+                }
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving pin request", "error");
+            } finally {
+                btn.innerHTML = 'Submit Request';
+                btn.disabled = false;
+            }
+        };
+
+        window.deletePinRequest = async (id) => {
+            if (confirm('Are you sure you want to delete this pin request?')) {
+                window.pinRequests = window.pinRequests.filter(p => p.id !== id);
+                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+
+                if (db) {
+                    try { await deleteDoc(doc(db, "pin_requests", id)); }
+                    catch(e) {}
+                }
+
+                if (window.currentView === 'pin_request') {
+                    window.renderPinRequestsTable();
+                }
+                window.showToast("Pin request deleted", "success");
+            }
+        };
+
+        window.exportPinRequestsExcel = () => {
+            if (!window.pinRequests || window.pinRequests.length === 0) {
+                alert("No pin requests to export.");
+                return;
+            }
+
+            const data = window.pinRequests.map(p => {
+                return {
+                    "Campaign/Game Name": p.campaignName,
+                    "Start Date": p.startDate,
+                    "End Date": p.endDate,
+                    "Category": p.category,
+                    "Post ID": p.postId,
+                    "Post Title": p.postTitle,
+                    "Remark": p.remark,
+                    "Priority": p.priority,
+                    "Owner": p.owner,
+                    "Created Time": p.createdTime,
+                    "Last Updated": p.updatedAt
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Pin Requests");
+            XLSX.writeFile(workbook, "SPO_Pin_Requests_Export.xlsx");
+        };
+
+        window.renderPinRequestsTable = () => {
+            const tbody = document.getElementById('pin-requests-table-body');
+            if (!tbody) return;
+
+            let searchVal = document.getElementById('pin-search-input') ? document.getElementById('pin-search-input').value.toLowerCase() : '';
+            let catVal = document.getElementById('pin-category-filter') ? document.getElementById('pin-category-filter').value : 'All';
+
+            let filtered = window.pinRequests.filter(p => {
+                if (catVal !== 'All' && p.category !== catVal) return false;
+                if (searchVal) {
+                    const matchCamp = p.campaignName && p.campaignName.toLowerCase().includes(searchVal);
+                    const matchPost = p.postId && p.postId.toLowerCase().includes(searchVal);
+                    const matchOwner = p.owner && p.owner.toLowerCase().includes(searchVal);
+                    return matchCamp || matchPost || matchOwner;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="px-6 py-8 text-center text-sm text-gray-500">No pin requests found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors group">
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <input type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]"><i class="fa-solid fa-lock text-gray-400 mr-1 text-xs"></i> ${p.campaignName}</div>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.startDate}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.endDate}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border border-gray-200 bg-gray-50 text-gray-800">${p.category}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">${p.postId}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 truncate max-w-[150px]">${p.postTitle}</td>
+                        <td class="px-3 py-4 text-sm text-gray-500 truncate max-w-[150px]" title="${p.remark}">${p.remark || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.owner}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
         window.deleteDailyTask = async (id) => {
             if (confirm('Are you sure you want to delete this daily task request?')) {
                 const taskToDelete = window.dailyTasks.find(t => t.id === id);
@@ -3671,6 +3912,78 @@
                          <span class="text-xs text-gray-400">Created: <span id="detail-created-time"></span></span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pin Request Modal -->
+    <div id="pin-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900" id="pin-request-modal-title">Create Pin Request</h3>
+                <button onclick="closePinRequestModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1">
+                <form id="pin-request-form" class="space-y-4">
+                    <input type="hidden" id="pr-id">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Campaign / Game Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="pr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="pr-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="pr-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
+                            <select id="pr-category" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                                <option value="PGC">PGC</option>
+                                <option value="UGC">UGC</option>
+                                <option value="Perya Host">Perya Host</option>
+                                <option value="Content Writer">Content Writer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Priority <span class="text-red-500">*</span></label>
+                            <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Post ID <span class="text-red-500">*</span></label>
+                            <input type="text" id="pr-post-id" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Post Title <span class="text-red-500">*</span></label>
+                            <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Owner <span class="text-red-500">*</span></label>
+                            <input type="text" id="pr-owner" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Remark / Reason</label>
+                            <textarea id="pr-remark" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="window.savePinRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
+                    Submit Request
+                </button>
             </div>
         </div>
     </div>
