@@ -366,6 +366,7 @@
         window.quickLinks = [];
         window.pinRequests = [];
         window.cwRequests = [];
+        window.cwTempHashtags = [];
 
         window.budgets = []; 
         
@@ -3940,21 +3941,103 @@
         window.onload = window.initApp;
 
 
+        window.calculateCWDuration = () => {
+            const start = document.getElementById('cwr-support-date').value;
+            const end = document.getElementById('cwr-support-end-date').value;
+            const durationEl = document.getElementById('cwr-duration');
+            if (start && end) {
+                const s = new Date(start);
+                const e = new Date(end);
+                const diffTime = e - s;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                durationEl.value = diffDays >= 0 ? diffDays + " days" : "Invalid Dates";
+            } else {
+                durationEl.value = '';
+            }
+        };
+
+        window.renderCWhashtags = () => {
+            const container = document.getElementById('cwr-hashtags-container');
+            const input = document.getElementById('cwr-hashtag-input');
+            if (!container || !input) return;
+
+            let pills = window.cwTempHashtags.map((t, i) => `
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                    ${t}
+                    <button type="button" onclick="removeCWhashtag(${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+
+            container.innerHTML = pills;
+            if (window.cwTempHashtags.length >= 10) {
+                input.disabled = true;
+                input.classList.add('bg-slate-100', 'cursor-not-allowed');
+            } else {
+                input.disabled = false;
+                input.classList.remove('bg-slate-100', 'cursor-not-allowed');
+            }
+        };
+
+        window.handleCWhashtagEnter = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const input = e.target;
+                const val = input.value.trim();
+                if (!val) return;
+
+                const newTags = val.split(/\s+/).filter(t => t.length > 0);
+                newTags.forEach(tag => {
+                    if (window.cwTempHashtags.length < 10) {
+                        window.cwTempHashtags.push(tag);
+                    }
+                });
+
+                input.value = '';
+                window.renderCWhashtags();
+            }
+        };
+
+        window.removeCWhashtag = (idx) => {
+            window.cwTempHashtags.splice(idx, 1);
+            window.renderCWhashtags();
+        };
+
         window.openCWRequestModal = (id = null) => {
             const form = document.getElementById('cw-request-form');
             if (form) form.reset();
             document.getElementById('cwr-id').value = '';
             document.getElementById('cw-request-modal-title').innerText = 'Create Content Writer Request';
+            window.cwTempHashtags = [];
+            window.renderCWhashtags();
 
             if (id) {
                 const req = window.cwRequests.find(p => p.id === id);
                 if (req) {
                     document.getElementById('cwr-id').value = req.id;
-                    document.getElementById('cwr-campaign-name').value = req.campaignName || '';
-                    document.getElementById('cwr-support-date').value = req.supportDate || '';
-                    document.getElementById('cwr-campaign-status').value = req.campaignStatus || 'Pending';
-                    document.getElementById('cwr-priority-level').value = req.priorityLevel || 'Medium';
                     document.getElementById('cwr-requested-by').value = req.requestedBy || '';
+                    document.getElementById('cwr-campaign-name').value = req.campaignName || '';
+                    document.getElementById('cwr-campaign-file').value = req.campaignFile || '';
+                    document.getElementById('cwr-support-date').value = req.supportDate || '';
+                    document.getElementById('cwr-support-end-date').value = req.supportEndDate || '';
+                    document.getElementById('cwr-campaign-status').value = req.campaignStatus || 'Upcoming';
+                    document.getElementById('cwr-priority-level').value = req.priorityLevel || 'S Level';
+                    document.getElementById('cwr-priority-rationale').value = req.priorityRationale || '';
+                    document.getElementById('cwr-posting-requirements').value = req.postingRequirements || '';
+                    document.getElementById('cwr-game-configuration').value = req.gameConfiguration || '';
+                    document.getElementById('cwr-special-payout').value = req.specialPayout || '';
+                    document.getElementById('cwr-im-support-caption').value = req.imSupportCaption || '';
+                    document.getElementById('cwr-im-support-date').value = req.imSupportDate || '';
+
+                    window.cwTempHashtags = Array.isArray(req.officialHashtags) ? [...req.officialHashtags] : [];
+                    window.renderCWhashtags();
+
+                    const formatCheckboxes = document.querySelectorAll('input[name="cwr-content-format"]');
+                    const formats = req.contentFormat || [];
+                    formatCheckboxes.forEach(cb => {
+                        cb.checked = formats.includes(cb.value);
+                    });
+
+                    window.calculateCWDuration();
                     document.getElementById('cw-request-modal-title').innerText = 'Edit Content Writer Request';
                 }
             }
@@ -3971,22 +4054,43 @@
             if (!form.reportValidity()) return;
 
             const id = document.getElementById('cwr-id').value;
+            const requestedBy = document.getElementById('cwr-requested-by').value.trim();
             const campaignName = document.getElementById('cwr-campaign-name').value.trim();
+            const campaignFile = document.getElementById('cwr-campaign-file').value.trim();
             const supportDate = document.getElementById('cwr-support-date').value;
+            const supportEndDate = document.getElementById('cwr-support-end-date').value;
             const campaignStatus = document.getElementById('cwr-campaign-status').value;
             const priorityLevel = document.getElementById('cwr-priority-level').value;
-            const requestedBy = document.getElementById('cwr-requested-by').value.trim();
+            const priorityRationale = document.getElementById('cwr-priority-rationale').value.trim();
+            const postingRequirements = document.getElementById('cwr-posting-requirements').value.trim();
+            const gameConfiguration = document.getElementById('cwr-game-configuration').value.trim();
+            const specialPayout = document.getElementById('cwr-special-payout').value.trim();
+            const imSupportCaption = document.getElementById('cwr-im-support-caption').value.trim();
+            const imSupportDate = document.getElementById('cwr-im-support-date').value;
+
+            const formatCheckboxes = document.querySelectorAll('input[name="cwr-content-format"]:checked');
+            const contentFormat = Array.from(formatCheckboxes).map(cb => cb.value);
 
             const reqId = id ? id : Date.now().toString();
             const existing = id ? window.cwRequests.find(p => p.id === id) : null;
 
             const reqData = {
                 id: reqId,
+                requestedBy,
                 campaignName,
+                campaignFile,
                 supportDate,
+                supportEndDate,
                 campaignStatus,
                 priorityLevel,
-                requestedBy,
+                priorityRationale,
+                postingRequirements,
+                contentFormat,
+                gameConfiguration,
+                officialHashtags: window.cwTempHashtags,
+                specialPayout,
+                imSupportCaption,
+                imSupportDate,
                 createdDate: existing && existing.createdDate ? existing.createdDate : window.getFormattedCreatedTime(),
                 updateDate: window.getFormattedCreatedTime()
             };
@@ -4045,12 +4149,23 @@
 
             const data = window.cwRequests.map(p => {
                 return {
+                    "RequestedBy": p.requestedBy,
                     "CampaignName": p.campaignName,
-                    "CreatedDate": p.createdDate || '',
-                    "SupportDate": p.supportDate,
+                    "CampaignFile": p.campaignFile,
+                    "SupportStartDate": p.supportDate,
+                    "SupportEndDate": p.supportEndDate,
                     "CampaignStatus": p.campaignStatus,
                     "PriorityLevel": p.priorityLevel,
-                    "RequestedBy": p.requestedBy
+                    "PriorityRationale": p.priorityRationale,
+                    "PostingRequirements": p.postingRequirements,
+                    "ContentFormat": (p.contentFormat || []).join(', '),
+                    "GameConfiguration": p.gameConfiguration,
+                    "OfficialHashtags": (p.officialHashtags || []).join(', '),
+                    "SpecialPayout": p.specialPayout,
+                    "IMSupportCaption": p.imSupportCaption,
+                    "IMSupportDate": p.imSupportDate,
+                    "CreatedDate": p.createdDate || '',
+                    "UpdateDate": p.updateDate || ''
                 };
             });
 
@@ -4396,7 +4511,7 @@
 
     <!-- Content Writer Request Modal -->
     <div id="cw-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
                 <h3 class="text-lg font-bold text-gray-900" id="cw-request-modal-title">Create Content Writer Request</h3>
                 <button onclick="closeCWRequestModal()" class="text-gray-400 hover:text-gray-500">
@@ -4406,34 +4521,118 @@
             <div class="overflow-y-auto p-6 flex-1">
                 <form id="cw-request-form" class="space-y-4">
                     <input type="hidden" id="cwr-id">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Requested By <span class="text-red-500">*</span></label>
+                            <input type="text" id="cwr-requested-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
                             <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Campaign File (Link)</label>
+                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Support Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="cwr-support-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700">Support Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Support End Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Duration (Days)</label>
+                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Status <span class="text-red-500">*</span></label>
                             <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
-                                <option value="Pending">Pending</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                                <option value="Upcoming">Upcoming</option>
+                                <option value="Active">Active</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Paused">Paused</option>
+                                <option value="Cancelled">Cancelled</option>
                             </select>
                         </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Priority Level <span class="text-red-500">*</span></label>
                             <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
+                                <option value="S Level">S Level</option>
+                                <option value="A Level">A Level</option>
                             </select>
                         </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Priority Rationale</label>
+                            <input type="text" id="cwr-priority-rationale" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Posting Requirements</label>
+                            <textarea id="cwr-posting-requirements" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Content Format</label>
+                            <div class="flex flex-wrap gap-3">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Static Image" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Static Image</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Video with Reaction" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Video with Reaction</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Gameplay Screenshot" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Gameplay Screenshot</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Screen Recording" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Screen Recording</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Requested By <span class="text-red-500">*</span></label>
-                            <input type="text" id="cwr-requested-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700">Game Configuration</label>
+                            <input type="text" id="cwr-game-configuration" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                            <div class="flex flex-wrap mb-1" id="cwr-hashtags-container"></div>
+                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Special Payout / Credits</label>
+                            <input type="text" id="cwr-special-payout" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div class="md:col-span-2 border-t border-slate-200/60 pt-4 mt-2">
+                            <h4 class="text-sm font-bold text-gray-900 mb-3">IM Support Details</h4>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">IM Support Key Visuals (Image Upload)</label>
+                            <div class="mt-1 border-2 border-dashed border-gray-300 rounded-xl px-6 pt-5 pb-6 flex justify-center cursor-not-allowed bg-slate-50">
+                                <div class="space-y-1 text-center text-gray-400">
+                                    <i class="fa-solid fa-image text-3xl mb-2"></i>
+                                    <p class="text-sm">Image upload placeholder (Not functional yet)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">IM Support Caption</label>
+                            <textarea id="cwr-im-support-caption" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">IM Support Date</label>
+                            <input type="date" id="cwr-im-support-date" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
                 </form>
