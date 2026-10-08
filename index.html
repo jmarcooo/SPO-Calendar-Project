@@ -4312,7 +4312,7 @@
 
                 let completeBtn = '';
                 if (reqStatus !== 'Completed') {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 ml-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest(\'${req.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 mr-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
                 }
 
                 row.innerHTML = `
@@ -4336,9 +4336,9 @@
                         </span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        ${completeBtn}
                         <button onclick="window.openSMSModal('${req.id}')" class="text-indigo-600 hover:text-indigo-900 group-hover:bg-indigo-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
                         <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
-                        ${completeBtn}
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -4348,7 +4348,7 @@
         window.openSMSModal = function(id = null) {
             document.getElementById('sms-modal-form').reset();
             const requestorInput = document.getElementById('sms-requestor');
-            requestorInput.value = window.currentUserProfile ? window.currentUserProfile.name : 'Unknown User';
+            requestorInput.value = (window.currentUserProfile && window.currentUserProfile.name) ? window.currentUserProfile.name : (window.currentUserProfile && window.currentUserProfile.username) ? window.currentUserProfile.username : 'Unknown User';
 
             if (id) {
                 const req = window.smsRequests.find(r => r.id === id);
@@ -4575,7 +4575,7 @@
                 const reqStatusClass = statusColors[reqStatus] || 'bg-gray-100 text-gray-800';
                 let completeBtn = '';
                 if (reqStatus !== 'Completed') {
-                    completeBtn = `<button onclick="window.completeCWRequest('${p.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 ml-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
+                    completeBtn = `<button onclick="window.completeCWRequest(\'${p.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
                 }
 html += `
                     <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openCWRequestDetails(\'${p.id}\')">
@@ -4603,9 +4603,9 @@ html += `
                         </span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${completeBtn}
                             <button onclick="window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
-                            ${completeBtn}
                         </td>
                     </tr>
                 `;
@@ -5914,7 +5914,7 @@ html += `
                     <label class="block text-sm font-medium text-gray-700 mb-1">Message Content <span class="text-red-500">*</span></label>
                     <textarea id="sms-message-content" required rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Provide SMS text (max 160 chars recommended)"></textarea>
                 </div>
-                <div>
+                <div class="hidden">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Requested By <span class="text-red-500">*</span></label>
                     <input type="text" id="sms-requestor" required readonly class="w-full px-3 py-2 border border-gray-200 bg-gray-50 rounded-xl text-gray-600 cursor-not-allowed">
                 </div>
