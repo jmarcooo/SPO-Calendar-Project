@@ -4295,8 +4295,7 @@
                     document.getElementById('pdr-campaign-doc').value = req.campaignDocLink || '';
                     document.getElementById('pdr-winner-list-doc').value = req.winnerListDocLink || '';
                     document.getElementById('pdr-budget-amount').value = req.budgetAmount || '';
-                    document.getElementById('pdr-actual-amount').value = req.actualAmount || '';
-                    document.getElementById('pdr-status').value = req.status || 'Pending';
+                    // actualAmount and status are hidden/auto-managed
                     document.getElementById('pd-request-modal-title').innerText = 'Edit Prize Distribution Request';
                 }
             }
@@ -4318,11 +4317,13 @@
             const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
             const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
             const budgetAmount = parseFloat(document.getElementById('pdr-budget-amount').value) || 0;
-            const actualAmount = parseFloat(document.getElementById('pdr-actual-amount').value) || 0;
-            const status = document.getElementById('pdr-status').value;
 
             const reqId = id ? id : Date.now().toString();
             const existing = id ? window.pdRequests.find(p => p.id === id) : null;
+
+            // Keep existing values or default for new requests
+            const actualAmount = existing ? existing.actualAmount : 0;
+            const status = existing ? existing.status : 'Pending';
 
             const reqData = {
                 id: reqId,
@@ -5099,7 +5100,7 @@
                             </div>
                         </div>
 
-                        <div>
+                        <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Budget Amount <span class="text-red-500">*</span></label>
                             <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -5108,24 +5109,7 @@
                                 <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Actual Amount</label>
-                            <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">₱</span>
-                                </div>
-                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                            </div>
-                        </div>
 
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Status <span class="text-red-500">*</span></label>
-                            <select id="pdr-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
-                                <option value="Pending">Pending</option>
-                                <option value="Under Review">Under Review</option>
-                                <option value="Completed">Completed</option>
-                            </select>
-                        </div>
                     </div>
                 </form>
             </div>
