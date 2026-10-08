@@ -1774,6 +1774,8 @@
                         if (window.renderCWRequestsTable) window.renderCWRequestsTable();
                     } else if (viewName === 'pin_request') {
                         if (window.renderPinRequestsTable) window.renderPinRequestsTable();
+                    } else if (viewName === 'sms') {
+                        if (window.renderSMSTable) window.renderSMSTable();
                     }
                 })
                 .catch(err => {
