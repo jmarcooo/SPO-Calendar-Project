@@ -1354,7 +1354,7 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
-            if (existingEvent && existingEvent.startDate !== startDate) {
+            if (existingEvent && (existingEvent.startDate !== startDate || existingEvent.endDate !== endDate)) {
                 if (fieldsToSave.dashboardStatus) {
                     const oldDates = Object.keys(fieldsToSave.dashboardStatus);
                     const newDates = window.getDatesInRange(startDate, endDate);
