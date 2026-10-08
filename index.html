@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
                 </a>
                 <a href="#" id="nav-content_writer" onclick="switchView('content_writer')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Content Writer
+                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Copy Writer
                 </a>
                 <a href="#" id="nav-prize_distribution" onclick="switchView('prize_distribution')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-gift mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Prize Distribution
@@ -788,7 +788,6 @@
                             setDoc(doc(db, "cw_requests", p.id), p);
                         }
                         localStorage.removeItem('spo_cw_requests');
-            localStorage.removeItem('spo_pd_requests');
                         window.showToast("Local CW requests synced to cloud!", "success");
                     }
                 }
@@ -815,7 +814,6 @@
                             setDoc(doc(db, "pin_requests", p.id), p);
                         }
                         localStorage.removeItem('spo_pin_requests');
-            localStorage.removeItem('spo_cw_requests');
                         window.showToast("Local pin requests synced to cloud!", "success");
                     }
                 }
@@ -4046,7 +4044,9 @@
             const form = document.getElementById('cw-request-form');
             if (form) form.reset();
             document.getElementById('cwr-id').value = '';
-            document.getElementById('cw-request-modal-title').innerText = 'Create Content Writer Request';
+            document.getElementById('cw-request-modal-title').innerText = 'Create Copy Writer Request';
+            const supportTypeRadiosReset = document.getElementsByName('cwr-support-type');
+            for (let i = 0; i < supportTypeRadiosReset.length; i++) supportTypeRadiosReset[i].checked = false;
             window.cwTempHashtags = [];
             window.renderCWhashtags();
 
@@ -4056,6 +4056,10 @@
                     document.getElementById('cwr-id').value = req.id;
                     document.getElementById('cwr-requested-by').value = req.requestedBy || '';
                     document.getElementById('cwr-campaign-name').value = req.campaignName || '';
+                    const supportTypeRadios = document.getElementsByName('cwr-support-type');
+                    for (let i = 0; i < supportTypeRadios.length; i++) {
+                        supportTypeRadios[i].checked = (supportTypeRadios[i].value === req.supportType);
+                    }
                     document.getElementById('cwr-campaign-file').value = req.campaignFile || '';
                     document.getElementById('cwr-support-date').value = req.supportDate || '';
                     document.getElementById('cwr-support-end-date').value = req.supportEndDate || '';
@@ -4078,7 +4082,7 @@
                     });
 
                     window.calculateCWDuration();
-                    document.getElementById('cw-request-modal-title').innerText = 'Edit Content Writer Request';
+                    document.getElementById('cw-request-modal-title').innerText = 'Edit Copy Writer Request';
                 }
             }
 
@@ -4097,6 +4101,11 @@
             const requestedBy = document.getElementById('cwr-requested-by').value.trim();
             const campaignName = document.getElementById('cwr-campaign-name').value.trim();
             const campaignFile = document.getElementById('cwr-campaign-file').value.trim();
+            let supportType = '';
+            const supportTypeRadiosSave = document.getElementsByName('cwr-support-type');
+            for (let i = 0; i < supportTypeRadiosSave.length; i++) {
+                if (supportTypeRadiosSave[i].checked) supportType = supportTypeRadiosSave[i].value;
+            }
             const supportDate = document.getElementById('cwr-support-date').value;
             const supportEndDate = document.getElementById('cwr-support-end-date').value;
             const campaignStatus = document.getElementById('cwr-campaign-status').value;
@@ -4119,6 +4128,7 @@
                 requestedBy,
                 campaignName,
                 campaignFile,
+                supportType,
                 supportDate,
                 supportEndDate,
                 campaignStatus,
@@ -4192,6 +4202,7 @@
                     "RequestedBy": p.requestedBy,
                     "CampaignName": p.campaignName,
                     "CampaignFile": p.campaignFile,
+                    "SupportType": p.supportType,
                     "SupportStartDate": p.supportDate,
                     "SupportEndDate": p.supportEndDate,
                     "CampaignStatus": p.campaignStatus,
@@ -4480,6 +4491,7 @@
             document.getElementById('detail-cwr-campaign-name').innerText = req.campaignName || 'N/A';
             document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
             document.getElementById('detail-cwr-campaign-status').innerText = req.campaignStatus || 'N/A';
+            document.getElementById('detail-cwr-support-type').innerText = req.supportType || 'N/A';
 
             const fileLink = document.getElementById('detail-cwr-campaign-file');
             if (req.campaignFile) {
@@ -4826,11 +4838,11 @@
     </div>
 
 
-    <!-- Content Writer Request Modal -->
+    <!-- Copy Writer Request Modal -->
     <div id="cw-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="cw-request-modal-title">Create Content Writer Request</h3>
+                <h3 class="text-lg font-bold text-gray-900" id="cw-request-modal-title">Create Copy Writer Request</h3>
                 <button onclick="closeCWRequestModal()" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
@@ -4847,6 +4859,23 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
                             <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2 mt-2 border-t border-slate-200/60 pt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Support Type <span class="text-red-500">*</span></label>
+                            <div class="flex items-center space-x-6">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="Content Writers" required class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">Content Writers</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="UGC" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">UGC</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="Both" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">Both</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Campaign File (Link)</label>
@@ -5122,11 +5151,11 @@
         </div>
     </div>
 
-    <!-- Content Writer Request Details Modal -->
+    <!-- Copy Writer Request Details Modal -->
     <div id="cw-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Content Writer Request Details</h3>
+                <h3 class="text-lg font-bold text-gray-900">Copy Writer Request Details</h3>
                 <button onclick="closeCWRequestDetails()" class="text-gray-400 hover:text-gray-500">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
@@ -5145,6 +5174,10 @@
                         <div>
                             <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Status</span>
                             <div class="mt-1 text-gray-900" id="detail-cwr-campaign-status"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support Type</span>
+                            <div class="mt-1 text-gray-900 font-medium" id="detail-cwr-support-type"></div>
                         </div>
                         <div class="md:col-span-2">
                             <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign File (Link)</span>
