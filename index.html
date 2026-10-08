@@ -1663,6 +1663,8 @@
                         window.renderBudgetTable();
                     } else if (viewName === 'campaign') {
                         if(window.updateCampaignDropdown) window.updateCampaignDropdown();
+                    } else if (viewName === 'pin_request') {
+                        if (window.renderPinRequestsTable) window.renderPinRequestsTable();
                     }
                 })
                 .catch(err => {
