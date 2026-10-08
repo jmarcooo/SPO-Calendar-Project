@@ -4319,10 +4319,7 @@
 
                 row.innerHTML = `
                     <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <div class="flex items-center">
-                            <div class="w-2 h-2 rounded-full bg-indigo-500 mr-2"></div>
-                            ${req.campaignName || '-'}
-                        </div>
+                        ${req.campaignName || '-'}
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.createdAt || '-'}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.targetDate || '-'}</td>
@@ -4350,7 +4347,7 @@
         window.openSMSModal = function(id = null) {
             document.getElementById('sms-modal-form').reset();
             const requestorInput = document.getElementById('sms-requestor');
-            requestorInput.value = (window.currentUserProfile && window.currentUserProfile.name) ? window.currentUserProfile.name : (window.currentUserProfile && window.currentUserProfile.username) ? window.currentUserProfile.username : 'Unknown User';
+            requestorInput.value = window.currentUserProfile || 'Unknown User';
 
             if (id) {
                 const req = window.smsRequests.find(r => r.id === id);
@@ -5933,14 +5930,16 @@ html += `
     </div>
 
     <!-- SMS Details Modal -->
-    <div id="sms-details-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative mx-auto p-0 border w-full max-w-2xl shadow-2xl rounded-2xl bg-white m-4 overflow-hidden">
-            <div class="bg-indigo-600 px-6 py-4 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white">SMS Request Details</h3>
-                <button onclick="window.closeSMSDetails()" class="text-indigo-100 hover:text-white transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
+    <div id="sms-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">SMS Request Details</h3>
+                <button onclick="window.closeSMSDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
             </div>
-            <div class="p-6">
-                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 mb-6">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Campaign Name</dt>
@@ -5977,11 +5976,10 @@ html += `
                         </div>
                     </dl>
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="window.closeSMSDetails()" class="px-5 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors shadow-sm">Close</button>
-                </div>
+                <div class="px-6 py-4 border-t border-slate-200/60 bg-white flex justify-end shrink-0">
+                <button type="button" onclick="window.closeSMSDetails()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
             </div>
-        </div>
+            </div>
     </div>
 
 </body>
