@@ -587,11 +587,11 @@
 
         window.getDatesInRange = (startStr, endStr) => {
             const dates = [];
-            let curr = new Date(startStr + 'T00:00:00'); 
-            let end = new Date(endStr + 'T00:00:00');
+            let curr = new Date(startStr + 'T00:00:00Z');
+            let end = new Date(endStr + 'T00:00:00Z');
             while(curr <= end) {
                 dates.push(curr.toISOString().split('T')[0]);
-                curr.setDate(curr.getDate() + 1);
+                curr.setUTCDate(curr.getUTCDate() + 1);
             }
             return dates;
         }
