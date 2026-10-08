@@ -1,0 +1,57 @@
+<div id="view-prize-distribution">
+    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60" id="pd-request-tracking">
+        <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h3 class="text-lg leading-6 font-bold text-gray-900">Prize Distribution Requests</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage and track prize distribution requests.</p>
+            </div>
+            <div class="mt-4 sm:mt-0 flex space-x-3">
+                <button onclick="window.openPDRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                    <i class="fa-solid fa-plus mr-2"></i> Create Distribution Request
+                </button>
+            </div>
+        </div>
+
+        <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <div class="relative flex-1 max-w-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-gray-400"></i>
+                </div>
+                <input type="text" id="pd-search-input" oninput="window.renderPDRequestsTable()" placeholder="Search by campaign or requestor..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            <button onclick="window.exportPDRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
+                <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                            Campaign Name
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group whitespace-nowrap">
+                            Submission Time
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Requested by
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Budget
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200 text-sm" id="pd-requests-table-body">
+                    <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500" id="pd-requests-empty-msg">No distribution requests found.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

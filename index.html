@@ -366,6 +366,7 @@
         window.quickLinks = [];
         window.pinRequests = [];
         window.cwRequests = [];
+        window.pdRequests = [];
         window.cwTempHashtags = [];
 
         window.budgets = []; 
@@ -680,6 +681,12 @@
                     window.cwRequests = JSON.parse(localCwRequestsStr);
                 } catch(e) {}
             }
+            const localPdRequestsStr = localStorage.getItem('spo_pd_requests');
+            if (localPdRequestsStr) {
+                try {
+                    window.pdRequests = JSON.parse(localPdRequestsStr);
+                } catch(e) {}
+            }
 
             
             const calGrid = document.getElementById('calendar-grid');
@@ -741,6 +748,32 @@
                 console.error("Quick Links Error:", error);
             });
 
+            onSnapshot(collection(db, "pd_requests"), (snapshot) => {
+                let tempPdRequests = [];
+                snapshot.forEach((doc) => {
+                    tempPdRequests.push(doc.data());
+                });
+
+                const localPdStr = localStorage.getItem('spo_pd_requests');
+                if (tempPdRequests.length === 0 && localPdStr && localPdStr !== '[]') {
+                    const localData = JSON.parse(localPdStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) {
+                            setDoc(doc(db, "pd_requests", p.id), p);
+                        }
+                        localStorage.removeItem('spo_pd_requests');
+                        window.showToast("Local PD requests synced to cloud!", "success");
+                    }
+                }
+
+                window.pdRequests = tempPdRequests;
+                if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
+                    window.renderPDRequestsTable();
+                }
+            }, (error) => {
+                console.error("PD Requests Error:", error);
+            });
+
             onSnapshot(collection(db, "cw_requests"), (snapshot) => {
                 let tempCwRequests = [];
                 snapshot.forEach((doc) => {
@@ -755,6 +788,7 @@
                             setDoc(doc(db, "cw_requests", p.id), p);
                         }
                         localStorage.removeItem('spo_cw_requests');
+            localStorage.removeItem('spo_pd_requests');
                         window.showToast("Local CW requests synced to cloud!", "success");
                     }
                 }
@@ -1146,8 +1180,9 @@
             const localDailyTasks = JSON.parse(localStorage.getItem('spo_daily_tasks') || '[]');
             const localPinRequests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
             const localCwRequests = JSON.parse(localStorage.getItem('spo_cw_requests') || '[]');
+            const localPdRequests = JSON.parse(localStorage.getItem('spo_pd_requests') || '[]');
 
-            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0 && localCwRequests.length === 0) {
+            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0 && localCwRequests.length === 0 && localPdRequests.length === 0) {
                 window.showToast("No local data found on this computer to migrate.", "info");
                 return;
             }
@@ -1160,6 +1195,7 @@
                 for (let t of localDailyTasks) { await setDoc(doc(db, "daily_tasks", t.id), t); }
                 for (let p of localPinRequests) { await setDoc(doc(db, "pin_requests", p.id), p); }
                 for (let c of localCwRequests) { await setDoc(doc(db, "cw_requests", c.id), c); }
+                for (let p of localPdRequests) { await setDoc(doc(db, "pd_requests", p.id), p); }
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
@@ -1487,6 +1523,7 @@
                     window.quickLinks.forEach(l => deleteDoc(doc(db, "quick_links", l.id)));
                     window.pinRequests.forEach(p => deleteDoc(doc(db, "pin_requests", p.id)));
                     window.cwRequests.forEach(c => deleteDoc(doc(db, "cw_requests", c.id)));
+                    window.pdRequests.forEach(p => deleteDoc(doc(db, "pd_requests", p.id)));
                 } catch(err) {}
             }
 
@@ -1495,6 +1532,7 @@
             window.quickLinks = [];
             window.pinRequests = [];
             window.cwRequests = [];
+            window.pdRequests = [];
 
             window.showToast("Data clearing initiated", "success");
             window.renderUI();
@@ -1702,6 +1740,8 @@
                         window.renderBudgetTable();
                     } else if (viewName === 'campaign') {
                         if(window.updateCampaignDropdown) window.updateCampaignDropdown();
+                    } else if (viewName === 'prize_distribution') {
+                        if (window.renderPDRequestsTable) window.renderPDRequestsTable();
                     } else if (viewName === 'content_writer') {
                         if (window.renderCWRequestsTable) window.renderCWRequestsTable();
                     } else if (viewName === 'pin_request') {
@@ -4228,6 +4268,184 @@
             tbody.innerHTML = html;
         };
 
+
+        window.openPDRequestModal = (id = null) => {
+            const form = document.getElementById('pd-request-form');
+            if (form) form.reset();
+            document.getElementById('pdr-id').value = '';
+            document.getElementById('pd-request-modal-title').innerText = 'Create Prize Distribution Request';
+
+            if (id) {
+                const req = window.pdRequests.find(p => p.id === id);
+                if (req) {
+                    document.getElementById('pdr-id').value = req.id;
+                    document.getElementById('pdr-campaign-name').value = req.campaignName || '';
+                    document.getElementById('pdr-requested-by').value = req.requestedBy || '';
+                    document.getElementById('pdr-campaign-doc').value = req.campaignDocLink || '';
+                    document.getElementById('pdr-winner-list-doc').value = req.winnerListDocLink || '';
+                    document.getElementById('pdr-budget-amount').value = req.budgetAmount || '';
+                    document.getElementById('pdr-actual-amount').value = req.actualAmount || '';
+                    document.getElementById('pdr-status').value = req.status || 'Pending';
+                    document.getElementById('pd-request-modal-title').innerText = 'Edit Prize Distribution Request';
+                }
+            }
+
+            document.getElementById('pd-request-modal').classList.remove('hidden');
+        };
+
+        window.closePDRequestModal = () => {
+            document.getElementById('pd-request-modal').classList.add('hidden');
+        };
+
+        window.savePDRequest = async () => {
+            const form = document.getElementById('pd-request-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('pdr-id').value;
+            const campaignName = document.getElementById('pdr-campaign-name').value.trim();
+            const requestedBy = document.getElementById('pdr-requested-by').value.trim();
+            const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
+            const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
+            const budgetAmount = parseFloat(document.getElementById('pdr-budget-amount').value) || 0;
+            const actualAmount = parseFloat(document.getElementById('pdr-actual-amount').value) || 0;
+            const status = document.getElementById('pdr-status').value;
+
+            const reqId = id ? id : Date.now().toString();
+            const existing = id ? window.pdRequests.find(p => p.id === id) : null;
+
+            const reqData = {
+                id: reqId,
+                campaignName,
+                requestedBy,
+                campaignDocLink,
+                winnerListDocLink,
+                budgetAmount,
+                actualAmount,
+                status,
+                submissionTime: existing && existing.submissionTime ? existing.submissionTime : window.getFormattedCreatedTime(),
+                updateDate: window.getFormattedCreatedTime()
+            };
+
+            const btn = document.getElementById('save-pdr-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                const idx = window.pdRequests.findIndex(p => p.id === reqId);
+                if (idx > -1) window.pdRequests[idx] = reqData;
+                else window.pdRequests.push(reqData);
+
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+
+                if (db) {
+                    await setDoc(doc(db, "pd_requests", reqId), reqData);
+                }
+
+                window.showToast(id ? "PD request updated" : "PD request added", "success");
+                window.closePDRequestModal();
+                if (window.currentView === 'prize_distribution') {
+                    window.renderPDRequestsTable();
+                }
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving PD request", "error");
+            } finally {
+                btn.innerHTML = 'Save Request';
+                btn.disabled = false;
+            }
+        };
+
+        window.deletePDRequest = async (id) => {
+            if (confirm('Are you sure you want to delete this prize distribution request?')) {
+                window.pdRequests = window.pdRequests.filter(p => p.id !== id);
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+
+                if (db) {
+                    try { await deleteDoc(doc(db, "pd_requests", id)); }
+                    catch(e) {}
+                }
+
+                if (window.currentView === 'prize_distribution') {
+                    window.renderPDRequestsTable();
+                }
+                window.showToast("PD request deleted", "success");
+            }
+        };
+
+        window.exportPDRequestsExcel = () => {
+            if (!window.pdRequests || window.pdRequests.length === 0) {
+                alert("No PD requests to export.");
+                return;
+            }
+
+            const data = window.pdRequests.map(p => {
+                return {
+                    "CampaignName": p.campaignName,
+                    "SubmissionTime": p.submissionTime,
+                    "RequestedBy": p.requestedBy,
+                    "CampaignDocLink": p.campaignDocLink,
+                    "WinnerListDocLink": p.winnerListDocLink,
+                    "BudgetAmount": p.budgetAmount,
+                    "ActualAmount": p.actualAmount,
+                    "Status": p.status,
+                    "UpdateDate": p.updateDate
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "PD Requests");
+            XLSX.writeFile(workbook, "SPO_PD_Requests_Export.xlsx");
+        };
+
+        window.renderPDRequestsTable = () => {
+            const tbody = document.getElementById('pd-requests-table-body');
+            if (!tbody) return;
+
+            let searchVal = document.getElementById('pd-search-input') ? document.getElementById('pd-search-input').value.toLowerCase() : '';
+
+            let filtered = window.pdRequests.filter(p => {
+                if (searchVal) {
+                    const matchCamp = p.campaignName && p.campaignName.toLowerCase().includes(searchVal);
+                    const matchReq = p.requestedBy && p.requestedBy.toLowerCase().includes(searchVal);
+                    return matchCamp || matchReq;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No PD requests found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (p.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
+                else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors group">
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.requestedBy}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
     </script>
 
 
@@ -4642,6 +4860,88 @@
                     Cancel
                 </button>
                 <button type="button" onclick="window.saveCWRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-cwr-btn">
+                    Save Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prize Distribution Request Modal -->
+    <div id="pd-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900" id="pd-request-modal-title">Create Prize Distribution Request</h3>
+                <button onclick="closePDRequestModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1">
+                <form id="pd-request-form" class="space-y-4">
+                    <input type="hidden" id="pdr-id">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Requested By <span class="text-red-500">*</span></label>
+                            <input type="text" id="pdr-requested-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Campaign Document Link</label>
+                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Winner List Document Link</label>
+                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Attachment (Optional)</label>
+                            <div class="mt-1 border-2 border-dashed border-gray-300 rounded-xl px-6 pt-5 pb-6 flex justify-center cursor-not-allowed bg-slate-50">
+                                <div class="space-y-1 text-center text-gray-400">
+                                    <i class="fa-solid fa-paperclip text-3xl mb-2"></i>
+                                    <p class="text-sm">Upload attachment (Not functional yet)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Budget Amount <span class="text-red-500">*</span></label>
+                            <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                </div>
+                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Actual Amount</label>
+                            <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                </div>
+                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Status <span class="text-red-500">*</span></label>
+                            <select id="pdr-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                                <option value="Pending">Pending</option>
+                                <option value="Under Review">Under Review</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="window.savePDRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pdr-btn">
                     Save Request
                 </button>
             </div>
