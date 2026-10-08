@@ -48,7 +48,7 @@
             <div class="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors cursor-pointer" title="Notifications">
                 <i class="fa-regular fa-bell text-xl"></i>
             </div>
-            <div class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-600 hover:bg-slate-300 transition-colors cursor-pointer border border-slate-300/60" title="User Profile">
+            <div id="user-profile-btn" onclick="openUserProfileModal()" class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-600 hover:bg-slate-300 transition-colors cursor-pointer border border-slate-300/60" title="User Profile">
                 <i class="fa-regular fa-user text-lg"></i>
             </div>
         </div>
@@ -638,6 +638,10 @@
         };
 
         window.initApp = () => {
+            window.updateUserProfileIcon();
+            if (!window.currentUserProfile) {
+                setTimeout(() => window.openUserProfileModal(true), 500);
+            }
             setupTeamMembersUI();
             
             const savedTypeSelect = document.getElementById('global-type-filter');
@@ -4608,6 +4612,59 @@
                 btn.disabled = false;
             }
         };
+
+        window.currentUserProfile = localStorage.getItem('spo_current_user') || '';
+
+        window.openUserProfileModal = (force = false) => {
+            const select = document.getElementById('user-profile-select');
+            select.value = window.currentUserProfile;
+
+            const closeBtn = document.getElementById('close-user-profile-btn');
+            if (force) {
+                closeBtn.style.display = 'none';
+            } else {
+                closeBtn.style.display = 'block';
+            }
+
+            document.getElementById('user-profile-modal').classList.remove('hidden');
+        };
+
+        window.closeUserProfileModal = () => {
+            if (!window.currentUserProfile) {
+                window.showToast("Please select a user profile to continue.", "error");
+                return;
+            }
+            document.getElementById('user-profile-modal').classList.add('hidden');
+        };
+
+        window.saveUserProfile = () => {
+            const val = document.getElementById('user-profile-select').value;
+            if (!val) {
+                window.showToast("Please select a user.", "error");
+                return;
+            }
+            window.currentUserProfile = val;
+            localStorage.setItem('spo_current_user', val);
+            window.updateUserProfileIcon();
+            document.getElementById('user-profile-modal').classList.add('hidden');
+            window.showToast("Profile saved successfully!", "success");
+        };
+
+        window.updateUserProfileIcon = () => {
+            const btn = document.getElementById('user-profile-btn');
+            if (window.currentUserProfile) {
+                btn.innerHTML = `<span class="text-sm font-bold text-indigo-700">${window.currentUserProfile.charAt(0)}</span>`;
+                btn.title = `User Profile: ${window.currentUserProfile}`;
+                btn.classList.add('bg-indigo-100', 'border-indigo-300');
+                btn.classList.remove('bg-slate-200', 'border-slate-300/60');
+            } else {
+                btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
+                btn.title = "User Profile";
+                btn.classList.remove('bg-indigo-100', 'border-indigo-300');
+                btn.classList.add('bg-slate-200', 'border-slate-300/60');
+            }
+        };
+
     </script>
 
 
@@ -5314,6 +5371,41 @@
                 </button>
                 <button type="button" onclick="savePDComplete()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pdc-btn">
                     Complete Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- User Profile Modal -->
+    <div id="user-profile-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Select User Profile</h3>
+                <button onclick="closeUserProfileModal()" class="text-gray-400 hover:text-gray-500" id="close-user-profile-btn">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">Please select who you are:</p>
+                <select id="user-profile-select" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Select User --</option>
+                    <option value="Freddy">Freddy</option>
+                    <option value="Renee">Renee</option>
+                    <option value="Marco">Marco</option>
+                    <option value="Clarisse">Clarisse</option>
+                    <option value="Lim">Lim</option>
+                    <option value="Kenneth">Kenneth</option>
+                    <option value="Regena">Regena</option>
+                    <option value="Nami">Nami</option>
+                    <option value="Liezl">Liezl</option>
+                    <option value="Zayn">Zayn</option>
+                    <option value="Humphrey">Humphrey</option>
+                </select>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end shrink-0">
+                <button type="button" onclick="saveUserProfile()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors w-full">
+                    Save Profile
                 </button>
             </div>
         </div>
