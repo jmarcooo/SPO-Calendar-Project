@@ -1,0 +1,17 @@
+<div id="view-notifications">
+    <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 h-full flex flex-col">
+        <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 shrink-0">
+            <h3 class="text-lg leading-6 font-bold text-gray-900">All Notifications</h3>
+            <p class="mt-1 max-w-2xl text-sm text-gray-500">History of all your alerts and mentions.</p>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 bg-slate-50" id="full-notifications-list">
+            <!-- Full list will be rendered here by JS -->
+            <div class="p-8 text-center text-sm text-gray-500">No notifications found.</div>
+        </div>
+    </div>
+</div>
+<script>
+    if (window.renderFullNotifications) {
+        window.renderFullNotifications();
+    }
+</script>

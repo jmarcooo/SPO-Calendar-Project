@@ -41,14 +41,38 @@
                 <p class="text-xs text-gray-400 font-medium">Marketing & Campaign Workspace</p>
             </div>
         </div>
-        <div class="flex-1 flex justify-end items-center space-x-3">
+        <div class="flex-1 max-w-xl px-4 hidden md:block">
+            <div class="relative w-full">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-gray-400"></i>
+                </div>
+                <input type="text" id="global-search" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-slate-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
             <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
-            <div class="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors cursor-pointer" title="Notifications">
-                <i class="fa-regular fa-bell text-xl"></i>
+            <div class="relative">
+                <div onclick="toggleNotifications()" class="h-10 w-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors cursor-pointer relative" title="Notifications">
+                    <i class="fa-regular fa-bell text-xl"></i>
+                    <span id="notif-badge" class="absolute top-1.5 right-1.5 h-3 w-3 bg-red-500 rounded-full border-2 border-white hidden flex items-center justify-center text-[8px] font-bold text-white"></span>
+                </div>
+                <!-- Notifications Dropdown -->
+                <div id="notif-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200/60 hidden flex flex-col z-50 transform origin-top-right transition-all">
+                    <div class="px-4 py-3 border-b border-slate-200/60 flex justify-between items-center bg-slate-50 rounded-t-xl shrink-0">
+                        <h3 class="text-sm font-bold text-gray-900">Recent Notifications</h3>
+                    </div>
+                    <div id="notif-list" class="max-h-80 overflow-y-auto p-2 space-y-1">
+                        <!-- Notification items will go here -->
+                        <div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>
+                    </div>
+                    <div class="px-4 py-2 border-t border-slate-200/60 bg-slate-50 rounded-b-xl shrink-0 text-center">
+                        <button onclick="switchView('notifications'); toggleNotifications();" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">View All Notifications</button>
+                    </div>
+                </div>
             </div>
-            <div class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-600 hover:bg-slate-300 transition-colors cursor-pointer border border-slate-300/60" title="User Profile">
+            <div id="user-profile-btn" onclick="openUserProfileModal()" class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-600 hover:bg-slate-300 transition-colors cursor-pointer border border-slate-300/60" title="User Profile">
                 <i class="fa-regular fa-user text-lg"></i>
             </div>
         </div>
@@ -82,7 +106,7 @@
                     <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
                 </a>
                 <a href="#" id="nav-content_writer" onclick="switchView('content_writer')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Content Writer
+                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Copy Writer
                 </a>
                 <a href="#" id="nav-prize_distribution" onclick="switchView('prize_distribution')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-gift mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Prize Distribution
@@ -148,10 +172,7 @@
                         <label for="ql-url" class="block text-sm font-medium text-gray-700">Link / URL <span class="text-red-500">*</span></label>
                         <input type="url" id="ql-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
-                    <div>
-                        <label for="ql-created-by" class="block text-sm font-medium text-gray-700">Created By <span class="text-red-500">*</span></label>
-                        <input type="text" id="ql-created-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                    </div>
+
                 </form>
             </div>
             <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
@@ -231,15 +252,9 @@
             <div class="p-6 overflow-y-auto">
                 <form id="budget-form" class="space-y-4">
                     <input type="hidden" id="budget-id">
-                    <div class="flex space-x-4">
-                        <div class="w-1/2">
-                            <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
-                            <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="budget-owner" class="block text-sm font-medium text-gray-700">Owner</label>
-                            <input type="text" id="budget-owner" placeholder="e.g. John Doe" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+                    <div>
+                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
+                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
@@ -365,6 +380,9 @@
         window.dailyTasks = [];
         window.quickLinks = [];
         window.pinRequests = [];
+        window.cwRequests = [];
+        window.pdRequests = [];
+        window.cwTempHashtags = [];
 
         window.budgets = []; 
         
@@ -587,11 +605,11 @@
 
         window.getDatesInRange = (startStr, endStr) => {
             const dates = [];
-            let curr = new Date(startStr + 'T00:00:00'); 
-            let end = new Date(endStr + 'T00:00:00');
+            let curr = new Date(startStr + 'T00:00:00Z');
+            let end = new Date(endStr + 'T00:00:00Z');
             while(curr <= end) {
                 dates.push(curr.toISOString().split('T')[0]);
-                curr.setDate(curr.getDate() + 1);
+                curr.setUTCDate(curr.getUTCDate() + 1);
             }
             return dates;
         }
@@ -635,6 +653,10 @@
         };
 
         window.initApp = () => {
+            window.updateUserProfileIcon();
+            if (!window.currentUserProfile) {
+                setTimeout(() => window.openUserProfileModal(true), 500);
+            }
             setupTeamMembersUI();
             
             const savedTypeSelect = document.getElementById('global-type-filter');
@@ -670,6 +692,18 @@
             if (localPinRequestsStr) {
                 try {
                     window.pinRequests = JSON.parse(localPinRequestsStr);
+                } catch(e) {}
+            }
+            const localCwRequestsStr = localStorage.getItem('spo_cw_requests');
+            if (localCwRequestsStr) {
+                try {
+                    window.cwRequests = JSON.parse(localCwRequestsStr);
+                } catch(e) {}
+            }
+            const localPdRequestsStr = localStorage.getItem('spo_pd_requests');
+            if (localPdRequestsStr) {
+                try {
+                    window.pdRequests = JSON.parse(localPdRequestsStr);
                 } catch(e) {}
             }
 
@@ -731,6 +765,67 @@
                 window.renderQuickLinks();
             }, (error) => {
                 console.error("Quick Links Error:", error);
+            });
+
+            onSnapshot(collection(db, "notifications"), (snapshot) => {
+                let tempNotifs = [];
+                snapshot.forEach((doc) => {
+                    tempNotifs.push(doc.data());
+                });
+                window.notifications = tempNotifs;
+                window.renderNotificationsDropdown();
+            });
+
+            onSnapshot(collection(db, "pd_requests"), (snapshot) => {
+                let tempPdRequests = [];
+                snapshot.forEach((doc) => {
+                    tempPdRequests.push(doc.data());
+                });
+
+                const localPdStr = localStorage.getItem('spo_pd_requests');
+                if (tempPdRequests.length === 0 && localPdStr && localPdStr !== '[]') {
+                    const localData = JSON.parse(localPdStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) {
+                            setDoc(doc(db, "pd_requests", p.id), p);
+                        }
+                        localStorage.removeItem('spo_pd_requests');
+                        window.showToast("Local PD requests synced to cloud!", "success");
+                    }
+                }
+
+                window.pdRequests = tempPdRequests;
+                if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
+                    window.renderPDRequestsTable();
+                }
+            }, (error) => {
+                console.error("PD Requests Error:", error);
+            });
+
+            onSnapshot(collection(db, "cw_requests"), (snapshot) => {
+                let tempCwRequests = [];
+                snapshot.forEach((doc) => {
+                    tempCwRequests.push(doc.data());
+                });
+
+                const localCwStr = localStorage.getItem('spo_cw_requests');
+                if (tempCwRequests.length === 0 && localCwStr && localCwStr !== '[]') {
+                    const localData = JSON.parse(localCwStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) {
+                            setDoc(doc(db, "cw_requests", p.id), p);
+                        }
+                        localStorage.removeItem('spo_cw_requests');
+                        window.showToast("Local CW requests synced to cloud!", "success");
+                    }
+                }
+
+                window.cwRequests = tempCwRequests;
+                if (window.currentView === 'content_writer' && window.renderCWRequestsTable) {
+                    window.renderCWRequestsTable();
+                }
+            }, (error) => {
+                console.error("CW Requests Error:", error);
             });
 
             onSnapshot(collection(db, "pin_requests"), (snapshot) => {
@@ -1110,8 +1205,10 @@
             const localSettings = JSON.parse(localStorage.getItem('spo_budget_settings') || '{}');
             const localDailyTasks = JSON.parse(localStorage.getItem('spo_daily_tasks') || '[]');
             const localPinRequests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
+            const localCwRequests = JSON.parse(localStorage.getItem('spo_cw_requests') || '[]');
+            const localPdRequests = JSON.parse(localStorage.getItem('spo_pd_requests') || '[]');
 
-            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0) {
+            if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0 && localCwRequests.length === 0 && localPdRequests.length === 0) {
                 window.showToast("No local data found on this computer to migrate.", "info");
                 return;
             }
@@ -1123,6 +1220,8 @@
                 for (let b of localBudgets) { await setDoc(doc(db, "budgets", b.id), b); }
                 for (let t of localDailyTasks) { await setDoc(doc(db, "daily_tasks", t.id), t); }
                 for (let p of localPinRequests) { await setDoc(doc(db, "pin_requests", p.id), p); }
+                for (let c of localCwRequests) { await setDoc(doc(db, "cw_requests", c.id), c); }
+                for (let p of localPdRequests) { await setDoc(doc(db, "pd_requests", p.id), p); }
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
@@ -1354,7 +1453,7 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
-            if (existingEvent && existingEvent.startDate !== startDate) {
+            if (existingEvent && (existingEvent.startDate !== startDate || existingEvent.endDate !== endDate)) {
                 if (fieldsToSave.dashboardStatus) {
                     const oldDates = Object.keys(fieldsToSave.dashboardStatus);
                     const newDates = window.getDatesInRange(startDate, endDate);
@@ -1449,6 +1548,8 @@
                     window.dailyTasks.forEach(t => deleteDoc(doc(db, "daily_tasks", t.id)));
                     window.quickLinks.forEach(l => deleteDoc(doc(db, "quick_links", l.id)));
                     window.pinRequests.forEach(p => deleteDoc(doc(db, "pin_requests", p.id)));
+                    window.cwRequests.forEach(c => deleteDoc(doc(db, "cw_requests", c.id)));
+                    window.pdRequests.forEach(p => deleteDoc(doc(db, "pd_requests", p.id)));
                 } catch(err) {}
             }
 
@@ -1456,6 +1557,8 @@
             window.dailyTasks = [];
             window.quickLinks = [];
             window.pinRequests = [];
+            window.cwRequests = [];
+            window.pdRequests = [];
 
             window.showToast("Data clearing initiated", "success");
             window.renderUI();
@@ -1663,6 +1766,14 @@
                         window.renderBudgetTable();
                     } else if (viewName === 'campaign') {
                         if(window.updateCampaignDropdown) window.updateCampaignDropdown();
+                    } else if (viewName === 'prize_distribution') {
+                        if (window.renderPDRequestsTable) window.renderPDRequestsTable();
+                    } else if (viewName === 'notifications') {
+                        if (window.renderFullNotifications) window.renderFullNotifications();
+                    } else if (viewName === 'content_writer') {
+                        if (window.renderCWRequestsTable) window.renderCWRequestsTable();
+                    } else if (viewName === 'pin_request') {
+                        if (window.renderPinRequestsTable) window.renderPinRequestsTable();
                     }
                 })
                 .catch(err => {
@@ -2144,7 +2255,13 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
+                        ${(function(){
+                            if(assigns.length === 0) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            return '<div class="flex items-center space-x-2 -space-x-1">' + assigns.map(a => {
+                                let init = a.charAt(0).toUpperCase();
+                                return '<div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
+                            }).join('') + '<span class="text-sm text-gray-900 ml-3">' + assigns.join(', ') + '</span></div>';
+                        })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
@@ -2267,7 +2384,14 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="${escOwner}">${escOwner}</td>
+                    <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
+                        ${(function(){
+                            let n = escOwner;
+                            if (n === 'Unassigned') return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            let initial = n.charAt(0).toUpperCase();
+                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                        })()}
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
@@ -2301,7 +2425,7 @@
 
             const id = document.getElementById('budget-id').value;
             const month = document.getElementById('budget-month').value;
-            const owner = document.getElementById('budget-owner').value.trim();
+            const owner = window.currentUserProfile || 'Unknown';
             const name = document.getElementById('budget-name').value.trim();
             const type = document.getElementById('budget-type').value;
             const allocated = document.getElementById('budget-allocated').value;
@@ -2378,7 +2502,7 @@
                 if (b) {
                     document.getElementById('budget-id').value = b.id;
                     document.getElementById('budget-month').value = b.month || window.getCurrentMonthStr();
-                    document.getElementById('budget-owner').value = b.owner || '';
+
                     document.getElementById('budget-name').value = b.name;
                     if(b.type) document.getElementById('budget-type').value = b.type;
                     document.getElementById('budget-allocated').value = b.allocated;
@@ -2693,7 +2817,7 @@
             document.getElementById('dt-hashtags').value = task.hashtags || '';
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
-            document.getElementById('dt-requestor').value = task.requestor || '';
+
             document.getElementById('dt-status').value = task.status || 'Not Started';
 
             document.getElementById('daily-task-modal').classList.remove('hidden');
@@ -2706,9 +2830,9 @@
             const endDate = document.getElementById('dt-end-date').value;
             const taskTitle = document.getElementById('dt-task-title').value.trim();
             const linkedTaskId = document.getElementById('dt-linked-task').value;
-            const requestor = document.getElementById('dt-requestor').value.trim();
+            const requestor = window.currentUserProfile || 'Unknown';
 
-            if (!eventTitle || !startDate || !endDate || !taskTitle || !requestor) {
+            if (!eventTitle || !startDate || !endDate || !taskTitle) {
                 alert("Please fill in all required fields (*).");
                 return;
             }
@@ -2868,7 +2992,7 @@
                     document.getElementById('pr-priority').value = req.priority || 'Medium';
                     document.getElementById('pr-post-id').value = req.postId || '';
                     document.getElementById('pr-post-title').value = req.postTitle || '';
-                    document.getElementById('pr-owner').value = req.owner || '';
+
                     document.getElementById('pr-remark').value = req.remark || '';
                     document.getElementById('pin-request-modal-title').innerText = 'Edit Pin Request';
                 }
@@ -2893,18 +3017,13 @@
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
             const postTitle = document.getElementById('pr-post-title').value.trim();
-            const owner = document.getElementById('pr-owner').value.trim();
+            const owner = window.currentUserProfile || 'Unknown';
             const remark = document.getElementById('pr-remark').value.trim();
 
             const reqId = id ? id : Date.now().toString();
 
-            // Calculate status mapping for simplicity
-            const today = new Date().toISOString().split('T')[0];
-            let status = 'Upcoming';
-            if (today >= startDate && today <= endDate) status = 'Live';
-            if (today > endDate) status = 'Ended';
-
             const existing = id ? window.pinRequests.find(p => p.id === id) : null;
+            let status = existing ? existing.status : 'Pending';
 
             const reqData = {
                 id: reqId,
@@ -3028,12 +3147,15 @@
             let html = '';
             filtered.forEach(p => {
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
-                const statusClass = p.status === 'Live' ? 'text-emerald-600 bg-emerald-100' : (p.status === 'Upcoming' ? 'text-indigo-600 bg-indigo-100' : 'text-gray-600 bg-gray-100');
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (p.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
+                else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
-                const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'}-${p.position || '-'}-${p.sort || '-'}` : 'Pending';
+                const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'}-${p.position || '-'}-${p.sort || '-'}` : '-';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPinRequestDetails(\'${p.id}\')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
@@ -3041,12 +3163,18 @@
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.owner}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.owner || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Upcoming'}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Pending'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button onclick="window.openPinActionModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Action"><i class="fa-solid fa-thumbtack text-xs"></i></button>
@@ -3089,6 +3217,7 @@
             req.page = document.getElementById('pa-page').value.trim();
             req.position = document.getElementById('pa-position').value.trim();
             req.sort = document.getElementById('pa-sort').value;
+            req.status = 'Completed';
             req.updateDate = window.getFormattedCreatedTime();
 
             const btn = document.getElementById('save-pa-btn');
@@ -3195,7 +3324,7 @@
                     document.getElementById('ql-id').value = link.id;
                     document.getElementById('ql-title').value = link.title || '';
                     document.getElementById('ql-url').value = link.url || '';
-                    document.getElementById('ql-created-by').value = link.createdBy || '';
+
                     document.getElementById('quick-link-modal-title').innerText = 'Edit Quick Link';
                 }
             }
@@ -3215,7 +3344,7 @@
             const id = document.getElementById('ql-id').value;
             const title = document.getElementById('ql-title').value.trim();
             const url = document.getElementById('ql-url').value.trim();
-            const createdBy = document.getElementById('ql-created-by').value.trim();
+            const createdBy = window.currentUserProfile || 'Unknown';
 
             const btn = document.getElementById('save-ql-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -3897,6 +4026,825 @@
 
         window.onload = window.initApp;
 
+
+        window.calculateCWDuration = () => {
+            const start = document.getElementById('cwr-support-date').value;
+            const end = document.getElementById('cwr-support-end-date').value;
+            const durationEl = document.getElementById('cwr-duration');
+            if (start && end) {
+                const s = new Date(start);
+                const e = new Date(end);
+                const diffTime = e - s;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                durationEl.value = diffDays >= 0 ? diffDays + " days" : "Invalid Dates";
+            } else {
+                durationEl.value = '';
+            }
+        };
+
+        window.renderCWhashtags = () => {
+            const container = document.getElementById('cwr-hashtags-container');
+            const input = document.getElementById('cwr-hashtag-input');
+            if (!container || !input) return;
+
+            let pills = window.cwTempHashtags.map((t, i) => `
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                    ${t}
+                    <button type="button" onclick="removeCWhashtag(${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+
+            container.innerHTML = pills;
+            if (window.cwTempHashtags.length >= 10) {
+                input.disabled = true;
+                input.classList.add('bg-slate-100', 'cursor-not-allowed');
+            } else {
+                input.disabled = false;
+                input.classList.remove('bg-slate-100', 'cursor-not-allowed');
+            }
+        };
+
+        window.handleCWhashtagEnter = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const input = e.target;
+                const val = input.value.trim();
+                if (!val) return;
+
+                const newTags = val.split(/\s+/).filter(t => t.length > 0);
+                newTags.forEach(tag => {
+                    if (window.cwTempHashtags.length < 10) {
+                        window.cwTempHashtags.push(tag);
+                    }
+                });
+
+                input.value = '';
+                window.renderCWhashtags();
+            }
+        };
+
+        window.removeCWhashtag = (idx) => {
+            window.cwTempHashtags.splice(idx, 1);
+            window.renderCWhashtags();
+        };
+
+        window.openCWRequestModal = (id = null) => {
+            const form = document.getElementById('cw-request-form');
+            if (form) form.reset();
+            document.getElementById('cwr-id').value = '';
+            document.getElementById('cw-request-modal-title').innerText = 'Create Copy Writer Request';
+            const supportTypeRadiosReset = document.getElementsByName('cwr-support-type');
+            for (let i = 0; i < supportTypeRadiosReset.length; i++) supportTypeRadiosReset[i].checked = false;
+            window.cwTempHashtags = [];
+            window.renderCWhashtags();
+
+            if (id) {
+                const req = window.cwRequests.find(p => p.id === id);
+                if (req) {
+                    document.getElementById('cwr-id').value = req.id;
+
+                    document.getElementById('cwr-campaign-name').value = req.campaignName || '';
+                    const supportTypeRadios = document.getElementsByName('cwr-support-type');
+                    for (let i = 0; i < supportTypeRadios.length; i++) {
+                        supportTypeRadios[i].checked = (supportTypeRadios[i].value === req.supportType);
+                    }
+                    document.getElementById('cwr-campaign-file').value = req.campaignFile || '';
+                    document.getElementById('cwr-support-date').value = req.supportDate || '';
+                    document.getElementById('cwr-support-end-date').value = req.supportEndDate || '';
+                    document.getElementById('cwr-campaign-status').value = req.campaignStatus || 'Upcoming';
+                    document.getElementById('cwr-priority-level').value = req.priorityLevel || 'S Level';
+                    document.getElementById('cwr-priority-rationale').value = req.priorityRationale || '';
+                    document.getElementById('cwr-posting-requirements').value = req.postingRequirements || '';
+                    document.getElementById('cwr-game-configuration').value = req.gameConfiguration || '';
+                    document.getElementById('cwr-special-payout').value = req.specialPayout || '';
+
+
+                    window.cwTempHashtags = Array.isArray(req.officialHashtags) ? [...req.officialHashtags] : [];
+                    window.renderCWhashtags();
+
+                    const formatCheckboxes = document.querySelectorAll('input[name="cwr-content-format"]');
+                    const formats = req.contentFormat || [];
+                    formatCheckboxes.forEach(cb => {
+                        cb.checked = formats.includes(cb.value);
+                    });
+
+                    window.calculateCWDuration();
+                    document.getElementById('cw-request-modal-title').innerText = 'Edit Copy Writer Request';
+                }
+            }
+
+            document.getElementById('cw-request-modal').classList.remove('hidden');
+        };
+
+        window.closeCWRequestModal = () => {
+            document.getElementById('cw-request-modal').classList.add('hidden');
+        };
+
+        window.saveCWRequest = async () => {
+            const form = document.getElementById('cw-request-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('cwr-id').value;
+            const requestedBy = window.currentUserProfile || 'Unknown';
+            const campaignName = document.getElementById('cwr-campaign-name').value.trim();
+            const campaignFile = document.getElementById('cwr-campaign-file').value.trim();
+            let supportType = '';
+            const supportTypeRadiosSave = document.getElementsByName('cwr-support-type');
+            for (let i = 0; i < supportTypeRadiosSave.length; i++) {
+                if (supportTypeRadiosSave[i].checked) supportType = supportTypeRadiosSave[i].value;
+            }
+            const supportDate = document.getElementById('cwr-support-date').value;
+            const supportEndDate = document.getElementById('cwr-support-end-date').value;
+            const campaignStatus = document.getElementById('cwr-campaign-status').value;
+            const priorityLevel = document.getElementById('cwr-priority-level').value;
+            const priorityRationale = document.getElementById('cwr-priority-rationale').value.trim();
+            const postingRequirements = document.getElementById('cwr-posting-requirements').value.trim();
+            const gameConfiguration = document.getElementById('cwr-game-configuration').value.trim();
+            const specialPayout = document.getElementById('cwr-special-payout').value.trim();
+
+
+            const formatCheckboxes = document.querySelectorAll('input[name="cwr-content-format"]:checked');
+            const contentFormat = Array.from(formatCheckboxes).map(cb => cb.value);
+
+            const reqId = id ? id : Date.now().toString();
+            const existing = id ? window.cwRequests.find(p => p.id === id) : null;
+
+            const reqData = {
+                id: reqId,
+                requestedBy,
+                campaignName,
+                campaignFile,
+                supportType,
+                supportDate,
+                supportEndDate,
+                campaignStatus,
+                priorityLevel,
+                priorityRationale,
+                postingRequirements,
+                contentFormat,
+                gameConfiguration,
+                officialHashtags: window.cwTempHashtags,
+                specialPayout,
+
+                createdDate: existing && existing.createdDate ? existing.createdDate : window.getFormattedCreatedTime(),
+                updateDate: window.getFormattedCreatedTime()
+            };
+
+            const btn = document.getElementById('save-cwr-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                const idx = window.cwRequests.findIndex(p => p.id === reqId);
+                if (idx > -1) window.cwRequests[idx] = reqData;
+                else window.cwRequests.push(reqData);
+
+                localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
+
+                if (db) {
+                    await setDoc(doc(db, "cw_requests", reqId), reqData);
+                }
+
+                window.showToast(id ? "CW request updated" : "CW request added", "success");
+                window.closeCWRequestModal();
+                if (window.currentView === 'content_writer') {
+                    window.renderCWRequestsTable();
+                }
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving CW request", "error");
+            } finally {
+                btn.innerHTML = 'Save Request';
+                btn.disabled = false;
+            }
+        };
+
+        window.deleteCWRequest = async (id) => {
+            if (confirm('Are you sure you want to delete this content writer request?')) {
+                window.cwRequests = window.cwRequests.filter(p => p.id !== id);
+                localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
+
+                if (db) {
+                    try { await deleteDoc(doc(db, "cw_requests", id)); }
+                    catch(e) {}
+                }
+
+                if (window.currentView === 'content_writer') {
+                    window.renderCWRequestsTable();
+                }
+                window.showToast("CW request deleted", "success");
+            }
+        };
+
+        window.exportCWRequestsExcel = () => {
+            if (!window.cwRequests || window.cwRequests.length === 0) {
+                alert("No CW requests to export.");
+                return;
+            }
+
+            const data = window.cwRequests.map(p => {
+                return {
+                    "RequestedBy": p.requestedBy,
+                    "CampaignName": p.campaignName,
+                    "CampaignFile": p.campaignFile,
+                    "SupportType": p.supportType,
+                    "SupportStartDate": p.supportDate,
+                    "SupportEndDate": p.supportEndDate,
+                    "CampaignStatus": p.campaignStatus,
+                    "PriorityLevel": p.priorityLevel,
+                    "PriorityRationale": p.priorityRationale,
+                    "PostingRequirements": p.postingRequirements,
+                    "ContentFormat": (p.contentFormat || []).join(', '),
+                    "GameConfiguration": p.gameConfiguration,
+                    "OfficialHashtags": (p.officialHashtags || []).join(', '),
+                    "SpecialPayout": p.specialPayout,
+
+                    "CreatedDate": p.createdDate || '',
+                    "UpdateDate": p.updateDate || ''
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "CW Requests");
+            XLSX.writeFile(workbook, "SPO_CW_Requests_Export.xlsx");
+        };
+
+        window.renderCWRequestsTable = () => {
+            const tbody = document.getElementById('cw-requests-table-body');
+            if (!tbody) return;
+
+            let searchVal = document.getElementById('cw-search-input') ? document.getElementById('cw-search-input').value.toLowerCase() : '';
+
+            let filtered = window.cwRequests.filter(p => {
+                if (searchVal) {
+                    const matchCamp = p.campaignName && p.campaignName.toLowerCase().includes(searchVal);
+                    const matchReq = p.requestedBy && p.requestedBy.toLowerCase().includes(searchVal);
+                    return matchCamp || matchReq;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No CW requests found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                const priorityClass = p.priorityLevel === 'High' ? 'text-red-600 bg-red-100' : (p.priorityLevel === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (p.campaignStatus === 'Done') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (p.campaignStatus === 'In Progress') statusClass = 'text-amber-600 bg-amber-100';
+                else if (p.campaignStatus === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openCWRequestDetails(\'${p.id}\')">
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.createdDate || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.supportDate || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.campaignStatus}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.requestedBy || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onclick="window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
+
+        window.openPDRequestModal = (id = null) => {
+            const form = document.getElementById('pd-request-form');
+            if (form) form.reset();
+            document.getElementById('pdr-id').value = '';
+            document.getElementById('pd-request-modal-title').innerText = 'Create Prize Distribution Request';
+
+            if (id) {
+                const req = window.pdRequests.find(p => p.id === id);
+                if (req) {
+                    document.getElementById('pdr-id').value = req.id;
+                    document.getElementById('pdr-campaign-name').value = req.campaignName || '';
+
+                    document.getElementById('pdr-campaign-doc').value = req.campaignDocLink || '';
+                    document.getElementById('pdr-winner-list-doc').value = req.winnerListDocLink || '';
+                    document.getElementById('pdr-budget-amount').value = req.budgetAmount || '';
+                    document.getElementById('pdr-actual-amount').value = req.actualAmount || '';
+                    document.getElementById('pd-request-modal-title').innerText = 'Edit Prize Distribution Request';
+                }
+            }
+
+            document.getElementById('pd-request-modal').classList.remove('hidden');
+        };
+
+        window.closePDRequestModal = () => {
+            document.getElementById('pd-request-modal').classList.add('hidden');
+        };
+
+        window.savePDRequest = async () => {
+            const form = document.getElementById('pd-request-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('pdr-id').value;
+            const campaignName = document.getElementById('pdr-campaign-name').value.trim();
+            const requestedBy = window.currentUserProfile || 'Unknown';
+            const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
+            const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
+            const budgetAmount = parseFloat(document.getElementById('pdr-budget-amount').value) || 0;
+            const actualAmount = parseFloat(document.getElementById('pdr-actual-amount').value) || 0;
+
+            const reqId = id ? id : Date.now().toString();
+            const existing = id ? window.pdRequests.find(p => p.id === id) : null;
+
+            // Keep existing status or default for new requests
+            const status = existing ? existing.status : 'Pending';
+
+            const reqData = {
+                id: reqId,
+                campaignName,
+                requestedBy,
+                campaignDocLink,
+                winnerListDocLink,
+                budgetAmount,
+                actualAmount,
+                status,
+                submissionTime: existing && existing.submissionTime ? existing.submissionTime : window.getFormattedCreatedTime(),
+                updateDate: window.getFormattedCreatedTime()
+            };
+
+            const btn = document.getElementById('save-pdr-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                const idx = window.pdRequests.findIndex(p => p.id === reqId);
+                if (idx > -1) window.pdRequests[idx] = reqData;
+                else window.pdRequests.push(reqData);
+
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+
+                if (db) {
+                    await setDoc(doc(db, "pd_requests", reqId), reqData);
+                }
+
+                window.showToast(id ? "PD request updated" : "PD request added", "success");
+                window.closePDRequestModal();
+                if (window.currentView === 'prize_distribution') {
+                    window.renderPDRequestsTable();
+                }
+            } catch (err) {
+                console.error(err);
+                window.showToast("Error saving PD request", "error");
+            } finally {
+                btn.innerHTML = 'Save Request';
+                btn.disabled = false;
+            }
+        };
+
+        window.deletePDRequest = async (id) => {
+            if (confirm('Are you sure you want to delete this prize distribution request?')) {
+                window.pdRequests = window.pdRequests.filter(p => p.id !== id);
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+
+                if (db) {
+                    try { await deleteDoc(doc(db, "pd_requests", id)); }
+                    catch(e) {}
+                }
+
+                if (window.currentView === 'prize_distribution') {
+                    window.renderPDRequestsTable();
+                }
+                window.showToast("PD request deleted", "success");
+            }
+        };
+
+        window.exportPDRequestsExcel = () => {
+            if (!window.pdRequests || window.pdRequests.length === 0) {
+                alert("No PD requests to export.");
+                return;
+            }
+
+            const data = window.pdRequests.map(p => {
+                return {
+                    "CampaignName": p.campaignName,
+                    "SubmissionTime": p.submissionTime,
+                    "RequestedBy": p.requestedBy,
+                    "CampaignDocLink": p.campaignDocLink,
+                    "WinnerListDocLink": p.winnerListDocLink,
+                    "BudgetAmount": p.budgetAmount,
+                    "ActualAmount": p.actualAmount,
+                    "Status": p.status,
+                    "UpdateDate": p.updateDate
+                };
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "PD Requests");
+            XLSX.writeFile(workbook, "SPO_PD_Requests_Export.xlsx");
+        };
+
+        window.renderPDRequestsTable = () => {
+            const tbody = document.getElementById('pd-requests-table-body');
+            if (!tbody) return;
+
+            let searchVal = document.getElementById('pd-search-input') ? document.getElementById('pd-search-input').value.toLowerCase() : '';
+
+            let filtered = window.pdRequests.filter(p => {
+                if (searchVal) {
+                    const matchCamp = p.campaignName && p.campaignName.toLowerCase().includes(searchVal);
+                    const matchReq = p.requestedBy && p.requestedBy.toLowerCase().includes(searchVal);
+                    return matchCamp || matchReq;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No PD requests found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (p.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
+                else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPDRequestDetails(\'${p.id}\')">
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.requestedBy || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
+                                                <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${p.status === 'Completed' ? (window.formatCurrency ? window.formatCurrency(p.actualAmount) : p.actualAmount) : '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
+                        </td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${p.status !== 'Completed' ? `<button onclick="window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
+                            <button onclick="window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
+
+        window.syncPinRequestSilent = async (reqData) => {
+            try {
+                const idx = window.pinRequests.findIndex(p => p.id === reqData.id);
+                if (idx > -1) window.pinRequests[idx] = reqData;
+                else window.pinRequests.push(reqData);
+
+                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+                if (db) await setDoc(doc(db, "pin_requests", reqData.id), reqData);
+
+                if (window.currentView === 'pin_request') window.renderPinRequestsTable();
+            } catch (err) { console.error(err); }
+        };
+
+        window.openPinRequestDetails = (id) => {
+            const req = window.pinRequests.find(p => p.id === id);
+            if (!req) return;
+
+            if (req.status === 'Pending') {
+                req.status = 'Under Review';
+                window.syncPinRequestSilent(req);
+            }
+
+            document.getElementById('detail-pr-campaign-name').innerText = req.campaignName || 'N/A';
+            document.getElementById('detail-pr-start-date').innerText = req.startDate || 'N/A';
+            document.getElementById('detail-pr-end-date').innerText = req.endDate || 'N/A';
+            document.getElementById('detail-pr-category').innerText = req.category || 'N/A';
+            document.getElementById('detail-pr-priority').innerText = req.priority || 'N/A';
+            document.getElementById('detail-pr-post-id').innerText = req.postId || 'N/A';
+            document.getElementById('detail-pr-post-title').innerText = req.postTitle || 'N/A';
+            document.getElementById('detail-pr-owner').innerText = req.owner || 'N/A';
+            document.getElementById('detail-pr-status').innerText = req.status || 'N/A';
+            document.getElementById('detail-pr-remark').innerText = req.remark || 'N/A';
+
+            document.getElementById('detail-pr-page').innerText = req.page || '-';
+            document.getElementById('detail-pr-position').innerText = req.position || '-';
+            document.getElementById('detail-pr-sort').innerText = req.sort || '-';
+
+            document.getElementById('pin-request-details-modal').classList.remove('hidden');
+        };
+
+        window.closePinRequestDetails = () => {
+            document.getElementById('pin-request-details-modal').classList.add('hidden');
+        };
+
+        window.openCWRequestDetails = (id) => {
+            const req = window.cwRequests.find(p => p.id === id);
+            if (!req) return;
+
+            document.getElementById('detail-cwr-campaign-name').innerText = req.campaignName || 'N/A';
+            document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
+            document.getElementById('detail-cwr-campaign-status').innerText = req.campaignStatus || 'N/A';
+            document.getElementById('detail-cwr-support-type').innerText = req.supportType || 'N/A';
+
+            const fileLink = document.getElementById('detail-cwr-campaign-file');
+            if (req.campaignFile) {
+                fileLink.href = req.campaignFile;
+                fileLink.innerText = req.campaignFile;
+            } else {
+                fileLink.removeAttribute('href');
+                fileLink.innerText = 'N/A';
+            }
+
+            document.getElementById('detail-cwr-support-date').innerText = req.supportDate || 'N/A';
+            document.getElementById('detail-cwr-support-end-date').innerText = req.supportEndDate || 'N/A';
+            document.getElementById('detail-cwr-priority-level').innerText = req.priorityLevel || 'N/A';
+            document.getElementById('detail-cwr-priority-rationale').innerText = req.priorityRationale || 'N/A';
+            document.getElementById('detail-cwr-posting-requirements').innerText = req.postingRequirements || 'N/A';
+            document.getElementById('detail-cwr-content-format').innerText = (req.contentFormat || []).join(', ') || 'N/A';
+            document.getElementById('detail-cwr-game-configuration').innerText = req.gameConfiguration || 'N/A';
+            document.getElementById('detail-cwr-hashtags').innerText = (req.officialHashtags || []).join(', ') || 'N/A';
+            document.getElementById('detail-cwr-special-payout').innerText = req.specialPayout || 'N/A';
+
+
+            document.getElementById('cw-request-details-modal').classList.remove('hidden');
+        };
+
+        window.closeCWRequestDetails = () => {
+            document.getElementById('cw-request-details-modal').classList.add('hidden');
+        };
+
+        window.syncPDRequestSilent = async (reqData) => {
+            try {
+                const idx = window.pdRequests.findIndex(p => p.id === reqData.id);
+                if (idx > -1) window.pdRequests[idx] = reqData;
+                else window.pdRequests.push(reqData);
+
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+                if (db) await setDoc(doc(db, "pd_requests", reqData.id), reqData);
+
+                if (window.currentView === 'prize_distribution') window.renderPDRequestsTable();
+            } catch (err) { console.error(err); }
+        };
+
+        window.openPDRequestDetails = (id) => {
+            const req = window.pdRequests.find(p => p.id === id);
+            if (!req) return;
+
+            if (req.status === 'Pending') {
+                req.status = 'Under Review';
+                window.syncPDRequestSilent(req);
+            }
+
+            document.getElementById('detail-pdr-campaign-name').innerText = req.campaignName || 'N/A';
+            document.getElementById('detail-pdr-requested-by').innerText = req.requestedBy || 'N/A';
+            document.getElementById('detail-pdr-status').innerText = req.status || 'N/A';
+
+            const docLink = document.getElementById('detail-pdr-campaign-doc');
+            if (req.campaignDocLink) {
+                docLink.href = req.campaignDocLink;
+                docLink.innerText = req.campaignDocLink;
+            } else {
+                docLink.removeAttribute('href');
+                docLink.innerText = 'N/A';
+            }
+
+            const winLink = document.getElementById('detail-pdr-winner-list-doc');
+            if (req.winnerListDocLink) {
+                winLink.href = req.winnerListDocLink;
+                winLink.innerText = req.winnerListDocLink;
+            } else {
+                winLink.removeAttribute('href');
+                winLink.innerText = 'N/A';
+            }
+
+            document.getElementById('detail-pdr-budget-amount').innerText = window.formatCurrency ? window.formatCurrency(req.budgetAmount) : req.budgetAmount;
+            document.getElementById('detail-pdr-actual-amount').innerText = window.formatCurrency ? window.formatCurrency(req.actualAmount) : req.actualAmount;
+
+            document.getElementById('pd-request-details-modal').classList.remove('hidden');
+        };
+
+        window.closePDRequestDetails = () => {
+            document.getElementById('pd-request-details-modal').classList.add('hidden');
+        };
+
+
+        window.openPDCompleteModal = (id) => {
+            const req = window.pdRequests.find(p => p.id === id);
+            if (!req) return;
+
+            document.getElementById('pdc-id').value = id;
+            document.getElementById('pd-complete-modal').classList.remove('hidden');
+        };
+
+        window.closePDCompleteModal = () => {
+            document.getElementById('pd-complete-modal').classList.add('hidden');
+        };
+
+        window.savePDComplete = async () => {
+            const id = document.getElementById('pdc-id').value;
+
+            const req = window.pdRequests.find(p => p.id === id);
+            if (!req) return;
+
+            req.status = 'Completed';
+            req.updateDate = window.getFormattedCreatedTime();
+
+            const btn = document.getElementById('save-pdc-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                await window.syncPDRequestSilent(req);
+                window.showToast("Distribution marked as completed", "success");
+                window.closePDCompleteModal();
+            } finally {
+                btn.innerHTML = 'Complete Request';
+                btn.disabled = false;
+            }
+        };
+
+        window.notifications = [];
+
+        window.toggleNotifications = () => {
+            const dropdown = document.getElementById('notif-dropdown');
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                // Mark as read immediately when opening
+                window.markNotificationsAsRead();
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        };
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const notifContainer = document.querySelector('.relative > #notif-dropdown')?.parentElement;
+            if (notifContainer && !notifContainer.contains(e.target)) {
+                document.getElementById('notif-dropdown').classList.add('hidden');
+            }
+        });
+
+        window.renderFullNotifications = () => {
+            const container = document.getElementById('full-notifications-list');
+            if (!container) return;
+
+            const userNotifs = window.notifications.filter(n => n.targetUser === window.currentUserProfile || n.targetUser === 'All');
+            userNotifs.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+
+            if (userNotifs.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-sm text-gray-500">No notifications found.</div>';
+                return;
+            }
+
+            let html = '';
+            userNotifs.forEach(n => {
+                const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
+                html += `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 mb-3 flex items-start ${isRead ? 'opacity-70' : 'ring-1 ring-indigo-500'}">
+                        <div class="h-8 w-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 mt-0.5">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-medium text-gray-900">${n.message}</p>
+                            <p class="text-xs text-gray-500 mt-1">${n.createdTime}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        };
+
+        window.renderNotificationsDropdown = () => {
+            const listEl = document.getElementById('notif-list');
+            const badge = document.getElementById('notif-badge');
+            if (!listEl || !badge) return;
+
+            // Filter for current user
+            const userNotifs = window.notifications.filter(n => n.targetUser === window.currentUserProfile || n.targetUser === 'All');
+            userNotifs.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+
+            const unreadCount = userNotifs.filter(n => !n.readBy || !n.readBy.includes(window.currentUserProfile)).length;
+
+            if (unreadCount > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            if (userNotifs.length === 0) {
+                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>';
+                return;
+            }
+
+            let html = '';
+            userNotifs.slice(0, 5).forEach(n => {
+                const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
+                html += `
+                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100">
+                        <p class="text-xs font-medium text-gray-900">${n.message}</p>
+                        <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        };
+
+        window.markNotificationsAsRead = async () => {
+            if (!window.currentUserProfile || !db) return;
+
+            const userNotifs = window.notifications.filter(n => (n.targetUser === window.currentUserProfile || n.targetUser === 'All') && (!n.readBy || !n.readBy.includes(window.currentUserProfile)));
+
+            if (userNotifs.length === 0) return;
+
+            for (let n of userNotifs) {
+                if (!n.readBy) n.readBy = [];
+                n.readBy.push(window.currentUserProfile);
+                try {
+                    await setDoc(doc(db, "notifications", n.id), n);
+                } catch(e) {}
+            }
+
+            window.renderNotificationsDropdown();
+        };
+
+        window.currentUserProfile = localStorage.getItem('spo_current_user') || '';
+
+        window.openUserProfileModal = (force = false) => {
+            const select = document.getElementById('user-profile-select');
+            select.value = window.currentUserProfile;
+
+            const closeBtn = document.getElementById('close-user-profile-btn');
+            if (force) {
+                closeBtn.style.display = 'none';
+            } else {
+                closeBtn.style.display = 'block';
+            }
+
+            document.getElementById('user-profile-modal').classList.remove('hidden');
+        };
+
+        window.closeUserProfileModal = () => {
+            if (!window.currentUserProfile) {
+                window.showToast("Please select a user profile to continue.", "error");
+                return;
+            }
+            document.getElementById('user-profile-modal').classList.add('hidden');
+        };
+
+        window.saveUserProfile = () => {
+            const val = document.getElementById('user-profile-select').value;
+            if (!val) {
+                window.showToast("Please select a user.", "error");
+                return;
+            }
+            window.currentUserProfile = val;
+            localStorage.setItem('spo_current_user', val);
+            window.updateUserProfileIcon();
+            window.renderNotificationsDropdown();
+            document.getElementById('user-profile-modal').classList.add('hidden');
+            window.showToast("Profile saved successfully!", "success");
+        };
+
+        window.updateUserProfileIcon = () => {
+            const btn = document.getElementById('user-profile-btn');
+            if (window.currentUserProfile) {
+                btn.innerHTML = `<span class="text-sm font-bold text-indigo-700">${window.currentUserProfile.charAt(0)}</span>`;
+                btn.title = `User Profile: ${window.currentUserProfile}`;
+                btn.classList.add('bg-indigo-100', 'border-indigo-300');
+                btn.classList.remove('bg-slate-200', 'border-slate-300/60');
+            } else {
+                btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
+                btn.title = "User Profile";
+                btn.classList.remove('bg-indigo-100', 'border-indigo-300');
+                btn.classList.add('bg-slate-200', 'border-slate-300/60');
+            }
+        };
+
     </script>
 
 
@@ -4066,10 +5014,7 @@
                             <label class="block text-sm font-medium text-gray-700">Post Title <span class="text-red-500">*</span></label>
                             <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Owner <span class="text-red-500">*</span></label>
-                            <input type="text" id="pr-owner" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Remark / Reason</label>
                             <textarea id="pr-remark" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
@@ -4151,10 +5096,7 @@
                             <label class="block text-sm font-medium text-gray-700">Document Link</label>
                             <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Requestor <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-requestor" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Status</label>
                             <select id="dt-status" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
@@ -4172,6 +5114,466 @@
                 </button>
                 <button type="button" onclick="window.saveDailyTask()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors">
                     Submit Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Copy Writer Request Modal -->
+    <div id="cw-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900" id="cw-request-modal-title">Create Copy Writer Request</h3>
+                <button onclick="closeCWRequestModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1">
+                <form id="cw-request-form" class="space-y-4">
+                    <input type="hidden" id="cwr-id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2 mt-2 border-t border-slate-200/60 pt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Support Type <span class="text-red-500">*</span></label>
+                            <div class="flex items-center space-x-6">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="Content Writers" required class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">Content Writers</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="UGC" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">UGC</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="cwr-support-type" value="Both" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-gray-300">
+                                    <span class="ml-2 text-sm text-gray-700">Both</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Campaign File (Link)</label>
+                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Support Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Support End Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Duration (Days)</label>
+                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Campaign Status <span class="text-red-500">*</span></label>
+                            <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                                <option value="Upcoming">Upcoming</option>
+                                <option value="Active">Active</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Paused">Paused</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Priority Level <span class="text-red-500">*</span></label>
+                            <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                                <option value="S Level">S Level</option>
+                                <option value="A Level">A Level</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Priority Rationale</label>
+                            <input type="text" id="cwr-priority-rationale" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Posting Requirements</label>
+                            <textarea id="cwr-posting-requirements" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Content Format</label>
+                            <div class="flex flex-wrap gap-3">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Static Image" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Static Image</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Video with Reaction" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Video with Reaction</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Gameplay Screenshot" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Gameplay Screenshot</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="cwr-content-format" value="Screen Recording" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700">Screen Recording</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Game Configuration</label>
+                            <input type="text" id="cwr-game-configuration" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                            <div class="flex flex-wrap mb-1" id="cwr-hashtags-container"></div>
+                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Special Payout / Credits</label>
+                            <input type="text" id="cwr-special-payout" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closeCWRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="window.saveCWRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-cwr-btn">
+                    Save Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prize Distribution Request Modal -->
+    <div id="pd-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900" id="pd-request-modal-title">Create Prize Distribution Request</h3>
+                <button onclick="closePDRequestModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1">
+                <form id="pd-request-form" class="space-y-4">
+                    <input type="hidden" id="pdr-id">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Campaign Document Link</label>
+                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Winner List Document Link</label>
+                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Attachment (Optional)</label>
+                            <div class="mt-1 border-2 border-dashed border-gray-300 rounded-xl px-6 pt-5 pb-6 flex justify-center cursor-not-allowed bg-slate-50">
+                                <div class="space-y-1 text-center text-gray-400">
+                                    <i class="fa-solid fa-paperclip text-3xl mb-2"></i>
+                                    <p class="text-sm">Upload attachment (Not functional yet)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Budget Amount <span class="text-red-500">*</span></label>
+                            <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                </div>
+                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Actual Amount</label>
+                            <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                </div>
+                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="window.savePDRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pdr-btn">
+                    Save Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pin Request Details Modal -->
+    <div id="pin-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Pin Request Details</h3>
+                <button onclick="closePinRequestDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign / Game Name</span>
+                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-pr-campaign-name"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Start Date</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-start-date"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">End Date</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-end-date"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Category</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-category"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-priority"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Post ID</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-post-id"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Post Title</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-post-title"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Owner</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-owner"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Status</span>
+                            <div class="mt-1 text-gray-900" id="detail-pr-status"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Remark / Reason</span>
+                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-pr-remark"></div>
+                        </div>
+                        <div class="sm:col-span-2 mt-4 pt-4 border-t border-slate-200">
+                            <h4 class="text-sm font-bold text-gray-900 mb-3">Pin Settings</h4>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Page</span>
+                                    <div class="mt-1 text-gray-900" id="detail-pr-page"></div>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Position</span>
+                                    <div class="mt-1 text-gray-900" id="detail-pr-position"></div>
+                                </div>
+                                <div>
+                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Sort</span>
+                                    <div class="mt-1 text-gray-900" id="detail-pr-sort"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Writer Request Details Modal -->
+    <div id="cw-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Copy Writer Request Details</h3>
+                <button onclick="closeCWRequestDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Name</span>
+                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-cwr-campaign-name"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requested By</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-requested-by"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Status</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-campaign-status"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support Type</span>
+                            <div class="mt-1 text-gray-900 font-medium" id="detail-cwr-support-type"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign File (Link)</span>
+                            <div class="mt-1"><a href="#" id="detail-cwr-campaign-file" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support Start Date</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-support-date"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support End Date</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-support-end-date"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority Level</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-priority-level"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority Rationale</span>
+                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-cwr-priority-rationale"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Posting Requirements</span>
+                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-cwr-posting-requirements"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Content Format</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-content-format"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Game Configuration</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-game-configuration"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Official Hashtags</span>
+                            <div class="mt-1 text-indigo-600 font-medium" id="detail-cwr-hashtags"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Special Payout / Credits</span>
+                            <div class="mt-1 text-gray-900" id="detail-cwr-special-payout"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prize Distribution Request Details Modal -->
+    <div id="pd-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Prize Distribution Request Details</h3>
+                <button onclick="closePDRequestDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Name</span>
+                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-pdr-campaign-name"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requested By</span>
+                            <div class="mt-1 text-gray-900" id="detail-pdr-requested-by"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Status</span>
+                            <div class="mt-1 text-gray-900" id="detail-pdr-status"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Document Link</span>
+                            <div class="mt-1"><a href="#" id="detail-pdr-campaign-doc" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Winner List Document Link</span>
+                            <div class="mt-1"><a href="#" id="detail-pdr-winner-list-doc" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Budget Amount</span>
+                            <div class="mt-1 text-gray-900 font-bold" id="detail-pdr-budget-amount"></div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Actual Amount</span>
+                            <div class="mt-1 text-gray-900 font-bold" id="detail-pdr-actual-amount"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Prize Distribution Complete Modal -->
+    <div id="pd-complete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Confirm Completion</h3>
+                <button onclick="closePDCompleteModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <input type="hidden" id="pdc-id">
+                <p class="text-sm text-gray-600">Are you sure you want to mark this prize distribution request as completed?</p>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDCompleteModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="savePDComplete()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pdc-btn">
+                    Complete Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- User Profile Modal -->
+    <div id="user-profile-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Select User Profile</h3>
+                <button onclick="closeUserProfileModal()" class="text-gray-400 hover:text-gray-500" id="close-user-profile-btn">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">Please select who you are:</p>
+                <select id="user-profile-select" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="">-- Select User --</option>
+                    <option value="Freddy">Freddy</option>
+                    <option value="Renee">Renee</option>
+                    <option value="Marco">Marco</option>
+                    <option value="Clarisse">Clarisse</option>
+                    <option value="Lim">Lim</option>
+                    <option value="Kenneth">Kenneth</option>
+                    <option value="Regena">Regena</option>
+                    <option value="Nami">Nami</option>
+                    <option value="Liezl">Liezl</option>
+                    <option value="Zayn">Zayn</option>
+                    <option value="Humphrey">Humphrey</option>
+                </select>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end shrink-0">
+                <button type="button" onclick="saveUserProfile()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors w-full">
+                    Save Profile
                 </button>
             </div>
         </div>
