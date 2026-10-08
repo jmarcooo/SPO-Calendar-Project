@@ -148,10 +148,7 @@
                         <label for="ql-url" class="block text-sm font-medium text-gray-700">Link / URL <span class="text-red-500">*</span></label>
                         <input type="url" id="ql-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
-                    <div>
-                        <label for="ql-created-by" class="block text-sm font-medium text-gray-700">Created By <span class="text-red-500">*</span></label>
-                        <input type="text" id="ql-created-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                    </div>
+
                 </form>
             </div>
             <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
@@ -231,15 +228,9 @@
             <div class="p-6 overflow-y-auto">
                 <form id="budget-form" class="space-y-4">
                     <input type="hidden" id="budget-id">
-                    <div class="flex space-x-4">
-                        <div class="w-1/2">
-                            <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
-                            <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="budget-owner" class="block text-sm font-medium text-gray-700">Owner</label>
-                            <input type="text" id="budget-owner" placeholder="e.g. John Doe" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+                    <div>
+                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
+                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
@@ -2386,7 +2377,7 @@
 
             const id = document.getElementById('budget-id').value;
             const month = document.getElementById('budget-month').value;
-            const owner = document.getElementById('budget-owner').value.trim();
+            const owner = window.currentUserProfile || 'Unknown';
             const name = document.getElementById('budget-name').value.trim();
             const type = document.getElementById('budget-type').value;
             const allocated = document.getElementById('budget-allocated').value;
@@ -2463,7 +2454,7 @@
                 if (b) {
                     document.getElementById('budget-id').value = b.id;
                     document.getElementById('budget-month').value = b.month || window.getCurrentMonthStr();
-                    document.getElementById('budget-owner').value = b.owner || '';
+
                     document.getElementById('budget-name').value = b.name;
                     if(b.type) document.getElementById('budget-type').value = b.type;
                     document.getElementById('budget-allocated').value = b.allocated;
@@ -2778,7 +2769,7 @@
             document.getElementById('dt-hashtags').value = task.hashtags || '';
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
-            document.getElementById('dt-requestor').value = task.requestor || '';
+
             document.getElementById('dt-status').value = task.status || 'Not Started';
 
             document.getElementById('daily-task-modal').classList.remove('hidden');
@@ -2791,9 +2782,9 @@
             const endDate = document.getElementById('dt-end-date').value;
             const taskTitle = document.getElementById('dt-task-title').value.trim();
             const linkedTaskId = document.getElementById('dt-linked-task').value;
-            const requestor = document.getElementById('dt-requestor').value.trim();
+            const requestor = window.currentUserProfile || 'Unknown';
 
-            if (!eventTitle || !startDate || !endDate || !taskTitle || !requestor) {
+            if (!eventTitle || !startDate || !endDate || !taskTitle) {
                 alert("Please fill in all required fields (*).");
                 return;
             }
@@ -2953,7 +2944,7 @@
                     document.getElementById('pr-priority').value = req.priority || 'Medium';
                     document.getElementById('pr-post-id').value = req.postId || '';
                     document.getElementById('pr-post-title').value = req.postTitle || '';
-                    document.getElementById('pr-owner').value = req.owner || '';
+
                     document.getElementById('pr-remark').value = req.remark || '';
                     document.getElementById('pin-request-modal-title').innerText = 'Edit Pin Request';
                 }
@@ -2978,7 +2969,7 @@
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
             const postTitle = document.getElementById('pr-post-title').value.trim();
-            const owner = document.getElementById('pr-owner').value.trim();
+            const owner = window.currentUserProfile || 'Unknown';
             const remark = document.getElementById('pr-remark').value.trim();
 
             const reqId = id ? id : Date.now().toString();
@@ -3280,7 +3271,7 @@
                     document.getElementById('ql-id').value = link.id;
                     document.getElementById('ql-title').value = link.title || '';
                     document.getElementById('ql-url').value = link.url || '';
-                    document.getElementById('ql-created-by').value = link.createdBy || '';
+
                     document.getElementById('quick-link-modal-title').innerText = 'Edit Quick Link';
                 }
             }
@@ -3300,7 +3291,7 @@
             const id = document.getElementById('ql-id').value;
             const title = document.getElementById('ql-title').value.trim();
             const url = document.getElementById('ql-url').value.trim();
-            const createdBy = document.getElementById('ql-created-by').value.trim();
+            const createdBy = window.currentUserProfile || 'Unknown';
 
             const btn = document.getElementById('save-ql-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -4058,7 +4049,7 @@
                 const req = window.cwRequests.find(p => p.id === id);
                 if (req) {
                     document.getElementById('cwr-id').value = req.id;
-                    document.getElementById('cwr-requested-by').value = req.requestedBy || '';
+
                     document.getElementById('cwr-campaign-name').value = req.campaignName || '';
                     const supportTypeRadios = document.getElementsByName('cwr-support-type');
                     for (let i = 0; i < supportTypeRadios.length; i++) {
@@ -4101,7 +4092,7 @@
             if (!form.reportValidity()) return;
 
             const id = document.getElementById('cwr-id').value;
-            const requestedBy = document.getElementById('cwr-requested-by').value.trim();
+            const requestedBy = window.currentUserProfile || 'Unknown';
             const campaignName = document.getElementById('cwr-campaign-name').value.trim();
             const campaignFile = document.getElementById('cwr-campaign-file').value.trim();
             let supportType = '';
@@ -4291,7 +4282,7 @@
                 if (req) {
                     document.getElementById('pdr-id').value = req.id;
                     document.getElementById('pdr-campaign-name').value = req.campaignName || '';
-                    document.getElementById('pdr-requested-by').value = req.requestedBy || '';
+
                     document.getElementById('pdr-campaign-doc').value = req.campaignDocLink || '';
                     document.getElementById('pdr-winner-list-doc').value = req.winnerListDocLink || '';
                     document.getElementById('pdr-budget-amount').value = req.budgetAmount || '';
@@ -4313,7 +4304,7 @@
 
             const id = document.getElementById('pdr-id').value;
             const campaignName = document.getElementById('pdr-campaign-name').value.trim();
-            const requestedBy = document.getElementById('pdr-requested-by').value.trim();
+            const requestedBy = window.currentUserProfile || 'Unknown';
             const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
             const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
             const budgetAmount = parseFloat(document.getElementById('pdr-budget-amount').value) || 0;
@@ -4834,10 +4825,7 @@
                             <label class="block text-sm font-medium text-gray-700">Post Title <span class="text-red-500">*</span></label>
                             <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Owner <span class="text-red-500">*</span></label>
-                            <input type="text" id="pr-owner" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Remark / Reason</label>
                             <textarea id="pr-remark" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm"></textarea>
@@ -4919,10 +4907,7 @@
                             <label class="block text-sm font-medium text-gray-700">Document Link</label>
                             <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Requestor <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-requestor" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Status</label>
                             <select id="dt-status" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
@@ -4960,10 +4945,7 @@
                     <input type="hidden" id="cwr-id">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Requested By <span class="text-red-500">*</span></label>
-                            <input type="text" id="cwr-requested-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
                             <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
@@ -5094,10 +5076,7 @@
                 <form id="pd-request-form" class="space-y-4">
                     <input type="hidden" id="pdr-id">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Requested By <span class="text-red-500">*</span></label>
-                            <input type="text" id="pdr-requested-by" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
                             <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
