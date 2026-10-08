@@ -2220,7 +2220,13 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${assigns.length > 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-gray-800">${assignsStr}</span>` : '<span class="text-gray-400 italic text-xs">Unassigned</span>'}
+                        ${(function(){
+                            if(assigns.length === 0) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            return '<div class="flex items-center space-x-2 -space-x-1">' + assigns.map(a => {
+                                let init = a.charAt(0).toUpperCase();
+                                return '<div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
+                            }).join('') + '<span class="text-sm text-gray-900 ml-3">' + assigns.join(', ') + '</span></div>';
+                        })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
@@ -2343,7 +2349,14 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="${escOwner}">${escOwner}</td>
+                    <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
+                        ${(function(){
+                            let n = escOwner;
+                            if (n === 'Unassigned') return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            let initial = n.charAt(0).toUpperCase();
+                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                        })()}
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
@@ -3117,7 +3130,13 @@
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.owner}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.owner || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             ${pinStatusStr}
                         </td>
@@ -4259,7 +4278,13 @@
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel}</span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.requestedBy}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.requestedBy || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button onclick="window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
@@ -4434,7 +4459,13 @@
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.submissionTime || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.requestedBy}</td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            ${(function(){
+                                let n = p.requestedBy || 'Unknown';
+                                let initial = n.charAt(0).toUpperCase();
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            })()}
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${p.status === 'Completed' ? (window.formatCurrency ? window.formatCurrency(p.actualAmount) : p.actualAmount) : '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
