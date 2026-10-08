@@ -4444,10 +4444,12 @@
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.submissionTime || ''}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${p.requestedBy}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
+                                                <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${p.status === 'Completed' ? (window.formatCurrency ? window.formatCurrency(p.actualAmount) : p.actualAmount) : '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${p.status !== 'Completed' ? `<button onclick="window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
                             <button onclick="window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
@@ -4521,9 +4523,27 @@
             document.getElementById('cw-request-details-modal').classList.add('hidden');
         };
 
+        window.syncPDRequestSilent = async (reqData) => {
+            try {
+                const idx = window.pdRequests.findIndex(p => p.id === reqData.id);
+                if (idx > -1) window.pdRequests[idx] = reqData;
+                else window.pdRequests.push(reqData);
+
+                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+                if (db) await setDoc(doc(db, "pd_requests", reqData.id), reqData);
+
+                if (window.currentView === 'prize_distribution') window.renderPDRequestsTable();
+            } catch (err) { console.error(err); }
+        };
+
         window.openPDRequestDetails = (id) => {
             const req = window.pdRequests.find(p => p.id === id);
             if (!req) return;
+
+            if (req.status === 'Pending') {
+                req.status = 'Under Review';
+                window.syncPDRequestSilent(req);
+            }
 
             document.getElementById('detail-pdr-campaign-name').innerText = req.campaignName || 'N/A';
             document.getElementById('detail-pdr-requested-by').innerText = req.requestedBy || 'N/A';
@@ -4557,6 +4577,50 @@
             document.getElementById('pd-request-details-modal').classList.add('hidden');
         };
 
+
+        window.openPDCompleteModal = (id) => {
+            const req = window.pdRequests.find(p => p.id === id);
+            if (!req) return;
+
+            document.getElementById('pd-complete-form').reset();
+            document.getElementById('pdc-id').value = id;
+            if (req.actualAmount) {
+                document.getElementById('pdc-actual-amount').value = req.actualAmount;
+            }
+            document.getElementById('pd-complete-modal').classList.remove('hidden');
+        };
+
+        window.closePDCompleteModal = () => {
+            document.getElementById('pd-complete-modal').classList.add('hidden');
+        };
+
+        window.savePDComplete = async () => {
+            const form = document.getElementById('pd-complete-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('pdc-id').value;
+            const actualAmount = parseFloat(document.getElementById('pdc-actual-amount').value) || 0;
+
+            const req = window.pdRequests.find(p => p.id === id);
+            if (!req) return;
+
+            req.actualAmount = actualAmount;
+            req.status = 'Completed';
+            req.updateDate = window.getFormattedCreatedTime();
+
+            const btn = document.getElementById('save-pdc-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                await window.syncPDRequestSilent(req);
+                window.showToast("Distribution marked as completed", "success");
+                window.closePDCompleteModal();
+            } finally {
+                btn.innerHTML = 'Complete Request';
+                btn.disabled = false;
+            }
+        };
     </script>
 
 
@@ -5278,6 +5342,42 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Prize Distribution Complete Modal -->
+    <div id="pd-complete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">Complete Distribution Request</h3>
+                <button onclick="closePDCompleteModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <form id="pd-complete-form" class="space-y-4">
+                    <input type="hidden" id="pdc-id">
+                    <p class="text-sm text-gray-600 mb-4">Please confirm the total amount spent to complete this prize distribution request.</p>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Total Amount Spent <span class="text-red-500">*</span></label>
+                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">₱</span>
+                            </div>
+                            <input type="number" step="0.01" min="0" id="pdc-actual-amount" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDCompleteModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" onclick="savePDComplete()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pdc-btn">
+                    Complete Request
+                </button>
             </div>
         </div>
     </div>
