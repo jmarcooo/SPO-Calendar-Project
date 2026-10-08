@@ -2987,13 +2987,8 @@
 
             const reqId = id ? id : Date.now().toString();
 
-            // Calculate status mapping for simplicity
-            const today = new Date().toISOString().split('T')[0];
-            let status = 'Upcoming';
-            if (today >= startDate && today <= endDate) status = 'Live';
-            if (today > endDate) status = 'Ended';
-
             const existing = id ? window.pinRequests.find(p => p.id === id) : null;
+            let status = existing ? existing.status : 'Pending';
 
             const reqData = {
                 id: reqId,
@@ -3117,9 +3112,12 @@
             let html = '';
             filtered.forEach(p => {
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
-                const statusClass = p.status === 'Live' ? 'text-emerald-600 bg-emerald-100' : (p.status === 'Upcoming' ? 'text-indigo-600 bg-indigo-100' : 'text-gray-600 bg-gray-100');
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (p.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
+                else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
-                const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'}-${p.position || '-'}-${p.sort || '-'}` : 'Pending';
+                const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'}-${p.position || '-'}-${p.sort || '-'}` : '-';
 
                 html += `
                     <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPinRequestDetails(\'${p.id}\')">
@@ -3141,7 +3139,7 @@
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Upcoming'}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Pending'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button onclick="window.openPinActionModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Action"><i class="fa-solid fa-thumbtack text-xs"></i></button>
@@ -3184,6 +3182,7 @@
             req.page = document.getElementById('pa-page').value.trim();
             req.position = document.getElementById('pa-position').value.trim();
             req.sort = document.getElementById('pa-sort').value;
+            req.status = 'Completed';
             req.updateDate = window.getFormattedCreatedTime();
 
             const btn = document.getElementById('save-pa-btn');
@@ -4483,9 +4482,27 @@
         };
 
 
+        window.syncPinRequestSilent = async (reqData) => {
+            try {
+                const idx = window.pinRequests.findIndex(p => p.id === reqData.id);
+                if (idx > -1) window.pinRequests[idx] = reqData;
+                else window.pinRequests.push(reqData);
+
+                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+                if (db) await setDoc(doc(db, "pin_requests", reqData.id), reqData);
+
+                if (window.currentView === 'pin_request') window.renderPinRequestsTable();
+            } catch (err) { console.error(err); }
+        };
+
         window.openPinRequestDetails = (id) => {
             const req = window.pinRequests.find(p => p.id === id);
             if (!req) return;
+
+            if (req.status === 'Pending') {
+                req.status = 'Under Review';
+                window.syncPinRequestSilent(req);
+            }
 
             document.getElementById('detail-pr-campaign-name').innerText = req.campaignName || 'N/A';
             document.getElementById('detail-pr-start-date').innerText = req.startDate || 'N/A';
