@@ -2988,8 +2988,10 @@
                 if (req) {
                     document.getElementById('pr-id').value = req.id;
                     document.getElementById('pr-campaign-name').value = req.campaignName || '';
-                    document.getElementById('pr-start-date').value = req.startDate || '';
-                    document.getElementById('pr-end-date').value = req.endDate || '';
+
+                    document.getElementById('pr-start-date').value = req.startDate ? req.startDate.replace(' ', 'T').substring(0, 16) : '';
+                    document.getElementById('pr-end-date').value = req.endDate ? req.endDate.replace(' ', 'T').substring(0, 16) : '';
+
                     document.getElementById('pr-category').value = req.category || 'PGC';
                     document.getElementById('pr-priority').value = req.priority || 'Medium';
                     document.getElementById('pr-post-id').value = req.postId || '';
@@ -3016,6 +3018,23 @@
             const startDate = document.getElementById('pr-start-date').value;
             const endDate = document.getElementById('pr-end-date').value;
             const category = document.getElementById('pr-category').value;
+
+            if (!startDate || isNaN(new Date(startDate).getTime())) {
+                window.showToast("Please enter a valid Start Date and Time.", "error");
+                return;
+            }
+            if (!endDate || isNaN(new Date(endDate).getTime())) {
+                window.showToast("Please enter a valid End Date and Time.", "error");
+                return;
+            }
+            if (new Date(startDate) > new Date(endDate)) {
+                window.showToast("Start Date cannot be after End Date.", "error");
+                return;
+            }
+
+            const formattedStartDate = window.formatDateTimeStr(startDate);
+            const formattedEndDate = window.formatDateTimeStr(endDate);
+
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
             const postTitle = document.getElementById('pr-post-title').value.trim();
@@ -3030,8 +3049,8 @@
             const reqData = {
                 id: reqId,
                 campaignName,
-                startDate,
-                endDate,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
                 category,
                 priority,
                 postId,
@@ -4347,7 +4366,18 @@
         window.openSMSModal = function(id = null) {
             document.getElementById('sms-modal-form').reset();
             const requestorInput = document.getElementById('sms-requestor');
-            requestorInput.value = window.currentUserProfile || 'Unknown User';
+
+            let userName = 'Unknown User';
+            if (window.currentUserProfile) {
+                try {
+                    const profileObj = JSON.parse(window.currentUserProfile);
+                    userName = profileObj.name || profileObj.username || 'Unknown User';
+                } catch(e) {
+                    userName = window.currentUserProfile;
+                }
+            }
+            requestorInput.value = userName;
+
 
             if (id) {
                 const req = window.smsRequests.find(r => r.id === id);
