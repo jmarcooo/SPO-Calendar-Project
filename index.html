@@ -2762,7 +2762,13 @@
 
             document.getElementById('detail-task-title').innerText = task.taskTitle || 'Untitled Task';
             document.getElementById('detail-event-title').innerText = task.eventTitle || 'No Event';
-            document.getElementById('detail-status-select').value = task.status || 'Not Started';
+
+            if (task.status === 'Pending') {
+                task.status = 'In Progress';
+                window.syncDailyTaskToFirestore(task);
+                if (window.renderDailyTasksTable) window.renderDailyTasksTable();
+            }
+            document.getElementById('detail-status-select').value = task.status || 'Pending';
             document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
             document.getElementById('detail-requestor').innerText = task.requestor || 'Unknown';
@@ -2950,7 +2956,7 @@
                 targetTask = {
                     id: Date.now().toString(),
                     createdTime: createdTime,
-                    status: "Not Started"
+                    status: "Pending"
                 };
             }
 
@@ -3036,9 +3042,9 @@
             let html = '';
             filtered.forEach(task => {
                 let statusBadge = '';
-                if (task.status === 'Done') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>';
-                else if (task.status === 'In Progress') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>';
-                else statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Not Started</span>';
+                if (task.status === 'Completed') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-check-circle mr-1"></i> Completed</span>';
+                else if (task.status === 'In Progress') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200"><i class="fa-solid fa-clock mr-1"></i> In Progress</span>';
+                else statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200"><i class="fa-solid fa-hourglass-start mr-1"></i> Pending</span>';
 
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
@@ -3058,8 +3064,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="window.openEditDailyTask('${task.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs"></i></button>
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `;
@@ -5299,9 +5306,9 @@ html += `
                         <div class="flex items-center space-x-2">
                             <span class="text-sm font-medium text-gray-700">Status:</span>
                             <select id="detail-status-select" class="block w-full sm:w-40 pl-3 pr-8 py-1.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
-                                <option value="Not Started">Not Started</option>
+                                <option value="Pending">Pending</option>
                                 <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
@@ -5532,9 +5539,9 @@ html += `
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Status</label>
                             <select id="dt-status" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
-                                <option value="Not Started">Not Started</option>
+                                <option value="Pending">Pending</option>
                                 <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
