@@ -554,11 +554,17 @@
         window.globalTypeFilter = localStorage.getItem('spo_global_type_filter') || 'All';
         
         let logoClickCount = 0;
+        window.isAdminModeEnabled = false;
         window.handleLogoClick = () => {
             logoClickCount++;
             if (logoClickCount === 20) {
-                document.getElementById('btn-clear-data').style.display = 'inline-flex';
-                document.getElementById('budget-config-section').style.display = 'block';
+                const clearBtn = document.getElementById('btn-clear-data');
+                if (clearBtn) clearBtn.style.display = 'inline-flex';
+                const budgetConfig = document.getElementById('budget-config-section');
+                if (budgetConfig) budgetConfig.style.display = 'block';
+                window.isAdminModeEnabled = true;
+                const adminSettings = document.getElementById('admin-settings-section');
+                if (adminSettings) adminSettings.style.display = 'block';
                 window.showToast("Admin settings unlocked!", "success", "fa-unlock");
             }
         };
@@ -1781,6 +1787,11 @@
                         if (window.renderPinRequestsTable) window.renderPinRequestsTable();
                     } else if (viewName === 'sms') {
                         if (window.renderSMSTable) window.renderSMSTable();
+                    } else if (viewName === 'settings') {
+                        const adminSettings = document.getElementById('admin-settings-section');
+                        if (adminSettings && window.isAdminModeEnabled) {
+                            adminSettings.style.display = 'block';
+                        }
                     }
                 })
                 .catch(err => {
