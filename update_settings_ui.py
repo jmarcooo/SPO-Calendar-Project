@@ -1,4 +1,6 @@
-<div id="view-settings" class="space-y-6">
+import re
+
+html_content = """<div id="view-settings" class="space-y-6">
     <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-6">
         <h3 class="text-lg leading-6 font-bold text-gray-900 mb-4">Settings</h3>
         <p class="text-sm text-gray-500">Settings configuration options will be available here.</p>
@@ -22,3 +24,9 @@
         </div>
     </div>
 </div>
+"""
+
+with open('views/settings.html', 'w') as f:
+    f.write(html_content)
+
+print("Updated views/settings.html")
