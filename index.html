@@ -564,7 +564,10 @@
                 if (budgetConfig) budgetConfig.style.display = 'block';
                 window.isAdminModeEnabled = true;
                 const adminSettings = document.getElementById('admin-settings-section');
-                if (adminSettings) adminSettings.style.display = 'block';
+                if (adminSettings) {
+                    adminSettings.style.display = 'block';
+                    if (window.renderAdminPOCSettings) window.renderAdminPOCSettings();
+                }
                 window.showToast("Admin settings unlocked!", "success", "fa-unlock");
             }
         };
