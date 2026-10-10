@@ -3009,6 +3009,21 @@
             document.getElementById('pin-request-modal').classList.add('hidden');
         };
 
+
+        window.formatDateTimeStr = function(dtLocalStr) {
+            if (!dtLocalStr) return '';
+            if (dtLocalStr.includes(' ') && dtLocalStr.split(':').length === 3) return dtLocalStr;
+            const dt = new Date(dtLocalStr);
+            if (isNaN(dt.getTime())) return '';
+            const yyyy = dt.getFullYear();
+            const mm = String(dt.getMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getDate()).padStart(2, '0');
+            const hh = String(dt.getHours()).padStart(2, '0');
+            const mins = String(dt.getMinutes()).padStart(2, '0');
+            const ss = '00';
+            return `${yyyy}-${mm}-${dd} ${hh}:${mins}:${ss}`;
+        };
+
         window.savePinRequest = async () => {
             const form = document.getElementById('pin-request-form');
             if (!form.reportValidity()) return;
@@ -5353,7 +5368,7 @@ html += `
                 <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
                     Cancel
                 </button>
-                <button type="submit" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
+                <button type="submit" form="pin-request-form" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
                     Submit Request
                 </button>
             </div>
