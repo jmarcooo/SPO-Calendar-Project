@@ -5301,7 +5301,7 @@ html += `
                 </button>
             </div>
             <div class="overflow-y-auto p-6 flex-1">
-                <form id="pin-request-form" class="space-y-4">
+                <form id="pin-request-form" class="space-y-4" onsubmit="event.preventDefault(); window.savePinRequest();">
                     <input type="hidden" id="pr-id">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
@@ -5353,7 +5353,7 @@ html += `
                 <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
                     Cancel
                 </button>
-                <button type="button" onclick="window.savePinRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
+                <button type="submit" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
                     Submit Request
                 </button>
             </div>
