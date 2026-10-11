@@ -100,7 +100,7 @@
                     <i class="fa-solid fa-clipboard-check mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Daily Task
                 </a>
                 <a href="#" id="nav-pin_request" onclick="switchView('pin_request')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-thumbtack mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Pin Request
+                    <i class="fa-solid fa-thumbtack mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Post Management
                 </a>
                 <a href="#" id="nav-sms" onclick="switchView('sms')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
@@ -122,6 +122,11 @@
                 <div id="quick-links-container" class="">
                     <!-- Quick links will be dynamically populated here -->
                 </div>
+
+                <div class="pt-4 mt-2 border-t border-slate-200/60"></div>
+                <a href="#" id="nav-settings" onclick="switchView('settings')" class="flex items-center px-3 py-2 text-gray-600 hover:bg-slate-50 hover:text-gray-900 rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-gear mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Settings
+                </a>
             </nav>
         </aside>
 
@@ -549,11 +554,20 @@
         window.globalTypeFilter = localStorage.getItem('spo_global_type_filter') || 'All';
         
         let logoClickCount = 0;
+        window.isAdminModeEnabled = false;
         window.handleLogoClick = () => {
             logoClickCount++;
             if (logoClickCount === 20) {
-                document.getElementById('btn-clear-data').style.display = 'inline-flex';
-                document.getElementById('budget-config-section').style.display = 'block';
+                const clearBtn = document.getElementById('btn-clear-data');
+                if (clearBtn) clearBtn.style.display = 'inline-flex';
+                const budgetConfig = document.getElementById('budget-config-section');
+                if (budgetConfig) budgetConfig.style.display = 'block';
+                window.isAdminModeEnabled = true;
+                const adminSettings = document.getElementById('admin-settings-section');
+                if (adminSettings) {
+                    adminSettings.style.display = 'block';
+                    if (window.renderAdminPOCSettings) window.renderAdminPOCSettings();
+                }
                 window.showToast("Admin settings unlocked!", "success", "fa-unlock");
             }
         };
@@ -735,6 +749,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_daily_tasks', JSON.stringify(tempDailyTasks));
                 window.dailyTasks = tempDailyTasks;
                 if (window.currentView === 'daily_task' && window.renderDailyTasksTable) {
                     window.renderDailyTasksTable();
@@ -761,6 +776,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_quick_links', JSON.stringify(tempQuickLinks));
                 window.quickLinks = tempQuickLinks;
                 window.renderQuickLinks();
             }, (error) => {
@@ -794,6 +810,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_pd_requests', JSON.stringify(tempPdRequests));
                 window.pdRequests = tempPdRequests;
                 if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
                     window.renderPDRequestsTable();
@@ -820,6 +837,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_cw_requests', JSON.stringify(tempCwRequests));
                 window.cwRequests = tempCwRequests;
                 if (window.currentView === 'content_writer' && window.renderCWRequestsTable) {
                     window.renderCWRequestsTable();
@@ -846,6 +864,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_pin_requests', JSON.stringify(tempPinRequests));
                 window.pinRequests = tempPinRequests;
                 if (window.currentView === 'pin_request' && window.renderPinRequestsTable) {
                     window.renderPinRequestsTable();
@@ -863,6 +882,16 @@
                     window.renderUI();
                 }
             });
+            onSnapshot(doc(db, "settings", "adminPOCs"), (docSnap) => {
+                if (docSnap.exists()) {
+                    const pocs = docSnap.data();
+                    localStorage.setItem('spo_admin_pocs', JSON.stringify(pocs));
+                    if (window.currentView === 'settings' && window.isAdminModeEnabled && window.renderAdminPOCSettings) {
+                        window.renderAdminPOCSettings();
+                    }
+                }
+            });
+
 
             onSnapshot(collection(db, "events"), (snapshot) => {
                 let tempEvents = [];
@@ -892,6 +921,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
                 window.events = tempEvents;
                 window.renderUI();
                 window.updateCampaignDropdown();
@@ -907,6 +937,27 @@
             }, (error) => {
                 console.error("Events Error:", error);
                 window.showToast("Database connection failed.", "error");
+            });
+
+
+            onSnapshot(collection(db, "sms_requests"), (snapshot) => {
+                let tempSMS = [];
+                snapshot.forEach((doc) => { tempSMS.push(doc.data()); });
+
+                const localStr = localStorage.getItem('spo_sms_requests');
+                if (tempSMS.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) { setDoc(doc(db, "sms_requests", p.id), p); }
+                        localStorage.removeItem('spo_sms_requests');
+                    }
+                }
+
+                localStorage.setItem('spo_sms_requests', JSON.stringify(tempSMS));
+                window.smsRequests = tempSMS;
+                if (window.currentView === 'sms' && window.renderSMSTable) {
+                    window.renderSMSTable();
+                }
             });
 
             onSnapshot(collection(db, "budgets"), (snapshot) => {
@@ -926,6 +977,7 @@
                     }
                 }
                 
+                localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
@@ -1715,10 +1767,99 @@
             XLSX.writeFile(workbook, "SPO_Budget_Export.xlsx");
         };
 
+
+        // POC Setup for Admin Settings
+        window.AVAILABLE_USERS = ['Freddy', 'Renee', 'Marco', 'Clarisse', 'Lim', 'Kenneth', 'Regena', 'Nami', 'Liezl', 'Zayn', 'Humphrey'];
+        window.POC_MODULES = [
+            { id: 'team_budget', name: 'Team Budget' },
+            { id: 'daily_task', name: 'Daily Task' },
+            { id: 'post_management', name: 'Post Management' },
+            { id: 'sms', name: 'SMS' },
+            { id: 'copy_writer', name: 'Copy Writer' },
+            { id: 'prize_distribution', name: 'Prize Distribution' }
+        ];
+
+        window.renderAdminPOCSettings = () => {
+            const container = document.getElementById('poc-settings-container');
+            if (!container) return;
+
+            let savedPOCs = {};
+            try {
+                savedPOCs = JSON.parse(localStorage.getItem('spo_admin_pocs')) || {};
+            } catch (e) {
+                console.error('Error loading POCs', e);
+            }
+
+            let html = '';
+            window.POC_MODULES.forEach(module => {
+                const currentPOCs = savedPOCs[module.id] || [];
+
+                html += `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <h4 class="text-sm font-semibold text-gray-800 mb-3">${module.name} (Max 3)</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                `;
+
+                window.AVAILABLE_USERS.forEach(user => {
+                    const isChecked = currentPOCs.includes(user) ? 'checked' : '';
+                    html += `
+                        <label class="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer">
+                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-indigo-600 focus:ring-indigo-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
+                            <span>${user}</span>
+                        </label>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        };
+
+        window.handlePOCSelection = (checkbox, moduleId) => {
+            const checkboxes = document.querySelectorAll(`input[name="poc_${moduleId}"]:checked`);
+            if (checkboxes.length > 3) {
+                alert(`You can only assign up to 3 Points of Contact for ${moduleId.replace('_', ' ')}.`);
+                checkbox.checked = false;
+            }
+        };
+
+
+        window.isCurrentUserPOC = (moduleId) => {
+            if (!window.currentUserProfile) return false;
+            let savedPOCs = {};
+            try {
+                savedPOCs = JSON.parse(localStorage.getItem('spo_admin_pocs')) || {};
+            } catch(e){}
+            const pocs = savedPOCs[moduleId] || [];
+            return pocs.includes(window.currentUserProfile);
+        };
+
+        window.saveAdminPOCs = async () => {
+            const newPOCs = {};
+            window.POC_MODULES.forEach(module => {
+                const checkboxes = document.querySelectorAll(`input[name="poc_${module.id}"]:checked`);
+                newPOCs[module.id] = Array.from(checkboxes).map(cb => cb.value);
+            });
+            localStorage.setItem('spo_admin_pocs', JSON.stringify(newPOCs));
+
+            if (db) {
+                try {
+                    await setDoc(doc(db, "settings", "adminPOCs"), newPOCs);
+                } catch(e) {
+                    console.error("Error syncing POCs to Firestore", e);
+                }
+            }
+            window.showToast('Points of Contact saved successfully.', 'success');
+        };
+
         window.switchView = (viewName) => {
             window.currentView = viewName;
             localStorage.setItem('spo_active_view', viewName);
-            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
@@ -1773,7 +1914,16 @@
                     } else if (viewName === 'content_writer') {
                         if (window.renderCWRequestsTable) window.renderCWRequestsTable();
                     } else if (viewName === 'pin_request') {
-                        if (window.renderPinRequestsTable) window.renderPinRequestsTable();
+                        const savedView = localStorage.getItem('spo_pr_view') || 'table';
+                        if (window.switchPRView) window.switchPRView(savedView);
+                    } else if (viewName === 'sms') {
+                        if (window.renderSMSTable) window.renderSMSTable();
+                    } else if (viewName === 'settings') {
+                        const adminSettings = document.getElementById('admin-settings-section');
+                        if (adminSettings && window.isAdminModeEnabled) {
+                            adminSettings.style.display = 'block';
+                            if (window.renderAdminPOCSettings) window.renderAdminPOCSettings();
+                        }
                     }
                 })
                 .catch(err => {
@@ -2670,7 +2820,19 @@
 
             document.getElementById('detail-task-title').innerText = task.taskTitle || 'Untitled Task';
             document.getElementById('detail-event-title').innerText = task.eventTitle || 'No Event';
-            document.getElementById('detail-status-select').value = task.status || 'Not Started';
+
+            if (task.status === 'Pending' && window.isCurrentUserPOC('daily_task')) {
+                task.status = 'Under Review';
+                window.syncDailyTaskToFirestore(task);
+                if (window.renderDailyTasksTable) window.renderDailyTasksTable();
+            }
+            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            const reqStatus = task.status || 'Pending';
+            const statusEl = document.getElementById('detail-status-text');
+            if (statusEl) {
+                statusEl.innerText = reqStatus;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+            }
             document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
             document.getElementById('detail-requestor').innerText = task.requestor || 'Unknown';
@@ -2713,14 +2875,7 @@
 
             document.getElementById('detail-created-time').innerText = task.createdTime || 'Unknown';
 
-            // Remove previous listener if exists to prevent duplicates
-            const selectEl = document.getElementById('detail-status-select');
-            const newSelectEl = selectEl.cloneNode(true);
-            selectEl.parentNode.replaceChild(newSelectEl, selectEl);
 
-            newSelectEl.addEventListener('change', (e) => {
-                window.updateDailyTaskStatus(window.currentDetailTaskId, e.target.value);
-            });
 
             document.getElementById('daily-task-details-modal').classList.remove('hidden');
         };
@@ -2770,7 +2925,7 @@
         window.openDailyTaskModal = () => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
-            document.getElementById('dt-status').value = 'Not Started';
+
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
             window.populateLinkedTasksDropdown();
             document.getElementById('daily-task-modal').classList.remove('hidden');
@@ -2779,7 +2934,7 @@
         window.openDailyTaskModalFromTask = (taskId) => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
-            document.getElementById('dt-status').value = 'Not Started';
+
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
             window.populateLinkedTasksDropdown();
 
@@ -2818,7 +2973,7 @@
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
 
-            document.getElementById('dt-status').value = task.status || 'Not Started';
+
 
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
@@ -2858,7 +3013,7 @@
                 targetTask = {
                     id: Date.now().toString(),
                     createdTime: createdTime,
-                    status: "Not Started"
+                    status: "Pending"
                 };
             }
 
@@ -2875,7 +3030,8 @@
             targetTask.linkedPost = document.getElementById('dt-linked-post').value.trim();
             targetTask.docLink = document.getElementById('dt-doc-link').value.trim();
             targetTask.requestor = requestor;
-            targetTask.status = document.getElementById('dt-status').value;
+            // status is handled by lifecycle, not from form input
+            if (!dtId) targetTask.status = 'Pending';
 
             if (isNew) {
                 window.dailyTasks.push(targetTask);
@@ -2943,10 +3099,12 @@
 
             let html = '';
             filtered.forEach(task => {
-                let statusBadge = '';
-                if (task.status === 'Done') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Done</span>';
-                else if (task.status === 'In Progress') statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>';
-                else statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Not Started</span>';
+                let statusClass = 'text-gray-600 bg-gray-100';
+                if (task.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
+                else if (task.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
+                else if (task.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
+
+                let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${task.status || 'Pending'}</span>`;
 
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
@@ -2966,8 +3124,9 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="window.openEditDailyTask('${task.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `;
@@ -2975,19 +3134,32 @@
             tbody.innerHTML = html;
         };
 
-        window.openPinRequestModal = (id = null) => {
+        window.openPinRequestModal = (id = null, prefillSlot = null, prefillStart = null) => {
             const form = document.getElementById('pin-request-form');
             form.reset();
             document.getElementById('pr-id').value = '';
             document.getElementById('pin-request-modal-title').innerText = 'Create Pin Request';
+            if (prefillStart) {
+                // Needs to be YYYY-MM-DD HH:MM:SS format internally but the input is YYYY-MM-DDTHH:MM
+                // Wait, HTML datetime-local requires YYYY-MM-DDTHH:MM
+                document.getElementById('pr-start-date').value = prefillStart;
+            }
+            if (prefillSlot) {
+                const parts = prefillSlot.split('-');
+                document.getElementById('pr-page').value = parts[0];
+                document.getElementById('pr-position').value = parts[1];
+                document.getElementById('pr-sort').value = parts[2];
+            }
 
             if (id) {
                 const req = window.pinRequests.find(p => p.id === id);
                 if (req) {
                     document.getElementById('pr-id').value = req.id;
                     document.getElementById('pr-campaign-name').value = req.campaignName || '';
-                    document.getElementById('pr-start-date').value = req.startDate || '';
-                    document.getElementById('pr-end-date').value = req.endDate || '';
+
+                    document.getElementById('pr-start-date').value = req.startDate ? req.startDate.replace(' ', 'T').substring(0, 16) : '';
+                    document.getElementById('pr-end-date').value = req.endDate ? req.endDate.replace(' ', 'T').substring(0, 16) : '';
+
                     document.getElementById('pr-category').value = req.category || 'PGC';
                     document.getElementById('pr-priority').value = req.priority || 'Medium';
                     document.getElementById('pr-post-id').value = req.postId || '';
@@ -3005,6 +3177,21 @@
             document.getElementById('pin-request-modal').classList.add('hidden');
         };
 
+
+        window.formatDateTimeStr = function(dtLocalStr) {
+            if (!dtLocalStr) return '';
+            if (dtLocalStr.includes(' ') && dtLocalStr.split(':').length === 3) return dtLocalStr;
+            const dt = new Date(dtLocalStr);
+            if (isNaN(dt.getTime())) return '';
+            const yyyy = dt.getFullYear();
+            const mm = String(dt.getMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getDate()).padStart(2, '0');
+            const hh = String(dt.getHours()).padStart(2, '0');
+            const mins = String(dt.getMinutes()).padStart(2, '0');
+            const ss = '00';
+            return `${yyyy}-${mm}-${dd} ${hh}:${mins}:${ss}`;
+        };
+
         window.savePinRequest = async () => {
             const form = document.getElementById('pin-request-form');
             if (!form.reportValidity()) return;
@@ -3014,6 +3201,23 @@
             const startDate = document.getElementById('pr-start-date').value;
             const endDate = document.getElementById('pr-end-date').value;
             const category = document.getElementById('pr-category').value;
+
+            if (!startDate || isNaN(new Date(startDate).getTime())) {
+                window.showToast("Please enter a valid Start Date and Time.", "error");
+                return;
+            }
+            if (!endDate || isNaN(new Date(endDate).getTime())) {
+                window.showToast("Please enter a valid End Date and Time.", "error");
+                return;
+            }
+            if (new Date(startDate) > new Date(endDate)) {
+                window.showToast("Start Date cannot be after End Date.", "error");
+                return;
+            }
+
+            const formattedStartDate = window.formatDateTimeStr(startDate);
+            const formattedEndDate = window.formatDateTimeStr(endDate);
+
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
             const postTitle = document.getElementById('pr-post-title').value.trim();
@@ -3028,8 +3232,8 @@
             const reqData = {
                 id: reqId,
                 campaignName,
-                startDate,
-                endDate,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
                 category,
                 priority,
                 postId,
@@ -3121,6 +3325,31 @@
             XLSX.writeFile(workbook, "SPO_Pin_Requests_Export.xlsx");
         };
 
+
+        window.switchPRView = (view) => {
+            localStorage.setItem('spo_pr_view', view);
+            const btnTable = document.getElementById('btn-pr-view-table');
+            const btnTimeline = document.getElementById('btn-pr-view-timeline');
+            const tableContainer = document.getElementById('pr-table-container');
+            const timelineContainer = document.getElementById('pr-timeline-container');
+
+            if (!btnTable || !btnTimeline || !tableContainer || !timelineContainer) return;
+
+            if (view === 'table') {
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                tableContainer.classList.remove('hidden');
+                timelineContainer.classList.add('hidden');
+                window.renderPinRequestsTable();
+            } else {
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                tableContainer.classList.add('hidden');
+                timelineContainer.classList.remove('hidden');
+                window.renderPRTimeline();
+            }
+        };
+
         window.renderPinRequestsTable = () => {
             const tbody = document.getElementById('pin-requests-table-body');
             if (!tbody) return;
@@ -3177,7 +3406,7 @@
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status || 'Pending'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="window.openPinActionModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Action"><i class="fa-solid fa-thumbtack text-xs"></i></button>
+                            ${(p.status === 'Under Review' && window.isCurrentUserPOC('post_management')) ? `<button onclick="window.openPinActionModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Action"><i class="fa-solid fa-thumbtack text-xs"></i></button>` : ''}
                             <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
@@ -3185,6 +3414,200 @@
                 `;
             });
             tbody.innerHTML = html;
+        };
+
+
+        window.renderPRTimeline = () => {
+            const container = document.getElementById('pr-timeline-inner');
+            if (!container) return;
+
+            // Generate timeline for current week (Mon-Sun)
+            const today = new Date();
+            const dayOfWeek = today.getUTCDay();
+            const startOfWeek = new Date(today);
+            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setUTCHours(0, 0, 0, 0);
+
+            const days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(startOfWeek);
+                d.setUTCDate(d.getUTCDate() + i);
+                days.push(d);
+            }
+
+            // Timeline Header
+            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
+                <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20">Position</div>`;
+
+            days.forEach(d => {
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
+                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
+                    <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-gray-500 divide-x divide-slate-200/60 h-4">
+                        <div class="flex-1">00:00</div>
+                        <div class="flex-1">12:00</div>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+
+            // Row Generation
+            const slots = [];
+            for (let col = 1; col <= 2; col++) {
+                for (let pos = 1; pos <= 9; pos++) {
+                    slots.push({ id: `1-${col}-${pos}`, name: `${col === 1 ? 'Left' : 'Right'} ${pos}` });
+                }
+            }
+
+            const scaleMsToPct = (durationMs) => (durationMs / (7 * 24 * 60 * 60 * 1000)) * 100;
+            const weekStartMs = startOfWeek.getTime();
+            const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
+
+            slots.forEach(slot => {
+                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-12">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center">
+                        <span class="bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-600 text-[10px] mr-2">1-${slot.id.split('-')[1]}</span> ${slot.name}
+                    </div>
+                    <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
+
+                // Add grid lines for background
+                days.forEach((_, i) => {
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                });
+
+                // Find requests matching this slot
+                const reqs = window.pinRequests.filter(r => r.page === '1' && r.position === slot.id.split('-')[1] && r.sort === slot.id.split('-')[2]);
+
+                reqs.forEach(req => {
+                    if (!req.startDate || !req.endDate) return;
+                    // Format: YYYY-MM-DD HH:MM:SS
+                    // Since it's UTC conceptually, we parse it manually
+                    const sParts = req.startDate.split(/[- :]/);
+                    const eParts = req.endDate.split(/[- :]/);
+
+                    if (sParts.length < 3 || eParts.length < 3) return;
+
+                    const sDate = new Date(Date.UTC(sParts[0], sParts[1]-1, sParts[2], sParts[3]||0, sParts[4]||0, sParts[5]||0));
+                    const eDate = new Date(Date.UTC(eParts[0], eParts[1]-1, eParts[2], eParts[3]||0, eParts[4]||0, eParts[5]||0));
+
+                    const sMs = sDate.getTime();
+                    const eMs = eDate.getTime();
+
+                    // Check if it overlaps with current week
+                    if (eMs <= weekStartMs || sMs >= weekEndMs) return;
+
+                    let leftPct = scaleMsToPct(Math.max(0, sMs - weekStartMs));
+                    let widthPct = scaleMsToPct(Math.min(weekEndMs, eMs) - Math.max(weekStartMs, sMs));
+
+                    const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
+                    const statusColor = req.status === 'Completed' ? 'bg-emerald-500' : (req.status === 'Under Review' ? 'bg-amber-500' : 'bg-indigo-500');
+
+                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${statusColor} text-white text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 ring-indigo-400 z-10"
+                                style="left: ${leftPct}%; width: ${widthPct}%;"
+                                title="${req.campaignName}\nStart: ${req.startDate}\nEnd: ${req.endDate}\nDuration: ${durationH}h\nOwner: ${req.owner || 'Unknown'}"
+                                onclick="event.stopPropagation(); window.openPinRequestDetails('${req.id}')">
+                                <span class="truncate font-medium">${req.campaignName}</span>
+                             </div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        };
+
+
+        window.checkPRSlotAvailability = () => {
+            const dateVal = document.getElementById('pr-assist-date').value;
+            const timeVal = document.getElementById('pr-assist-time').value;
+            const durationHours = parseInt(document.getElementById('pr-assist-duration').value) || 24;
+
+            if (!dateVal || !timeVal) {
+                window.showToast("Please select target date and time.", "error");
+                return;
+            }
+
+            const targetStart = new Date(`${dateVal}T${timeVal}:00Z`);
+            const targetEnd = new Date(targetStart.getTime() + (durationHours * 60 * 60 * 1000));
+
+            const startMs = targetStart.getTime();
+            const endMs = targetEnd.getTime();
+
+            // Clear previous highlights
+            document.querySelectorAll('.pr-track').forEach(el => {
+                el.classList.remove('bg-red-50', 'bg-green-50');
+            });
+
+            const slots = [];
+            for (let col = 1; col <= 2; col++) {
+                for (let pos = 1; pos <= 9; pos++) {
+                    slots.push(`1-${col}-${pos}`);
+                }
+            }
+
+            let collisionCount = 0;
+
+            slots.forEach(slotId => {
+                const parts = slotId.split('-');
+                const reqs = window.pinRequests.filter(r => r.page === parts[0] && r.position === parts[1] && r.sort === parts[2] && r.status !== 'Completed');
+
+                let hasCollision = false;
+                for (let req of reqs) {
+                    if (!req.startDate || !req.endDate) continue;
+                    const rS = new Date(req.startDate.replace(' ', 'T') + 'Z').getTime();
+                    const rE = new Date(req.endDate.replace(' ', 'T') + 'Z').getTime();
+
+                    // Check overlap
+                    if (startMs < rE && endMs > rS) {
+                        hasCollision = true;
+                        break;
+                    }
+                }
+
+                const trackEl = document.querySelector(`.pr-track[data-slot="${slotId}"]`);
+                if (trackEl) {
+                    if (hasCollision) {
+                        trackEl.classList.add('bg-red-50');
+                        collisionCount++;
+                    } else {
+                        trackEl.classList.add('bg-green-50');
+                    }
+                }
+            });
+
+            if (collisionCount > 0) {
+                window.showToast(`Found ${collisionCount} overlapping slots. Available slots highlighted in green.`, "warning");
+            } else {
+                window.showToast("All slots are available!", "success");
+            }
+        };
+
+        window.handlePRTimelineClick = (e, slotId) => {
+            const track = e.currentTarget;
+            const rect = track.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const pct = clickX / rect.width;
+
+            // Calculate clicked date
+            const today = new Date();
+            const dayOfWeek = today.getUTCDay();
+            const startOfWeek = new Date(today);
+            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setUTCHours(0, 0, 0, 0);
+
+            const clickedMs = startOfWeek.getTime() + (pct * 7 * 24 * 60 * 60 * 1000);
+            const clickedDate = new Date(clickedMs);
+
+            const sYear = clickedDate.getUTCFullYear();
+            const sMo = String(clickedDate.getUTCMonth() + 1).padStart(2, '0');
+            const sDa = String(clickedDate.getUTCDate()).padStart(2, '0');
+            const sHr = String(clickedDate.getUTCHours()).padStart(2, '0');
+            // Round to nearest hour
+            const formattedStart = `${sYear}-${sMo}-${sDa}T${sHr}:00`;
+
+            window.openPinRequestModal(null, slotId, formattedStart);
         };
 
         window.openPinActionModal = (id) => {
@@ -3242,6 +3665,18 @@
             } finally {
                 btn.innerHTML = 'Save';
                 btn.disabled = false;
+            }
+        };
+
+        window.completeDailyTask = async (id) => {
+            if (confirm('Are you sure you want to mark this daily task as completed?')) {
+                const task = window.dailyTasks.find(t => t.id === id);
+                if (task) {
+                    task.status = 'Completed';
+                    window.syncDailyTaskToFirestore(task);
+                    if (window.renderDailyTasksTable) window.renderDailyTasksTable();
+                    window.showToast("Daily task marked as completed.", "success");
+                }
             }
         };
 
@@ -4219,6 +4654,39 @@
             }
         };
 
+
+        window.completeCWRequest = function(id) {
+            const req = window.cwRequests.find(r => r.id === id);
+            if (req) {
+                req.requestStatus = 'Completed';
+                window.syncCWRequestSilent(req);
+                window.renderCWRequestsTable();
+
+                const detailsModal = document.getElementById('cw-request-details-modal');
+                if (detailsModal && !detailsModal.classList.contains('hidden') && document.getElementById('cw-details-id') && document.getElementById('cw-details-id').value === id) {
+                    const statusEl = document.getElementById('cw-details-request-status');
+                    if(statusEl) {
+                        statusEl.innerText = 'Completed';
+                        statusEl.className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                    }
+                }
+            }
+        };
+
+        window.syncCWRequestSilent = async function(req) {
+            let requests = JSON.parse(localStorage.getItem('spo_cw_requests') || '[]');
+            const index = requests.findIndex(r => r.id === req.id);
+            if (index > -1) {
+                requests[index] = req;
+            } else {
+                requests.push(req);
+            }
+            localStorage.setItem('spo_cw_requests', JSON.stringify(requests));
+            if (db) {
+                try { await setDoc(doc(db, "cw_requests", req.id), req); } catch(e) { console.error(e); }
+            }
+        };
+
         window.deleteCWRequest = async (id) => {
             if (confirm('Are you sure you want to delete this content writer request?')) {
                 window.cwRequests = window.cwRequests.filter(p => p.id !== id);
@@ -4234,6 +4702,244 @@
                 }
                 window.showToast("CW request deleted", "success");
             }
+        };
+
+
+        // ================= SMS LOGIC =================
+        window.smsRequests = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]');
+
+        window.renderSMSTable = function() {
+            const tbody = document.getElementById('sms-table-body');
+            if (!tbody) return;
+            const searchInput = document.getElementById('sms-search-input');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            let filtered = window.smsRequests;
+            if (searchTerm) {
+                filtered = filtered.filter(req =>
+                    (req.campaignName && req.campaignName.toLowerCase().includes(searchTerm)) ||
+                    (req.requestor && req.requestor.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No SMS requests found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(req => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 transition-colors cursor-pointer';
+                row.onclick = (event) => {
+                    if(!event.target.closest('button')) {
+                        window.openSMSDetails(req.id);
+                    }
+                };
+
+                const statusColors = {
+                    'Pending': 'bg-yellow-100 text-yellow-800',
+                    'Under Review': 'bg-blue-100 text-blue-800',
+                    'Completed': 'bg-green-100 text-green-800'
+                };
+                const reqStatus = req.requestStatus || 'Pending';
+                const statusClass = statusColors[reqStatus] || 'bg-gray-100 text-gray-800';
+
+                let completeBtn = '';
+                if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
+                    completeBtn = `<button onclick="window.completeSMSRequest(\'${req.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 mr-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
+                }
+
+                row.innerHTML = `
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        ${req.campaignName || '-'}
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.createdAt || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.targetDate || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">
+                            ${req.audienceType || '-'}
+                        </span>
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                            ${reqStatus}
+                        </span>
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        ${completeBtn}
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-indigo-600 hover:text-indigo-900 group-hover:bg-indigo-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        };
+
+        window.openSMSModal = function(id = null) {
+            document.getElementById('sms-modal-form').reset();
+            const requestorInput = document.getElementById('sms-requestor');
+
+            let userName = 'Unknown User';
+            if (window.currentUserProfile) {
+                try {
+                    const profileObj = JSON.parse(window.currentUserProfile);
+                    userName = profileObj.name || profileObj.username || 'Unknown User';
+                } catch(e) {
+                    userName = window.currentUserProfile;
+                }
+            }
+            requestorInput.value = userName;
+
+
+            if (id) {
+                const req = window.smsRequests.find(r => r.id === id);
+                if (req) {
+                    document.getElementById('sms-id').value = req.id;
+                    document.getElementById('sms-campaign-name').value = req.campaignName || '';
+                    document.getElementById('sms-target-date').value = req.targetDate || '';
+                    document.getElementById('sms-audience-type').value = req.audienceType || 'Internal';
+                    document.getElementById('sms-message-content').value = req.messageContent || '';
+                    document.getElementById('sms-notes').value = req.notes || '';
+                    requestorInput.value = req.requestor || '';
+                    document.getElementById('sms-modal-title').innerText = 'Edit SMS Request';
+                }
+            } else {
+                document.getElementById('sms-id').value = '';
+                document.getElementById('sms-modal-title').innerText = 'Create SMS Request';
+            }
+            document.getElementById('sms-modal').classList.remove('hidden');
+        };
+
+        window.closeSMSModal = function() {
+            document.getElementById('sms-modal').classList.add('hidden');
+        };
+
+        window.saveSMSRequest = async function(event) {
+            event.preventDefault();
+            const id = document.getElementById('sms-id').value;
+            const payload = {
+                campaignName: document.getElementById('sms-campaign-name').value,
+                targetDate: document.getElementById('sms-target-date').value,
+                audienceType: document.getElementById('sms-audience-type').value,
+                messageContent: document.getElementById('sms-message-content').value,
+                notes: document.getElementById('sms-notes').value,
+                requestor: document.getElementById('sms-requestor').value
+            };
+
+            if (id) {
+                const index = window.smsRequests.findIndex(r => r.id === id);
+                if (index > -1) {
+                    window.smsRequests[index] = { ...window.smsRequests[index], ...payload };
+                }
+            } else {
+                const newReq = {
+                    id: "sms-" + Date.now(),
+                    createdAt: window.getFormattedCreatedTime ? window.getFormattedCreatedTime() : new Date().toISOString(),
+                    requestStatus: "Pending",
+                    ...payload
+                };
+                window.smsRequests.push(newReq);
+            }
+
+            const reqToSave = id ? window.smsRequests.find(r => r.id === id) : window.smsRequests[window.smsRequests.length - 1];
+            localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
+
+            if (db) {
+                try { await setDoc(doc(db, "sms_requests", reqToSave.id), reqToSave); } catch(e) { console.error(e); }
+            }
+            window.closeSMSModal();
+            window.renderSMSTable();
+        };
+
+        window.deleteSMSRequest = async function(id) {
+            if (confirm("Are you sure you want to delete this SMS Request?")) {
+                window.smsRequests = window.smsRequests.filter(r => r.id !== id);
+                localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
+
+                if (db) {
+                    try { await deleteDoc(doc(db, "sms_requests", id)); } catch(e) { console.error(e); }
+                }
+                window.renderSMSTable();
+            }
+        };
+
+        window.completeSMSRequest = function(id) {
+            const req = window.smsRequests.find(r => r.id === id);
+            if (req) {
+                req.requestStatus = 'Completed';
+                window.syncSMSRequestSilent(req);
+                window.renderSMSTable();
+
+                const detailsModal = document.getElementById('sms-details-modal');
+                if (!detailsModal.classList.contains('hidden') && document.getElementById('sms-details-id').value === id) {
+                    document.getElementById('sms-details-request-status').innerText = 'Completed';
+                    document.getElementById('sms-details-request-status').className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                }
+            }
+        };
+
+        window.syncSMSRequestSilent = async function(req) {
+            let requests = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]');
+            const index = requests.findIndex(r => r.id === req.id);
+            if (index > -1) {
+                requests[index] = req;
+            } else {
+                requests.push(req);
+            }
+            localStorage.setItem('spo_sms_requests', JSON.stringify(requests));
+            if (db) {
+                try { await setDoc(doc(db, "sms_requests", req.id), req); } catch(e) { console.error(e); }
+            }
+        };
+
+        window.openSMSDetails = function(id) {
+            const req = window.smsRequests.find(r => r.id === id);
+            if (!req) return;
+
+            if ((!req.requestStatus || req.requestStatus === 'Pending') && window.isCurrentUserPOC('sms')) {
+                req.requestStatus = 'Under Review';
+                window.syncSMSRequestSilent(req);
+                window.renderSMSTable();
+            }
+
+            document.getElementById('sms-details-campaign-name').innerText = req.campaignName || '-';
+            document.getElementById('sms-details-target-date').innerText = req.targetDate || '-';
+            document.getElementById('sms-details-audience-type').innerText = req.audienceType || '-';
+            document.getElementById('sms-details-message-content').innerText = req.messageContent || '-';
+            document.getElementById('sms-details-notes').innerText = req.notes || '-';
+            document.getElementById('sms-details-created-at').innerText = req.createdAt || '-';
+            document.getElementById('sms-details-requestor').innerHTML = window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor;
+
+            const reqStatus = req.requestStatus || 'Pending';
+            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            document.getElementById('sms-details-request-status').innerText = reqStatus;
+            document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+            document.getElementById('sms-details-id').value = req.id;
+
+            document.getElementById('sms-details-modal').classList.remove('hidden');
+        };
+
+        window.closeSMSDetails = function() {
+            document.getElementById('sms-details-modal').classList.add('hidden');
+        };
+
+        window.exportSMSRequestsExcel = function() {
+            const data = window.smsRequests.map(req => ({
+                'Campaign Name': req.campaignName,
+                'Target Date': req.targetDate,
+                'Audience Type': req.audienceType,
+                'Message Content': req.messageContent,
+                'Notes': req.notes,
+                'Requested By': req.requestor,
+                'Created At': req.createdAt,
+                'Request Status': req.requestStatus || 'Pending'
+            }));
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "SMS Requests");
+            XLSX.writeFile(workbook, "SMS_Requests.xlsx");
         };
 
         window.exportCWRequestsExcel = () => {
@@ -4299,7 +5005,15 @@
                 else if (p.campaignStatus === 'In Progress') statusClass = 'text-amber-600 bg-amber-100';
                 else if (p.campaignStatus === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
-                html += `
+
+                const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+                const reqStatus = p.requestStatus || 'Pending';
+                const reqStatusClass = statusColors[reqStatus] || 'bg-gray-100 text-gray-800';
+                let completeBtn = '';
+                if (reqStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) {
+                    completeBtn = `<button onclick="window.completeCWRequest(\'${p.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
+                }
+html += `
                     <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openCWRequestDetails(\'${p.id}\')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
@@ -4319,7 +5033,13 @@
                                 return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                             })()}
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${reqStatusClass}">
+                            ${reqStatus}
+                        </span>
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${completeBtn}
                             <button onclick="window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
@@ -4506,7 +5226,7 @@
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status !== 'Completed' ? `<button onclick="window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
+                            ${(p.status === 'Under Review' && window.isCurrentUserPOC('prize_distribution')) ? `<button onclick="window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
                             <button onclick="window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
@@ -4534,7 +5254,7 @@
             const req = window.pinRequests.find(p => p.id === id);
             if (!req) return;
 
-            if (req.status === 'Pending') {
+            if (req.status === 'Pending' && window.isCurrentUserPOC('post_management')) {
                 req.status = 'Under Review';
                 window.syncPinRequestSilent(req);
             }
@@ -4564,9 +5284,23 @@
         window.openCWRequestDetails = (id) => {
             const req = window.cwRequests.find(p => p.id === id);
             if (!req) return;
+            if ((!req.requestStatus || req.requestStatus === 'Pending') && window.isCurrentUserPOC('copy_writer')) {
+                req.requestStatus = 'Under Review';
+                if(window.syncCWRequestSilent) window.syncCWRequestSilent(req);
+                if(window.renderCWRequestsTable) window.renderCWRequestsTable();
+            }
 
             document.getElementById('detail-cwr-campaign-name').innerText = req.campaignName || 'N/A';
             document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
+            const reqStatus = req.requestStatus || 'Pending';
+            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            const statusEl = document.getElementById('cw-details-request-status');
+            if (statusEl) {
+                statusEl.innerText = reqStatus;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+            }
+            const idEl = document.getElementById('cw-details-id');
+            if(idEl) idEl.value = req.id;
             document.getElementById('detail-cwr-campaign-status').innerText = req.campaignStatus || 'N/A';
             document.getElementById('detail-cwr-support-type').innerText = req.supportType || 'N/A';
 
@@ -4614,7 +5348,7 @@
             const req = window.pdRequests.find(p => p.id === id);
             if (!req) return;
 
-            if (req.status === 'Pending') {
+            if (req.status === 'Pending' && window.isCurrentUserPOC('prize_distribution')) {
                 req.status = 'Under Review';
                 window.syncPDRequestSilent(req);
             }
@@ -4866,11 +5600,7 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="text-sm font-medium text-gray-700">Status:</span>
-                            <select id="detail-status-select" class="block w-full sm:w-40 pl-3 pr-8 py-1.5 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md cursor-pointer">
-                                <option value="Not Started">Not Started</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
-                            </select>
+                            <span id="detail-status-text" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Pending</span>
                         </div>
                     </div>
 
@@ -4974,8 +5704,11 @@
                 </button>
             </div>
             <div class="overflow-y-auto p-6 flex-1">
-                <form id="pin-request-form" class="space-y-4">
+                <form id="pin-request-form" class="space-y-4" onsubmit="event.preventDefault(); window.savePinRequest();">
                     <input type="hidden" id="pr-id">
+                    <input type="hidden" id="pr-page">
+                    <input type="hidden" id="pr-position">
+                    <input type="hidden" id="pr-sort">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Campaign / Game Name <span class="text-red-500">*</span></label>
@@ -4983,11 +5716,11 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="pr-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="datetime-local" id="pr-start-date" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="pr-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <input type="datetime-local" id="pr-end-date" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
@@ -5026,7 +5759,7 @@
                 <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
                     Cancel
                 </button>
-                <button type="button" onclick="window.savePinRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
+                <button type="submit" form="pin-request-form" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors" id="save-pr-btn">
                     Submit Request
                 </button>
             </div>
@@ -5097,14 +5830,7 @@
                             <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Status</label>
-                            <select id="dt-status" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
-                                <option value="Not Started">Not Started</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
-                            </select>
-                        </div>
+
                     </div>
                 </form>
             </div>
@@ -5419,6 +6145,11 @@
                             <div class="mt-1 text-gray-900" id="detail-cwr-requested-by"></div>
                         </div>
                         <div>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase">Request Status</span>
+                            <div class="mt-1 text-gray-900"><span id="cw-details-request-status">-</span></div>
+                            <input type="hidden" id="cw-details-id" value="">
+                        </div>
+                        <div>
                             <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Status</span>
                             <div class="mt-1 text-gray-900" id="detail-cwr-campaign-status"></div>
                         </div>
@@ -5577,6 +6308,107 @@
                 </button>
             </div>
         </div>
+    </div>
+
+
+    <!-- SMS Modal -->
+    <div id="sms-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+        <div class="relative mx-auto p-6 border w-full max-w-lg shadow-2xl rounded-2xl bg-white m-4">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-gray-900" id="sms-modal-title">Create SMS Request</h3>
+                <button onclick="window.closeSMSModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <form id="sms-modal-form" onsubmit="window.saveSMSRequest(event)" class="space-y-4">
+                <input type="hidden" id="sms-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="sms-campaign-name" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Target Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="sms-target-date" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Audience Type <span class="text-red-500">*</span></label>
+                        <select id="sms-audience-type" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow bg-white">
+                            <option value="Internal">Internal</option>
+                            <option value="External">External</option>
+                            <option value="Partners">Partners</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Message Content <span class="text-red-500">*</span></label>
+                    <textarea id="sms-message-content" required rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Provide SMS text (max 160 chars recommended)"></textarea>
+                </div>
+                <div class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Requested By <span class="text-red-500">*</span></label>
+                    <input type="text" id="sms-requestor" required readonly class="w-full px-3 py-2 border border-gray-200 bg-gray-50 rounded-xl text-gray-600 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                    <textarea id="sms-notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"></textarea>
+                </div>
+                <div class="flex justify-end pt-4 space-x-3 border-t border-slate-100">
+                    <button type="button" onclick="window.closeSMSModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors shadow-indigo-200">Save Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SMS Details Modal -->
+    <div id="sms-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900">SMS Request Details</h3>
+                <button onclick="window.closeSMSDetails()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Campaign Name</dt>
+                            <dd class="mt-1 text-sm text-gray-900 font-semibold" id="sms-details-campaign-name">-</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Audience Type</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-audience-type">-</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Target Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-target-date">-</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Created At</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-created-at">-</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Requested By</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-requestor">-</dd>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Request Status</dt>
+                            <dd class="mt-1 text-sm text-gray-900"><span id="sms-details-request-status">-</span></dd>
+                            <input type="hidden" id="sms-details-id" value="">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Message Content</dt>
+                            <dd class="mt-1 text-sm text-gray-900 bg-white p-3 rounded-lg border border-slate-200 whitespace-pre-wrap" id="sms-details-message-content">-</dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Notes</dt>
+                            <dd class="mt-1 text-sm text-gray-900 bg-white p-3 rounded-lg border border-slate-200 whitespace-pre-wrap" id="sms-details-notes">-</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="px-6 py-4 border-t border-slate-200/60 bg-white flex justify-end shrink-0">
+                <button type="button" onclick="window.closeSMSDetails()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
+            </div>
+            </div>
     </div>
 
 </body>

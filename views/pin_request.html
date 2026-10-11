@@ -5,13 +5,18 @@
                 <h3 class="text-lg leading-6 font-bold text-gray-900">Pin Requests</h3>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage and track pin requests.</p>
             </div>
-            <div class="mt-4 sm:mt-0 flex space-x-3">
+            <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl shadow-inner shadow-slate-200/50 border border-slate-200/60">
+                    <button id="btn-pr-view-table" onclick="window.switchPRView('table')" class="px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all">Table List</button>
+                    <button id="btn-pr-view-timeline" onclick="window.switchPRView('timeline')" class="px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all">Weekly Slot Timeline</button>
+                </div>
                 <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
                     <i class="fa-solid fa-plus mr-2"></i> Create Pin Request
                 </button>
             </div>
         </div>
 
+        <div id="pr-table-container">
         <div class="px-4 py-3 bg-slate-50 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
             <div class="relative flex-1 max-w-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -62,6 +67,43 @@
                     <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500" id="pin-requests-empty-msg">No pin requests found.</td></tr>
                 </tbody>
             </table>
+        </div>
+        </div>
+
+        <div id="pr-timeline-container" class="hidden">
+            <!-- Smart Availability Panel -->
+            <div class="px-4 py-4 bg-slate-50 border-b border-slate-200/60">
+                <h4 class="text-sm font-bold text-gray-800 mb-3"><i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-2"></i>Smart Slot Availability Assistant</h4>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 items-end">
+                    <div class="w-full sm:w-auto">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Target Date</label>
+                        <input type="date" id="pr-assist-date" class="block w-full border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                    </div>
+                    <div class="w-full sm:w-auto">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Start Time (UTC)</label>
+                        <input type="time" id="pr-assist-time" class="block w-full border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                    </div>
+                    <div class="w-full sm:w-auto">
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Duration</label>
+                        <select id="pr-assist-duration" class="block w-full border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                            <option value="24">24 hours (1 Day)</option>
+                            <option value="48">48 hours (2 Days)</option>
+                            <option value="72">72 hours (3 Days)</option>
+                            <option value="96">96 hours (4 Days)</option>
+                        </select>
+                    </div>
+                    <button onclick="window.checkPRSlotAvailability()" class="w-full sm:w-auto px-4 py-1.5 border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 font-medium rounded-lg text-sm shadow-sm transition-colors">
+                        <i class="fa-solid fa-search mr-1"></i> Scan Availability
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timeline Grid -->
+            <div class="relative w-full overflow-x-auto border-t border-slate-200/60 bg-white" id="pr-timeline-wrapper">
+                <div class="min-w-[1200px] flex flex-col" id="pr-timeline-inner">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
