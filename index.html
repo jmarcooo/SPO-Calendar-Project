@@ -2407,10 +2407,10 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${(function(){
                             if(assigns.length === 0) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
-                            return '<div class="flex items-center space-x-2 -space-x-1">' + assigns.map(a => {
+                            return '<div class="flex items-center space-x-3"><div class="flex items-center -space-x-1">' + assigns.map(a => {
                                 let init = a.charAt(0).toUpperCase();
                                 return '<div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
-                            }).join('') + '<span class="text-sm text-gray-900 ml-3">' + assigns.join(', ') + '</span></div>';
+                            }).join('') + '</div><span class="text-sm text-gray-900">' + assigns.join(', ') + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
