@@ -1789,6 +1789,17 @@
             }
         };
 
+
+        window.isCurrentUserPOC = (moduleId) => {
+            if (!window.currentUserProfile) return false;
+            let savedPOCs = {};
+            try {
+                savedPOCs = JSON.parse(localStorage.getItem('spo_admin_pocs')) || {};
+            } catch(e){}
+            const pocs = savedPOCs[moduleId] || [];
+            return pocs.includes(window.currentUserProfile);
+        };
+
         window.saveAdminPOCs = () => {
             const newPOCs = {};
             window.POC_MODULES.forEach(module => {
@@ -2763,7 +2774,7 @@
             document.getElementById('detail-task-title').innerText = task.taskTitle || 'Untitled Task';
             document.getElementById('detail-event-title').innerText = task.eventTitle || 'No Event';
 
-            if (task.status === 'Pending') {
+            if (task.status === 'Pending' && window.isCurrentUserPOC('daily_task')) {
                 task.status = 'In Progress';
                 window.syncDailyTaskToFirestore(task);
                 if (window.renderDailyTasksTable) window.renderDailyTasksTable();
@@ -3375,6 +3386,18 @@
             } finally {
                 btn.innerHTML = 'Save';
                 btn.disabled = false;
+            }
+        };
+
+        window.completeDailyTask = async (id) => {
+            if (confirm('Are you sure you want to mark this daily task as completed?')) {
+                const task = window.dailyTasks.find(t => t.id === id);
+                if (task) {
+                    task.status = 'Completed';
+                    window.syncDailyTaskToFirestore(task);
+                    if (window.renderDailyTasksTable) window.renderDailyTasksTable();
+                    window.showToast("Daily task marked as completed.", "success");
+                }
             }
         };
 
@@ -4603,7 +4626,7 @@
             const req = window.smsRequests.find(r => r.id === id);
             if (!req) return;
 
-            if (!req.requestStatus || req.requestStatus === 'Pending') {
+            if ((!req.requestStatus || req.requestStatus === 'Pending') && window.isCurrentUserPOC('sms')) {
                 req.requestStatus = 'Under Review';
                 window.syncSMSRequestSilent(req);
                 window.renderSMSTable();
@@ -4959,7 +4982,7 @@ html += `
             const req = window.pinRequests.find(p => p.id === id);
             if (!req) return;
 
-            if (req.status === 'Pending') {
+            if (req.status === 'Pending' && window.isCurrentUserPOC('post_management')) {
                 req.status = 'Under Review';
                 window.syncPinRequestSilent(req);
             }
@@ -4989,7 +5012,7 @@ html += `
         window.openCWRequestDetails = (id) => {
             const req = window.cwRequests.find(p => p.id === id);
             if (!req) return;
-            if (!req.requestStatus || req.requestStatus === 'Pending') {
+            if ((!req.requestStatus || req.requestStatus === 'Pending') && window.isCurrentUserPOC('copy_writer')) {
                 req.requestStatus = 'Under Review';
                 if(window.syncCWRequestSilent) window.syncCWRequestSilent(req);
                 if(window.renderCWRequestsTable) window.renderCWRequestsTable();
@@ -5053,7 +5076,7 @@ html += `
             const req = window.pdRequests.find(p => p.id === id);
             if (!req) return;
 
-            if (req.status === 'Pending') {
+            if (req.status === 'Pending' && window.isCurrentUserPOC('prize_distribution')) {
                 req.status = 'Under Review';
                 window.syncPDRequestSilent(req);
             }
