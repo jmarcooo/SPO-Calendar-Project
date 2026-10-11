@@ -749,6 +749,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_daily_tasks', JSON.stringify(tempDailyTasks));
                 window.dailyTasks = tempDailyTasks;
                 if (window.currentView === 'daily_task' && window.renderDailyTasksTable) {
                     window.renderDailyTasksTable();
@@ -775,6 +776,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_quick_links', JSON.stringify(tempQuickLinks));
                 window.quickLinks = tempQuickLinks;
                 window.renderQuickLinks();
             }, (error) => {
@@ -808,6 +810,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_pd_requests', JSON.stringify(tempPdRequests));
                 window.pdRequests = tempPdRequests;
                 if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
                     window.renderPDRequestsTable();
@@ -834,6 +837,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_cw_requests', JSON.stringify(tempCwRequests));
                 window.cwRequests = tempCwRequests;
                 if (window.currentView === 'content_writer' && window.renderCWRequestsTable) {
                     window.renderCWRequestsTable();
@@ -860,6 +864,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_pin_requests', JSON.stringify(tempPinRequests));
                 window.pinRequests = tempPinRequests;
                 if (window.currentView === 'pin_request' && window.renderPinRequestsTable) {
                     window.renderPinRequestsTable();
@@ -916,6 +921,7 @@
                     }
                 }
 
+                localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
                 window.events = tempEvents;
                 window.renderUI();
                 window.updateCampaignDropdown();
@@ -931,6 +937,27 @@
             }, (error) => {
                 console.error("Events Error:", error);
                 window.showToast("Database connection failed.", "error");
+            });
+
+
+            onSnapshot(collection(db, "sms_requests"), (snapshot) => {
+                let tempSMS = [];
+                snapshot.forEach((doc) => { tempSMS.push(doc.data()); });
+
+                const localStr = localStorage.getItem('spo_sms_requests');
+                if (tempSMS.length === 0 && localStr && localStr !== '[]') {
+                    const localData = JSON.parse(localStr);
+                    if (localData.length > 0) {
+                        for (let p of localData) { setDoc(doc(db, "sms_requests", p.id), p); }
+                        localStorage.removeItem('spo_sms_requests');
+                    }
+                }
+
+                localStorage.setItem('spo_sms_requests', JSON.stringify(tempSMS));
+                window.smsRequests = tempSMS;
+                if (window.currentView === 'sms' && window.renderSMSTable) {
+                    window.renderSMSTable();
+                }
             });
 
             onSnapshot(collection(db, "budgets"), (snapshot) => {
@@ -950,6 +977,7 @@
                     }
                 }
                 
+                localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
