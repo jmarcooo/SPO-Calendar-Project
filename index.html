@@ -1914,7 +1914,8 @@
                     } else if (viewName === 'content_writer') {
                         if (window.renderCWRequestsTable) window.renderCWRequestsTable();
                     } else if (viewName === 'pin_request') {
-                        if (window.renderPinRequestsTable) window.renderPinRequestsTable();
+                        const savedView = localStorage.getItem('spo_pr_view') || 'table';
+                        if (window.switchPRView) window.switchPRView(savedView);
                     } else if (viewName === 'sms') {
                         if (window.renderSMSTable) window.renderSMSTable();
                     } else if (viewName === 'settings') {
@@ -3133,11 +3134,22 @@
             tbody.innerHTML = html;
         };
 
-        window.openPinRequestModal = (id = null) => {
+        window.openPinRequestModal = (id = null, prefillSlot = null, prefillStart = null) => {
             const form = document.getElementById('pin-request-form');
             form.reset();
             document.getElementById('pr-id').value = '';
             document.getElementById('pin-request-modal-title').innerText = 'Create Pin Request';
+            if (prefillStart) {
+                // Needs to be YYYY-MM-DD HH:MM:SS format internally but the input is YYYY-MM-DDTHH:MM
+                // Wait, HTML datetime-local requires YYYY-MM-DDTHH:MM
+                document.getElementById('pr-start-date').value = prefillStart;
+            }
+            if (prefillSlot) {
+                const parts = prefillSlot.split('-');
+                document.getElementById('pr-page').value = parts[0];
+                document.getElementById('pr-position').value = parts[1];
+                document.getElementById('pr-sort').value = parts[2];
+            }
 
             if (id) {
                 const req = window.pinRequests.find(p => p.id === id);
@@ -3313,6 +3325,31 @@
             XLSX.writeFile(workbook, "SPO_Pin_Requests_Export.xlsx");
         };
 
+
+        window.switchPRView = (view) => {
+            localStorage.setItem('spo_pr_view', view);
+            const btnTable = document.getElementById('btn-pr-view-table');
+            const btnTimeline = document.getElementById('btn-pr-view-timeline');
+            const tableContainer = document.getElementById('pr-table-container');
+            const timelineContainer = document.getElementById('pr-timeline-container');
+
+            if (!btnTable || !btnTimeline || !tableContainer || !timelineContainer) return;
+
+            if (view === 'table') {
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                tableContainer.classList.remove('hidden');
+                timelineContainer.classList.add('hidden');
+                window.renderPinRequestsTable();
+            } else {
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                tableContainer.classList.add('hidden');
+                timelineContainer.classList.remove('hidden');
+                window.renderPRTimeline();
+            }
+        };
+
         window.renderPinRequestsTable = () => {
             const tbody = document.getElementById('pin-requests-table-body');
             if (!tbody) return;
@@ -3377,6 +3414,200 @@
                 `;
             });
             tbody.innerHTML = html;
+        };
+
+
+        window.renderPRTimeline = () => {
+            const container = document.getElementById('pr-timeline-inner');
+            if (!container) return;
+
+            // Generate timeline for current week (Mon-Sun)
+            const today = new Date();
+            const dayOfWeek = today.getUTCDay();
+            const startOfWeek = new Date(today);
+            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setUTCHours(0, 0, 0, 0);
+
+            const days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(startOfWeek);
+                d.setUTCDate(d.getUTCDate() + i);
+                days.push(d);
+            }
+
+            // Timeline Header
+            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
+                <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20">Position</div>`;
+
+            days.forEach(d => {
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
+                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
+                    <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-gray-500 divide-x divide-slate-200/60 h-4">
+                        <div class="flex-1">00:00</div>
+                        <div class="flex-1">12:00</div>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+
+            // Row Generation
+            const slots = [];
+            for (let col = 1; col <= 2; col++) {
+                for (let pos = 1; pos <= 9; pos++) {
+                    slots.push({ id: `1-${col}-${pos}`, name: `${col === 1 ? 'Left' : 'Right'} ${pos}` });
+                }
+            }
+
+            const scaleMsToPct = (durationMs) => (durationMs / (7 * 24 * 60 * 60 * 1000)) * 100;
+            const weekStartMs = startOfWeek.getTime();
+            const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
+
+            slots.forEach(slot => {
+                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-12">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center">
+                        <span class="bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-600 text-[10px] mr-2">1-${slot.id.split('-')[1]}</span> ${slot.name}
+                    </div>
+                    <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
+
+                // Add grid lines for background
+                days.forEach((_, i) => {
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                });
+
+                // Find requests matching this slot
+                const reqs = window.pinRequests.filter(r => r.page === '1' && r.position === slot.id.split('-')[1] && r.sort === slot.id.split('-')[2]);
+
+                reqs.forEach(req => {
+                    if (!req.startDate || !req.endDate) return;
+                    // Format: YYYY-MM-DD HH:MM:SS
+                    // Since it's UTC conceptually, we parse it manually
+                    const sParts = req.startDate.split(/[- :]/);
+                    const eParts = req.endDate.split(/[- :]/);
+
+                    if (sParts.length < 3 || eParts.length < 3) return;
+
+                    const sDate = new Date(Date.UTC(sParts[0], sParts[1]-1, sParts[2], sParts[3]||0, sParts[4]||0, sParts[5]||0));
+                    const eDate = new Date(Date.UTC(eParts[0], eParts[1]-1, eParts[2], eParts[3]||0, eParts[4]||0, eParts[5]||0));
+
+                    const sMs = sDate.getTime();
+                    const eMs = eDate.getTime();
+
+                    // Check if it overlaps with current week
+                    if (eMs <= weekStartMs || sMs >= weekEndMs) return;
+
+                    let leftPct = scaleMsToPct(Math.max(0, sMs - weekStartMs));
+                    let widthPct = scaleMsToPct(Math.min(weekEndMs, eMs) - Math.max(weekStartMs, sMs));
+
+                    const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
+                    const statusColor = req.status === 'Completed' ? 'bg-emerald-500' : (req.status === 'Under Review' ? 'bg-amber-500' : 'bg-indigo-500');
+
+                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${statusColor} text-white text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 ring-indigo-400 z-10"
+                                style="left: ${leftPct}%; width: ${widthPct}%;"
+                                title="${req.campaignName}\nStart: ${req.startDate}\nEnd: ${req.endDate}\nDuration: ${durationH}h\nOwner: ${req.owner || 'Unknown'}"
+                                onclick="event.stopPropagation(); window.openPinRequestDetails('${req.id}')">
+                                <span class="truncate font-medium">${req.campaignName}</span>
+                             </div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        };
+
+
+        window.checkPRSlotAvailability = () => {
+            const dateVal = document.getElementById('pr-assist-date').value;
+            const timeVal = document.getElementById('pr-assist-time').value;
+            const durationHours = parseInt(document.getElementById('pr-assist-duration').value) || 24;
+
+            if (!dateVal || !timeVal) {
+                window.showToast("Please select target date and time.", "error");
+                return;
+            }
+
+            const targetStart = new Date(`${dateVal}T${timeVal}:00Z`);
+            const targetEnd = new Date(targetStart.getTime() + (durationHours * 60 * 60 * 1000));
+
+            const startMs = targetStart.getTime();
+            const endMs = targetEnd.getTime();
+
+            // Clear previous highlights
+            document.querySelectorAll('.pr-track').forEach(el => {
+                el.classList.remove('bg-red-50', 'bg-green-50');
+            });
+
+            const slots = [];
+            for (let col = 1; col <= 2; col++) {
+                for (let pos = 1; pos <= 9; pos++) {
+                    slots.push(`1-${col}-${pos}`);
+                }
+            }
+
+            let collisionCount = 0;
+
+            slots.forEach(slotId => {
+                const parts = slotId.split('-');
+                const reqs = window.pinRequests.filter(r => r.page === parts[0] && r.position === parts[1] && r.sort === parts[2] && r.status !== 'Completed');
+
+                let hasCollision = false;
+                for (let req of reqs) {
+                    if (!req.startDate || !req.endDate) continue;
+                    const rS = new Date(req.startDate.replace(' ', 'T') + 'Z').getTime();
+                    const rE = new Date(req.endDate.replace(' ', 'T') + 'Z').getTime();
+
+                    // Check overlap
+                    if (startMs < rE && endMs > rS) {
+                        hasCollision = true;
+                        break;
+                    }
+                }
+
+                const trackEl = document.querySelector(`.pr-track[data-slot="${slotId}"]`);
+                if (trackEl) {
+                    if (hasCollision) {
+                        trackEl.classList.add('bg-red-50');
+                        collisionCount++;
+                    } else {
+                        trackEl.classList.add('bg-green-50');
+                    }
+                }
+            });
+
+            if (collisionCount > 0) {
+                window.showToast(`Found ${collisionCount} overlapping slots. Available slots highlighted in green.`, "warning");
+            } else {
+                window.showToast("All slots are available!", "success");
+            }
+        };
+
+        window.handlePRTimelineClick = (e, slotId) => {
+            const track = e.currentTarget;
+            const rect = track.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const pct = clickX / rect.width;
+
+            // Calculate clicked date
+            const today = new Date();
+            const dayOfWeek = today.getUTCDay();
+            const startOfWeek = new Date(today);
+            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setUTCHours(0, 0, 0, 0);
+
+            const clickedMs = startOfWeek.getTime() + (pct * 7 * 24 * 60 * 60 * 1000);
+            const clickedDate = new Date(clickedMs);
+
+            const sYear = clickedDate.getUTCFullYear();
+            const sMo = String(clickedDate.getUTCMonth() + 1).padStart(2, '0');
+            const sDa = String(clickedDate.getUTCDate()).padStart(2, '0');
+            const sHr = String(clickedDate.getUTCHours()).padStart(2, '0');
+            // Round to nearest hour
+            const formattedStart = `${sYear}-${sMo}-${sDa}T${sHr}:00`;
+
+            window.openPinRequestModal(null, slotId, formattedStart);
         };
 
         window.openPinActionModal = (id) => {
@@ -5475,6 +5706,9 @@ html += `
             <div class="overflow-y-auto p-6 flex-1">
                 <form id="pin-request-form" class="space-y-4" onsubmit="event.preventDefault(); window.savePinRequest();">
                     <input type="hidden" id="pr-id">
+                    <input type="hidden" id="pr-page">
+                    <input type="hidden" id="pr-position">
+                    <input type="hidden" id="pr-sort">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Campaign / Game Name <span class="text-red-500">*</span></label>
