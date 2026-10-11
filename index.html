@@ -877,6 +877,16 @@
                     window.renderUI();
                 }
             });
+            onSnapshot(doc(db, "settings", "adminPOCs"), (docSnap) => {
+                if (docSnap.exists()) {
+                    const pocs = docSnap.data();
+                    localStorage.setItem('spo_admin_pocs', JSON.stringify(pocs));
+                    if (window.currentView === 'settings' && window.isAdminModeEnabled && window.renderAdminPOCSettings) {
+                        window.renderAdminPOCSettings();
+                    }
+                }
+            });
+
 
             onSnapshot(collection(db, "events"), (snapshot) => {
                 let tempEvents = [];
@@ -1800,14 +1810,22 @@
             return pocs.includes(window.currentUserProfile);
         };
 
-        window.saveAdminPOCs = () => {
+        window.saveAdminPOCs = async () => {
             const newPOCs = {};
             window.POC_MODULES.forEach(module => {
                 const checkboxes = document.querySelectorAll(`input[name="poc_${module.id}"]:checked`);
                 newPOCs[module.id] = Array.from(checkboxes).map(cb => cb.value);
             });
             localStorage.setItem('spo_admin_pocs', JSON.stringify(newPOCs));
-            alert('Points of Contact saved successfully.');
+
+            if (db) {
+                try {
+                    await setDoc(doc(db, "settings", "adminPOCs"), newPOCs);
+                } catch(e) {
+                    console.error("Error syncing POCs to Firestore", e);
+                }
+            }
+            window.showToast('Points of Contact saved successfully.', 'success');
         };
 
         window.switchView = (viewName) => {
