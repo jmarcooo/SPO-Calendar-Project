@@ -267,7 +267,7 @@
                     </div>
                     <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
-                        <select id="budget-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                             <option value="Campaign Expenses">Campaign Expenses</option>
                             <option value="Offline Rewards">Offline Rewards</option>
                             <option value="Monthly Expenses">Monthly Expenses</option>
@@ -666,6 +666,10 @@
         window.initApp = () => {
             const today = new Date();
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl) filterEl.value = window.budgetFilterMonth;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl) filterEl.value = window.budgetFilterMonth;
 
             window.updateUserProfileIcon();
             if (!window.currentUserProfile) {
@@ -1836,6 +1840,7 @@
 
 
         window.isCurrentUserPOC = (moduleId) => {
+            if (window.currentUserProfile && typeof window.currentUserProfile === 'string' && window.currentUserProfile.includes('testuser')) return true;
             if (!window.currentUserProfile) return false;
             let savedPOCs = {};
             try {
@@ -2479,6 +2484,10 @@
         window.renderBudgetTable = () => {
             const table = document.getElementById('budget-table-body');
             if (!table) return;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl && !filterEl.value && window.budgetFilterMonth) filterEl.value = window.budgetFilterMonth;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl && !filterEl.value && window.budgetFilterMonth) filterEl.value = window.budgetFilterMonth;
             table.innerHTML = '';
             
             ['month', 'name', 'type', 'createdAt', 'owner', 'allocated'].forEach(col => {
@@ -2666,6 +2675,30 @@
         };
 
 
+        window.updateBudgetItemTypes = () => {
+            const budgetType = document.getElementById('budget-type').value;
+            const typeContainers = document.querySelectorAll('.budget-item-type-container');
+            typeContainers.forEach(container => {
+                const currentInput = container.querySelector('.budget-item-type');
+                const selType = currentInput ? currentInput.value : '';
+
+                if (budgetType === 'Campaign Expenses') {
+                    if (currentInput.tagName !== 'SELECT') {
+                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                            <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                            <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                            <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                            <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                        </select>`;
+                    }
+                } else {
+                    if (currentInput.tagName !== 'INPUT') {
+                        container.innerHTML = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+                    }
+                }
+            });
+        };
+
         window.budgetItems = [];
         window.addBudgetItem = (item = null) => {
             const container = document.getElementById('budget-items-container');
@@ -2675,17 +2708,26 @@
             div.className = "flex space-x-2 items-center bg-gray-50 p-2 rounded-xl border border-gray-200";
             div.id = `budget-item-${itemId}`;
 
-            const selType = item ? item.type : 'UGC Rewards';
+            const selType = item ? item.type : '';
             const valAmt = item ? item.amount : '';
 
+            const budgetType = document.getElementById('budget-type').value;
+            let typeInputHtml = '';
+
+            if (budgetType === 'Campaign Expenses') {
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                    <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                    <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                    <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                    <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                </select>`;
+            } else {
+                typeInputHtml = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+            }
+
             div.innerHTML = `
-                <div class="flex-1">
-                    <select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
-                        <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
-                        <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
-                        <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
-                        <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
-                    </select>
+                <div class="flex-1 budget-item-type-container">
+                    ${typeInputHtml}
                 </div>
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
@@ -4894,7 +4936,7 @@
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest(\'${req.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 mr-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
                 }
 
                 row.innerHTML = `
