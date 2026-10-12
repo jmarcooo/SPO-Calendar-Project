@@ -48,6 +48,13 @@
                 </div>
                 <input type="text" id="global-search" oninput="window.handleGlobalSearch()" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-slate-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
             </div>
+
+            <!-- Global Search Results Dropdown -->
+            <div id="global-search-results" class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-200/60 hidden flex-col z-50 max-h-96 overflow-y-auto transform origin-top transition-all">
+                <div id="global-search-results-list" class="p-2 space-y-1">
+                    <!-- Results injected here -->
+                </div>
+            </div>
         </div>
         <div class="flex items-center space-x-3">
             <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
@@ -1869,34 +1876,115 @@
 
         window.handleGlobalSearch = () => {
             const searchInput = document.getElementById('global-search');
-            if (!searchInput) return;
-            const val = searchInput.value;
+            const resultsContainer = document.getElementById('global-search-results');
+            const resultsList = document.getElementById('global-search-results-list');
 
-            // Apply search to the current view if applicable
-            if (window.currentView === 'tasks' && window.setSearch) {
-                window.setSearch(val);
-            } else if (window.currentView === 'budget' && window.setBudgetSearch) {
-                window.setBudgetSearch(val);
-            } else if (window.currentView === 'daily_task') {
-                const innerInput = document.getElementById('daily-search-input');
-                if (innerInput) { innerInput.value = val; window.renderDailyTasksTable(); }
-            } else if (window.currentView === 'pin_request') {
-                const innerInput = document.getElementById('pin-search-input');
-                if (innerInput) { innerInput.value = val; window.renderPinRequestsTable(); }
-            } else if (window.currentView === 'sms') {
-                const innerInput = document.getElementById('sms-search-input');
-                if (innerInput) { innerInput.value = val; window.renderSMSTable(); }
-            } else if (window.currentView === 'content_writer') {
-                const innerInput = document.getElementById('cw-search-input');
-                if (innerInput) { innerInput.value = val; window.renderCWRequestsTable(); }
-            } else if (window.currentView === 'prize_distribution') {
-                const innerInput = document.getElementById('pd-search-input');
-                if (innerInput) { innerInput.value = val; window.renderPDRequestsTable(); }
-            } else if (window.currentView === 'campaign') {
-                const innerInput = document.getElementById('campaign-search-input');
-                if (innerInput) { innerInput.value = val; window.renderCampaignTable(); }
+            if (!searchInput || !resultsContainer || !resultsList) return;
+            const val = searchInput.value.toLowerCase().trim();
+
+            if (!val) {
+                resultsContainer.classList.add('hidden');
+                return;
             }
+
+            let results = [];
+
+            // Search Tasks/Events
+            if (window.events) {
+                window.events.forEach(t => {
+                    if (t.title && t.title.toLowerCase().includes(val)) {
+                        results.push({ type: 'Task/Event', icon: 'fa-tasks', title: t.title, id: t.id, action: `window.switchView('tasks'); setTimeout(() => window.openEditModal(window.events.find(e => e.id === '${t.id}')), 300);` });
+                    }
+                });
+            }
+
+            // Search Budget
+            if (window.budgets) {
+                window.budgets.forEach(b => {
+                    if (b.name && b.name.toLowerCase().includes(val)) {
+                        results.push({ type: 'Budget', icon: 'fa-wallet', title: b.name, id: b.id, action: `window.switchView('budget'); setTimeout(() => window.openBudgetDetails('${b.id}'), 300);` });
+                    }
+                });
+            }
+
+            // Search Daily Tasks
+            if (window.dailyTasks) {
+                window.dailyTasks.forEach(dt => {
+                    if (dt.taskTitle && dt.taskTitle.toLowerCase().includes(val) || (dt.eventTitle && dt.eventTitle.toLowerCase().includes(val))) {
+                        results.push({ type: 'Daily Task', icon: 'fa-clipboard-check', title: dt.taskTitle || dt.eventTitle, id: dt.id, action: `window.switchView('daily_task'); setTimeout(() => window.openDailyTaskDetails('${dt.id}'), 300);` });
+                    }
+                });
+            }
+
+            // Search Pin Requests
+            if (window.pinRequests) {
+                window.pinRequests.forEach(pr => {
+                    if (pr.campaignName && pr.campaignName.toLowerCase().includes(val)) {
+                        results.push({ type: 'Pin Request', icon: 'fa-thumbtack', title: pr.campaignName, id: pr.id, action: `window.switchView('pin_request'); setTimeout(() => window.openPinRequestDetails('${pr.id}'), 300);` });
+                    }
+                });
+            }
+
+            // Search SMS
+            if (window.smsRequests) {
+                window.smsRequests.forEach(s => {
+                    if (s.campaignName && s.campaignName.toLowerCase().includes(val)) {
+                        results.push({ type: 'SMS Request', icon: 'fa-comment-sms', title: s.campaignName, id: s.id, action: `window.switchView('sms'); setTimeout(() => window.openSMSDetails('${s.id}'), 300);` });
+                    }
+                });
+            }
+
+            // Search CW
+            if (window.cwRequests) {
+                window.cwRequests.forEach(cw => {
+                    if (cw.campaignName && cw.campaignName.toLowerCase().includes(val)) {
+                        results.push({ type: 'CW Request', icon: 'fa-pen-nib', title: cw.campaignName, id: cw.id, action: `window.switchView('content_writer'); setTimeout(() => window.openCWRequestDetails('${cw.id}'), 300);` });
+                    }
+                });
+            }
+
+            // Search PD
+            if (window.pdRequests) {
+                window.pdRequests.forEach(pd => {
+                    if (pd.campaignName && pd.campaignName.toLowerCase().includes(val)) {
+                        results.push({ type: 'PD Request', icon: 'fa-gift', title: pd.campaignName, id: pd.id, action: `window.switchView('prize_distribution'); setTimeout(() => window.openPDRequestDetails('${pd.id}'), 300);` });
+                    }
+                });
+            }
+
+            if (results.length === 0) {
+                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No results found for "${val}"</div>`;
+            } else {
+                // limit to 10 results
+                const limited = results.slice(0, 10);
+                resultsList.innerHTML = limited.map(r => `
+                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
+                        <div class="h-8 w-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mr-3 shrink-0">
+                            <i class="fa-solid ${r.icon} text-sm"></i>
+                        </div>
+                        <div class="flex flex-col overflow-hidden">
+                            <span class="text-sm font-semibold text-gray-900 truncate">${r.title}</span>
+                            <span class="text-xs text-gray-500">${r.type}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                if (results.length > 10) {
+                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
+                }
+            }
+
+            resultsContainer.classList.remove('hidden');
         };
+
+        // Add click outside to close dropdown
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('global-search-results');
+            const input = document.getElementById('global-search');
+            if (container && input && !container.contains(e.target) && e.target !== input) {
+                container.classList.add('hidden');
+            }
+        });
 
 window.switchView = (viewName) => {
             window.currentView = viewName;
