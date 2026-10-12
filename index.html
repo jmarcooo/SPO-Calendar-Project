@@ -668,8 +668,6 @@
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const filterEl = document.getElementById('budget-filter-month');
             if(filterEl) filterEl.value = window.budgetFilterMonth;
-            const filterEl = document.getElementById('budget-filter-month');
-            if(filterEl) filterEl.value = window.budgetFilterMonth;
 
             window.updateUserProfileIcon();
             if (!window.currentUserProfile) {
@@ -2484,8 +2482,6 @@
         window.renderBudgetTable = () => {
             const table = document.getElementById('budget-table-body');
             if (!table) return;
-            const filterEl = document.getElementById('budget-filter-month');
-            if(filterEl && !filterEl.value && window.budgetFilterMonth) filterEl.value = window.budgetFilterMonth;
             const filterEl = document.getElementById('budget-filter-month');
             if(filterEl && !filterEl.value && window.budgetFilterMonth) filterEl.value = window.budgetFilterMonth;
             table.innerHTML = '';
