@@ -258,40 +258,37 @@
                 <form id="budget-form" class="space-y-4">
                     <input type="hidden" id="budget-id">
                     <div>
-                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
-                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                    </div>
-                    <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
                         <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
+                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Campaign Date <span class="text-red-500">*</span></label>
+                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
                         <select id="budget-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                            <option value="UGC Rewards">UGC Rewards</option>
-                            <option value="Game Review">Game Review</option>
-                            <option value="Daily Task">Daily Task</option>
-                            <option value="SMS">SMS</option>
+                            <option value="Campaign Expenses">Campaign Expenses</option>
+                            <option value="Offline Rewards">Offline Rewards</option>
                             <option value="Monthly Expenses">Monthly Expenses</option>
                         </select>
                     </div>
-                    <div>
-                        <label for="budget-allocated" class="block text-sm font-medium text-gray-700">Allocated Budget <span class="text-red-500">*</span></label>
-                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm" id="curr-symbol-1">₱</span>
-                            </div>
-                            <input type="number" step="0.01" min="0" id="budget-allocated" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900 mb-2">Items <span class="text-red-500">*</span></label>
+                        <div id="budget-items-container" class="space-y-3">
+                            <!-- Items will be injected here -->
                         </div>
+                        <button type="button" onclick="window.addBudgetItem()" class="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                            <i class="fa-solid fa-plus mr-1"></i> Add New Item
+                        </button>
                     </div>
-                    <div>
-                        <label for="budget-spent" class="block text-sm font-medium text-gray-700">Amount Spent</label>
-                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm" id="curr-symbol-2">₱</span>
-                            </div>
-                            <input type="number" step="0.01" min="0" id="budget-spent" value="0" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900">Allocated Budget</label>
+                        <div class="mt-1 text-xl font-bold text-indigo-600" id="budget-allocated-display">₱0.00</div>
+                        <input type="hidden" id="budget-allocated" value="0">
+                        <input type="hidden" id="budget-spent" value="0">
                     </div>
                 </form>
             </div>
@@ -667,6 +664,9 @@
         };
 
         window.initApp = () => {
+            const today = new Date();
+            window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+
             window.updateUserProfileIcon();
             if (!window.currentUserProfile) {
                 setTimeout(() => window.openUserProfileModal(true), 500);
@@ -2474,7 +2474,7 @@
             if (!table) return;
             table.innerHTML = '';
             
-            ['month', 'name', 'type', 'owner', 'allocated', 'spent'].forEach(col => {
+            ['month', 'name', 'type', 'createdAt', 'owner', 'allocated', 'spent'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
                 if (icon) { 
                     icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); 
@@ -2509,7 +2509,7 @@
                 table.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
                 document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
                 document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
-                document.getElementById('budget-total-remaining').innerText = window.formatCurrency(0);
+                // Removed
                 return;
             }
 
@@ -2531,9 +2531,16 @@
                 tr.className = 'hover:bg-slate-50 transition-colors duration-200';
                 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${(function(){
+                        if(!b.month) return 'N/A';
+                        const parts = b.month.split('-');
+                        if(parts.length !== 2) return b.month;
+                        const date = new Date(parts[0], parseInt(parts[1])-1);
+                        return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                    })()}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.createdAt || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
                         ${(function(){
                             let n = escOwner;
@@ -2544,7 +2551,6 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
                             <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
@@ -2563,9 +2569,7 @@
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
             document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
             
-            const remainingEl = document.getElementById('budget-total-remaining');
-            remainingEl.innerText = window.formatCurrency(totalRemaining);
-            remainingEl.className = `px-6 py-4 text-right text-sm font-bold ${totalRemaining < 0 ? 'text-red-600' : 'text-blue-600'}`;
+            // Remaining removed
         }
 
         window.saveBudgetEntry = async (e) => {
@@ -2579,7 +2583,20 @@
             const name = document.getElementById('budget-name').value.trim();
             const type = document.getElementById('budget-type').value;
             const allocated = document.getElementById('budget-allocated').value;
-            const spent = document.getElementById('budget-spent').value || 0;
+
+            // Gather items
+            const itemEls = document.querySelectorAll('#budget-items-container > div');
+            if(itemEls.length === 0) {
+                window.showToast("At least one item is required", "error");
+                return;
+            }
+
+            let items = [];
+            itemEls.forEach(el => {
+                const typeVal = el.querySelector('.budget-item-type').value;
+                const amtVal = parseFloat(el.querySelector('.budget-item-amount').value) || 0;
+                items.push({ type: typeVal, amount: amtVal });
+            });
 
             const entryId = id ? id : Date.now().toString();
             const entryData = { 
@@ -2588,8 +2605,9 @@
                 type, 
                 owner, 
                 month, 
+                items: items,
                 allocated: parseFloat(allocated), 
-                spent: parseFloat(spent) 
+                spent: 0
             };
             
             if (!id) {
@@ -2629,6 +2647,61 @@
             }
         };
 
+
+        window.budgetItems = [];
+        window.addBudgetItem = (item = null) => {
+            const container = document.getElementById('budget-items-container');
+            const itemId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+
+            const div = document.createElement('div');
+            div.className = "flex space-x-2 items-center bg-gray-50 p-2 rounded-xl border border-gray-200";
+            div.id = `budget-item-${itemId}`;
+
+            const selType = item ? item.type : 'UGC Rewards';
+            const valAmt = item ? item.amount : '';
+
+            div.innerHTML = `
+                <div class="flex-1">
+                    <select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                        <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                        <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                        <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                        <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                    </select>
+                </div>
+                <div class="flex-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                        <span class="text-gray-500 sm:text-xs">₱</span>
+                    </div>
+                    <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <button type="button" onclick="window.removeBudgetItem('${itemId}')" class="text-red-500 hover:text-red-700 p-1">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+            window.calcBudgetTotal();
+        };
+
+        window.removeBudgetItem = (itemId) => {
+            const el = document.getElementById(`budget-item-${itemId}`);
+            if(el) {
+                el.remove();
+                window.calcBudgetTotal();
+            }
+        };
+
+        window.calcBudgetTotal = () => {
+            const amounts = document.querySelectorAll('.budget-item-amount');
+            let total = 0;
+            amounts.forEach(input => {
+                const val = parseFloat(input.value);
+                if(!isNaN(val) && val > 0) total += val;
+            });
+            document.getElementById('budget-allocated-display').innerText = window.formatCurrency(total);
+            document.getElementById('budget-allocated').value = total;
+        };
+
         window.deleteBudgetEntry = async (id) => {
             window.budgets = window.budgets.filter(b => b.id !== id);
             localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
@@ -2645,7 +2718,10 @@
             document.getElementById('budget-id').value = '';
             document.getElementById('budget-modal-title').innerText = 'Add Budget Entry';
             document.getElementById('budget-month').value = window.getCurrentMonthStr();
-            document.getElementById('budget-type').value = 'UGC Rewards'; 
+            document.getElementById('budget-type').value = 'Campaign Expenses';
+
+            const container = document.getElementById('budget-items-container');
+            container.innerHTML = '';
             
             if (id) {
                 const b = window.budgets.find(x => x.id === id);
@@ -2656,10 +2732,20 @@
                     document.getElementById('budget-name').value = b.name;
                     if(b.type) document.getElementById('budget-type').value = b.type;
                     document.getElementById('budget-allocated').value = b.allocated;
-                    document.getElementById('budget-spent').value = b.spent;
+
+                    if (b.items && b.items.length > 0) {
+                        b.items.forEach(it => window.addBudgetItem(it));
+                    } else {
+                        // Fallback for old entries without items but with an allocated budget
+                        window.addBudgetItem({ type: 'UGC Rewards', amount: b.allocated || 0 });
+                    }
+
                     document.getElementById('budget-modal-title').innerText = 'Edit Budget Entry';
                 }
+            } else {
+                window.addBudgetItem(); // add one empty item by default
             }
+            window.calcBudgetTotal();
             
             document.getElementById('budget-modal').classList.remove('hidden');
         };
