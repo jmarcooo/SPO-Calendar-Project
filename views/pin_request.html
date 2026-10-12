@@ -31,6 +31,12 @@
                 <option value="Perya Host">Perya Host</option>
                 <option value="Content Writer">Content Writer</option>
             </select>
+            <select id="pin-status-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                <option value="All">All Pin Statuses</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Live">Live</option>
+                <option value="Ended">Ended</option>
+            </select>
             <button onclick="window.exportPinRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">
                 <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
             </button>
@@ -43,8 +49,14 @@
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
                             Campaign/Game Name
                         </th>
-                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group whitespace-nowrap">
-                            Created Date
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Post Category
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            Pin Start Time
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                            Pin End Time
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Priority
@@ -53,10 +65,10 @@
                             Owner
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Post Position
+                            Pin Position
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
+                            Pin Status
                         </th>
                         <th scope="col" class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
                             Action
@@ -86,10 +98,13 @@
                     <div class="w-full sm:w-auto">
                         <label class="block text-xs font-medium text-gray-500 mb-1">Duration</label>
                         <select id="pr-assist-duration" class="block w-full border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
-                            <option value="24">24 hours (1 Day)</option>
-                            <option value="48">48 hours (2 Days)</option>
-                            <option value="72">72 hours (3 Days)</option>
-                            <option value="96">96 hours (4 Days)</option>
+                            <option value="24">1 Day</option>
+                            <option value="48">2 Days</option>
+                            <option value="72">3 Days</option>
+                            <option value="96">4 Days</option>
+                            <option value="120">5 Days</option>
+                            <option value="144">6 Days</option>
+                            <option value="168">7 Days</option>
                         </select>
                     </div>
                     <button onclick="window.checkPRSlotAvailability()" class="w-full sm:w-auto px-4 py-1.5 border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 font-medium rounded-lg text-sm shadow-sm transition-colors">
