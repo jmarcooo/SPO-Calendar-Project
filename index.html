@@ -2407,10 +2407,10 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${(function(){
                             if(assigns.length === 0) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
-                            return '<div class="flex items-center space-x-2 -space-x-1">' + assigns.map(a => {
+                            return '<div class="flex items-center space-x-3"><div class="flex items-center -space-x-1">' + assigns.map(a => {
                                 let init = a.charAt(0).toUpperCase();
                                 return '<div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
-                            }).join('') + '<span class="text-sm text-gray-900 ml-3">' + assigns.join(', ') + '</span></div>';
+                            }).join('') + '</div><span class="text-sm text-gray-900">' + assigns.join(', ') + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -4867,15 +4867,74 @@
 
         window.completeSMSRequest = function(id) {
             const req = window.smsRequests.find(r => r.id === id);
-            if (req) {
-                req.requestStatus = 'Completed';
-                window.syncSMSRequestSilent(req);
-                window.renderSMSTable();
+            if (!req) return;
+            document.getElementById('sms-complete-form').reset();
+            document.getElementById('smsc-id').value = id;
+            document.getElementById('smsc-rate').value = '0.00%';
+            document.getElementById('sms-complete-modal').classList.remove('hidden');
+        };
+
+        window.closeSMSCompleteModal = function() {
+            const modal = document.getElementById('sms-complete-modal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.calcSMSRate = () => {
+            const clicked = parseInt(document.getElementById('smsc-clicked').value) || 0;
+            const recipients = parseInt(document.getElementById('smsc-recipients').value) || 0;
+            const rateEl = document.getElementById('smsc-rate');
+            if (recipients > 0) {
+                const rate = (clicked / recipients) * 100;
+                rateEl.value = rate.toFixed(2) + '%';
+            } else {
+                rateEl.value = '0.00%';
+            }
+        };
+
+        setTimeout(() => {
+            const cEl = document.getElementById('smsc-clicked');
+            const rEl = document.getElementById('smsc-recipients');
+            if(cEl) cEl.addEventListener('input', window.calcSMSRate);
+            if(rEl) rEl.addEventListener('input', window.calcSMSRate);
+        }, 100);
+
+        window.submitSMSComplete = async function() {
+            const form = document.getElementById('sms-complete-form');
+            if (!form.reportValidity()) return;
+
+            const id = document.getElementById('smsc-id').value;
+            const req = window.smsRequests.find(r => r.id === id);
+            if (!req) return;
+
+            req.usersClicked = parseInt(document.getElementById('smsc-clicked').value) || 0;
+            req.actualRecipients = parseInt(document.getElementById('smsc-recipients').value) || 0;
+            req.actualBudget = parseFloat(document.getElementById('smsc-actual-budget').value) || 0;
+            req.loginRate = document.getElementById('smsc-rate').value;
+
+            req.requestStatus = 'Completed';
+
+            const btn = document.querySelector('#sms-complete-form button[type="submit"]');
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+                btn.disabled = true;
+            }
+
+            try {
+                await window.syncSMSRequestSilent(req);
+                window.showToast("SMS Request marked as completed", "success");
+                window.closeSMSCompleteModal();
+                if(window.renderSMSTable) window.renderSMSTable();
 
                 const detailsModal = document.getElementById('sms-details-modal');
-                if (!detailsModal.classList.contains('hidden') && document.getElementById('sms-details-id').value === id) {
-                    document.getElementById('sms-details-request-status').innerText = 'Completed';
-                    document.getElementById('sms-details-request-status').className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                if (detailsModal && !detailsModal.classList.contains('hidden') && document.getElementById('sms-details-id').value === id) {
+                    window.openSMSDetails(id); // Reload details modal to show new metrics
+                }
+            } catch(e) {
+                window.showToast("Error saving: " + e.message, "error");
+            } finally {
+                if (btn) {
+                    btn.innerHTML = 'Confirm Completion';
+                    btn.disabled = false;
                 }
             }
         };
@@ -6353,6 +6412,46 @@ html += `
                 <div class="flex justify-end pt-4 space-x-3 border-t border-slate-100">
                     <button type="button" onclick="window.closeSMSModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
                     <button type="submit" class="px-4 py-2 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors shadow-indigo-200">Save Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- SMS Complete Modal -->
+    <div id="sms-complete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative mx-auto p-6 border w-full max-w-md shadow-2xl rounded-2xl bg-white m-4">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-gray-900">Complete SMS Request</h3>
+                <button onclick="window.closeSMSCompleteModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
+            </div>
+            <form id="sms-complete-form" onsubmit="event.preventDefault(); window.submitSMSComplete();" class="space-y-4">
+                <input type="hidden" id="smsc-id">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Number of Users Clicked <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-clicked" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Actual Number Of Recipients <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-recipients" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Login Rate</label>
+                    <input type="text" id="smsc-rate" readonly class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-indigo-600 font-bold focus:outline-none cursor-not-allowed">
+                    <p class="text-[10px] text-gray-500 mt-1">Automatically computed: (Users Clicked / Recipients) * 100</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Actual Budget Used (PHP) <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-actual-budget" min="0" step="0.01" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-5 border-t border-slate-100 mt-6">
+                    <button type="button" onclick="window.closeSMSCompleteModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">Confirm Completion</button>
                 </div>
             </form>
         </div>
