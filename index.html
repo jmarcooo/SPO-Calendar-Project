@@ -46,7 +46,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fa-solid fa-search text-gray-400"></i>
                 </div>
-                <input type="text" id="global-search" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-slate-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                <input type="text" id="global-search" oninput="window.handleGlobalSearch()" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-slate-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
             </div>
         </div>
         <div class="flex items-center space-x-3">
@@ -1866,7 +1866,39 @@
             window.showToast('Points of Contact saved successfully.', 'success');
         };
 
-        window.switchView = (viewName) => {
+
+        window.handleGlobalSearch = () => {
+            const searchInput = document.getElementById('global-search');
+            if (!searchInput) return;
+            const val = searchInput.value;
+
+            // Apply search to the current view if applicable
+            if (window.currentView === 'tasks' && window.setSearch) {
+                window.setSearch(val);
+            } else if (window.currentView === 'budget' && window.setBudgetSearch) {
+                window.setBudgetSearch(val);
+            } else if (window.currentView === 'daily_task') {
+                const innerInput = document.getElementById('daily-search-input');
+                if (innerInput) { innerInput.value = val; window.renderDailyTasksTable(); }
+            } else if (window.currentView === 'pin_request') {
+                const innerInput = document.getElementById('pin-search-input');
+                if (innerInput) { innerInput.value = val; window.renderPinRequestsTable(); }
+            } else if (window.currentView === 'sms') {
+                const innerInput = document.getElementById('sms-search-input');
+                if (innerInput) { innerInput.value = val; window.renderSMSTable(); }
+            } else if (window.currentView === 'content_writer') {
+                const innerInput = document.getElementById('cw-search-input');
+                if (innerInput) { innerInput.value = val; window.renderCWRequestsTable(); }
+            } else if (window.currentView === 'prize_distribution') {
+                const innerInput = document.getElementById('pd-search-input');
+                if (innerInput) { innerInput.value = val; window.renderPDRequestsTable(); }
+            } else if (window.currentView === 'campaign') {
+                const innerInput = document.getElementById('campaign-search-input');
+                if (innerInput) { innerInput.value = val; window.renderCampaignTable(); }
+            }
+        };
+
+window.switchView = (viewName) => {
             window.currentView = viewName;
             localStorage.setItem('spo_active_view', viewName);
             const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
