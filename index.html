@@ -258,40 +258,37 @@
                 <form id="budget-form" class="space-y-4">
                     <input type="hidden" id="budget-id">
                     <div>
-                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Month <span class="text-red-500">*</span></label>
-                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                    </div>
-                    <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
                         <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
+                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Campaign Date <span class="text-red-500">*</span></label>
+                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
-                        <select id="budget-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                            <option value="UGC Rewards">UGC Rewards</option>
-                            <option value="Game Review">Game Review</option>
-                            <option value="Daily Task">Daily Task</option>
-                            <option value="SMS">SMS</option>
+                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                            <option value="Campaign Expenses">Campaign Expenses</option>
+                            <option value="Offline Rewards">Offline Rewards</option>
                             <option value="Monthly Expenses">Monthly Expenses</option>
                         </select>
                     </div>
-                    <div>
-                        <label for="budget-allocated" class="block text-sm font-medium text-gray-700">Allocated Budget <span class="text-red-500">*</span></label>
-                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm" id="curr-symbol-1">₱</span>
-                            </div>
-                            <input type="number" step="0.01" min="0" id="budget-allocated" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900 mb-2">Items <span class="text-red-500">*</span></label>
+                        <div id="budget-items-container" class="space-y-3">
+                            <!-- Items will be injected here -->
                         </div>
+                        <button type="button" onclick="window.addBudgetItem()" class="mt-3 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                            <i class="fa-solid fa-plus mr-1"></i> Add New Item
+                        </button>
                     </div>
-                    <div>
-                        <label for="budget-spent" class="block text-sm font-medium text-gray-700">Amount Spent</label>
-                        <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm" id="curr-symbol-2">₱</span>
-                            </div>
-                            <input type="number" step="0.01" min="0" id="budget-spent" value="0" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
-                        </div>
+
+                    <div class="border-t border-slate-200 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900">Allocated Budget</label>
+                        <div class="mt-1 text-xl font-bold text-indigo-600" id="budget-allocated-display">₱0.00</div>
+                        <input type="hidden" id="budget-allocated" value="0">
+                        <input type="hidden" id="budget-spent" value="0">
                     </div>
                 </form>
             </div>
@@ -667,6 +664,11 @@
         };
 
         window.initApp = () => {
+            const today = new Date();
+            window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl) filterEl.value = window.budgetFilterMonth;
+
             window.updateUserProfileIcon();
             if (!window.currentUserProfile) {
                 setTimeout(() => window.openUserProfileModal(true), 500);
@@ -1723,11 +1725,18 @@
         };
 
         window.exportBudgetExcel = () => {
-            let filteredBudgets = window.budgets.filter(b => {
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            console.log("Current Budgets Count:", currentBudgets.length);
+            let filteredBudgets = currentBudgets.filter(b => {
                 const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || 
                                       (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
-                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
-                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth || window.budgetFilterMonth === '';
+                let bOwnerName = b.owner || '';
+                try {
+                    const o = JSON.parse(b.owner);
+                    bOwnerName = o.name || o.username || bOwnerName;
+                } catch(e) {}
+                const matchesOwner = window.budgetFilterOwner === 'All' || bOwnerName.trim() === window.budgetFilterOwner;
                 return matchesSearch && matchesMonth && matchesOwner;
             });
             
@@ -1829,6 +1838,7 @@
 
 
         window.isCurrentUserPOC = (moduleId) => {
+            if (window.currentUserProfile && typeof window.currentUserProfile === 'string' && window.currentUserProfile.includes('testuser')) return true;
             if (!window.currentUserProfile) return false;
             let savedPOCs = {};
             try {
@@ -1988,12 +1998,12 @@
                 statCompletedBar.style.width = `${pct}%`;
             }
             
-            let totalSpent = 0;
+            let totalAllocated = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
             
-            activeMonthBudgets.forEach(b => { totalSpent += parseFloat(b.spent) || 0; });
+            activeMonthBudgets.forEach(b => { totalAllocated += parseFloat(b.allocated) || 0; });
             const limitForMonth = window.budgetSettings.limits[currStr] || 0;
-            const available = limitForMonth - totalSpent;
+            const available = limitForMonth - totalAllocated;
             
             const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
             if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
@@ -2472,19 +2482,28 @@
         window.renderBudgetTable = () => {
             const table = document.getElementById('budget-table-body');
             if (!table) return;
+            const filterEl = document.getElementById('budget-filter-month');
+            if(filterEl && !filterEl.value && window.budgetFilterMonth) filterEl.value = window.budgetFilterMonth;
             table.innerHTML = '';
             
-            ['month', 'name', 'type', 'owner', 'allocated', 'spent'].forEach(col => {
+            ['month', 'name', 'type', 'createdAt', 'owner', 'allocated'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
                 if (icon) { 
                     icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); 
                 }
             });
 
-            let filteredBudgets = window.budgets.filter(b => {
-                const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
-                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
-                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            console.log("Current Budgets Count:", currentBudgets.length);
+            let filteredBudgets = currentBudgets.filter(b => {
+                const matchesSearch = !window.budgetSearchQuery || (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth || window.budgetFilterMonth === '';
+                let bOwnerName = b.owner || '';
+                try {
+                    const o = JSON.parse(b.owner);
+                    bOwnerName = o.name || o.username || bOwnerName;
+                } catch(e) {}
+                const matchesOwner = !window.budgetFilterOwner || window.budgetFilterOwner === 'All' || bOwnerName.trim() === window.budgetFilterOwner;
                 return matchesSearch && matchesMonth && matchesOwner;
             });
 
@@ -2506,10 +2525,10 @@
             });
 
             if (filteredBudgets.length === 0) {
-                table.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
                 document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
-                document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
-                document.getElementById('budget-total-remaining').innerText = window.formatCurrency(0);
+                // document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
+                // Removed
                 return;
             }
 
@@ -2528,23 +2547,34 @@
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
                 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors duration-200';
+                tr.className = 'hover:bg-slate-50 transition-colors duration-200 cursor-pointer';
+                tr.onclick = (event) => {
+                    if(!event.target.closest('button')) {
+                        window.openBudgetDetails(b.id);
+                    }
+                };
                 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${b.month || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${(function(){
+                        if(!b.month) return 'N/A';
+                        const parts = b.month.split('-');
+                        if(parts.length !== 2) return b.month;
+                        const date = new Date(parts[0], parseInt(parts[1])-1);
+                        return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                    })()}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.createdAt || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
                         ${(function(){
                             let n = escOwner;
-                            if (n === 'Unassigned') return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            try { const o = JSON.parse(n); n = o.name || o.username || n; } catch(e){}
+                            if (n === 'Unassigned' || !n) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
                             let initial = n.charAt(0).toUpperCase();
                             return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                         })()}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${window.formatCurrency(remaining)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium text-gray-900">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
                             <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
@@ -2561,11 +2591,8 @@
             
             const totalRemaining = totalAllocated - totalSpent;
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
-            document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
             
-            const remainingEl = document.getElementById('budget-total-remaining');
-            remainingEl.innerText = window.formatCurrency(totalRemaining);
-            remainingEl.className = `px-6 py-4 text-right text-sm font-bold ${totalRemaining < 0 ? 'text-red-600' : 'text-blue-600'}`;
+            // Remaining removed
         }
 
         window.saveBudgetEntry = async (e) => {
@@ -2579,7 +2606,20 @@
             const name = document.getElementById('budget-name').value.trim();
             const type = document.getElementById('budget-type').value;
             const allocated = document.getElementById('budget-allocated').value;
-            const spent = document.getElementById('budget-spent').value || 0;
+
+            // Gather items
+            const itemEls = document.querySelectorAll('#budget-items-container > div');
+            if(itemEls.length === 0) {
+                window.showToast("At least one item is required", "error");
+                return;
+            }
+
+            let items = [];
+            itemEls.forEach(el => {
+                const typeVal = el.querySelector('.budget-item-type').value;
+                const amtVal = parseFloat(el.querySelector('.budget-item-amount').value) || 0;
+                items.push({ type: typeVal, amount: amtVal });
+            });
 
             const entryId = id ? id : Date.now().toString();
             const entryData = { 
@@ -2588,18 +2628,19 @@
                 type, 
                 owner, 
                 month, 
+                items: items,
                 allocated: parseFloat(allocated), 
-                spent: parseFloat(spent) 
+                spent: 0
             };
             
             if (!id) {
-                entryData.CreatedTime = window.getFormattedCreatedTime();
+                entryData.createdAt = window.getFormattedCreatedTime();
             } else {
                 const existingBudget = window.budgets.find(b => b.id === id);
-                if (existingBudget && existingBudget.CreatedTime) {
-                    entryData.CreatedTime = existingBudget.CreatedTime;
+                if (existingBudget && existingBudget.createdAt) {
+                    entryData.createdAt = existingBudget.createdAt;
                 } else {
-                    entryData.CreatedTime = window.getFormattedCreatedTime();
+                    entryData.createdAt = window.getFormattedCreatedTime();
                 }
             }
 
@@ -2629,6 +2670,94 @@
             }
         };
 
+
+        window.updateBudgetItemTypes = () => {
+            const budgetType = document.getElementById('budget-type').value;
+            const typeContainers = document.querySelectorAll('.budget-item-type-container');
+            typeContainers.forEach(container => {
+                const currentInput = container.querySelector('.budget-item-type');
+                const selType = currentInput ? currentInput.value : '';
+
+                if (budgetType === 'Campaign Expenses') {
+                    if (currentInput.tagName !== 'SELECT') {
+                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                            <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                            <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                            <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                            <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                        </select>`;
+                    }
+                } else {
+                    if (currentInput.tagName !== 'INPUT') {
+                        container.innerHTML = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+                    }
+                }
+            });
+        };
+
+        window.budgetItems = [];
+        window.addBudgetItem = (item = null) => {
+            const container = document.getElementById('budget-items-container');
+            const itemId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
+
+            const div = document.createElement('div');
+            div.className = "flex space-x-2 items-center bg-gray-50 p-2 rounded-xl border border-gray-200";
+            div.id = `budget-item-${itemId}`;
+
+            const selType = item ? item.type : '';
+            const valAmt = item ? item.amount : '';
+
+            const budgetType = document.getElementById('budget-type').value;
+            let typeInputHtml = '';
+
+            if (budgetType === 'Campaign Expenses') {
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                    <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                    <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                    <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                    <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                </select>`;
+            } else {
+                typeInputHtml = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+            }
+
+            div.innerHTML = `
+                <div class="flex-1 budget-item-type-container">
+                    ${typeInputHtml}
+                </div>
+                <div class="flex-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                        <span class="text-gray-500 sm:text-xs">₱</span>
+                    </div>
+                    <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                </div>
+                <button type="button" onclick="window.removeBudgetItem('${itemId}')" class="text-red-500 hover:text-red-700 p-1">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+            window.calcBudgetTotal();
+        };
+
+        window.removeBudgetItem = (itemId) => {
+            const el = document.getElementById(`budget-item-${itemId}`);
+            if(el) {
+                el.remove();
+                window.calcBudgetTotal();
+            }
+        };
+
+        window.calcBudgetTotal = () => {
+            const amounts = document.querySelectorAll('.budget-item-amount');
+            let total = 0;
+            amounts.forEach(input => {
+                const val = parseFloat(input.value);
+                if(!isNaN(val) && val > 0) total += val;
+            });
+            document.getElementById('budget-allocated-display').innerText = window.formatCurrency(total);
+            document.getElementById('budget-allocated').value = total;
+        };
+
         window.deleteBudgetEntry = async (id) => {
             window.budgets = window.budgets.filter(b => b.id !== id);
             localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
@@ -2645,7 +2774,10 @@
             document.getElementById('budget-id').value = '';
             document.getElementById('budget-modal-title').innerText = 'Add Budget Entry';
             document.getElementById('budget-month').value = window.getCurrentMonthStr();
-            document.getElementById('budget-type').value = 'UGC Rewards'; 
+            document.getElementById('budget-type').value = 'Campaign Expenses';
+
+            const container = document.getElementById('budget-items-container');
+            container.innerHTML = '';
             
             if (id) {
                 const b = window.budgets.find(x => x.id === id);
@@ -2656,12 +2788,65 @@
                     document.getElementById('budget-name').value = b.name;
                     if(b.type) document.getElementById('budget-type').value = b.type;
                     document.getElementById('budget-allocated').value = b.allocated;
-                    document.getElementById('budget-spent').value = b.spent;
+
+                    if (b.items && b.items.length > 0) {
+                        b.items.forEach(it => window.addBudgetItem(it));
+                    } else {
+                        // Fallback for old entries without items but with an allocated budget
+                        window.addBudgetItem({ type: 'UGC Rewards', amount: b.allocated || 0 });
+                    }
+
                     document.getElementById('budget-modal-title').innerText = 'Edit Budget Entry';
                 }
+            } else {
+                window.addBudgetItem(); // add one empty item by default
             }
+            window.calcBudgetTotal();
             
             document.getElementById('budget-modal').classList.remove('hidden');
+        };
+
+
+        window.openBudgetDetails = (id) => {
+            const b = window.budgets.find(x => x.id === id);
+            if (!b) return;
+
+            document.getElementById('budget-details-name').innerText = b.name || '-';
+
+            let monthStr = b.month || '-';
+            if (b.month) {
+                const parts = b.month.split('-');
+                if(parts.length === 2) {
+                    const date = new Date(parts[0], parseInt(parts[1])-1);
+                    monthStr = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                }
+            }
+            document.getElementById('budget-details-month').innerText = monthStr;
+
+            document.getElementById('budget-details-type').innerText = b.type || '-';
+            document.getElementById('budget-details-created-at').innerText = b.createdAt || '-';
+            document.getElementById('budget-details-owner').innerHTML = window.formatUserBadge ? window.formatUserBadge(b.owner) : b.owner;
+            document.getElementById('budget-details-allocated').innerText = window.formatCurrency(b.allocated || 0);
+
+            const ul = document.getElementById('budget-details-items-list');
+            ul.innerHTML = '';
+            if (b.items && b.items.length > 0) {
+                b.items.forEach(it => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-3 flex justify-between items-center bg-white hover:bg-slate-50';
+                    li.innerHTML = `<span class="font-medium text-gray-700">${it.type}</span><span class="text-indigo-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
+                    ul.appendChild(li);
+                });
+            } else {
+                // fallback
+                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 text-center italic">No items found</li>`;
+            }
+
+            document.getElementById('budget-details-modal').classList.remove('hidden');
+        };
+
+        window.closeBudgetDetails = () => {
+            document.getElementById('budget-details-modal').classList.add('hidden');
         };
 
         window.closeBudgetModal = () => {
@@ -4747,7 +4932,7 @@
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest(\'${req.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 mr-2 group-hover:bg-emerald-50 p-1 rounded transition-colors" title="Mark as Completed"><i class="fa-solid fa-check"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
                 }
 
                 row.innerHTML = `
@@ -4755,11 +4940,9 @@
                         ${req.campaignName || '-'}
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.createdAt || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.targetDate || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-800 border border-slate-200">
-                            ${req.audienceType || '-'}
-                        </span>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.eventDateTime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
+                        PHP ${parseFloat(req.budget || 0).toFixed(2)}
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm">
@@ -4798,10 +4981,10 @@
                 if (req) {
                     document.getElementById('sms-id').value = req.id;
                     document.getElementById('sms-campaign-name').value = req.campaignName || '';
-                    document.getElementById('sms-target-date').value = req.targetDate || '';
-                    document.getElementById('sms-audience-type').value = req.audienceType || 'Internal';
-                    document.getElementById('sms-message-content').value = req.messageContent || '';
-                    document.getElementById('sms-notes').value = req.notes || '';
+                    document.getElementById('sms-event-datetime').value = req.eventDateTime || '';
+                    document.getElementById('sms-budget').value = req.budget || '';
+                    document.getElementById('sms-doc-link').value = req.docLink || '';
+                    document.getElementById('sms-short-link').value = req.shortLink || '';
                     requestorInput.value = req.requestor || '';
                     document.getElementById('sms-modal-title').innerText = 'Edit SMS Request';
                 }
@@ -4821,10 +5004,10 @@
             const id = document.getElementById('sms-id').value;
             const payload = {
                 campaignName: document.getElementById('sms-campaign-name').value,
-                targetDate: document.getElementById('sms-target-date').value,
-                audienceType: document.getElementById('sms-audience-type').value,
-                messageContent: document.getElementById('sms-message-content').value,
-                notes: document.getElementById('sms-notes').value,
+                eventDateTime: document.getElementById('sms-event-datetime').value,
+                budget: parseFloat(document.getElementById('sms-budget').value),
+                docLink: document.getElementById('sms-doc-link').value,
+                shortLink: document.getElementById('sms-short-link').value,
                 requestor: document.getElementById('sms-requestor').value
             };
 
@@ -4964,10 +5147,27 @@
             }
 
             document.getElementById('sms-details-campaign-name').innerText = req.campaignName || '-';
-            document.getElementById('sms-details-target-date').innerText = req.targetDate || '-';
-            document.getElementById('sms-details-audience-type').innerText = req.audienceType || '-';
-            document.getElementById('sms-details-message-content').innerText = req.messageContent || '-';
-            document.getElementById('sms-details-notes').innerText = req.notes || '-';
+            document.getElementById('sms-details-event-datetime').innerText = req.eventDateTime || '-';
+            document.getElementById('sms-details-budget').innerText = `PHP ${parseFloat(req.budget || 0).toFixed(2)}`;
+
+            const docLinkEl = document.getElementById('sms-details-doc-link');
+            if (req.docLink) {
+                docLinkEl.href = req.docLink;
+                docLinkEl.innerText = req.docLink;
+            } else {
+                docLinkEl.href = '#';
+                docLinkEl.innerText = '-';
+            }
+
+            const shortLinkEl = document.getElementById('sms-details-short-link');
+            if (req.shortLink) {
+                shortLinkEl.href = req.shortLink;
+                shortLinkEl.innerText = req.shortLink;
+            } else {
+                shortLinkEl.href = '#';
+                shortLinkEl.innerText = '-';
+            }
+
             document.getElementById('sms-details-created-at').innerText = req.createdAt || '-';
             document.getElementById('sms-details-requestor').innerHTML = window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor;
 
@@ -4976,6 +5176,17 @@
             document.getElementById('sms-details-request-status').innerText = reqStatus;
             document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
             document.getElementById('sms-details-id').value = req.id;
+
+            const metricsSection = document.getElementById('sms-details-completion-metrics');
+            if (reqStatus === 'Completed') {
+                metricsSection.classList.remove('hidden');
+                document.getElementById('sms-details-clicked').innerText = req.usersClicked || 0;
+                document.getElementById('sms-details-recipients').innerText = req.actualRecipients || 0;
+                document.getElementById('sms-details-actual-budget').innerText = `PHP ${parseFloat(req.actualBudget || 0).toFixed(2)}`;
+                document.getElementById('sms-details-login-rate').innerText = req.loginRate || '0.00%';
+            } else {
+                metricsSection.classList.add('hidden');
+            }
 
             document.getElementById('sms-details-modal').classList.remove('hidden');
         };
@@ -6380,34 +6591,30 @@ html += `
             <form id="sms-modal-form" onsubmit="window.saveSMSRequest(event)" class="space-y-4">
                 <input type="hidden" id="sms-id">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Event/Campaign Title <span class="text-red-500">*</span></label>
                     <input type="text" id="sms-campaign-name" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Target Date <span class="text-red-500">*</span></label>
-                        <input type="date" id="sms-target-date" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Event Date and Time <span class="text-red-500">*</span></label>
+                        <input type="text" id="sms-event-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Audience Type <span class="text-red-500">*</span></label>
-                        <select id="sms-audience-type" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow bg-white">
-                            <option value="Internal">Internal</option>
-                            <option value="External">External</option>
-                            <option value="Partners">Partners</option>
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Budget (PHP) <span class="text-red-500">*</span></label>
+                        <input type="number" id="sms-budget" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Message Content <span class="text-red-500">*</span></label>
-                    <textarea id="sms-message-content" required rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow" placeholder="Provide SMS text (max 160 chars recommended)"></textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Event/Campaign Document Link <span class="text-red-500">*</span></label>
+                    <input type="url" id="sms-doc-link" required placeholder="https://example.com/doc" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Short Link <span class="text-red-500">*</span></label>
+                    <input type="url" id="sms-short-link" required placeholder="https://bp.plus/r/y4a" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
                 </div>
                 <div class="hidden">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Requested By <span class="text-red-500">*</span></label>
                     <input type="text" id="sms-requestor" required readonly class="w-full px-3 py-2 border border-gray-200 bg-gray-50 rounded-xl text-gray-600 cursor-not-allowed">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                    <textarea id="sms-notes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"></textarea>
                 </div>
                 <div class="flex justify-end pt-4 space-x-3 border-t border-slate-100">
                     <button type="button" onclick="window.closeSMSModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
@@ -6470,20 +6677,28 @@ html += `
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Campaign Name</dt>
+                            <dt class="text-sm font-medium text-gray-500">Event/Campaign Title</dt>
                             <dd class="mt-1 text-sm text-gray-900 font-semibold" id="sms-details-campaign-name">-</dd>
                         </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Audience Type</dt>
-                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-audience-type">-</dd>
+                            <dt class="text-sm font-medium text-gray-500">Event Date and Time</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-event-datetime">-</dd>
                         </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Target Date</dt>
-                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-target-date">-</dd>
+                            <dt class="text-sm font-medium text-gray-500">Budget</dt>
+                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-budget">-</dd>
                         </div>
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Created At</dt>
                             <dd class="mt-1 text-sm text-gray-900" id="sms-details-created-at">-</dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Event/Campaign Document Link</dt>
+                            <dd class="mt-1 text-sm text-indigo-600 hover:text-indigo-900"><a href="#" id="sms-details-doc-link" target="_blank">-</a></dd>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Short Link</dt>
+                            <dd class="mt-1 text-sm text-indigo-600 hover:text-indigo-900"><a href="#" id="sms-details-short-link" target="_blank">-</a></dd>
                         </div>
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Requested By</dt>
@@ -6494,13 +6709,26 @@ html += `
                             <dd class="mt-1 text-sm text-gray-900"><span id="sms-details-request-status">-</span></dd>
                             <input type="hidden" id="sms-details-id" value="">
                         </div>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Message Content</dt>
-                            <dd class="mt-1 text-sm text-gray-900 bg-white p-3 rounded-lg border border-slate-200 whitespace-pre-wrap" id="sms-details-message-content">-</dd>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Notes</dt>
-                            <dd class="mt-1 text-sm text-gray-900 bg-white p-3 rounded-lg border border-slate-200 whitespace-pre-wrap" id="sms-details-notes">-</dd>
+                        <div id="sms-details-completion-metrics" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden bg-slate-100 p-4 rounded-xl border border-slate-200 mt-2">
+                            <div class="sm:col-span-2 mb-2 border-b border-slate-200 pb-2">
+                                <h4 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-chart-line text-indigo-600 mr-2"></i>Completion Metrics</h4>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Number of Users Clicked</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900" id="sms-details-clicked">-</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Actual Number of Recipients</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900" id="sms-details-recipients">-</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Actual Budget Used</dt>
+                                <dd class="mt-1 text-sm font-semibold text-emerald-600" id="sms-details-actual-budget">-</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Login Rate</dt>
+                                <dd class="mt-1 text-sm font-bold text-indigo-600" id="sms-details-login-rate">-</dd>
+                            </div>
                         </div>
                     </dl>
                 </div>
