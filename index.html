@@ -1723,11 +1723,18 @@
         };
 
         window.exportBudgetExcel = () => {
-            let filteredBudgets = window.budgets.filter(b => {
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            console.log("Current Budgets Count:", currentBudgets.length);
+            let filteredBudgets = currentBudgets.filter(b => {
                 const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || 
                                       (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
-                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
-                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth || window.budgetFilterMonth === '';
+                let bOwnerName = b.owner || '';
+                try {
+                    const o = JSON.parse(b.owner);
+                    bOwnerName = o.name || o.username || bOwnerName;
+                } catch(e) {}
+                const matchesOwner = window.budgetFilterOwner === 'All' || bOwnerName.trim() === window.budgetFilterOwner;
                 return matchesSearch && matchesMonth && matchesOwner;
             });
             
@@ -1988,12 +1995,12 @@
                 statCompletedBar.style.width = `${pct}%`;
             }
             
-            let totalSpent = 0;
+            let totalAllocated = 0;
             const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
             
-            activeMonthBudgets.forEach(b => { totalSpent += parseFloat(b.spent) || 0; });
+            activeMonthBudgets.forEach(b => { totalAllocated += parseFloat(b.allocated) || 0; });
             const limitForMonth = window.budgetSettings.limits[currStr] || 0;
-            const available = limitForMonth - totalSpent;
+            const available = limitForMonth - totalAllocated;
             
             const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
             if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
@@ -2474,17 +2481,24 @@
             if (!table) return;
             table.innerHTML = '';
             
-            ['month', 'name', 'type', 'createdAt', 'owner', 'allocated', 'spent'].forEach(col => {
+            ['month', 'name', 'type', 'createdAt', 'owner', 'allocated'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
                 if (icon) { 
                     icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300'); 
                 }
             });
 
-            let filteredBudgets = window.budgets.filter(b => {
-                const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
-                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth;
-                const matchesOwner = window.budgetFilterOwner === 'All' || (b.owner || '').trim() === window.budgetFilterOwner;
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            console.log("Current Budgets Count:", currentBudgets.length);
+            let filteredBudgets = currentBudgets.filter(b => {
+                const matchesSearch = !window.budgetSearchQuery || (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
+                const matchesMonth = !window.budgetFilterMonth || b.month === window.budgetFilterMonth || window.budgetFilterMonth === '';
+                let bOwnerName = b.owner || '';
+                try {
+                    const o = JSON.parse(b.owner);
+                    bOwnerName = o.name || o.username || bOwnerName;
+                } catch(e) {}
+                const matchesOwner = !window.budgetFilterOwner || window.budgetFilterOwner === 'All' || bOwnerName.trim() === window.budgetFilterOwner;
                 return matchesSearch && matchesMonth && matchesOwner;
             });
 
@@ -2506,9 +2520,9 @@
             });
 
             if (filteredBudgets.length === 0) {
-                table.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
                 document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
-                document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
+                // document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
                 // Removed
                 return;
             }
@@ -2528,7 +2542,12 @@
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
                 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors duration-200';
+                tr.className = 'hover:bg-slate-50 transition-colors duration-200 cursor-pointer';
+                tr.onclick = (event) => {
+                    if(!event.target.closest('button')) {
+                        window.openBudgetDetails(b.id);
+                    }
+                };
                 
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${(function(){
@@ -2544,13 +2563,13 @@
                     <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
                         ${(function(){
                             let n = escOwner;
-                            if (n === 'Unassigned') return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            try { const o = JSON.parse(n); n = o.name || o.username || n; } catch(e){}
+                            if (n === 'Unassigned' || !n) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
                             let initial = n.charAt(0).toUpperCase();
                             return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                         })()}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(alloc)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">${window.formatCurrency(spent)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium text-gray-900">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
                             <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
@@ -2567,7 +2586,6 @@
             
             const totalRemaining = totalAllocated - totalSpent;
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
-            document.getElementById('budget-total-spent').innerText = window.formatCurrency(totalSpent);
             
             // Remaining removed
         }
@@ -2611,13 +2629,13 @@
             };
             
             if (!id) {
-                entryData.CreatedTime = window.getFormattedCreatedTime();
+                entryData.createdAt = window.getFormattedCreatedTime();
             } else {
                 const existingBudget = window.budgets.find(b => b.id === id);
-                if (existingBudget && existingBudget.CreatedTime) {
-                    entryData.CreatedTime = existingBudget.CreatedTime;
+                if (existingBudget && existingBudget.createdAt) {
+                    entryData.createdAt = existingBudget.createdAt;
                 } else {
-                    entryData.CreatedTime = window.getFormattedCreatedTime();
+                    entryData.createdAt = window.getFormattedCreatedTime();
                 }
             }
 
@@ -2748,6 +2766,49 @@
             window.calcBudgetTotal();
             
             document.getElementById('budget-modal').classList.remove('hidden');
+        };
+
+
+        window.openBudgetDetails = (id) => {
+            const b = window.budgets.find(x => x.id === id);
+            if (!b) return;
+
+            document.getElementById('budget-details-name').innerText = b.name || '-';
+
+            let monthStr = b.month || '-';
+            if (b.month) {
+                const parts = b.month.split('-');
+                if(parts.length === 2) {
+                    const date = new Date(parts[0], parseInt(parts[1])-1);
+                    monthStr = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+                }
+            }
+            document.getElementById('budget-details-month').innerText = monthStr;
+
+            document.getElementById('budget-details-type').innerText = b.type || '-';
+            document.getElementById('budget-details-created-at').innerText = b.createdAt || '-';
+            document.getElementById('budget-details-owner').innerHTML = window.formatUserBadge ? window.formatUserBadge(b.owner) : b.owner;
+            document.getElementById('budget-details-allocated').innerText = window.formatCurrency(b.allocated || 0);
+
+            const ul = document.getElementById('budget-details-items-list');
+            ul.innerHTML = '';
+            if (b.items && b.items.length > 0) {
+                b.items.forEach(it => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-3 flex justify-between items-center bg-white hover:bg-slate-50';
+                    li.innerHTML = `<span class="font-medium text-gray-700">${it.type}</span><span class="text-indigo-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
+                    ul.appendChild(li);
+                });
+            } else {
+                // fallback
+                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 text-center italic">No items found</li>`;
+            }
+
+            document.getElementById('budget-details-modal').classList.remove('hidden');
+        };
+
+        window.closeBudgetDetails = () => {
+            document.getElementById('budget-details-modal').classList.add('hidden');
         };
 
         window.closeBudgetModal = () => {
