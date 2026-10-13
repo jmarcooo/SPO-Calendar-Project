@@ -746,17 +746,7 @@
                 });
 
                 // AUTO MIGRATE: If cloud is empty but local storage has tasks, push them!
-                const localTasksStr = localStorage.getItem('spo_daily_tasks');
-                if (tempDailyTasks.length === 0 && localTasksStr && localTasksStr !== '[]') {
-                    const localData = JSON.parse(localTasksStr);
-                    if (localData.length > 0) {
-                        for (let t of localData) {
-                            setDoc(doc(db, "daily_tasks", t.id), t);
-                        }
-                        localStorage.removeItem('spo_daily_tasks');
-                        window.showToast("Local daily tasks synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_daily_tasks', JSON.stringify(tempDailyTasks));
                 window.dailyTasks = tempDailyTasks;
@@ -773,17 +763,7 @@
                     tempQuickLinks.push(doc.data());
                 });
 
-                const localLinksStr = localStorage.getItem('spo_quick_links');
-                if (tempQuickLinks.length === 0 && localLinksStr && localLinksStr !== '[]') {
-                    const localData = JSON.parse(localLinksStr);
-                    if (localData.length > 0) {
-                        for (let l of localData) {
-                            setDoc(doc(db, "quick_links", l.id), l);
-                        }
-                        localStorage.removeItem('spo_quick_links');
-                        window.showToast("Local quick links synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_quick_links', JSON.stringify(tempQuickLinks));
                 window.quickLinks = tempQuickLinks;
@@ -807,17 +787,7 @@
                     tempPdRequests.push(doc.data());
                 });
 
-                const localPdStr = localStorage.getItem('spo_pd_requests');
-                if (tempPdRequests.length === 0 && localPdStr && localPdStr !== '[]') {
-                    const localData = JSON.parse(localPdStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "pd_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_pd_requests');
-                        window.showToast("Local PD requests synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_pd_requests', JSON.stringify(tempPdRequests));
                 window.pdRequests = tempPdRequests;
@@ -834,17 +804,7 @@
                     tempCwRequests.push(doc.data());
                 });
 
-                const localCwStr = localStorage.getItem('spo_cw_requests');
-                if (tempCwRequests.length === 0 && localCwStr && localCwStr !== '[]') {
-                    const localData = JSON.parse(localCwStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "cw_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_cw_requests');
-                        window.showToast("Local CW requests synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_cw_requests', JSON.stringify(tempCwRequests));
                 window.cwRequests = tempCwRequests;
@@ -861,17 +821,7 @@
                     tempPinRequests.push(doc.data());
                 });
 
-                const localPinsStr = localStorage.getItem('spo_pin_requests');
-                if (tempPinRequests.length === 0 && localPinsStr && localPinsStr !== '[]') {
-                    const localData = JSON.parse(localPinsStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "pin_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_pin_requests');
-                        window.showToast("Local pin requests synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_pin_requests', JSON.stringify(tempPinRequests));
                 window.pinRequests = tempPinRequests;
@@ -918,17 +868,7 @@
                 });
                 
                 // AUTO MIGRATE: If cloud is empty but local storage has events, push them!
-                const localStr = localStorage.getItem('spo_content_calendar_events');
-                if (tempEvents.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let e of localData) {
-                            setDoc(doc(db, "events", e.id), e); 
-                        }
-                        localStorage.removeItem('spo_content_calendar_events');
-                        window.showToast("Local events synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
                 window.events = tempEvents;
@@ -974,17 +914,7 @@
                 snapshot.forEach((doc) => tempBudgets.push(doc.data()));
                 
                 // AUTO MIGRATE
-                const localStr = localStorage.getItem('spo_budget_data');
-                if (tempBudgets.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let b of localData) {
-                            setDoc(doc(db, "budgets", b.id), b);
-                        }
-                        localStorage.removeItem('spo_budget_data');
-                        window.showToast("Local budgets synced to cloud!", "success");
-                    }
-                }
+
                 
                 localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
