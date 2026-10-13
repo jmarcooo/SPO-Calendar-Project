@@ -893,14 +893,7 @@
                 let tempSMS = [];
                 snapshot.forEach((doc) => { tempSMS.push(doc.data()); });
 
-                const localStr = localStorage.getItem('spo_sms_requests');
-                if (tempSMS.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) { setDoc(doc(db, "sms_requests", p.id), p); }
-                        localStorage.removeItem('spo_sms_requests');
-                    }
-                }
+                // CRITICAL FIX: The auto-migration fallback block has been deleted from here
 
                 localStorage.setItem('spo_sms_requests', JSON.stringify(tempSMS));
                 window.smsRequests = tempSMS;
