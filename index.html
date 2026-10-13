@@ -3608,7 +3608,7 @@ window.switchView = (viewName) => {
 
         window.deletePinRequest = async (id) => {
             if (confirm('Are you sure you want to delete this pin request?')) {
-                window.pinRequests = window.pinRequests.filter(p => p.id !== id);
+                window.pinRequests = window.pinRequests.filter(p => String(p.id) !== String(id));
                 localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
 
                 if (db) {
@@ -3694,8 +3694,8 @@ window.switchView = (viewName) => {
             window.pinRequests.forEach(p => {
                 let pinStatus = 'Ended'; // default if missing dates
                 if (p.startDate && p.endDate) {
-                    const sParts = p.startDate.split(/[- :]/);
-                    const eParts = p.endDate.split(/[- :]/);
+                    const sParts = p.startDate.split(/[- :T]/);
+                    const eParts = p.endDate.split(/[- :T]/);
                     if (sParts.length >= 3 && eParts.length >= 3) {
                         const sDate = new Date(Date.UTC(sParts[0], sParts[1]-1, sParts[2], sParts[3]||0, sParts[4]||0, sParts[5]||0));
                         const eDate = new Date(Date.UTC(eParts[0], eParts[1]-1, eParts[2], eParts[3]||0, eParts[4]||0, eParts[5]||0));
@@ -3879,8 +3879,8 @@ window.switchView = (viewName) => {
                     if (!req.startDate || !req.endDate) return;
                     // Format: YYYY-MM-DD HH:MM:SS
                     // Since it's UTC conceptually, we parse it manually
-                    const sParts = req.startDate.split(/[- :]/);
-                    const eParts = req.endDate.split(/[- :]/);
+                    const sParts = req.startDate.split(/[- :T]/);
+                    const eParts = req.endDate.split(/[- :T]/);
 
                     if (sParts.length < 3 || eParts.length < 3) return;
 
@@ -4093,8 +4093,8 @@ window.switchView = (viewName) => {
                     if (r.page === parts[0] && r.position === parts[1] && r.sort === parts[2]) {
                         if (!r.startDate || !r.endDate) return false;
 
-                        const rsParts = r.startDate.split(/[- :]/);
-                        const reParts = r.endDate.split(/[- :]/);
+                        const rsParts = r.startDate.split(/[- :T]/);
+                        const reParts = r.endDate.split(/[- :T]/);
                         if (rsParts.length < 3 || reParts.length < 3) return false;
 
                         const rsDate = new Date(Date.UTC(rsParts[0], rsParts[1]-1, rsParts[2], rsParts[3]||0, rsParts[4]||0, rsParts[5]||0));
@@ -5221,7 +5221,7 @@ window.switchView = (viewName) => {
 
         window.deleteCWRequest = async (id) => {
             if (confirm('Are you sure you want to delete this content writer request?')) {
-                window.cwRequests = window.cwRequests.filter(p => p.id !== id);
+                window.cwRequests = window.cwRequests.filter(p => String(p.id) !== String(id));
                 localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
 
                 if (db) {
@@ -5385,7 +5385,7 @@ window.switchView = (viewName) => {
 
         window.deleteSMSRequest = async function(id) {
             if (confirm("Are you sure you want to delete this SMS Request?")) {
-                window.smsRequests = window.smsRequests.filter(r => r.id !== id);
+                window.smsRequests = window.smsRequests.filter(r => String(r.id) !== String(id));
                 localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
 
                 if (db) {
@@ -5756,7 +5756,7 @@ html += `
 
         window.deletePDRequest = async (id) => {
             if (confirm('Are you sure you want to delete this prize distribution request?')) {
-                window.pdRequests = window.pdRequests.filter(p => p.id !== id);
+                window.pdRequests = window.pdRequests.filter(p => String(p.id) !== String(id));
                 localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
 
                 if (db) {
