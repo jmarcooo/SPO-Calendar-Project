@@ -2318,7 +2318,19 @@ window.switchView = (viewName) => {
 
             let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
             monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
-            monthlyEvents.sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+            // sort by earliest to latest but grayed out completed past events and put those in bottom causing the current and only running event to be on top
+            // Completed tasks have evt.status === 'Done'
+            // We should put 'Done' at the bottom.
+            monthlyEvents.sort((a, b) => {
+                const aDone = a.status === 'Done' ? 1 : 0;
+                const bDone = b.status === 'Done' ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone; // put Done at the bottom
+
+                // then sort by earliest to latest
+                if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
+                return a.endDate.localeCompare(b.endDate);
+            });
 
             const ongoingCountEl = document.getElementById('ongoing-count');
             if (ongoingCountEl) ongoingCountEl.innerText = monthlyEvents.length;
