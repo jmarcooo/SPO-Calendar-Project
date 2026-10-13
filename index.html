@@ -693,37 +693,37 @@
 
 
             // Try loading local data immediately so UI isn't blank
-            const localEventsStr = localStorage.getItem('spo_content_calendar_events');
+            const localEventsStr = localStorage.getItem('spo_events_v2');
             if (localEventsStr) {
                 try {
                     window.events = JSON.parse(localEventsStr);
                 } catch(e) {}
             }
-            const localDailyTasksStr = localStorage.getItem('spo_daily_tasks');
+            const localDailyTasksStr = localStorage.getItem('spo_dt_v2');
             if (localDailyTasksStr) {
                 try {
                     window.dailyTasks = JSON.parse(localDailyTasksStr);
                 } catch(e) {}
             }
-            const localQuickLinksStr = localStorage.getItem('spo_quick_links');
+            const localQuickLinksStr = localStorage.getItem('spo_ql_v2');
             if (localQuickLinksStr) {
                 try {
                     window.quickLinks = JSON.parse(localQuickLinksStr);
                 } catch(e) {}
             }
-            const localPinRequestsStr = localStorage.getItem('spo_pin_requests');
+            const localPinRequestsStr = localStorage.getItem('spo_pin_v2');
             if (localPinRequestsStr) {
                 try {
                     window.pinRequests = JSON.parse(localPinRequestsStr);
                 } catch(e) {}
             }
-            const localCwRequestsStr = localStorage.getItem('spo_cw_requests');
+            const localCwRequestsStr = localStorage.getItem('spo_cw_v2');
             if (localCwRequestsStr) {
                 try {
                     window.cwRequests = JSON.parse(localCwRequestsStr);
                 } catch(e) {}
             }
-            const localPdRequestsStr = localStorage.getItem('spo_pd_requests');
+            const localPdRequestsStr = localStorage.getItem('spo_pd_v2');
             if (localPdRequestsStr) {
                 try {
                     window.pdRequests = JSON.parse(localPdRequestsStr);
@@ -739,7 +739,7 @@
                 return;
             }
 
-            onSnapshot(collection(db, "daily_tasks"), (snapshot) => {
+            onSnapshot(collection(db, "daily_tasks_v2"), (snapshot) => {
                 let tempDailyTasks = [];
                 snapshot.forEach((doc) => {
                     tempDailyTasks.push(doc.data());
@@ -748,7 +748,7 @@
                 // AUTO MIGRATE: If cloud is empty but local storage has tasks, push them!
 
 
-                localStorage.setItem('spo_daily_tasks', JSON.stringify(tempDailyTasks));
+                localStorage.setItem('spo_dt_v2', JSON.stringify(tempDailyTasks));
                 window.dailyTasks = tempDailyTasks;
                 if (window.currentView === 'daily_task' && window.renderDailyTasksTable) {
                     window.renderDailyTasksTable();
@@ -757,7 +757,7 @@
                 console.error("Daily Tasks Error:", error);
             });
 
-            onSnapshot(collection(db, "quick_links"), (snapshot) => {
+            onSnapshot(collection(db, "quick_links_v2"), (snapshot) => {
                 let tempQuickLinks = [];
                 snapshot.forEach((doc) => {
                     tempQuickLinks.push(doc.data());
@@ -765,7 +765,7 @@
 
 
 
-                localStorage.setItem('spo_quick_links', JSON.stringify(tempQuickLinks));
+                localStorage.setItem('spo_ql_v2', JSON.stringify(tempQuickLinks));
                 window.quickLinks = tempQuickLinks;
                 window.renderQuickLinks();
             }, (error) => {
@@ -781,7 +781,7 @@
                 window.renderNotificationsDropdown();
             });
 
-            onSnapshot(collection(db, "pd_requests"), (snapshot) => {
+            onSnapshot(collection(db, "pd_requests_v2"), (snapshot) => {
                 let tempPdRequests = [];
                 snapshot.forEach((doc) => {
                     tempPdRequests.push(doc.data());
@@ -789,7 +789,7 @@
 
 
 
-                localStorage.setItem('spo_pd_requests', JSON.stringify(tempPdRequests));
+                localStorage.setItem('spo_pd_v2', JSON.stringify(tempPdRequests));
                 window.pdRequests = tempPdRequests;
                 if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
                     window.renderPDRequestsTable();
@@ -798,7 +798,7 @@
                 console.error("PD Requests Error:", error);
             });
 
-            onSnapshot(collection(db, "cw_requests"), (snapshot) => {
+            onSnapshot(collection(db, "cw_requests_v2"), (snapshot) => {
                 let tempCwRequests = [];
                 snapshot.forEach((doc) => {
                     tempCwRequests.push(doc.data());
@@ -806,7 +806,7 @@
 
 
 
-                localStorage.setItem('spo_cw_requests', JSON.stringify(tempCwRequests));
+                localStorage.setItem('spo_cw_v2', JSON.stringify(tempCwRequests));
                 window.cwRequests = tempCwRequests;
                 if (window.currentView === 'content_writer' && window.renderCWRequestsTable) {
                     window.renderCWRequestsTable();
@@ -815,7 +815,7 @@
                 console.error("CW Requests Error:", error);
             });
 
-            onSnapshot(collection(db, "pin_requests"), (snapshot) => {
+            onSnapshot(collection(db, "pin_requests_v2"), (snapshot) => {
                 let tempPinRequests = [];
                 snapshot.forEach((doc) => {
                     tempPinRequests.push(doc.data());
@@ -823,7 +823,7 @@
 
 
 
-                localStorage.setItem('spo_pin_requests', JSON.stringify(tempPinRequests));
+                localStorage.setItem('spo_pin_v2', JSON.stringify(tempPinRequests));
                 window.pinRequests = tempPinRequests;
                 if (window.currentView === 'pin_request' && window.renderPinRequestsTable) {
                     window.renderPinRequestsTable();
@@ -852,7 +852,7 @@
             });
 
 
-            onSnapshot(collection(db, "events"), (snapshot) => {
+            onSnapshot(collection(db, "events_v2"), (snapshot) => {
                 let tempEvents = [];
                 snapshot.forEach((doc) => {
                     let e = doc.data();
@@ -870,7 +870,7 @@
                 // AUTO MIGRATE: If cloud is empty but local storage has events, push them!
 
 
-                localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
+                localStorage.setItem('spo_events_v2', JSON.stringify(tempEvents));
                 window.events = tempEvents;
                 window.renderUI();
                 window.updateCampaignDropdown();
@@ -889,27 +889,27 @@
             });
 
 
-            onSnapshot(collection(db, "sms_requests"), (snapshot) => {
+            onSnapshot(collection(db, "sms_requests_v2"), (snapshot) => {
                 let tempSMS = [];
                 snapshot.forEach((doc) => { tempSMS.push(doc.data()); });
 
                 // CRITICAL FIX: The auto-migration fallback block has been deleted from here
 
-                localStorage.setItem('spo_sms_requests', JSON.stringify(tempSMS));
+                localStorage.setItem('spo_sms_v2', JSON.stringify(tempSMS));
                 window.smsRequests = tempSMS;
                 if (window.currentView === 'sms' && window.renderSMSTable) {
                     window.renderSMSTable();
                 }
             });
 
-            onSnapshot(collection(db, "budgets"), (snapshot) => {
+            onSnapshot(collection(db, "budgets_v2"), (snapshot) => {
                 let tempBudgets = [];
                 snapshot.forEach((doc) => tempBudgets.push(doc.data()));
                 
                 // AUTO MIGRATE
 
                 
-                localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
+                localStorage.setItem('spo_budget_v2', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
                 window.renderUI();
@@ -1184,13 +1184,13 @@
                 return;
             }
 
-            const localEvents = JSON.parse(localStorage.getItem('spo_content_calendar_events') || '[]');
-            const localBudgets = JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            const localEvents = JSON.parse(localStorage.getItem('spo_events_v2') || '[]');
+            const localBudgets = JSON.parse(localStorage.getItem('spo_budget_v2') || '[]');
             const localSettings = JSON.parse(localStorage.getItem('spo_budget_settings') || '{}');
-            const localDailyTasks = JSON.parse(localStorage.getItem('spo_daily_tasks') || '[]');
-            const localPinRequests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
-            const localCwRequests = JSON.parse(localStorage.getItem('spo_cw_requests') || '[]');
-            const localPdRequests = JSON.parse(localStorage.getItem('spo_pd_requests') || '[]');
+            const localDailyTasks = JSON.parse(localStorage.getItem('spo_dt_v2') || '[]');
+            const localPinRequests = JSON.parse(localStorage.getItem('spo_pin_v2') || '[]');
+            const localCwRequests = JSON.parse(localStorage.getItem('spo_cw_v2') || '[]');
+            const localPdRequests = JSON.parse(localStorage.getItem('spo_pd_v2') || '[]');
 
             if (localEvents.length === 0 && localBudgets.length === 0 && localDailyTasks.length === 0 && localPinRequests.length === 0 && localCwRequests.length === 0 && localPdRequests.length === 0) {
                 window.showToast("No local data found on this computer to migrate.", "info");
@@ -1200,19 +1200,19 @@
             window.showToast("Migrating data to cloud... Please wait.", "info");
 
             try {
-                for (let e of localEvents) { await setDoc(doc(db, "events", e.id), e); }
-                for (let b of localBudgets) { await setDoc(doc(db, "budgets", b.id), b); }
-                for (let t of localDailyTasks) { await setDoc(doc(db, "daily_tasks", t.id), t); }
-                for (let p of localPinRequests) { await setDoc(doc(db, "pin_requests", p.id), p); }
-                for (let c of localCwRequests) { await setDoc(doc(db, "cw_requests", c.id), c); }
-                for (let p of localPdRequests) { await setDoc(doc(db, "pd_requests", p.id), p); }
+                for (let e of localEvents) { await setDoc(doc(db, "events_v2", e.id), e); }
+                for (let b of localBudgets) { await setDoc(doc(db, "budgets_v2", b.id), b); }
+                for (let t of localDailyTasks) { await setDoc(doc(db, "daily_tasks_v2", t.id), t); }
+                for (let p of localPinRequests) { await setDoc(doc(db, "pin_requests_v2", p.id), p); }
+                for (let c of localCwRequests) { await setDoc(doc(db, "cw_requests_v2", c.id), c); }
+                for (let p of localPdRequests) { await setDoc(doc(db, "pd_requests_v2", p.id), p); }
                 if (Object.keys(localSettings).length > 0) {
                     await setDoc(doc(db, "settings", "budgetSettings"), localSettings);
                 }
-                localStorage.removeItem('spo_content_calendar_events');
-                localStorage.removeItem('spo_budget_data');
-                localStorage.removeItem('spo_daily_tasks');
-                localStorage.removeItem('spo_pin_requests');
+                localStorage.removeItem('spo_events_v2');
+                localStorage.removeItem('spo_budget_v2');
+                localStorage.removeItem('spo_dt_v2');
+                localStorage.removeItem('spo_pin_v2');
                 window.showToast("Local data successfully uploaded to Firebase Cloud!", "success");
             } catch (err) {
                 console.error(err);
@@ -1376,11 +1376,11 @@
             const idx = window.events.findIndex(e => e.id === task.id);
             if (idx > -1) window.events[idx] = task;
             else window.events.push(task);
-            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+            localStorage.setItem('spo_events_v2', JSON.stringify(window.events));
 
             if (!db) return;
             try { 
-                await setDoc(doc(db, "events", task.id), task); 
+                await setDoc(doc(db, "events_v2", task.id), task);
             } catch(e) { 
                 console.error(e); 
             }
@@ -1498,10 +1498,10 @@
 
         window.deleteTask = async (id) => {
             window.events = window.events.filter(e => e.id !== id);
-            localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
+            localStorage.setItem('spo_events_v2', JSON.stringify(window.events));
             
             if (db) {
-                try { await deleteDoc(doc(db, "events", id)); } 
+                try { await deleteDoc(doc(db, "events_v2", id)); }
                 catch(e) {}
             }
             window.showToast("Item deleted", "success");
@@ -1521,19 +1521,19 @@
 
         window.clearAllData = async () => {
             if(!confirm("Are you sure? This deletes ALL events globally from Firebase.")) return;
-            localStorage.removeItem('spo_content_calendar_events');
-            localStorage.removeItem('spo_daily_tasks');
-            localStorage.removeItem('spo_quick_links');
-            localStorage.removeItem('spo_pin_requests');
+            localStorage.removeItem('spo_events_v2');
+            localStorage.removeItem('spo_dt_v2');
+            localStorage.removeItem('spo_ql_v2');
+            localStorage.removeItem('spo_pin_v2');
 
             if (db) {
                 try {
-                    window.events.forEach(e => deleteDoc(doc(db, "events", e.id)));
-                    window.dailyTasks.forEach(t => deleteDoc(doc(db, "daily_tasks", t.id)));
-                    window.quickLinks.forEach(l => deleteDoc(doc(db, "quick_links", l.id)));
-                    window.pinRequests.forEach(p => deleteDoc(doc(db, "pin_requests", p.id)));
-                    window.cwRequests.forEach(c => deleteDoc(doc(db, "cw_requests", c.id)));
-                    window.pdRequests.forEach(p => deleteDoc(doc(db, "pd_requests", p.id)));
+                    window.events.forEach(e => deleteDoc(doc(db, "events_v2", e.id)));
+                    window.dailyTasks.forEach(t => deleteDoc(doc(db, "daily_tasks_v2", t.id)));
+                    window.quickLinks.forEach(l => deleteDoc(doc(db, "quick_links_v2", l.id)));
+                    window.pinRequests.forEach(p => deleteDoc(doc(db, "pin_requests_v2", p.id)));
+                    window.cwRequests.forEach(c => deleteDoc(doc(db, "cw_requests_v2", c.id)));
+                    window.pdRequests.forEach(p => deleteDoc(doc(db, "pd_requests_v2", p.id)));
                 } catch(err) {}
             }
 
@@ -1551,11 +1551,11 @@
 
         window.clearAllBudgets = async () => {
             if(!confirm("Are you sure? This deletes ALL budget entries globally from Firebase.")) return;
-            localStorage.removeItem('spo_budget_data');
+            localStorage.removeItem('spo_budget_v2');
             window.budgets = [];
             if (db) {
                 try {
-                    window.budgets.forEach(b => deleteDoc(doc(db, "budgets", b.id)));
+                    window.budgets.forEach(b => deleteDoc(doc(db, "budgets_v2", b.id)));
                 } catch(e){}
             }
             window.showToast("All budgets cleared", "success");
@@ -1655,7 +1655,7 @@
         };
 
         window.exportBudgetExcel = () => {
-            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_v2') || '[]');
             console.log("Current Budgets Count:", currentBudgets.length);
             let filteredBudgets = currentBudgets.filter(b => {
                 const matchesSearch = (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || 
@@ -2553,7 +2553,7 @@ window.switchView = (viewName) => {
                 }
             });
 
-            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_data') || '[]');
+            let currentBudgets = window.budgets && window.budgets.length > 0 ? window.budgets : JSON.parse(localStorage.getItem('spo_budget_v2') || '[]');
             console.log("Current Budgets Count:", currentBudgets.length);
             let filteredBudgets = currentBudgets.filter(b => {
                 const matchesSearch = !window.budgetSearchQuery || (b.name || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase()) || (b.owner || '').toLowerCase().includes(window.budgetSearchQuery.toLowerCase());
@@ -2713,10 +2713,10 @@ window.switchView = (viewName) => {
                 const idx = window.budgets.findIndex(b => b.id === entryId);
                 if (idx > -1) window.budgets[idx] = entryData;
                 else window.budgets.push(entryData);
-                localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+                localStorage.setItem('spo_budget_v2', JSON.stringify(window.budgets));
                 
                 if (db) {
-                    await setDoc(doc(db, "budgets", entryId), entryData);
+                    await setDoc(doc(db, "budgets_v2", entryId), entryData);
                 }
                 
                 window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
@@ -2820,10 +2820,10 @@ window.switchView = (viewName) => {
 
         window.deleteBudgetEntry = async (id) => {
             window.budgets = window.budgets.filter(b => b.id !== id);
-            localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+            localStorage.setItem('spo_budget_v2', JSON.stringify(window.budgets));
             
             if (db) {
-                try { await deleteDoc(doc(db, "budgets", id)); } catch(e) {}
+                try { await deleteDoc(doc(db, "budgets_v2", id)); } catch(e) {}
             }
             window.showToast("Budget entry deleted", "success");
             window.renderUI();
@@ -3134,11 +3134,11 @@ window.switchView = (viewName) => {
             const idx = window.dailyTasks.findIndex(t => t.id === task.id);
             if (idx > -1) window.dailyTasks[idx] = task;
             else window.dailyTasks.push(task);
-            localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+            localStorage.setItem('spo_dt_v2', JSON.stringify(window.dailyTasks));
 
             if (!db) return;
             try {
-                await setDoc(doc(db, "daily_tasks", task.id), task);
+                await setDoc(doc(db, "daily_tasks_v2", task.id), task);
             } catch(e) {
                 console.error(e);
             }
@@ -3509,10 +3509,10 @@ window.switchView = (viewName) => {
                 if (idx > -1) window.pinRequests[idx] = reqData;
                 else window.pinRequests.push(reqData);
 
-                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+                localStorage.setItem('spo_pin_v2', JSON.stringify(window.pinRequests));
 
                 if (db) {
-                    await setDoc(doc(db, "pin_requests", reqId), reqData);
+                    await setDoc(doc(db, "pin_requests_v2", reqId), reqData);
                 }
 
                 window.showToast(id ? "Pin request updated" : "Pin request added", "success");
@@ -3532,10 +3532,10 @@ window.switchView = (viewName) => {
         window.deletePinRequest = async (id) => {
             if (confirm('Are you sure you want to delete this pin request?')) {
                 window.pinRequests = window.pinRequests.filter(p => String(p.id) !== String(id));
-                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+                localStorage.setItem('spo_pin_v2', JSON.stringify(window.pinRequests));
 
                 if (db) {
-                    try { await deleteDoc(doc(db, "pin_requests", id)); }
+                    try { await deleteDoc(doc(db, "pin_requests_v2", id)); }
                     catch(e) {}
                 }
 
@@ -4103,10 +4103,10 @@ window.switchView = (viewName) => {
             btn.disabled = true;
 
             try {
-                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
+                localStorage.setItem('spo_pin_v2', JSON.stringify(window.pinRequests));
 
                 if (db) {
-                    await setDoc(doc(db, "pin_requests", req.id), req);
+                    await setDoc(doc(db, "pin_requests_v2", req.id), req);
                 }
 
                 window.showToast("Pin action saved", "success");
@@ -4141,9 +4141,9 @@ window.switchView = (viewName) => {
                 const linkedTaskId = taskToDelete ? taskToDelete.linkedTaskId : null;
 
                 window.dailyTasks = window.dailyTasks.filter(t => t.id !== id);
-                localStorage.setItem('spo_daily_tasks', JSON.stringify(window.dailyTasks));
+                localStorage.setItem('spo_dt_v2', JSON.stringify(window.dailyTasks));
                 if (db) {
-                    try { await deleteDoc(doc(db, "daily_tasks", id)); }
+                    try { await deleteDoc(doc(db, "daily_tasks_v2", id)); }
                     catch(e) {}
                 }
                 window.renderDailyTasksTable();
@@ -4267,10 +4267,10 @@ window.switchView = (viewName) => {
                 if (idx > -1) window.quickLinks[idx] = linkData;
                 else window.quickLinks.push(linkData);
 
-                localStorage.setItem('spo_quick_links', JSON.stringify(window.quickLinks));
+                localStorage.setItem('spo_ql_v2', JSON.stringify(window.quickLinks));
 
                 if (db) {
-                    await setDoc(doc(db, "quick_links", linkId), linkData);
+                    await setDoc(doc(db, "quick_links_v2", linkId), linkData);
                 }
 
                 window.showToast(id ? "Quick link updated" : "Quick link added", "success");
@@ -4289,11 +4289,11 @@ window.switchView = (viewName) => {
             if (!confirm('Are you sure you want to delete this quick link?')) return;
 
             window.quickLinks = window.quickLinks.filter(l => l.id !== id);
-            localStorage.setItem('spo_quick_links', JSON.stringify(window.quickLinks));
+            localStorage.setItem('spo_ql_v2', JSON.stringify(window.quickLinks));
 
             if (db) {
                 try {
-                    await deleteDoc(doc(db, "quick_links", id));
+                    await deleteDoc(doc(db, "quick_links_v2", id));
                 } catch(err) {
                     console.error(err);
                 }
@@ -5089,10 +5089,10 @@ window.switchView = (viewName) => {
                 if (idx > -1) window.cwRequests[idx] = reqData;
                 else window.cwRequests.push(reqData);
 
-                localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
+                localStorage.setItem('spo_cw_v2', JSON.stringify(window.cwRequests));
 
                 if (db) {
-                    await setDoc(doc(db, "cw_requests", reqId), reqData);
+                    await setDoc(doc(db, "cw_requests_v2", reqId), reqData);
                 }
 
                 window.showToast(id ? "CW request updated" : "CW request added", "success");
@@ -5129,26 +5129,26 @@ window.switchView = (viewName) => {
         };
 
         window.syncCWRequestSilent = async function(req) {
-            let requests = JSON.parse(localStorage.getItem('spo_cw_requests') || '[]');
+            let requests = JSON.parse(localStorage.getItem('spo_cw_v2') || '[]');
             const index = requests.findIndex(r => r.id === req.id);
             if (index > -1) {
                 requests[index] = req;
             } else {
                 requests.push(req);
             }
-            localStorage.setItem('spo_cw_requests', JSON.stringify(requests));
+            localStorage.setItem('spo_cw_v2', JSON.stringify(requests));
             if (db) {
-                try { await setDoc(doc(db, "cw_requests", req.id), req); } catch(e) { console.error(e); }
+                try { await setDoc(doc(db, "cw_requests_v2", req.id), req); } catch(e) { console.error(e); }
             }
         };
 
         window.deleteCWRequest = async (id) => {
             if (confirm('Are you sure you want to delete this content writer request?')) {
                 window.cwRequests = window.cwRequests.filter(p => String(p.id) !== String(id));
-                localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
+                localStorage.setItem('spo_cw_v2', JSON.stringify(window.cwRequests));
 
                 if (db) {
-                    try { await deleteDoc(doc(db, "cw_requests", id)); }
+                    try { await deleteDoc(doc(db, "cw_requests_v2", id)); }
                     catch(e) {}
                 }
 
@@ -5161,7 +5161,7 @@ window.switchView = (viewName) => {
 
 
         // ================= SMS LOGIC =================
-        window.smsRequests = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]');
+        window.smsRequests = JSON.parse(localStorage.getItem('spo_sms_v2') || '[]');
 
         window.renderSMSTable = function() {
             const tbody = document.getElementById('sms-table-body');
@@ -5297,10 +5297,10 @@ window.switchView = (viewName) => {
             }
 
             const reqToSave = id ? window.smsRequests.find(r => r.id === id) : window.smsRequests[window.smsRequests.length - 1];
-            localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
+            localStorage.setItem('spo_sms_v2', JSON.stringify(window.smsRequests));
 
             if (db) {
-                try { await setDoc(doc(db, "sms_requests", reqToSave.id), reqToSave); } catch(e) { console.error(e); }
+                try { await setDoc(doc(db, "sms_requests_v2", reqToSave.id), reqToSave); } catch(e) { console.error(e); }
             }
             window.closeSMSModal();
             window.renderSMSTable();
@@ -5309,10 +5309,10 @@ window.switchView = (viewName) => {
         window.deleteSMSRequest = async function(id) {
             if (confirm("Are you sure you want to delete this SMS Request?")) {
                 window.smsRequests = window.smsRequests.filter(r => String(r.id) !== String(id));
-                localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
+                localStorage.setItem('spo_sms_v2', JSON.stringify(window.smsRequests));
 
                 if (db) {
-                    try { await deleteDoc(doc(db, "sms_requests", id)); } catch(e) { console.error(e); }
+                    try { await deleteDoc(doc(db, "sms_requests_v2", id)); } catch(e) { console.error(e); }
                 }
                 window.renderSMSTable();
             }
@@ -5393,16 +5393,16 @@ window.switchView = (viewName) => {
         };
 
         window.syncSMSRequestSilent = async function(req) {
-            let requests = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]');
+            let requests = JSON.parse(localStorage.getItem('spo_sms_v2') || '[]');
             const index = requests.findIndex(r => r.id === req.id);
             if (index > -1) {
                 requests[index] = req;
             } else {
                 requests.push(req);
             }
-            localStorage.setItem('spo_sms_requests', JSON.stringify(requests));
+            localStorage.setItem('spo_sms_v2', JSON.stringify(requests));
             if (db) {
-                try { await setDoc(doc(db, "sms_requests", req.id), req); } catch(e) { console.error(e); }
+                try { await setDoc(doc(db, "sms_requests_v2", req.id), req); } catch(e) { console.error(e); }
             }
         };
 
@@ -5657,10 +5657,10 @@ html += `
                 if (idx > -1) window.pdRequests[idx] = reqData;
                 else window.pdRequests.push(reqData);
 
-                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+                localStorage.setItem('spo_pd_v2', JSON.stringify(window.pdRequests));
 
                 if (db) {
-                    await setDoc(doc(db, "pd_requests", reqId), reqData);
+                    await setDoc(doc(db, "pd_requests_v2", reqId), reqData);
                 }
 
                 window.showToast(id ? "PD request updated" : "PD request added", "success");
@@ -5680,10 +5680,10 @@ html += `
         window.deletePDRequest = async (id) => {
             if (confirm('Are you sure you want to delete this prize distribution request?')) {
                 window.pdRequests = window.pdRequests.filter(p => String(p.id) !== String(id));
-                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
+                localStorage.setItem('spo_pd_v2', JSON.stringify(window.pdRequests));
 
                 if (db) {
-                    try { await deleteDoc(doc(db, "pd_requests", id)); }
+                    try { await deleteDoc(doc(db, "pd_requests_v2", id)); }
                     catch(e) {}
                 }
 
@@ -5783,8 +5783,8 @@ html += `
                 if (idx > -1) window.pinRequests[idx] = reqData;
                 else window.pinRequests.push(reqData);
 
-                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
-                if (db) await setDoc(doc(db, "pin_requests", reqData.id), reqData);
+                localStorage.setItem('spo_pin_v2', JSON.stringify(window.pinRequests));
+                if (db) await setDoc(doc(db, "pin_requests_v2", reqData.id), reqData);
 
                 if (window.currentView === 'pin_request') window.renderPinRequestsTable();
             } catch (err) { console.error(err); }
@@ -5877,8 +5877,8 @@ html += `
                 if (idx > -1) window.pdRequests[idx] = reqData;
                 else window.pdRequests.push(reqData);
 
-                localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
-                if (db) await setDoc(doc(db, "pd_requests", reqData.id), reqData);
+                localStorage.setItem('spo_pd_v2', JSON.stringify(window.pdRequests));
+                if (db) await setDoc(doc(db, "pd_requests_v2", reqData.id), reqData);
 
                 if (window.currentView === 'prize_distribution') window.renderPDRequestsTable();
             } catch (err) { console.error(err); }
