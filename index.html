@@ -3482,6 +3482,10 @@ window.switchView = (viewName) => {
                     el.classList.add('bg-gray-100');
                 }
             });
+            const pinSettingsSection = document.getElementById('pr-pin-settings-container');
+            const slotAvailabilitySection = document.getElementById('pr-slot-availability-container');
+            if(pinSettingsSection) pinSettingsSection.classList.add('hidden');
+            if(slotAvailabilitySection) slotAvailabilitySection.classList.add('hidden');
 
             if (prefillStart) {
                 document.getElementById('pr-start-date').value = prefillStart;
@@ -3532,6 +3536,8 @@ window.switchView = (viewName) => {
                                 el.classList.remove('bg-gray-100');
                             }
                         });
+                        if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
+                        if(slotAvailabilitySection) slotAvailabilitySection.classList.remove('hidden');
                     }
                 }
             }
@@ -3587,6 +3593,16 @@ window.switchView = (viewName) => {
 
             const formattedStartDate = window.formatDateTimeStr(startDate);
             const formattedEndDate = window.formatDateTimeStr(endDate);
+
+            const page = document.getElementById('pr-page').value;
+            const position = document.getElementById('pr-position').value;
+            const sortVal = document.getElementById('pr-sort').value;
+
+            if (page || position || sortVal) {
+                if (page && (page < 1 || page > 2)) { window.showToast("Page must be 1 or 2", "error"); return; }
+                if (position && (position < 1 || position > 10)) { window.showToast("Position must be between 1 and 10", "error"); return; }
+                if (sortVal && (sortVal < 1 || sortVal > 3)) { window.showToast("Sort must be between 1 and 3", "error"); return; }
+            }
 
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
@@ -3925,7 +3941,7 @@ window.switchView = (viewName) => {
             const allSlots = [];
             for (let page = 1; page <= 2; page++) {
                 for (let pos = 1; pos <= 10; pos++) {
-                    for (let sort = 1; sort <= 9; sort++) {
+                    for (let sort = 1; sort <= 3; sort++) {
                         allSlots.push(`${page}-${pos}-${sort}`);
                     }
                 }
@@ -6510,7 +6526,7 @@ html += `
                         </div>
 
                         <!-- Pin Settings Section -->
-                        <div class="pt-2">
+                        <div class="pt-2 hidden" id="pr-pin-settings-container">
                             <h4 class="text-md font-bold text-gray-900 mb-3">Pin Settings</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -6534,7 +6550,7 @@ html += `
                 </div>
 
                 <!-- Right Column (Slot Availability) -->
-                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[500px]">
+                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[500px] hidden" id="pr-slot-availability-container">
                     <h4 class="text-md font-bold text-gray-900 mb-1">Slot Availability</h4>
                     <p class="text-xs text-gray-500 mb-3">Automatically checked for this post's pin period</p>
 
