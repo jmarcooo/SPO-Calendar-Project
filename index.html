@@ -2358,9 +2358,11 @@ window.switchView = (viewName) => {
                 const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500';
 
                 const el = document.createElement('div');
-                el.className = 'flex items-start p-3 hover:bg-slate-50 rounded-xl mb-2 border border-slate-100 transition-colors cursor-pointer';
                 el.title = window.getPendingSummary(evt);
                 
+                const isPast = daysDiff < 0;
+                const opacityClass = isPast ? 'opacity-50 grayscale' : '';
+
                 if (itemType === 'event' || itemType === 'game') {
                     el.onclick = () => window.openEditById(evt.id);
                     
@@ -2369,7 +2371,7 @@ window.switchView = (viewName) => {
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700';
 
-                    el.className = 'flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer';
+                    el.className = `flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -2393,7 +2395,7 @@ window.switchView = (viewName) => {
                     const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    el.className = 'flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer';
+                    el.className = `flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
