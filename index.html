@@ -3922,43 +3922,42 @@ window.switchView = (viewName) => {
             html += `</div>`;
 
             // Row Generation
-            const slots = [];
-            const priorities = [
-                '1-1-1', '1-10-1', '2-1-1', '2-5-1', '1-1-2', '1-10-2', '1-1-3', '1-10-3',
-                // Keep generating the rest that don't match the specific priority just in case, but user wants specific order for the top ones.
-                // Actually the requirement says "sort the Position rows on the left in this priority order: 1-1-1 -> 1-10-1 -> 2-1-1 -> 2-5-1 -> 1-1-2 -> 1-10-2 -> 1-1-3 -> 1-10-3"
-            ];
-
-            // Push priority slots first
-            priorities.forEach(id => {
-                slots.push({ id: id });
-            });
-
-            // Add remaining slots to complete the default view? User's image shows exactly these rows and a few others (e.g. 1-2-1, 1-3-1, etc...). The user requested standardizing the position sort on the left to specific order: "1-1-1 -> 1-10-1 > 2-1-1 -> 2-5-1 > 1-1-2 -> 1-10-2 > 1-1-3 -> 1-10-3".
-            // Since they listed specific order for those top ones and said "This helps me quickly see whether the higher-priority slots are occupied." Let's generate a list of all slots (maybe 1 to 10 for middle column, etc) but sort the priority ones first.
-
-            // To match the previous logic of generating a lot of slots:
             const allSlots = [];
             for (let page = 1; page <= 2; page++) {
                 for (let pos = 1; pos <= 10; pos++) {
                     for (let sort = 1; sort <= 3; sort++) {
-                        allSlots.push(`${page}-${pos}-${sort}`);
+                        allSlots.push({
+                            id: `${page}-${pos}-${sort}`,
+                            page: page,
+                            position: pos,
+                            sort: sort
+                        });
                     }
                 }
             }
-            // For timeline, we only need unique positions, previous code only generated 1-[1..2]-[1..9].
-            // The user's image shows slots like 1-1-1, 1-10-1, 2-1-1, 2-5-1, 1-1-2, 1-10-2, 1-1-3, 1-10-3, 1-2-1, 1-3-1, 1-4-1, 1-5-1, 1-6-1, 1-7-1, 1-8-1, 1-9-1.
-            // Let's create an ordered array based on the priority, then append remaining 1-X-Y that were normally generated.
 
-            const remaining = [
-                '1-2-1', '1-3-1', '1-4-1', '1-5-1', '1-6-1', '1-7-1', '1-8-1', '1-9-1'
-            ];
+            allSlots.sort((a, b) => {
+                const aP = a.page; const bP = b.page;
+                const aPo = a.position; const bPo = b.position;
+                const aS = a.sort; const bS = b.sort;
 
-            remaining.forEach(id => {
-                if (!slots.find(s => s.id === id)) {
-                    slots.push({ id: id });
+                if (window.pinSortMode === 1) {
+                    if (aP !== bP) return aP - bP;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aS !== bS) return aS - bS;
+                } else if (window.pinSortMode === 2) {
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aP !== bP) return aP - bP;
+                    if (aS !== bS) return aS - bS;
+                } else if (window.pinSortMode === 3) {
+                    if (aS !== bS) return aS - bS;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aP !== bP) return aP - bP;
                 }
+                return 0;
             });
+
+            const slots = allSlots.map(s => ({ id: s.id }));
 
             const scaleMsToPct = (durationMs) => (durationMs / (7 * 24 * 60 * 60 * 1000)) * 100;
             const weekStartMs = startOfWeek.getTime();
