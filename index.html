@@ -3891,12 +3891,20 @@ window.switchView = (viewName) => {
             const container = document.getElementById('pr-timeline-inner');
             if (!container) return;
 
-            // Generate timeline for current week (Mon-Sun)
-            const today = new Date();
-            const dayOfWeek = today.getUTCDay();
-            const startOfWeek = new Date(today);
-            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-            startOfWeek.setUTCHours(0, 0, 0, 0);
+            const dateInput = document.getElementById('pr-timeline-start-date');
+            let startOfWeek;
+
+            if (dateInput && dateInput.value) {
+                // If a date is provided, use it as the start date
+                startOfWeek = new Date(dateInput.value + 'T00:00:00Z');
+            } else {
+                // Otherwise default to today (not snapping to Monday, just starting from today)
+                const today = new Date();
+                startOfWeek = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+                if (dateInput) {
+                    dateInput.value = startOfWeek.toISOString().split('T')[0];
+                }
+            }
 
             const days = [];
             for (let i = 0; i < 7; i++) {
@@ -4025,70 +4033,6 @@ window.switchView = (viewName) => {
         };
 
 
-        window.checkPRSlotAvailability = () => {
-            const dateVal = document.getElementById('pr-assist-date').value;
-            const timeVal = document.getElementById('pr-assist-time').value;
-            const durationHours = parseInt(document.getElementById('pr-assist-duration').value) || 24;
-
-            if (!dateVal || !timeVal) {
-                window.showToast("Please select target date and time.", "error");
-                return;
-            }
-
-            const targetStart = new Date(`${dateVal}T${timeVal}:00Z`);
-            const targetEnd = new Date(targetStart.getTime() + (durationHours * 60 * 60 * 1000));
-
-            const startMs = targetStart.getTime();
-            const endMs = targetEnd.getTime();
-
-            // Clear previous highlights
-            document.querySelectorAll('.pr-track').forEach(el => {
-                el.classList.remove('bg-red-50', 'bg-green-50');
-            });
-
-            const slots = [];
-            for (let col = 1; col <= 2; col++) {
-                for (let pos = 1; pos <= 9; pos++) {
-                    slots.push(`1-${col}-${pos}`);
-                }
-            }
-
-            let collisionCount = 0;
-
-            slots.forEach(slotId => {
-                const parts = slotId.split('-');
-                const reqs = window.pinRequests.filter(r => r.page === parts[0] && r.position === parts[1] && r.sort === parts[2] && r.status !== 'Completed');
-
-                let hasCollision = false;
-                for (let req of reqs) {
-                    if (!req.startDate || !req.endDate) continue;
-                    const rS = new Date(req.startDate.replace(' ', 'T') + 'Z').getTime();
-                    const rE = new Date(req.endDate.replace(' ', 'T') + 'Z').getTime();
-
-                    // Check overlap
-                    if (startMs < rE && endMs > rS) {
-                        hasCollision = true;
-                        break;
-                    }
-                }
-
-                const trackEl = document.querySelector(`.pr-track[data-slot="${slotId}"]`);
-                if (trackEl) {
-                    if (hasCollision) {
-                        trackEl.classList.add('bg-red-50');
-                        collisionCount++;
-                    } else {
-                        trackEl.classList.add('bg-green-50');
-                    }
-                }
-            });
-
-            if (collisionCount > 0) {
-                window.showToast(`Found ${collisionCount} overlapping slots. Available slots highlighted in green.`, "warning");
-            } else {
-                window.showToast("All slots are available!", "success");
-            }
-        };
 
         window.handlePRTimelineClick = (e, slotId) => {
             const track = e.currentTarget;
