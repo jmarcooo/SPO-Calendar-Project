@@ -3493,8 +3493,11 @@ window.switchView = (viewName) => {
                 document.getElementById('pr-sort').value = parts[2];
             }
 
+
+            let req = null;
             if (id) {
-                const req = window.pinRequests.find(p => p.id === id);
+                req = window.pinRequests.find(p => p.id === id);
+
                 if (req) {
                     document.getElementById('pr-id').value = req.id;
                     document.getElementById('pr-campaign-name').value = req.campaignName || '';
@@ -3536,6 +3539,7 @@ window.switchView = (viewName) => {
             document.getElementById('pin-request-modal').classList.remove('hidden');
             window.updateSelectedPosition();
             window.renderModalTimeline();
+
         };
 
 
@@ -4104,6 +4108,7 @@ window.switchView = (viewName) => {
 
             // Re-render modal timeline to highlight selected row
             window.renderModalTimeline();
+
         };
 
         window.handleModalTimelineClick = (id) => {
@@ -5939,31 +5944,25 @@ html += `
         };
 
 
-        window.syncPinRequestSilent = async (reqData) => {
-            try {
-                const idx = window.pinRequests.findIndex(p => p.id === reqData.id);
-                if (idx > -1) window.pinRequests[idx] = reqData;
-                else window.pinRequests.push(reqData);
 
-                localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
-                if (db) await setDoc(doc(db, "pin_requests", reqData.id), reqData);
 
-                if (window.currentView === 'pin_request') window.renderPinRequestsTable();
-            } catch (err) { console.error(err); }
-        };
 
 
         window.syncPinRequestSilent = async function(req) {
-            let requests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
+            let requests = JSON.parse(localStorage.getItem('spo_pin_v2') || '[]');
             const index = requests.findIndex(r => r.id === req.id);
             if (index > -1) {
                 requests[index] = req;
             } else {
                 requests.push(req);
             }
-            localStorage.setItem('spo_pin_requests', JSON.stringify(requests));
+
+            // CRITICAL FIX: Update in-memory state so table updates instantly
+            window.pinRequests = requests;
+
+            localStorage.setItem('spo_pin_v2', JSON.stringify(requests));
             if (db) {
-                try { await setDoc(doc(db, "pin_requests", req.id), req); } catch(e) { console.error(e); }
+                try { await setDoc(doc(db, "pin_requests_v2", req.id), req); } catch(e) { console.error(e); }
             }
             if (window.currentView === 'pin_request') {
                 window.renderPinRequestsTable();
@@ -6427,15 +6426,15 @@ html += `
                     <input type="hidden" id="pa-id">
                     <div>
                         <label for="pa-page" class="block text-sm font-medium text-gray-700">Page <span class="text-red-500">*</span></label>
-                        <input type="text" id="pa-page" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-page" min="1" max="2" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="pa-position" class="block text-sm font-medium text-gray-700">Position <span class="text-red-500">*</span></label>
-                        <input type="text" id="pa-position" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-position" min="1" max="10" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="pa-sort" class="block text-sm font-medium text-gray-700">Sort <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-sort" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-sort" min="1" max="3" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                     </div>
                 </form>
             </div>
@@ -6516,40 +6515,15 @@ html += `
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Page</label>
-                                    <select id="pr-page" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md py-2 px-3 sm:text-sm bg-white">
-                                        <option value="">- Select Page -</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                    </select>
+                                    <input type="number" id="pr-page" min="1" max="2" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Position</label>
-                                    <select id="pr-position" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md py-2 px-3 sm:text-sm bg-white">
-                                        <option value="">- Select Position -</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                    </select>
+                                    <input type="number" id="pr-position" min="1" max="10" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Sort/Refresh Round</label>
-                                    <select id="pr-sort" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md py-2 px-3 sm:text-sm bg-white">
-                                        <option value="">- Select Sort -</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                    </select>
+                                    <input type="number" id="pr-sort" min="1" max="3" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
                                 </div>
                             </div>
                             <div class="mt-4 text-sm font-medium text-indigo-700">
