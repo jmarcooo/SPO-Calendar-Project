@@ -359,6 +359,47 @@
 
     <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
+
+        // --- GLOBAL TIMEZONE CONFIGURATION ---
+        window.getPHParts = () => {
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Manila',
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+            }).formatToParts(new Date());
+            const getPart = (type) => parseInt(parts.find(p => p.type === type).value, 10);
+            return {
+                year: getPart('year'),
+                month: getPart('month') - 1,
+                date: getPart('day'),
+                hours: getPart('hour') === 24 ? 0 : getPart('hour'),
+                minutes: getPart('minute'),
+                seconds: getPart('second')
+            };
+        };
+
+        window.getFormattedCreatedTime = () => {
+            const p = window.getPHParts();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${p.year}-${pad(p.month + 1)}-${pad(p.date)} ${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}`;
+        };
+
+        window.getPHDateStr = () => {
+            return window.getFormattedCreatedTime().split(' ')[0];
+        };
+
+        window.getPHIsoString = () => {
+            const p = window.getPHParts();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${p.year}-${pad(p.month + 1)}-${pad(p.date)}T${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}.000Z`;
+        };
+
+        window.getPHFakeUtcMs = () => {
+            const p = window.getPHParts();
+            return Date.UTC(p.year, p.month, p.date, p.hours, p.minutes, p.seconds);
+        };
+        // -------------------------------------
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -548,9 +589,9 @@
             tooltip.style.top = `${y}px`;
         };
 
-        let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : new Date().getMonth();
-        let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : new Date().getFullYear();
-        let currentDateObj = new Date();
+        let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : window.getPHParts().month;
+        let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : window.getPHParts().year;
+        let currentDateObj = null;
         
         window.tempSelectedDate = null;
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
@@ -602,16 +643,12 @@
             dashboardStatus: {}
         };
 
-        window.getFormattedCreatedTime = () => {
-            const now = new Date();
-            const pad = (n) => n.toString().padStart(2, '0');
-            return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        }
+
 
         window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
 
         window.calculateStatus = (startDate, endDate) => {
-            const today = new Date().toISOString().split('T')[0];
+            const today = window.getPHDateStr();
             if (today < startDate) return 'Upcoming';
             if (today > endDate) return 'Done';
             return 'Ongoing';
@@ -671,7 +708,7 @@
         };
 
         window.initApp = () => {
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const filterEl = document.getElementById('budget-filter-month');
             if(filterEl) filterEl.value = window.budgetFilterMonth;
@@ -894,8 +931,8 @@
                 let tempEvents = [];
                 snapshot.forEach((doc) => {
                     let e = doc.data();
-                    if (!e.startDate) e.startDate = e.date || new Date().toISOString().split('T')[0];
-                    if (!e.endDate) e.endDate = e.date || new Date().toISOString().split('T')[0];
+                    if (!e.startDate) e.startDate = e.date || window.getPHDateStr();
+                    if (!e.endDate) e.endDate = e.date || window.getPHDateStr();
                     e.status = window.calculateStatus(e.startDate, e.endDate);
                     
                     if (!e.fields) e.fields = { ...defaultFields };
@@ -1530,7 +1567,7 @@
                 assignees,
                 fields: fieldsToSave, 
                 progress: progress, 
-                updatedAt: new Date().toISOString()
+                updatedAt: window.getPHIsoString()
             };
             if (itemType === 'event') {
                 eventData.imageLink = imageLink;
@@ -1577,7 +1614,7 @@
         window.triggerReminder = (id, title, assigneesStr) => {
             const task = window.events.find(ev => ev.id === id);
             if (task) {
-                task.lastReminded = new Date().toISOString();
+                task.lastReminded = window.getPHIsoString();
                 window.syncEventToFirestore(task);
                 const names = assigneesStr ? assigneesStr : 'the team';
                 window.showToast(`Reminder sent to ${names} for "${title}"!`, "success", "fa-bell");
@@ -2155,7 +2192,7 @@ window.switchView = (viewName) => {
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             calMonthYear.innerText = `${monthNames[currentMonth]} ${currentYear}`;
 
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
             const currentDay = today.getDate();
 
@@ -2345,7 +2382,9 @@ window.switchView = (viewName) => {
                 const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
                 const dateObj = new Date(evt.endDate);
                 const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
-                const daysDiff = Math.ceil((dateObj - new Date()) / (1000 * 60 * 60 * 24));
+                const p = window.getPHParts();
+                const nowUtc = Date.UTC(p.year, p.month, p.date);
+                const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
                 const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500';
 
                 const el = document.createElement('div');
@@ -3457,12 +3496,12 @@ window.switchView = (viewName) => {
             const slotAvailabilitySection = document.getElementById('pr-slot-availability-container');
 
             if (isPinAction) {
-                // Lock the main request fields
+                // Main request fields stay unlocked
                 fieldsToLock.forEach(fid => {
                     const el = document.getElementById(fid);
                     if(el) {
-                        el.disabled = true;
-                        el.classList.add('bg-gray-100');
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
                     }
                 });
 
@@ -3543,12 +3582,12 @@ window.switchView = (viewName) => {
                     document.getElementById('pr-sort').value = req.sort || '';
 
                     if (isPinAction || (req.status !== 'Pending' && window.isCurrentUserPOC('post_management'))) {
-                        // If it's a Pin Action or already under review, lock user fields and unlock Pin Settings
+                        // If it's a Pin Action or already under review, user fields stay unlocked, unlock Pin Settings
                         fieldsToLock.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
-                                el.disabled = true;
-                                el.classList.add('bg-gray-100');
+                                el.disabled = false;
+                                el.classList.remove('bg-gray-100');
                             }
                         });
                         pinSettings.forEach(fid => {
@@ -3637,6 +3676,10 @@ window.switchView = (viewName) => {
             const existing = id ? window.pinRequests.find(p => p.id === id) : null;
             let status = existing ? existing.status : 'Pending';
 
+            if (page && position && sortVal) {
+                status = 'Completed';
+            }
+
             const reqData = {
                 id: reqId,
                 campaignName,
@@ -3675,7 +3718,9 @@ window.switchView = (viewName) => {
                 window.closePinRequestModal();
                 if (window.currentView === 'pin_request') {
                     window.renderPinRequestsTable();
+                    if (window.renderPRTimeline) window.renderPRTimeline();
                 }
+                if (window.renderModalTimeline) window.renderModalTimeline();
             } catch (err) {
                 console.error(err);
                 window.showToast("Error saving pin request", "error");
@@ -3829,18 +3874,18 @@ window.switchView = (viewName) => {
                 const aPo = aPos || maxVal; const bPo = bPos || maxVal;
                 const aS = aSort || maxVal; const bS = bSort || maxVal;
 
-                if (window.pinSortMode === 1) {
+                if (window.pinSortMode === 1 || !window.pinSortMode) {
+                    if (aS !== bS) return aS - bS;
                     if (aP !== bP) return aP - bP;
                     if (aPo !== bPo) return aPo - bPo;
-                    if (aS !== bS) return aS - bS;
                 } else if (window.pinSortMode === 2) {
                     if (aPo !== bPo) return aPo - bPo;
                     if (aP !== bP) return aP - bP;
                     if (aS !== bS) return aS - bS;
-                } else if (window.pinSortMode === 3) {
-                    if (aS !== bS) return aS - bS;
-                    if (aPo !== bPo) return aPo - bPo;
+                } else {
                     if (aP !== bP) return aP - bP;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aS !== bS) return aS - bS;
                 }
 
                 // Fallback to id descending
@@ -3854,8 +3899,8 @@ window.switchView = (viewName) => {
                 sortIcon.className = 'fa-solid ml-1 transition-colors ' +
                     (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-indigo-600' :
                     (window.pinSortMode === 2 ? 'fa-sort-amount-down text-indigo-600' : 'fa-list-ol text-indigo-600'));
-                sortIcon.title = window.pinSortMode === 1 ? 'Sort: Page > Position > Sort' :
-                    (window.pinSortMode === 2 ? 'Sort: Position > Page > Sort' : 'Sort: Sort > Position > Page');
+                sortIcon.title = window.pinSortMode === 1 ? 'Sort: Sort > Page > Position' :
+                    (window.pinSortMode === 2 ? 'Sort: Position > Page > Sort' : 'Sort: Page > Position > Sort');
             }
 
             if (filtered.length === 0) {
@@ -3926,8 +3971,8 @@ window.switchView = (viewName) => {
                 startOfWeek = new Date(dateInput.value + 'T00:00:00Z');
             } else {
                 // Otherwise default to today (not snapping to Monday, just starting from today)
-                const today = new Date();
-                startOfWeek = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+                const p = window.getPHParts();
+                startOfWeek = new Date(Date.UTC(p.year, p.month, p.date));
                 if (dateInput) {
                     dateInput.value = startOfWeek.toISOString().split('T')[0];
                 }
@@ -3983,18 +4028,18 @@ window.switchView = (viewName) => {
                 const aPo = a.position; const bPo = b.position;
                 const aS = a.sort; const bS = b.sort;
 
-                if (window.pinSortMode === 1) {
+                if (window.pinSortMode === 1 || !window.pinSortMode) {
+                    if (aS !== bS) return aS - bS;
                     if (aP !== bP) return aP - bP;
                     if (aPo !== bPo) return aPo - bPo;
-                    if (aS !== bS) return aS - bS;
                 } else if (window.pinSortMode === 2) {
                     if (aPo !== bPo) return aPo - bPo;
                     if (aP !== bP) return aP - bP;
                     if (aS !== bS) return aS - bS;
-                } else if (window.pinSortMode === 3) {
-                    if (aS !== bS) return aS - bS;
-                    if (aPo !== bPo) return aPo - bPo;
+                } else {
                     if (aP !== bP) return aP - bP;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aS !== bS) return aS - bS;
                 }
                 return 0;
             });
@@ -4006,7 +4051,7 @@ window.switchView = (viewName) => {
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-12">
+                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-10">
                     <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center justify-center">
                         <span class="text-sm font-bold text-gray-700">${slot.id}</span>
                     </div>
@@ -4017,6 +4062,13 @@ window.switchView = (viewName) => {
                     html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
                     html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
                 });
+
+                // Add gray overlay for past time
+                const nowMs = window.getPHFakeUtcMs();
+                if (nowMs > weekStartMs) {
+                    const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
+                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
+                }
 
                 // Find requests matching this slot
                 const reqs = window.pinRequests.filter(r => r.page === slot.id.split('-')[0] && r.position === slot.id.split('-')[1] && r.sort === slot.id.split('-')[2]);
@@ -4043,9 +4095,22 @@ window.switchView = (viewName) => {
                     let widthPct = scaleMsToPct(Math.min(weekEndMs, eMs) - Math.max(weekStartMs, sMs));
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
-                    const statusColor = req.status === 'Completed' ? 'bg-emerald-500' : (req.status === 'Under Review' ? 'bg-amber-500' : 'bg-indigo-500');
 
-                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${statusColor} text-white text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 ring-indigo-400 z-10"
+                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    if (req.category === 'PGC' || req.category === 'Content Writer') {
+                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400';
+                    } else if (req.category === 'UGC' || req.category === 'Perya Host') {
+                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400';
+                    } else if (req.status === 'Completed') {
+                        baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    } else if (req.status === 'Under Review') {
+                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400';
+                    }
+
+                    const isPast = eMs < window.getPHFakeUtcMs();
+                    const grayOutClass = isPast ? 'opacity-50 grayscale' : '';
+
+                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${baseColorClass} ${grayOutClass} text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 z-10 transition-all"
                                 style="left: ${leftPct}%; width: ${widthPct}%;"
                                 title="${req.campaignName}\nStart: ${req.startDate}\nEnd: ${req.endDate}\nDuration: ${durationH}h\nOwner: ${req.owner || 'Unknown'}"
                                 onclick="event.stopPropagation(); window.openPinRequestDetails('${req.id}')">
@@ -4068,7 +4133,7 @@ window.switchView = (viewName) => {
             const pct = clickX / rect.width;
 
             // Calculate clicked date
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             const dayOfWeek = today.getUTCDay();
             const startOfWeek = new Date(today);
             startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
@@ -4154,14 +4219,14 @@ window.switchView = (viewName) => {
             }
 
             allSlots.sort((a, b) => {
-                if (window.modalTimelineSortState === 1) {
+                if (window.modalTimelineSortState === 1 || !window.modalTimelineSortState) {
+                    if (a.sort !== b.sort) return a.sort - b.sort;
+                    if (a.page !== b.page) return a.page - b.page;
+                    return a.pos - b.pos;
+                } else if (window.modalTimelineSortState === 2) {
                     if (a.pos !== b.pos) return a.pos - b.pos;
                     if (a.page !== b.page) return a.page - b.page;
                     return a.sort - b.sort;
-                } else if (window.modalTimelineSortState === 2) {
-                    if (a.sort !== b.sort) return a.sort - b.sort;
-                    if (a.pos !== b.pos) return a.pos - b.pos;
-                    return a.page - b.page;
                 } else {
                     if (a.page !== b.page) return a.page - b.page;
                     if (a.pos !== b.pos) return a.pos - b.pos;
@@ -4230,7 +4295,7 @@ window.switchView = (viewName) => {
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 hover:bg-indigo-50/50 cursor-pointer transition-colors relative group h-10";
+                let rowClasses = "flex border-b border-gray-100 hover:bg-indigo-50/50 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
@@ -4239,20 +4304,33 @@ window.switchView = (viewName) => {
                 }
 
                 if (isOccupied && !isSelected) {
-                    rowClasses += " bg-red-50";
+                    rowClasses += " bg-red-50 cursor-not-allowed";
+                    rowClasses = rowClasses.replace("hover:bg-indigo-50/50", "");
+                    rowClasses = rowClasses.replace("cursor-pointer", "");
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 text-[10px] pointer-events-none">Existing pin</div>`;
-                }
 
-                html += `
-                    <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
-                        <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
-                            ${id}
+                    html += `
+                        <div class="${rowClasses}">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                                ${id}
+                            </div>
+                            <div class="flex-1 relative">
+                                ${innerHTML}
+                            </div>
                         </div>
-                        <div class="flex-1 relative">
-                            ${innerHTML}
+                    `;
+                } else {
+                    html += `
+                        <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                                ${id}
+                            </div>
+                            <div class="flex-1 relative">
+                                ${innerHTML}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             });
 
             html += `<div class="text-center py-2 text-[10px] text-gray-400 bg-slate-50 border-t border-gray-200">Scroll for more positions ↓</div>`;
@@ -4300,7 +4378,9 @@ window.switchView = (viewName) => {
                 window.closePinActionModal();
                 if (window.currentView === 'pin_request') {
                     window.renderPinRequestsTable();
+                    if (window.renderPRTimeline) window.renderPRTimeline();
                 }
+                if (window.renderModalTimeline) window.renderModalTimeline();
             } catch (err) {
                 console.error(err);
                 window.showToast("Error saving pin action", "error");
@@ -5472,7 +5552,7 @@ window.switchView = (viewName) => {
             } else {
                 const newReq = {
                     id: "sms-" + Date.now(),
-                    createdAt: window.getFormattedCreatedTime ? window.getFormattedCreatedTime() : new Date().toISOString(),
+                    createdAt: window.getFormattedCreatedTime ? window.getFormattedCreatedTime() : window.getPHIsoString(),
                     requestStatus: "Pending",
                     ...payload
                 };
