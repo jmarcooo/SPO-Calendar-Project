@@ -861,18 +861,6 @@
                     tempPinRequests.push(doc.data());
                 });
 
-                const localPinsStr = localStorage.getItem('spo_pin_requests');
-                if (tempPinRequests.length === 0 && localPinsStr && localPinsStr !== '[]') {
-                    const localData = JSON.parse(localPinsStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "pin_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_pin_requests');
-                        window.showToast("Local pin requests synced to cloud!", "success");
-                    }
-                }
-
                 localStorage.setItem('spo_pin_requests', JSON.stringify(tempPinRequests));
                 window.pinRequests = tempPinRequests;
                 if (window.currentView === 'pin_request' && window.renderPinRequestsTable) {
@@ -3446,9 +3434,9 @@ window.switchView = (viewName) => {
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
-                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -3463,25 +3451,63 @@ window.switchView = (viewName) => {
             document.getElementById('pr-id').value = '';
             document.getElementById('pin-request-modal-title').innerText = isPinAction ? 'Pin Post' : (id ? 'Edit Pin Request' : 'Create Pin Request');
 
-            // Enable all fields by default
             const fieldsToLock = ['pr-campaign-name', 'pr-start-date', 'pr-end-date', 'pr-category', 'pr-priority', 'pr-post-id', 'pr-post-title', 'pr-remark'];
-            fieldsToLock.forEach(fid => {
-                const el = document.getElementById(fid);
-                if(el) {
-                    el.disabled = false;
-                    el.classList.remove('bg-gray-100');
-                }
-            });
-
-            // Disable Pin settings by default for users
             const pinSettings = ['pr-page', 'pr-position', 'pr-sort'];
-            pinSettings.forEach(fid => {
-                const el = document.getElementById(fid);
-                if(el) {
-                    el.disabled = true;
-                    el.classList.add('bg-gray-100');
-                }
-            });
+            const pinSettingsSection = document.getElementById('pr-pin-settings-container');
+            const slotAvailabilitySection = document.getElementById('pr-slot-availability-container');
+
+            if (isPinAction) {
+                // Lock the main request fields
+                fieldsToLock.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = true;
+                        el.classList.add('bg-gray-100');
+                    }
+                });
+
+                // Unlock pin settings
+                pinSettings.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
+                    }
+                });
+
+                // Show slot availability and pin settings
+                if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
+                if(slotAvailabilitySection) slotAvailabilitySection.classList.remove('hidden');
+            } else {
+                // Enable main fields
+                fieldsToLock.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
+                    }
+                });
+
+                // Disable pin settings
+                pinSettings.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = true;
+                        el.classList.add('bg-gray-100');
+                    }
+                });
+
+                // Hide sections
+                if(pinSettingsSection) pinSettingsSection.classList.add('hidden');
+                if(slotAvailabilitySection) slotAvailabilitySection.classList.add('hidden');
+            }
+
+            // Set save button text
+            const saveBtn = document.getElementById('save-pr-btn');
+            if(saveBtn) {
+                saveBtn.innerText = isPinAction ? 'Save Pin Settings' : 'Save Request';
+            }
+
 
             if (prefillStart) {
                 document.getElementById('pr-start-date').value = prefillStart;
@@ -3532,6 +3558,8 @@ window.switchView = (viewName) => {
                                 el.classList.remove('bg-gray-100');
                             }
                         });
+                        if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
+                        if(slotAvailabilitySection) slotAvailabilitySection.classList.remove('hidden');
                     }
                 }
             }
@@ -3587,6 +3615,16 @@ window.switchView = (viewName) => {
 
             const formattedStartDate = window.formatDateTimeStr(startDate);
             const formattedEndDate = window.formatDateTimeStr(endDate);
+
+            const page = document.getElementById('pr-page').value;
+            const position = document.getElementById('pr-position').value;
+            const sortVal = document.getElementById('pr-sort').value;
+
+            if (page || position || sortVal) {
+                if (page && (page < 1 || page > 2)) { window.showToast("Page must be 1 or 2", "error"); return; }
+                if (position && (position < 1 || position > 10)) { window.showToast("Position must be between 1 and 10", "error"); return; }
+                if (sortVal && (sortVal < 1 || sortVal > 3)) { window.showToast("Sort must be between 1 and 3", "error"); return; }
+            }
 
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
@@ -3725,7 +3763,8 @@ window.switchView = (viewName) => {
 
         window.cyclePinSort = () => {
             window.pinSortMode = window.pinSortMode === 3 ? 1 : window.pinSortMode + 1;
-            window.renderPinRequestsTable();
+            if (window.renderPinRequestsTable) window.renderPinRequestsTable();
+            if (window.renderPRTimeline) window.renderPRTimeline();
         };
 
         window.renderPinRequestsTable = () => {
@@ -3835,7 +3874,7 @@ window.switchView = (viewName) => {
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPinRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
@@ -3852,6 +3891,11 @@ window.switchView = (viewName) => {
                                 return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                             })()}
                         </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 text-green-800' : (p.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800')}">
+                                ${p.status || 'Pending'}
+                            </span>
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             ${pinStatusStr}
                         </td>
@@ -3859,9 +3903,9 @@ window.switchView = (viewName) => {
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="window.openPinRequestModal('${p.id}', null, null, true)" class="text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-md transition-colors mr-1 shadow-sm font-bold text-xs" title="Pin Action"><i class="fa-solid fa-thumbtack mr-1"></i>Pin Post</button>` : ''}
-                            <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -3874,12 +3918,20 @@ window.switchView = (viewName) => {
             const container = document.getElementById('pr-timeline-inner');
             if (!container) return;
 
-            // Generate timeline for current week (Mon-Sun)
-            const today = new Date();
-            const dayOfWeek = today.getUTCDay();
-            const startOfWeek = new Date(today);
-            startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-            startOfWeek.setUTCHours(0, 0, 0, 0);
+            const dateInput = document.getElementById('pr-timeline-start-date');
+            let startOfWeek;
+
+            if (dateInput && dateInput.value) {
+                // If a date is provided, use it as the start date
+                startOfWeek = new Date(dateInput.value + 'T00:00:00Z');
+            } else {
+                // Otherwise default to today (not snapping to Monday, just starting from today)
+                const today = new Date();
+                startOfWeek = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+                if (dateInput) {
+                    dateInput.value = startOfWeek.toISOString().split('T')[0];
+                }
+            }
 
             const days = [];
             for (let i = 0; i < 7; i++) {
@@ -3889,8 +3941,14 @@ window.switchView = (viewName) => {
             }
 
             // Timeline Header
+
+            const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-indigo-600' :
+                (window.pinSortMode === 2 ? 'fa-sort-amount-down text-indigo-600' : 'fa-list-ol text-indigo-600'));
+
             let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
-                <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20">Position</div>`;
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 transition-colors group select-none">
+                    Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
+                </div>`;
 
             days.forEach(d => {
                 const dateStr = d.toISOString().split('T')[0];
@@ -3906,43 +3964,42 @@ window.switchView = (viewName) => {
             html += `</div>`;
 
             // Row Generation
-            const slots = [];
-            const priorities = [
-                '1-1-1', '1-10-1', '2-1-1', '2-5-1', '1-1-2', '1-10-2', '1-1-3', '1-10-3',
-                // Keep generating the rest that don't match the specific priority just in case, but user wants specific order for the top ones.
-                // Actually the requirement says "sort the Position rows on the left in this priority order: 1-1-1 -> 1-10-1 -> 2-1-1 -> 2-5-1 -> 1-1-2 -> 1-10-2 -> 1-1-3 -> 1-10-3"
-            ];
-
-            // Push priority slots first
-            priorities.forEach(id => {
-                slots.push({ id: id });
-            });
-
-            // Add remaining slots to complete the default view? User's image shows exactly these rows and a few others (e.g. 1-2-1, 1-3-1, etc...). The user requested standardizing the position sort on the left to specific order: "1-1-1 -> 1-10-1 > 2-1-1 -> 2-5-1 > 1-1-2 -> 1-10-2 > 1-1-3 -> 1-10-3".
-            // Since they listed specific order for those top ones and said "This helps me quickly see whether the higher-priority slots are occupied." Let's generate a list of all slots (maybe 1 to 10 for middle column, etc) but sort the priority ones first.
-
-            // To match the previous logic of generating a lot of slots:
             const allSlots = [];
             for (let page = 1; page <= 2; page++) {
                 for (let pos = 1; pos <= 10; pos++) {
-                    for (let sort = 1; sort <= 9; sort++) {
-                        allSlots.push(`${page}-${pos}-${sort}`);
+                    for (let sort = 1; sort <= 3; sort++) {
+                        allSlots.push({
+                            id: `${page}-${pos}-${sort}`,
+                            page: page,
+                            position: pos,
+                            sort: sort
+                        });
                     }
                 }
             }
-            // For timeline, we only need unique positions, previous code only generated 1-[1..2]-[1..9].
-            // The user's image shows slots like 1-1-1, 1-10-1, 2-1-1, 2-5-1, 1-1-2, 1-10-2, 1-1-3, 1-10-3, 1-2-1, 1-3-1, 1-4-1, 1-5-1, 1-6-1, 1-7-1, 1-8-1, 1-9-1.
-            // Let's create an ordered array based on the priority, then append remaining 1-X-Y that were normally generated.
 
-            const remaining = [
-                '1-2-1', '1-3-1', '1-4-1', '1-5-1', '1-6-1', '1-7-1', '1-8-1', '1-9-1'
-            ];
+            allSlots.sort((a, b) => {
+                const aP = a.page; const bP = b.page;
+                const aPo = a.position; const bPo = b.position;
+                const aS = a.sort; const bS = b.sort;
 
-            remaining.forEach(id => {
-                if (!slots.find(s => s.id === id)) {
-                    slots.push({ id: id });
+                if (window.pinSortMode === 1) {
+                    if (aP !== bP) return aP - bP;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aS !== bS) return aS - bS;
+                } else if (window.pinSortMode === 2) {
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aP !== bP) return aP - bP;
+                    if (aS !== bS) return aS - bS;
+                } else if (window.pinSortMode === 3) {
+                    if (aS !== bS) return aS - bS;
+                    if (aPo !== bPo) return aPo - bPo;
+                    if (aP !== bP) return aP - bP;
                 }
+                return 0;
             });
+
+            const slots = allSlots.map(s => ({ id: s.id }));
 
             const scaleMsToPct = (durationMs) => (durationMs / (7 * 24 * 60 * 60 * 1000)) * 100;
             const weekStartMs = startOfWeek.getTime();
@@ -4003,70 +4060,6 @@ window.switchView = (viewName) => {
         };
 
 
-        window.checkPRSlotAvailability = () => {
-            const dateVal = document.getElementById('pr-assist-date').value;
-            const timeVal = document.getElementById('pr-assist-time').value;
-            const durationHours = parseInt(document.getElementById('pr-assist-duration').value) || 24;
-
-            if (!dateVal || !timeVal) {
-                window.showToast("Please select target date and time.", "error");
-                return;
-            }
-
-            const targetStart = new Date(`${dateVal}T${timeVal}:00Z`);
-            const targetEnd = new Date(targetStart.getTime() + (durationHours * 60 * 60 * 1000));
-
-            const startMs = targetStart.getTime();
-            const endMs = targetEnd.getTime();
-
-            // Clear previous highlights
-            document.querySelectorAll('.pr-track').forEach(el => {
-                el.classList.remove('bg-red-50', 'bg-green-50');
-            });
-
-            const slots = [];
-            for (let col = 1; col <= 2; col++) {
-                for (let pos = 1; pos <= 9; pos++) {
-                    slots.push(`1-${col}-${pos}`);
-                }
-            }
-
-            let collisionCount = 0;
-
-            slots.forEach(slotId => {
-                const parts = slotId.split('-');
-                const reqs = window.pinRequests.filter(r => r.page === parts[0] && r.position === parts[1] && r.sort === parts[2] && r.status !== 'Completed');
-
-                let hasCollision = false;
-                for (let req of reqs) {
-                    if (!req.startDate || !req.endDate) continue;
-                    const rS = new Date(req.startDate.replace(' ', 'T') + 'Z').getTime();
-                    const rE = new Date(req.endDate.replace(' ', 'T') + 'Z').getTime();
-
-                    // Check overlap
-                    if (startMs < rE && endMs > rS) {
-                        hasCollision = true;
-                        break;
-                    }
-                }
-
-                const trackEl = document.querySelector(`.pr-track[data-slot="${slotId}"]`);
-                if (trackEl) {
-                    if (hasCollision) {
-                        trackEl.classList.add('bg-red-50');
-                        collisionCount++;
-                    } else {
-                        trackEl.classList.add('bg-green-50');
-                    }
-                }
-            });
-
-            if (collisionCount > 0) {
-                window.showToast(`Found ${collisionCount} overlapping slots. Available slots highlighted in green.`, "warning");
-            } else {
-                window.showToast("All slots are available!", "success");
-            }
-        };
 
         window.handlePRTimelineClick = (e, slotId) => {
             const track = e.currentTarget;
@@ -4119,28 +4112,63 @@ window.switchView = (viewName) => {
             window.updateSelectedPosition();
         };
 
+
+        window.modalTimelineSortState = 0; // 0: Page>Pos>Sort, 1: Pos>Page>Sort, 2: Sort>Pos>Page
+        window.cycleModalTimelineSort = () => {
+            window.modalTimelineSortState = (window.modalTimelineSortState + 1) % 3;
+            window.renderModalTimeline();
+        };
+
         window.renderModalTimeline = () => {
             const container = document.getElementById('modal-timeline-container');
             if (!container) return;
 
-            const startDateVal = document.getElementById('pr-start-date').value;
-            const endDateVal = document.getElementById('pr-end-date').value;
+            let startDateVal = document.getElementById('modal-timeline-start-date').value;
+            if (!startDateVal) {
+                const prStartVal = document.getElementById('pr-start-date').value;
+                if(prStartVal) {
+                    startDateVal = prStartVal.split('T')[0];
+                    document.getElementById('modal-timeline-start-date').value = startDateVal;
+                }
+            }
 
-            if (!startDateVal || !endDateVal) {
-                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Select start and end dates to view availability</div>';
+            if (!startDateVal) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Select a start date to view availability</div>';
                 return;
             }
 
-            const startDate = new Date(startDateVal);
-            const endDate = new Date(endDateVal);
+            const startDate = new Date(startDateVal + 'T00:00:00Z');
+            if (isNaN(startDate.getTime())) return;
 
-            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return;
+            // Generate 7-day view
+            const endDate = new Date(startDate.getTime());
+            endDate.setUTCDate(endDate.getUTCDate() + 6);
 
-            // Generate priority slots and a few others
-            const priorities = [
-                '1-1-1', '1-10-1', '2-1-1', '2-5-1', '1-1-2', '1-10-2', '1-1-3', '1-10-3',
-                '1-2-1', '1-3-1', '1-4-1', '1-5-1', '1-6-1', '1-7-1', '1-8-1', '1-9-1'
-            ];
+            const allSlots = [];
+            for (let page = 1; page <= 2; page++) {
+                for (let pos = 1; pos <= 10; pos++) {
+                    for (let sort = 1; sort <= 3; sort++) {
+                        allSlots.push({ page, pos, sort, id: `${page}-${pos}-${sort}` });
+                    }
+                }
+            }
+
+            allSlots.sort((a, b) => {
+                if (window.modalTimelineSortState === 1) {
+                    if (a.pos !== b.pos) return a.pos - b.pos;
+                    if (a.page !== b.page) return a.page - b.page;
+                    return a.sort - b.sort;
+                } else if (window.modalTimelineSortState === 2) {
+                    if (a.sort !== b.sort) return a.sort - b.sort;
+                    if (a.pos !== b.pos) return a.pos - b.pos;
+                    return a.page - b.page;
+                } else {
+                    if (a.page !== b.page) return a.page - b.page;
+                    if (a.pos !== b.pos) return a.pos - b.pos;
+                    return a.sort - b.sort;
+                }
+            });
+            const priorities = allSlots.map(s => s.id);
 
             const selectedPage = document.getElementById('pr-page').value;
             const selectedPosition = document.getElementById('pr-position').value;
@@ -4161,7 +4189,7 @@ window.switchView = (viewName) => {
 
             let html = `
                 <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 shadow-sm">
-                    <div class="w-16 shrink-0 border-r border-gray-200 flex items-center justify-center">Position</div>
+                    <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
                         <i class="fa-solid fa-arrow-right text-gray-400"></i>
@@ -4233,19 +4261,11 @@ window.switchView = (viewName) => {
         };
 
         window.openPinActionModal = (id) => {
-            const form = document.getElementById('pin-action-form');
-            form.reset();
-            document.getElementById('pa-id').value = id;
-
-            const req = window.pinRequests.find(p => p.id === id);
-            if (req) {
-                document.getElementById('pa-page').value = req.page || '';
-                document.getElementById('pa-position').value = req.position || '';
-                document.getElementById('pa-sort').value = req.sort || '';
-            }
-
-            document.getElementById('pin-action-modal').classList.remove('hidden');
+            // Instead of opening the separate small pin action modal, we open the main Create Pin Request modal
+            // with read-only fields and 'Pin Post' title.
+            window.openPinRequestModal(id, null, null, true);
         };
+
 
         window.closePinActionModal = () => {
             document.getElementById('pin-action-modal').classList.add('hidden');
@@ -4358,10 +4378,10 @@ window.switchView = (viewName) => {
                     </a>
                     <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
                         <button onclick="openQuickLinkModal('${link.id}')" class="text-gray-400 hover:text-indigo-600 p-1" title="Edit">
-                            <i class="fa-solid fa-pen text-xs"></i>
+                            <i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i>
                         </button>
                         <button onclick="deleteQuickLink('${link.id}')" class="text-gray-400 hover:text-red-600 p-1" title="Delete">
-                            <i class="fa-solid fa-trash text-xs"></i>
+                            <i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i>
                         </button>
                     </div>
                 `;
@@ -4620,10 +4640,6 @@ window.switchView = (viewName) => {
             if (!evt) return;
             
             window.currentDrawerTaskId = taskId;
-            if (document.getElementById('assignee-filter-select')) {
-                document.getElementById('assignee-filter-select').value = 'All';
-            }
-            window.assigneeFilter = 'All';
             
             const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
             document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
@@ -5369,7 +5385,7 @@ window.switchView = (viewName) => {
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 
                 row.innerHTML = `
@@ -5718,10 +5734,10 @@ window.switchView = (viewName) => {
                 const reqStatusClass = statusColors[reqStatus] || 'bg-gray-100 text-gray-800';
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) {
-                    completeBtn = `<button onclick="window.completeCWRequest(\'${p.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
+                    completeBtn = `<button onclick="window.completeCWRequest(\'${p.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openCWRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openCWRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
@@ -5747,8 +5763,8 @@ html += `
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                             ${completeBtn}
-                            <button onclick="window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <button onclick="event.stopPropagation(); window.openCWRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -5915,7 +5931,7 @@ html += `
                 else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPDRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPDRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
@@ -5933,9 +5949,9 @@ html += `
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(p.status === 'Under Review' && window.isCurrentUserPOC('prize_distribution')) ? `<button onclick="window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs"></i></button>` : ''}
-                            <button onclick="window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                            ${(p.status === 'Under Review' && window.isCurrentUserPOC('prize_distribution')) ? `<button onclick="event.stopPropagation(); window.openPDCompleteModal('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPDRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deletePDRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -5949,7 +5965,7 @@ html += `
 
 
         window.syncPinRequestSilent = async function(req) {
-            let requests = JSON.parse(localStorage.getItem('spo_pin_v2') || '[]');
+            let requests = JSON.parse(localStorage.getItem('spo_pin_requests') || '[]');
             const index = requests.findIndex(r => r.id === req.id);
             if (index > -1) {
                 requests[index] = req;
@@ -5960,9 +5976,9 @@ html += `
             // CRITICAL FIX: Update in-memory state so table updates instantly
             window.pinRequests = requests;
 
-            localStorage.setItem('spo_pin_v2', JSON.stringify(requests));
+            localStorage.setItem('spo_pin_requests', JSON.stringify(requests));
             if (db) {
-                try { await setDoc(doc(db, "pin_requests_v2", req.id), req); } catch(e) { console.error(e); }
+                try { await setDoc(doc(db, "pin_requests", req.id), req); } catch(e) { console.error(e); }
             }
             if (window.currentView === 'pin_request') {
                 window.renderPinRequestsTable();
@@ -6510,7 +6526,7 @@ html += `
                         </div>
 
                         <!-- Pin Settings Section -->
-                        <div class="pt-2">
+                        <div class="pt-2 hidden" id="pr-pin-settings-container">
                             <h4 class="text-md font-bold text-gray-900 mb-3">Pin Settings</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
@@ -6534,9 +6550,15 @@ html += `
                 </div>
 
                 <!-- Right Column (Slot Availability) -->
-                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[500px]">
-                    <h4 class="text-md font-bold text-gray-900 mb-1">Slot Availability</h4>
-                    <p class="text-xs text-gray-500 mb-3">Automatically checked for this post's pin period</p>
+                <div class="flex-[1.5] bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[600px] hidden" id="pr-slot-availability-container">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-md font-bold text-gray-900">Slot Availability</h4>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-xs font-medium text-gray-700">Start Date:</label>
+                            <input type="date" id="modal-timeline-start-date" class="border border-gray-300 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">View 7-day slot availability starting from the selected date</p>
 
                     <!-- Legend -->
                     <div class="flex space-x-4 mb-3 text-xs text-gray-600">
