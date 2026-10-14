@@ -359,6 +359,47 @@
 
     <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
+
+        // --- GLOBAL TIMEZONE CONFIGURATION ---
+        window.getPHParts = () => {
+            const parts = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Manila',
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+            }).formatToParts(new Date());
+            const getPart = (type) => parseInt(parts.find(p => p.type === type).value, 10);
+            return {
+                year: getPart('year'),
+                month: getPart('month') - 1,
+                date: getPart('day'),
+                hours: getPart('hour') === 24 ? 0 : getPart('hour'),
+                minutes: getPart('minute'),
+                seconds: getPart('second')
+            };
+        };
+
+        window.getFormattedCreatedTime = () => {
+            const p = window.getPHParts();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${p.year}-${pad(p.month + 1)}-${pad(p.date)} ${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}`;
+        };
+
+        window.getPHDateStr = () => {
+            return window.getFormattedCreatedTime().split(' ')[0];
+        };
+
+        window.getPHIsoString = () => {
+            const p = window.getPHParts();
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${p.year}-${pad(p.month + 1)}-${pad(p.date)}T${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}.000Z`;
+        };
+
+        window.getPHFakeUtcMs = () => {
+            const p = window.getPHParts();
+            return Date.UTC(p.year, p.month, p.date, p.hours, p.minutes, p.seconds);
+        };
+        // -------------------------------------
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -548,9 +589,9 @@
             tooltip.style.top = `${y}px`;
         };
 
-        let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : new Date().getMonth();
-        let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : new Date().getFullYear();
-        let currentDateObj = new Date();
+        let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : window.getPHParts().month;
+        let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : window.getPHParts().year;
+        let currentDateObj = null;
         
         window.tempSelectedDate = null;
         window.budgetSettings = { limits: {}, currency: 'PHP' }; 
@@ -602,16 +643,12 @@
             dashboardStatus: {}
         };
 
-        window.getFormattedCreatedTime = () => {
-            const now = new Date();
-            const pad = (n) => n.toString().padStart(2, '0');
-            return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        }
+
 
         window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
 
         window.calculateStatus = (startDate, endDate) => {
-            const today = new Date().toISOString().split('T')[0];
+            const today = window.getPHDateStr();
             if (today < startDate) return 'Upcoming';
             if (today > endDate) return 'Done';
             return 'Ongoing';
@@ -671,7 +708,7 @@
         };
 
         window.initApp = () => {
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const filterEl = document.getElementById('budget-filter-month');
             if(filterEl) filterEl.value = window.budgetFilterMonth;
@@ -894,8 +931,8 @@
                 let tempEvents = [];
                 snapshot.forEach((doc) => {
                     let e = doc.data();
-                    if (!e.startDate) e.startDate = e.date || new Date().toISOString().split('T')[0];
-                    if (!e.endDate) e.endDate = e.date || new Date().toISOString().split('T')[0];
+                    if (!e.startDate) e.startDate = e.date || window.getPHDateStr();
+                    if (!e.endDate) e.endDate = e.date || window.getPHDateStr();
                     e.status = window.calculateStatus(e.startDate, e.endDate);
                     
                     if (!e.fields) e.fields = { ...defaultFields };
@@ -1530,7 +1567,7 @@
                 assignees,
                 fields: fieldsToSave, 
                 progress: progress, 
-                updatedAt: new Date().toISOString()
+                updatedAt: window.getPHIsoString()
             };
             if (itemType === 'event') {
                 eventData.imageLink = imageLink;
@@ -1577,7 +1614,7 @@
         window.triggerReminder = (id, title, assigneesStr) => {
             const task = window.events.find(ev => ev.id === id);
             if (task) {
-                task.lastReminded = new Date().toISOString();
+                task.lastReminded = window.getPHIsoString();
                 window.syncEventToFirestore(task);
                 const names = assigneesStr ? assigneesStr : 'the team';
                 window.showToast(`Reminder sent to ${names} for "${title}"!`, "success", "fa-bell");
@@ -2155,7 +2192,7 @@ window.switchView = (viewName) => {
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             calMonthYear.innerText = `${monthNames[currentMonth]} ${currentYear}`;
 
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
             const currentDay = today.getDate();
 
@@ -2345,7 +2382,9 @@ window.switchView = (viewName) => {
                 const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
                 const dateObj = new Date(evt.endDate);
                 const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
-                const daysDiff = Math.ceil((dateObj - new Date()) / (1000 * 60 * 60 * 24));
+                const p = window.getPHParts();
+                const nowUtc = Date.UTC(p.year, p.month, p.date);
+                const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
                 const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500';
 
                 const el = document.createElement('div');
@@ -3932,8 +3971,8 @@ window.switchView = (viewName) => {
                 startOfWeek = new Date(dateInput.value + 'T00:00:00Z');
             } else {
                 // Otherwise default to today (not snapping to Monday, just starting from today)
-                const today = new Date();
-                startOfWeek = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+                const p = window.getPHParts();
+                startOfWeek = new Date(Date.UTC(p.year, p.month, p.date));
                 if (dateInput) {
                     dateInput.value = startOfWeek.toISOString().split('T')[0];
                 }
@@ -4025,7 +4064,7 @@ window.switchView = (viewName) => {
                 });
 
                 // Add gray overlay for past time
-                const nowMs = Date.now();
+                const nowMs = window.getPHFakeUtcMs();
                 if (nowMs > weekStartMs) {
                     const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
                     html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
@@ -4068,7 +4107,7 @@ window.switchView = (viewName) => {
                         baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400';
                     }
 
-                    const isPast = eMs < Date.now();
+                    const isPast = eMs < window.getPHFakeUtcMs();
                     const grayOutClass = isPast ? 'opacity-50 grayscale' : '';
 
                     html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${baseColorClass} ${grayOutClass} text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 z-10 transition-all"
@@ -4094,7 +4133,7 @@ window.switchView = (viewName) => {
             const pct = clickX / rect.width;
 
             // Calculate clicked date
-            const today = new Date();
+            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             const dayOfWeek = today.getUTCDay();
             const startOfWeek = new Date(today);
             startOfWeek.setUTCDate(today.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
@@ -5513,7 +5552,7 @@ window.switchView = (viewName) => {
             } else {
                 const newReq = {
                     id: "sms-" + Date.now(),
-                    createdAt: window.getFormattedCreatedTime ? window.getFormattedCreatedTime() : new Date().toISOString(),
+                    createdAt: window.getFormattedCreatedTime ? window.getFormattedCreatedTime() : window.getPHIsoString(),
                     requestStatus: "Pending",
                     ...payload
                 };
