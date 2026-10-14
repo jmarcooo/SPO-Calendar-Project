@@ -3903,6 +3903,11 @@ window.switchView = (viewName) => {
                                 return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                             })()}
                         </td>
+                        <td class="px-3 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 text-green-800' : (p.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800')}">
+                                ${p.status || 'Pending'}
+                            </span>
+                        </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             ${pinStatusStr}
                         </td>
@@ -3910,7 +3915,7 @@ window.switchView = (viewName) => {
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="window.openPinRequestModal('${p.id}', null, null, true)" class="text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-md transition-colors mr-1 shadow-sm font-bold text-xs" title="Pin Action"><i class="fa-solid fa-thumbtack mr-1"></i>Pin Post</button>` : ''}
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="window.openPinRequestModal('${p.id}', null, null, true)" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs"></i></button>` : ''}
                             <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
                             <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
