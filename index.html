@@ -3886,7 +3886,7 @@ window.switchView = (viewName) => {
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPinRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
@@ -3915,9 +3915,9 @@ window.switchView = (viewName) => {
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="window.openPinRequestModal('${p.id}', null, null, true)" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs"></i></button>` : ''}
-                            <button onclick="window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button>
                         </td>
                     </tr>
                 `;
@@ -4652,10 +4652,6 @@ window.switchView = (viewName) => {
             if (!evt) return;
             
             window.currentDrawerTaskId = taskId;
-            if (document.getElementById('assignee-filter-select')) {
-                document.getElementById('assignee-filter-select').value = 'All';
-            }
-            window.assigneeFilter = 'All';
             
             const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
             document.getElementById('drawer-title').innerText = `[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr}`;
@@ -5753,7 +5749,7 @@ window.switchView = (viewName) => {
                     completeBtn = `<button onclick="window.completeCWRequest(\'${p.id}\'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs"></i></button>`;
                 }
 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openCWRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openCWRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
@@ -5947,7 +5943,7 @@ html += `
                 else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest(\'button\')) window.openPDRequestDetails(\'${p.id}\')">
+                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPDRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
