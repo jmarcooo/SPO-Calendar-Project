@@ -3463,29 +3463,63 @@ window.switchView = (viewName) => {
             document.getElementById('pr-id').value = '';
             document.getElementById('pin-request-modal-title').innerText = isPinAction ? 'Pin Post' : (id ? 'Edit Pin Request' : 'Create Pin Request');
 
-            // Enable all fields by default
             const fieldsToLock = ['pr-campaign-name', 'pr-start-date', 'pr-end-date', 'pr-category', 'pr-priority', 'pr-post-id', 'pr-post-title', 'pr-remark'];
-            fieldsToLock.forEach(fid => {
-                const el = document.getElementById(fid);
-                if(el) {
-                    el.disabled = false;
-                    el.classList.remove('bg-gray-100');
-                }
-            });
-
-            // Disable Pin settings by default for users
             const pinSettings = ['pr-page', 'pr-position', 'pr-sort'];
-            pinSettings.forEach(fid => {
-                const el = document.getElementById(fid);
-                if(el) {
-                    el.disabled = true;
-                    el.classList.add('bg-gray-100');
-                }
-            });
             const pinSettingsSection = document.getElementById('pr-pin-settings-container');
             const slotAvailabilitySection = document.getElementById('pr-slot-availability-container');
-            if(pinSettingsSection) pinSettingsSection.classList.add('hidden');
-            if(slotAvailabilitySection) slotAvailabilitySection.classList.add('hidden');
+
+            if (isPinAction) {
+                // Lock the main request fields
+                fieldsToLock.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = true;
+                        el.classList.add('bg-gray-100');
+                    }
+                });
+
+                // Unlock pin settings
+                pinSettings.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
+                    }
+                });
+
+                // Show slot availability and pin settings
+                if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
+                if(slotAvailabilitySection) slotAvailabilitySection.classList.remove('hidden');
+            } else {
+                // Enable main fields
+                fieldsToLock.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
+                    }
+                });
+
+                // Disable pin settings
+                pinSettings.forEach(fid => {
+                    const el = document.getElementById(fid);
+                    if(el) {
+                        el.disabled = true;
+                        el.classList.add('bg-gray-100');
+                    }
+                });
+
+                // Hide sections
+                if(pinSettingsSection) pinSettingsSection.classList.add('hidden');
+                if(slotAvailabilitySection) slotAvailabilitySection.classList.add('hidden');
+            }
+
+            // Set save button text
+            const saveBtn = document.getElementById('save-pr-btn');
+            if(saveBtn) {
+                saveBtn.innerText = isPinAction ? 'Save Pin Settings' : 'Save Request';
+            }
+
 
             if (prefillStart) {
                 document.getElementById('pr-start-date').value = prefillStart;
@@ -4089,18 +4123,26 @@ window.switchView = (viewName) => {
             const container = document.getElementById('modal-timeline-container');
             if (!container) return;
 
-            const startDateVal = document.getElementById('pr-start-date').value;
-            const endDateVal = document.getElementById('pr-end-date').value;
+            let startDateVal = document.getElementById('modal-timeline-start-date').value;
+            if (!startDateVal) {
+                const prStartVal = document.getElementById('pr-start-date').value;
+                if(prStartVal) {
+                    startDateVal = prStartVal.split('T')[0];
+                    document.getElementById('modal-timeline-start-date').value = startDateVal;
+                }
+            }
 
-            if (!startDateVal || !endDateVal) {
-                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Select start and end dates to view availability</div>';
+            if (!startDateVal) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Select a start date to view availability</div>';
                 return;
             }
 
-            const startDate = new Date(startDateVal);
-            const endDate = new Date(endDateVal);
+            const startDate = new Date(startDateVal + 'T00:00:00Z');
+            if (isNaN(startDate.getTime())) return;
 
-            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return;
+            // Generate 7-day view
+            const endDate = new Date(startDate.getTime());
+            endDate.setUTCDate(endDate.getUTCDate() + 6);
 
             // Generate priority slots and a few others
             const priorities = [
@@ -4199,19 +4241,11 @@ window.switchView = (viewName) => {
         };
 
         window.openPinActionModal = (id) => {
-            const form = document.getElementById('pin-action-form');
-            form.reset();
-            document.getElementById('pa-id').value = id;
-
-            const req = window.pinRequests.find(p => p.id === id);
-            if (req) {
-                document.getElementById('pa-page').value = req.page || '';
-                document.getElementById('pa-position').value = req.position || '';
-                document.getElementById('pa-sort').value = req.sort || '';
-            }
-
-            document.getElementById('pin-action-modal').classList.remove('hidden');
+            // Instead of opening the separate small pin action modal, we open the main Create Pin Request modal
+            // with read-only fields and 'Pin Post' title.
+            window.openPinRequestModal(id, null, null, true);
         };
+
 
         window.closePinActionModal = () => {
             document.getElementById('pin-action-modal').classList.add('hidden');
@@ -6500,9 +6534,15 @@ html += `
                 </div>
 
                 <!-- Right Column (Slot Availability) -->
-                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[500px] hidden" id="pr-slot-availability-container">
-                    <h4 class="text-md font-bold text-gray-900 mb-1">Slot Availability</h4>
-                    <p class="text-xs text-gray-500 mb-3">Automatically checked for this post's pin period</p>
+                <div class="flex-[1.5] bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[600px] hidden" id="pr-slot-availability-container">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-md font-bold text-gray-900">Slot Availability</h4>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-xs font-medium text-gray-700">Start Date:</label>
+                            <input type="date" id="modal-timeline-start-date" class="border border-gray-300 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">View 7-day slot availability starting from the selected date</p>
 
                     <!-- Legend -->
                     <div class="flex space-x-4 mb-3 text-xs text-gray-600">
