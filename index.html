@@ -3457,12 +3457,12 @@ window.switchView = (viewName) => {
             const slotAvailabilitySection = document.getElementById('pr-slot-availability-container');
 
             if (isPinAction) {
-                // Lock the main request fields
+                // Main request fields stay unlocked
                 fieldsToLock.forEach(fid => {
                     const el = document.getElementById(fid);
                     if(el) {
-                        el.disabled = true;
-                        el.classList.add('bg-gray-100');
+                        el.disabled = false;
+                        el.classList.remove('bg-gray-100');
                     }
                 });
 
@@ -3543,12 +3543,12 @@ window.switchView = (viewName) => {
                     document.getElementById('pr-sort').value = req.sort || '';
 
                     if (isPinAction || (req.status !== 'Pending' && window.isCurrentUserPOC('post_management'))) {
-                        // If it's a Pin Action or already under review, lock user fields and unlock Pin Settings
+                        // If it's a Pin Action or already under review, user fields stay unlocked, unlock Pin Settings
                         fieldsToLock.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
-                                el.disabled = true;
-                                el.classList.add('bg-gray-100');
+                                el.disabled = false;
+                                el.classList.remove('bg-gray-100');
                             }
                         });
                         pinSettings.forEach(fid => {
@@ -3637,6 +3637,10 @@ window.switchView = (viewName) => {
             const existing = id ? window.pinRequests.find(p => p.id === id) : null;
             let status = existing ? existing.status : 'Pending';
 
+            if (page && position && sortVal) {
+                status = 'Completed';
+            }
+
             const reqData = {
                 id: reqId,
                 campaignName,
@@ -3675,7 +3679,9 @@ window.switchView = (viewName) => {
                 window.closePinRequestModal();
                 if (window.currentView === 'pin_request') {
                     window.renderPinRequestsTable();
+                    if (window.renderPRTimeline) window.renderPRTimeline();
                 }
+                if (window.renderModalTimeline) window.renderModalTimeline();
             } catch (err) {
                 console.error(err);
                 window.showToast("Error saving pin request", "error");
@@ -4300,7 +4306,9 @@ window.switchView = (viewName) => {
                 window.closePinActionModal();
                 if (window.currentView === 'pin_request') {
                     window.renderPinRequestsTable();
+                    if (window.renderPRTimeline) window.renderPRTimeline();
                 }
+                if (window.renderModalTimeline) window.renderModalTimeline();
             } catch (err) {
                 console.error(err);
                 window.showToast("Error saving pin action", "error");
