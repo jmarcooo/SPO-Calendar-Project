@@ -4049,9 +4049,22 @@ window.switchView = (viewName) => {
                     let widthPct = scaleMsToPct(Math.min(weekEndMs, eMs) - Math.max(weekStartMs, sMs));
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
-                    const statusColor = req.status === 'Completed' ? 'bg-emerald-500' : (req.status === 'Under Review' ? 'bg-amber-500' : 'bg-indigo-500');
 
-                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${statusColor} text-white text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 ring-indigo-400 z-10"
+                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    if (req.category === 'PGC' || req.category === 'Content Writer') {
+                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400';
+                    } else if (req.category === 'UGC' || req.category === 'Perya Host') {
+                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400';
+                    } else if (req.status === 'Completed') {
+                        baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    } else if (req.status === 'Under Review') {
+                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400';
+                    }
+
+                    const isPast = eMs < Date.now();
+                    const grayOutClass = isPast ? 'opacity-50 grayscale' : '';
+
+                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${baseColorClass} ${grayOutClass} text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 z-10 transition-all"
                                 style="left: ${leftPct}%; width: ${widthPct}%;"
                                 title="${req.campaignName}\nStart: ${req.startDate}\nEnd: ${req.endDate}\nDuration: ${durationH}h\nOwner: ${req.owner || 'Unknown'}"
                                 onclick="event.stopPropagation(); window.openPinRequestDetails('${req.id}')">
