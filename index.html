@@ -617,7 +617,7 @@
             }
         };
 
-        let drawerAccordionStates = { links: true, media: false, ops: false, dash: false };
+        let drawerAccordionStates = { links: true, media: false, ops: false};
         
         window.budgetSearchQuery = '';
         window.budgetFilterOwner = 'All';
@@ -628,7 +628,7 @@
         window.assigneeFilter = 'All';
         window.searchQuery = '';
         window.statusFilter = 'All';
-        window.sortCol = 'date'; 
+        window.sortCol = 'default';
         window.sortAsc = false;
 
         window.currentCampaignPosts = [];
@@ -639,8 +639,7 @@
             hashtags: [], postIds: [], ignoreListed: false,
             gameReview: 'Pending', dailyTaskLinked: false, contentWriters: 'Pending',
             imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
-            postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending',
-            dashboardStatus: {}
+            postPinned: 'Pending', rewardDistributed: 'Pending', rewardsBanner: 'Pending'
         };
 
 
@@ -691,17 +690,10 @@
                 {k: 'rewardDistributed', l: 'Reward Dist.'}, {k: 'rewardsBanner', l: 'Rewards Banner'}
             ];
             ops.forEach(op => {
-                if (f[op.k] !== 'Done' && f[op.k] !== 'Not Applicable') pending.push(op.l);
+                if (f[op.k] !== 'Yes' && f[op.k] !== 'N/A') pending.push(op.l);
             });
             
-            let maxDash = 0;
-            if (f.dashboardStatus) {
-                for(let d in f.dashboardStatus) {
-                    let v = parseFloat(f.dashboardStatus[d])||0;
-                    if(v>maxDash) maxDash=v;
-                }
-            }
-            if (maxDash < 100) pending.push(`Daily Tracking (${maxDash.toFixed(0)}%)`);
+
             
             if (pending.length === 0) return "All tasks completed!";
             return "Pending Items:\n• " + pending.join("\n• ");
@@ -937,7 +929,6 @@
                     
                     if (!e.fields) e.fields = { ...defaultFields };
                     if (typeof e.fields.hashtags === 'string') e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
-                    if (!e.fields.dashboardStatus) e.fields.dashboardStatus = {};
                     e.progress = window.calcProgress(e);
                     tempEvents.push(e);
                 });
@@ -1176,8 +1167,8 @@
                 const val = fields[op.key] || 'Pending';
                 let color = 'text-gray-500';
                 let icon = 'fa-circle text-[8px]';
-                if (val === 'Done') { color = 'text-emerald-600'; icon = 'fa-check'; }
-                if (val === 'Not Applicable') { color = 'text-gray-400'; icon = 'fa-minus'; }
+                if (val === 'Yes') { color = 'text-emerald-600'; icon = 'fa-check'; }
+                if (val === 'N/A') { color = 'text-gray-400'; icon = 'fa-minus'; }
                 return `<div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
             }).join('');
 
@@ -1458,17 +1449,10 @@
             ];
             
             dropdownFields.forEach(key => {
-                if (fields[key] === 'Done' || fields[key] === 'Not Applicable') completed++;
+                if (fields[key] === 'Yes' || fields[key] === 'N/A') completed++;
             });
 
-            let maxDashStatus = 0;
-            if (fields.dashboardStatus) {
-                for (let date in fields.dashboardStatus) {
-                    let val = parseFloat(fields.dashboardStatus[date]) || 0;
-                    if (val > maxDashStatus) maxDashStatus = val;
-                }
-            }
-            completed += Math.min(100, maxDashStatus) / 100;
+
 
             return (completed / totalItems) * 100;
         }
@@ -1539,17 +1523,7 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
-            if (existingEvent && (existingEvent.startDate !== startDate || existingEvent.endDate !== endDate)) {
-                if (fieldsToSave.dashboardStatus) {
-                    const oldDates = Object.keys(fieldsToSave.dashboardStatus);
-                    const newDates = window.getDatesInRange(startDate, endDate);
-                    oldDates.forEach(d => {
-                        if (!newDates.includes(d)) {
-                            delete fieldsToSave.dashboardStatus[d];
-                        }
-                    });
-                }
-            }
+
 
             const tempEventForCalc = { itemType, startDate, endDate, fields: fieldsToSave, isEventOnly: itemType === 'event' };
             const progress = window.calcProgress(tempEventForCalc);
@@ -1683,9 +1657,23 @@
                 const aEnd = a.endDate || '';
                 const bEnd = b.endDate || '';
 
+                                if (window.sortCol === 'default') {
+                    const getRank = (status) => {
+                        if (status === 'Ongoing') return 3;
+                        if (status === 'Upcoming') return 2;
+                        return 1;
+                    };
+                    const rankA = getRank(a.status);
+                    const rankB = getRank(b.status);
+                    if (rankA !== rankB) return rankB - rankA;
+
+                    const timeA = new Date(aStart).getTime() || 0;
+                    const timeB = new Date(bStart).getTime() || 0;
+                    return timeB - timeA;
+                }
+
                 let valA = a[window.sortCol]; 
                 let valB = b[window.sortCol];
-
                 if (window.sortCol === 'assignees') { 
                     valA = (a.assignees || []).join(', '); 
                     valB = (b.assignees || []).join(', '); 
@@ -1695,9 +1683,11 @@
                 } else if (window.sortCol === 'title' || window.sortCol === 'status') { 
                     valA = (valA || '').toLowerCase(); 
                     valB = (valB || '').toLowerCase(); 
-                } else if (window.sortCol === 'date') { 
-                    valA = new Date(aStart).getTime(); 
-                    valB = new Date(bStart).getTime(); 
+                } else if (window.sortCol === 'startDate' || window.sortCol === 'endDate' || window.sortCol === 'date') {
+                    const dateA = window.sortCol === 'endDate' ? aEnd : aStart;
+                    const dateB = window.sortCol === 'endDate' ? bEnd : bStart;
+                    valA = new Date(dateA).getTime();
+                    valB = new Date(dateB).getTime();
                 }
                 
                 if (valA < valB) return window.sortAsc ? -1 : 1;
@@ -1713,12 +1703,6 @@
                     return s;
                 }).join(' | ');
 
-                const dashStatuses = f.dashboardStatus || {};
-                const dashStr = Object.keys(dashStatuses)
-                    .sort()
-                    .map(date => `${date}: ${dashStatuses[date]}%`)
-                    .join(' | ');
-
                 return {
                     "Task Title": e.title || '', 
                     "Start Date": e.startDate || '', 
@@ -1729,8 +1713,7 @@
                     "Progress (%)": parseFloat((e.progress || 0).toFixed(2)),
                     "Created Time": e.CreatedTime || '',
                     
-                    "Document Link": f.document || '', 
-                    "Post-Mortem Report Link": f.postMortemReport || '',
+                    "Documents": (f.documents || []).map(d => `${d.type || 'N/A'}: ${d.url || 'N/A'}`).join(' | '),
                     
                     "Hashtags": (f.hashtags || []).join(', '), 
                     "Post IDs": posts,
@@ -1744,9 +1727,7 @@
                     "Reward Distributed": f.rewardDistributed || 'Pending', 
                     "Rewards Banner": f.rewardsBanner || 'Pending',
                     "Ignore Listed": f.ignoreListed ? 'Yes' : 'No', 
-                    "Daily Task": f.dailyTask ? 'Yes' : 'No',
-                    
-                    "Dashboard Status Tracker": dashStr
+                    "Daily Task": f.dailyTask ? 'Yes' : 'No'
                 };
             });
 
@@ -2484,11 +2465,11 @@ window.switchView = (viewName) => {
             
             tasksTable.innerHTML = '';
             if (window.events.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No content tasks found. Create one to get started.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No content tasks found. Create one to get started.</td></tr>`;
                 return;
             }
 
-            ['title', 'assignees', 'status', 'progress'].forEach(col => {
+            ['title', 'startDate', 'endDate', 'assignees', 'status', 'progress'].forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
                 if (icon) { 
                     icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300 group-hover:text-gray-500'); 
@@ -2512,6 +2493,21 @@ window.switchView = (viewName) => {
                 const aEnd = a.endDate || '';
                 const bEnd = b.endDate || '';
 
+                                if (window.sortCol === 'default') {
+                    const getRank = (status) => {
+                        if (status === 'Ongoing') return 3;
+                        if (status === 'Upcoming') return 2;
+                        return 1;
+                    };
+                    const rankA = getRank(a.status);
+                    const rankB = getRank(b.status);
+                    if (rankA !== rankB) return rankB - rankA;
+
+                    const timeA = new Date(aStart).getTime() || 0;
+                    const timeB = new Date(bStart).getTime() || 0;
+                    return timeB - timeA;
+                }
+
                 let valA = a[window.sortCol]; 
                 let valB = b[window.sortCol];
                 if (window.sortCol === 'assignees') { 
@@ -2523,9 +2519,11 @@ window.switchView = (viewName) => {
                 } else if (window.sortCol === 'title' || window.sortCol === 'status') { 
                     valA = (valA || '').toLowerCase(); 
                     valB = (valB || '').toLowerCase(); 
-                } else if (window.sortCol === 'date') { 
-                    valA = new Date(aStart).getTime(); 
-                    valB = new Date(bStart).getTime(); 
+                } else if (window.sortCol === 'startDate' || window.sortCol === 'endDate' || window.sortCol === 'date') {
+                    const dateA = window.sortCol === 'endDate' ? aEnd : aStart;
+                    const dateB = window.sortCol === 'endDate' ? bEnd : bStart;
+                    valA = new Date(dateA).getTime();
+                    valB = new Date(dateB).getTime();
                 }
 
                 if (valA < valB) return window.sortAsc ? -1 : 1;
@@ -2534,14 +2532,22 @@ window.switchView = (viewName) => {
             });
 
             if (filteredEvents.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No tasks match your filters.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No tasks match your filters.</td></tr>`;
                 return;
             }
 
             filteredEvents.forEach(evt => {
                 const tr = document.createElement('tr');
                 tr.id = `task-row-${evt.id}`;
-                tr.className = 'hover:bg-indigo-50 cursor-pointer transition-colors duration-200 group';
+
+                let baseClass = 'cursor-pointer transition-colors duration-200 group';
+                if (evt.status === 'Done') {
+                    baseClass += ' opacity-60 bg-gray-50 grayscale hover:bg-gray-100';
+                } else {
+                    baseClass += ' hover:bg-indigo-50';
+                }
+                tr.className = baseClass;
+
                 tr.title = window.getPendingSummary(evt);
                 tr.onclick = (e) => { 
                     if(e.target.closest('button') || e.target.closest('input')) return; 
@@ -2575,8 +2581,13 @@ window.switchView = (viewName) => {
                             <div class="flex items-center">
                                 <span class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
                             </div>
-                            <span class="text-xs text-gray-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i>${displayDate}</span>
                         </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatShortDate(evt.startDate)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatShortDate(evt.endDate)}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${(function(){
@@ -4812,44 +4823,15 @@ window.switchView = (viewName) => {
             setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
         };
 
-        window.updateDashboardStatus = (taskId, changedDateStr, value) => {
-            const task = window.events.find(e => e.id === taskId); 
-            if (!task) return;
-            if (!task.fields.dashboardStatus) task.fields.dashboardStatus = {};
-            
-            let numVal = parseFloat(value); 
-            if (isNaN(numVal)) numVal = 0; 
-            if (numVal > 100) numVal = 100; 
-            if (numVal < 0) numVal = 0;
-            
-            task.fields.dashboardStatus[changedDateStr] = numVal;
-            
-            if (numVal === 100) {
-                const dates = window.getDatesInRange(task.startDate, task.endDate);
-                let hit = false;
-                dates.forEach(d => { 
-                    if (d === changedDateStr) hit = true; 
-                    else if (hit) { task.fields.dashboardStatus[d] = 100; } 
-                });
-            }
-            
-            task.progress = window.calcProgress(task);
-            
-            window.syncEventToFirestore(task);
-            window.updateDrawerProgressUI(task); 
-            window.renderDrawerChecklist(task); 
-            window.renderUI();
-        };
-
         window.renderDrawerChecklist = (evt) => {
             const list = document.getElementById('drawer-checklist');
             
             const existingDetails = list.querySelectorAll('details');
-            if (existingDetails.length === 4) {
+            if (existingDetails.length === 3) {
                 drawerAccordionStates.links = existingDetails[0].open; 
                 drawerAccordionStates.media = existingDetails[1].open;
                 drawerAccordionStates.ops = existingDetails[2].open; 
-                drawerAccordionStates.dash = existingDetails[3].open;
+
             }
             
             const f = evt.fields || { ...defaultFields };
@@ -4864,7 +4846,7 @@ window.switchView = (viewName) => {
 
             let opsDone = 0;
             ['gameReview', 'contentWriters', 'imChannels', 'trackableLinks', 'sms', 'postPinned', 'rewardDistributed', 'rewardsBanner'].forEach(k => {
-                if (f[k] === 'Done' || f[k] === 'Not Applicable') opsDone++;
+                if (f[k] === 'Yes' || f[k] === 'N/A') opsDone++;
             });
             if (f.ignoreListed) opsDone++;
 
@@ -4877,14 +4859,7 @@ window.switchView = (viewName) => {
             }
             if (f.dailyTaskLinked) opsDone++;
 
-            let maxDash = 0;
-            if (f.dashboardStatus) {
-                for(let d in f.dashboardStatus) {
-                    let v = parseFloat(f.dashboardStatus[d])||0;
-                    if(v > maxDash) maxDash = v;
-                }
-            }
-            let dashDone = maxDash === 100 ? 1 : 0;
+
             
             const makeAccordion = (title, done, total, content, isOpen = true) => {
                 const isAllDone = done === total;
@@ -4905,31 +4880,49 @@ window.switchView = (viewName) => {
                 `;
             };
             
-            const makeSelectHtml = (key, label) => {
+            const makeRadioHtml = (key, label) => {
                 const val = f[key] || 'Pending';
                 return `
-                    <div class="flex justify-between items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <label class="text-sm font-medium text-gray-700">${label}</label>
-                        <select onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="text-sm border-gray-300 rounded-xl shadow-md shadow-slate-200/50 focus:ring-indigo-500 py-1 pl-2 pr-8 bg-slate-50 border">
-                            <option value="Pending" ${val === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Not Applicable" ${val === 'Not Applicable' ? 'selected' : ''}>Not Applicable</option>
-                            <option value="Done" ${val === 'Done' ? 'selected' : ''}>Done</option>
-                        </select>
+                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                        <label class="text-sm font-medium text-gray-700 mb-2">${label}</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                                <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer">
+                                <span class="ml-2 text-sm text-gray-700 cursor-pointer">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                                <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer">
+                                <span class="ml-2 text-sm text-gray-700 cursor-pointer">N/A</span>
+                            </label>
+                        </div>
                     </div>
                 `;
             };
 
-            const makeUrlLinkHtml = (key, label) => {
-                const val = f[key] || ''; 
-                const escVal = val.replace(/"/g, '&quot;'); 
-                const isUrlValid = val === '' || window.isValidURL(val);
-                const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
-                
+            const makeDocumentsHtml = () => {
+                const docs = Array.isArray(f.documents) ? f.documents : [];
+                let rowsHtml = docs.map((d, i) => {
+                    const isUrlValid = d.url === '' || window.isValidURL(d.url);
+                    const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
+                    return `
+                        <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
+                            <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                            <div class="flex items-center space-x-2 pr-8">
+                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white">
+                            </div>
+                            ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format.</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
                 return `
                     <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
-                        <input type="url" value="${escVal}" placeholder="Enter valid URL (http://...)" onchange="updateTaskField('${evt.id}', '${key}', this.value)" class="w-full text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass}">
-                        ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format. 0% assigned.</p>` : ''}
+                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
+                            <label class="block text-sm font-medium text-gray-700">Documents</label>
+                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
+                        </div>
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4988,44 +4981,8 @@ window.switchView = (viewName) => {
                 `;
             };
 
-            const makeDashboardStatusHtml = () => {
-                const dates = window.getDatesInRange(evt.startDate, evt.endDate); 
-                const statuses = f.dashboardStatus || {};
-                
-                let maxVal = 0; 
-                let maxDate = '-';
-                
-                let dateInputsHtml = dates.map(d => {
-                    let val = statuses[d] !== undefined ? statuses[d] : '';
-                    if (parseFloat(val) > maxVal) { maxVal = parseFloat(val); } 
-                    if (parseFloat(val) === 100 && maxDate === '-') { maxDate = d; }
-                    return `
-                        <div class="flex items-center justify-between text-sm py-1">
-                            <span class="text-gray-600">${d}</span>
-                            <div class="flex items-center w-28">
-                                <input type="number" step="0.01" min="0" max="100" value="${val}" onchange="updateDashboardStatus('${evt.id}', '${d}', this.value)" class="w-full text-right text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1 px-2 focus:ring-indigo-500 mr-1">
-                                <span class="text-gray-500 font-medium">%</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-                return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <div class="mb-2">
-                            <label class="block text-sm font-medium text-gray-700">Dashboard Status Tracker</label>
-                            <p class="text-xs text-gray-500">Highest: <span class="font-bold text-indigo-600">${maxVal.toFixed(2)}%</span> ${maxVal === 100 ? `on ${maxDate}` : ''}</p>
-                        </div>
-                        <div class="space-y-1 mt-3 border-t border-slate-100 pt-3 max-h-48 overflow-y-auto pr-1">
-                            ${dateInputsHtml}
-                        </div>
-                    </div>
-                `;
-            };
-
             const linksContent = `
-                ${makeUrlLinkHtml('document', 'Document Link')} 
-                ${makeUrlLinkHtml('postMortemReport', 'Post-Mortem Report Link')}
+                ${makeDocumentsHtml()}
             `;
             
             const mediaContent = `
@@ -5035,14 +4992,14 @@ window.switchView = (viewName) => {
             
             const operationsContent = `
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    ${makeSelectHtml('gameReview', 'Game Review')} 
-                    ${makeSelectHtml('contentWriters', 'Content Writers')} 
-                    ${makeSelectHtml('imChannels', 'IM Channels')} 
-                    ${makeSelectHtml('trackableLinks', 'Trackable Links')} 
-                    ${makeSelectHtml('sms', 'SMS')} 
-                    ${makeSelectHtml('postPinned', 'Post Pinned')} 
-                    ${makeSelectHtml('rewardDistributed', 'Reward Distributed')} 
-                    ${makeSelectHtml('rewardsBanner', 'Rewards Banner')}
+                    ${makeRadioHtml('gameReview', 'Game Review')}
+                    ${makeRadioHtml('contentWriters', 'Content Writers')}
+                    ${makeRadioHtml('imChannels', 'IM Channels')}
+                    ${makeRadioHtml('trackableLinks', 'Trackable Links')}
+                    ${makeRadioHtml('sms', 'SMS')}
+                    ${makeRadioHtml('postPinned', 'Post Pinned')}
+                    ${makeRadioHtml('rewardDistributed', 'Reward Distributed')}
+                    ${makeRadioHtml('rewardsBanner', 'Rewards Banner')}
                 </div>
                 <div class="flex space-x-4 mt-4">
                     <div class="flex-1">${makeCheckboxHtml('ignoreListed', 'Ignore Listed')}</div>
@@ -5056,14 +5013,14 @@ window.switchView = (viewName) => {
                 </div>
             `;
             
-            const dashboardContent = `${makeDashboardStatusHtml()}`;
+
 
             list.innerHTML = `
                 <div class="pb-8">
-                    ${makeAccordion('Important Links', linksDone, 2, linksContent, drawerAccordionStates.links)}
+                    ${makeAccordion('Important Links', linksDone, 1, linksContent, drawerAccordionStates.links)}
                     ${makeAccordion('Content & Publishing', mediaDone, 2, mediaContent, drawerAccordionStates.media)} 
                     ${makeAccordion('Operations Checklist', opsDone, 10, operationsContent, drawerAccordionStates.ops)} 
-                    ${makeAccordion('Daily Tracking', dashDone, 1, dashboardContent, drawerAccordionStates.dash)}
+
                 </div>
             `;
         }
