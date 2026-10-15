@@ -779,18 +779,7 @@
                     tempDailyTasks.push(doc.data());
                 });
 
-                // AUTO MIGRATE: If cloud is empty but local storage has tasks, push them!
-                const localTasksStr = localStorage.getItem('spo_daily_tasks');
-                if (tempDailyTasks.length === 0 && localTasksStr && localTasksStr !== '[]') {
-                    const localData = JSON.parse(localTasksStr);
-                    if (localData.length > 0) {
-                        for (let t of localData) {
-                            setDoc(doc(db, "daily_tasks", t.id), t);
-                        }
-                        localStorage.removeItem('spo_daily_tasks');
-                        window.showToast("Local daily tasks synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_daily_tasks', JSON.stringify(tempDailyTasks));
                 window.dailyTasks = tempDailyTasks;
@@ -958,18 +947,7 @@
                     tempEvents.push(e);
                 });
                 
-                // AUTO MIGRATE: If cloud is empty but local storage has events, push them!
-                const localStr = localStorage.getItem('spo_content_calendar_events');
-                if (tempEvents.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let e of localData) {
-                            setDoc(doc(db, "events", e.id), e);
-                        }
-                        localStorage.removeItem('spo_content_calendar_events');
-                        window.showToast("Local events synced to cloud!", "success");
-                    }
-                }
+
 
                 localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
                 window.events = tempEvents;
@@ -1014,18 +992,7 @@
                 let tempBudgets = [];
                 snapshot.forEach((doc) => tempBudgets.push(doc.data()));
                 
-                // AUTO MIGRATE
-                const localStr = localStorage.getItem('spo_budget_data');
-                if (tempBudgets.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let b of localData) {
-                            setDoc(doc(db, "budgets", b.id), b);
-                        }
-                        localStorage.removeItem('spo_budget_data');
-                        window.showToast("Local budgets synced to cloud!", "success");
-                    }
-                }
+
                 
                 localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
