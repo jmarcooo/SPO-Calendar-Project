@@ -635,7 +635,7 @@
         window.currentCarouselIndex = 0;
         
         const defaultFields = {
-            document: '', postMortemReport: '',
+            documents: [],
             hashtags: [], postIds: [], ignoreListed: false,
             gameReview: 'Pending', dailyTaskLinked: false, contentWriters: 'Pending',
             imChannels: 'Pending', trackableLinks: 'Pending', sms: 'Pending',
@@ -5042,7 +5042,44 @@ window.switchView = (viewName) => {
             window.renderOngoingEvents(); 
         };
 
+
+        window.addDocument = (taskId) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task) return;
+            if (!Array.isArray(task.fields.documents)) task.fields.documents = [];
+
+            task.fields.documents.push({ type: '', url: '' });
+            window.syncEventToFirestore(task);
+            window.renderDrawerChecklist(task);
+        };
+
+        window.removeDocument = (taskId, idx) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.documents)) return;
+
+            task.fields.documents.splice(idx, 1);
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderDrawerChecklist(task);
+            window.renderTasksTable();
+        };
+
+        window.updateDocumentField = (taskId, idx, key, val) => {
+            const task = window.events.find(e => e.id === taskId);
+            if (!task || !Array.isArray(task.fields.documents) || !task.fields.documents[idx]) return;
+
+            task.fields.documents[idx][key] = val;
+            task.progress = window.calcProgress(task);
+
+            window.syncEventToFirestore(task);
+            window.updateDrawerProgressUI(task);
+            window.renderTasksTable();
+        };
+
         window.addPostId = (taskId) => {
+
             const task = window.events.find(e => e.id === taskId); 
             if (!task) return;
             if (!Array.isArray(task.fields.postIds)) task.fields.postIds = [];
