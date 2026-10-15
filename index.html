@@ -222,6 +222,12 @@
                             <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
+
+                    <div id="document-link-container">
+                        <label for="event-document-link" class="block text-sm font-medium text-gray-700">Document Link <span class="text-red-500">*</span></label>
+                        <input type="url" id="event-document-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+
                     <div id="image-link-container" style="display: none;">
                         <label for="event-image-link" class="block text-sm font-medium text-gray-700">Image URL <span class="text-xs text-gray-500">(Optional)</span></label>
                         <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
@@ -230,12 +236,11 @@
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
                         <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
                             <option value="All">All</option>
-                            <option value="Slot">Slot</option>
-                            <option value="Casino">Casino</option>
-                            <option value="Poker">Poker</option>
-                            <option value="Perya">Perya</option>
-                            <option value="Arcade">Arcade</option>
-                            <option value="Bingo">Bingo</option>
+                            <option value="Game Promotion">Game Promotion</option>
+                            <option value="Platform Feature">Platform Feature</option>
+                            <option value="Gambling Entertainment">Gambling Entertainment</option>
+                            <option value="VIP Retention">VIP Retention</option>
+                            <option value="User Growth & Acquisition">User Growth & Acquisition</option>
                         </select>
                     </div>
                     <div id="assignees-container">
@@ -677,8 +682,7 @@
             const f = task.fields || {};
             let pending = [];
             
-            if (!(f.document && window.isValidURL(f.document))) pending.push("Document Link");
-            if (!(f.postMortemReport && window.isValidURL(f.postMortemReport))) pending.push("Post-Mortem Report");
+            if (!(Array.isArray(f.documents) && f.documents.some(d => window.isValidURL(d.url)))) pending.push("Documents");
             
             if (!(Array.isArray(f.hashtags) && f.hashtags.length > 0)) pending.push("Hashtags");
             if (!(Array.isArray(f.postIds) && f.postIds.some(p => p.id && p.id.trim() !== ''))) pending.push("Post IDs");
@@ -928,7 +932,27 @@
                     e.status = window.calculateStatus(e.startDate, e.endDate);
                     
                     if (!e.fields) e.fields = { ...defaultFields };
+
                     if (typeof e.fields.hashtags === 'string') e.fields.hashtags = e.fields.hashtags ? [e.fields.hashtags] : [];
+
+                    // Migrate legacy 'document' string field into 'documents' array
+                    if (!Array.isArray(e.fields.documents)) e.fields.documents = [];
+                    if (e.fields.document && typeof e.fields.document === 'string' && e.fields.document.trim() !== '') {
+                        if (e.fields.documents.length === 0) {
+                            e.fields.documents.push({ type: 'Legacy Document', url: e.fields.document });
+                        }
+                        // Delete the old field so we don't migrate it again if we save back
+                        delete e.fields.document;
+                    }
+
+                    if (e.fields.postMortemReport && typeof e.fields.postMortemReport === 'string' && e.fields.postMortemReport.trim() !== '') {
+                        const hasPostMortem = e.fields.documents.some(d => d.type === 'Post-Mortem Report' && d.url === e.fields.postMortemReport);
+                        if (!hasPostMortem) {
+                            e.fields.documents.push({ type: 'Post-Mortem Report', url: e.fields.postMortemReport });
+                        }
+                        delete e.fields.postMortemReport;
+                    }
+
                     e.progress = window.calcProgress(e);
                     tempEvents.push(e);
                 });
@@ -1503,6 +1527,8 @@
                 endDate = startDate;
             }
 
+            const documentLink = document.getElementById('event-document-link').value.trim();
+
             let campaignType = isNonTask ? 'All' : document.getElementById('event-campaign-type').value;
             
             if (endDate < startDate) { 
@@ -1523,6 +1549,19 @@
             const existingEvent = window.events.find(ev => ev.id === id);
             const fieldsToSave = existingEvent ? existingEvent.fields : { ...defaultFields, hashtags: [] };
             
+            if (itemType === 'task') {
+                if (!Array.isArray(fieldsToSave.documents)) fieldsToSave.documents = [];
+                if (fieldsToSave.documents.length === 0) {
+                    if (documentLink) {
+                        fieldsToSave.documents.push({ type: 'Main Document', url: documentLink });
+                    }
+                } else {
+                    if (documentLink) {
+                        fieldsToSave.documents[0].url = documentLink;
+                    }
+                }
+            }
+
 
 
             const tempEventForCalc = { itemType, startDate, endDate, fields: fieldsToSave, isEventOnly: itemType === 'event' };
@@ -4615,6 +4654,18 @@ window.switchView = (viewName) => {
             
             document.getElementById('event-campaign-type').value = 'All';
 
+            const docContainer = document.getElementById('document-link-container');
+            const docInput = document.getElementById('event-document-link');
+            if (itemType === 'task') {
+                docContainer.style.display = 'block';
+                docInput.setAttribute('required', 'required');
+                docInput.value = '';
+            } else {
+                docContainer.style.display = 'none';
+                docInput.removeAttribute('required');
+                docInput.value = '';
+            }
+
             const campContainer = document.getElementById('campaign-type-container');
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
@@ -4684,6 +4735,18 @@ window.switchView = (viewName) => {
             const assignContainer = document.getElementById('assignees-container');
             const campInput = document.getElementById('event-campaign-type');
             const imageContainer = document.getElementById('image-link-container');
+
+            const docContainer = document.getElementById('document-link-container');
+            const docInput = document.getElementById('event-document-link');
+            if (itemType === 'task') {
+                docContainer.style.display = 'block';
+                docInput.setAttribute('required', 'required');
+                docInput.value = (evt.fields && evt.fields.documents && evt.fields.documents.length > 0) ? evt.fields.documents[0].url : '';
+            } else {
+                docContainer.style.display = 'none';
+                docInput.removeAttribute('required');
+                docInput.value = '';
+            }
 
             const isNonTask = itemType === 'event' || itemType === 'game';
 
@@ -4837,8 +4900,7 @@ window.switchView = (viewName) => {
             const f = evt.fields || { ...defaultFields };
             
             let linksDone = 0;
-            if (f.document && window.isValidURL(f.document)) linksDone++;
-            if (f.postMortemReport && window.isValidURL(f.postMortemReport)) linksDone++;
+            if (Array.isArray(f.documents) && f.documents.some(d => window.isValidURL(d.url))) linksDone++;
 
             let mediaDone = 0;
             if (Array.isArray(f.hashtags) && f.hashtags.length > 0) mediaDone++;
