@@ -3476,8 +3476,11 @@ window.switchView = (viewName) => {
 
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
+                const isPast = task.calcStatus === 'Past';
+                const rowClass = isPast ? 'opacity-60 grayscale bg-gray-50' : 'bg-white';
+
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors cursor-pointer group" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
+                    <tr class="hover:bg-slate-50 transition-colors cursor-pointer group ${rowClass}" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${task.taskTitle}</div>
                             <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
