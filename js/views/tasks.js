@@ -168,14 +168,8 @@ window.renderTasksTable = () => {
                 `;
                 tasksTable.appendChild(tr);
             });
-        }
-
-        window.setBudgetOwnerFilter = (val) => {
-            window.budgetFilterOwner = val;
-            window.renderBudgetTable();
-        };
-
+        }\n\n
 export function init(container) {
-    window.renderTasksTable();
+if (window.renderTasksTable) window.renderTasksTable();
     return function cleanup() {};
 }

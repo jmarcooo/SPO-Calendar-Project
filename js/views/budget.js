@@ -101,84 +101,30 @@ window.renderBudgetTable = () => {
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
 
             // Remaining removed
-        }
+        }\n\nwindow.updateBudgetItemTypes = () => {
+            const budgetType = document.getElementById('budget-type').value;
+            const typeContainers = document.querySelectorAll('.budget-item-type-container');
+            typeContainers.forEach(container => {
+                const currentInput = container.querySelector('.budget-item-type');
+                const selType = currentInput ? currentInput.value : '';
 
-        window.saveBudgetEntry = async (e) => {
-            e.preventDefault();
-            const form = document.getElementById('budget-form');
-            if (!form.reportValidity()) return;
-
-            const id = document.getElementById('budget-id').value;
-            const month = document.getElementById('budget-month').value;
-            const owner = window.currentUserProfile || 'Unknown';
-            const name = document.getElementById('budget-name').value.trim();
-            const type = document.getElementById('budget-type').value;
-            const allocated = document.getElementById('budget-allocated').value;
-
-            // Gather items
-            const itemEls = document.querySelectorAll('#budget-items-container > div');
-            if(itemEls.length === 0) {
-                window.showToast("At least one item is required", "error");
-                return;
-            }
-
-            let items = [];
-            itemEls.forEach(el => {
-                const typeVal = el.querySelector('.budget-item-type').value;
-                const amtVal = parseFloat(el.querySelector('.budget-item-amount').value) || 0;
-                items.push({ type: typeVal, amount: amtVal });
-            });
-
-            const entryId = id ? id : Date.now().toString();
-            const entryData = {
-                id: entryId,
-                name,
-                type,
-                owner,
-                month,
-                items: items,
-                allocated: parseFloat(allocated),
-                spent: 0
-            };
-
-            if (!id) {
-                entryData.createdAt = window.getFormattedCreatedTime();
-            } else {
-                const existingBudget = window.budgets.find(b => b.id === id);
-                if (existingBudget && existingBudget.createdAt) {
-                    entryData.createdAt = existingBudget.createdAt;
+                if (budgetType === 'Campaign Expenses') {
+                    if (currentInput.tagName !== 'SELECT') {
+                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                            <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
+                            <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
+                            <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
+                            <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
+                        </select>`;
+                    }
                 } else {
-                    entryData.createdAt = window.getFormattedCreatedTime();
+                    if (currentInput.tagName !== 'INPUT') {
+                        container.innerHTML = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+                    }
                 }
-            }
-
-            const btn = document.getElementById('save-budget-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-            btn.disabled = true;
-
-            try {
-                // Update Local Storage Fallback Immediately
-                const idx = window.budgets.findIndex(b => b.id === entryId);
-                if (idx > -1) window.budgets[idx] = entryData;
-                else window.budgets.push(entryData);
-                localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
-
-                if (db) {
-                    await setDoc(doc(db, "budgets", entryId), entryData);
-                }
-
-                window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
-                window.closeBudgetModal();
-                window.renderUI();
-            } catch(e) {
-                window.showToast("Error saving budget", "error");
-            } finally {
-                btn.innerHTML = 'Save Entry';
-                btn.disabled = false;
-            }
-        };
-
+            });
+        };\n\n
 export function init(container) {
-    window.renderBudgetTable();
+if (window.renderBudgetTable) window.renderBudgetTable();
     return function cleanup() {};
 }

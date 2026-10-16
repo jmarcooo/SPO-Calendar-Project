@@ -28,9 +28,8 @@ window.renderFullNotifications = () => {
                 `;
             });
             container.innerHTML = html;
-        };
-
+        };\n\n
 export function init(container) {
-    window.renderFullNotifications();
+if (window.renderFullNotifications) window.renderFullNotifications();
     return function cleanup() {};
 }

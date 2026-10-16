@@ -74,9 +74,8 @@ window.renderDailyTasksTable = () => {
                 `;
             });
             tbody.innerHTML = html;
-        };
-
+        };\n\n
 export function init(container) {
-    window.renderDailyTasksTable();
+if (window.renderDailyTasksTable) window.renderDailyTasksTable();
     return function cleanup() {};
 }

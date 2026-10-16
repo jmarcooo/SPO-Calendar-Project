@@ -1,4 +1,5 @@
 import { sortTableData } from "./utils/tableSort.js";
+
 // --- GLOBAL TIMEZONE CONFIGURATION ---
         window.getPHParts = () => {
             const parts = new Intl.DateTimeFormat('en-US', {
@@ -338,22 +339,6 @@ import { sortTableData } from "./utils/tableSort.js";
             return "Pending Items:\n• " + pending.join("\n• ");
         };
 
-
-        window.renderUI = () => {
-            const currStr = window.getCurrentMonthStr();
-            const monthInput = document.getElementById('setting-budget-month');
-            const limitInput = document.getElementById('setting-budget-limit');
-            if (monthInput) monthInput.value = currStr;
-            if (limitInput) limitInput.value = window.budgetSettings.limits[currStr] || 0;
-
-            if (window.updateStats) window.updateStats();
-            if (window.renderCalendar) window.renderCalendar();
-            if (window.renderOngoingEvents) window.renderOngoingEvents();
-            if (window.renderTasksTable) window.renderTasksTable();
-            if (window.renderBudgetTable) window.renderBudgetTable();
-            if (window.updateCampaignDropdown) window.updateCampaignDropdown();
-        }
-
         window.initApp = () => {
             const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
@@ -372,7 +357,6 @@ import { sortTableData } from "./utils/tableSort.js";
             const savedCategorySelect = document.getElementById('global-category-filter');
             if (savedCategorySelect) savedCategorySelect.value = window.globalCategoryFilter;
 
-            // let hash handle view loading if possible, or fallback
 
 
             // Try loading local data immediately so UI isn't blank
@@ -649,6 +633,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 window.renderUI();
             });
         }
+
 
 
         window.renderCampaignDetails = (taskId) => {
@@ -1284,13 +1269,10 @@ import { sortTableData } from "./utils/tableSort.js";
                 if (status === 'Upcoming') return 2;
                 return 1;
             };
-
-
             filteredEvents.forEach(e => {
                 if(e.progress === undefined) e.progress = window.calcProgress(e);
             });
             filteredEvents = sortTableData(filteredEvents, window.sortCol, window.sortAsc, (row) => getRank(row.status));
-
 
 
             const data = filteredEvents.map(e => {
@@ -1387,6 +1369,7 @@ import { sortTableData } from "./utils/tableSort.js";
             { id: 'copy_writer', name: 'Copy Writer' },
             { id: 'prize_distribution', name: 'Prize Distribution' }
         ];
+
 
 
         window.handlePOCSelection = (checkbox, moduleId) => {
@@ -1596,39 +1579,8 @@ import { sortTableData } from "./utils/tableSort.js";
                         window.activeViewControllerCleanup = module.init(container);
                     }
                 } catch(e) {
-                    console.log("No explicit module controller for " + viewName + ", using fallback globals.");
-                    if (viewName === 'dashboard') {
-                        const savedTypeSelect = document.getElementById('global-type-filter');
-                        if (savedTypeSelect) savedTypeSelect.value = window.globalTypeFilter;
-                        const savedCategorySelect = document.getElementById('global-category-filter');
-                        if (savedCategorySelect) savedCategorySelect.value = window.globalCategoryFilter;
-                        if (window.renderUI) window.renderUI();
-                    } else if (viewName === 'tasks') {
-                        if (window.renderTasksTable) window.renderTasksTable();
-                    } else if (viewName === 'daily_task') {
-                        if (window.renderDailyTasksTable) window.renderDailyTasksTable();
-                    } else if (viewName === 'budget') {
-                        if (window.renderBudgetTable) window.renderBudgetTable();
-                    } else if (viewName === 'campaign') {
-                        if(window.updateCampaignDropdown) window.updateCampaignDropdown();
-                    } else if (viewName === 'prize_distribution') {
-                        if (window.renderPDRequestsTable) window.renderPDRequestsTable();
-                    } else if (viewName === 'notifications') {
-                        if (window.renderFullNotifications) window.renderFullNotifications();
-                    } else if (viewName === 'content_writer') {
-                        if (window.renderCWRequestsTable) window.renderCWRequestsTable();
-                    } else if (viewName === 'pin_request') {
-                        const savedView = localStorage.getItem('spo_pr_view') || 'table';
-                        if (window.switchPRView) window.switchPRView(savedView);
-                    } else if (viewName === 'sms') {
-                        if (window.renderSMSTable) window.renderSMSTable();
-                    } else if (viewName === 'settings') {
-                        const adminSettings = document.getElementById('admin-settings-section');
-                        if (adminSettings && window.isAdminModeEnabled) {
-                            adminSettings.style.display = 'block';
-                            if (window.renderAdminPOCSettings) window.renderAdminPOCSettings();
-                        }
-                    }
+                    // It should not fallback to old globals, the functions should be globally available or directly inside the controller
+                    console.log("No explicit module controller for " + viewName, e);
                 }
 
             } catch (err) {
@@ -1646,6 +1598,17 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
 
+
+
+
+
+
+
+
+        window.setAssigneeFilter = (val) => {
+            window.assigneeFilter = val;
+            window.renderTasksTable();
+        };
 
         window.setFilter = (val) => {
             window.statusFilter = val;
@@ -1667,6 +1630,12 @@ import { sortTableData } from "./utils/tableSort.js";
             window.renderTasksTable();
         };
 
+
+
+        window.setBudgetOwnerFilter = (val) => {
+            window.budgetFilterOwner = val;
+            window.renderBudgetTable();
+        };
 
         window.setBudgetSearch = (val) => {
             window.budgetSearchQuery = val;
@@ -1690,29 +1659,83 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
 
-        window.updateBudgetItemTypes = () => {
-            const budgetType = document.getElementById('budget-type').value;
-            const typeContainers = document.querySelectorAll('.budget-item-type-container');
-            typeContainers.forEach(container => {
-                const currentInput = container.querySelector('.budget-item-type');
-                const selType = currentInput ? currentInput.value : '';
+        window.saveBudgetEntry = async (e) => {
+            e.preventDefault();
+            const form = document.getElementById('budget-form');
+            if (!form.reportValidity()) return;
 
-                if (budgetType === 'Campaign Expenses') {
-                    if (currentInput.tagName !== 'SELECT') {
-                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
-                            <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
-                            <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
-                            <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
-                            <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
-                        </select>`;
-                    }
-                } else {
-                    if (currentInput.tagName !== 'INPUT') {
-                        container.innerHTML = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
-                    }
-                }
+            const id = document.getElementById('budget-id').value;
+            const month = document.getElementById('budget-month').value;
+            const owner = window.currentUserProfile || 'Unknown';
+            const name = document.getElementById('budget-name').value.trim();
+            const type = document.getElementById('budget-type').value;
+            const allocated = document.getElementById('budget-allocated').value;
+
+            // Gather items
+            const itemEls = document.querySelectorAll('#budget-items-container > div');
+            if(itemEls.length === 0) {
+                window.showToast("At least one item is required", "error");
+                return;
+            }
+
+            let items = [];
+            itemEls.forEach(el => {
+                const typeVal = el.querySelector('.budget-item-type').value;
+                const amtVal = parseFloat(el.querySelector('.budget-item-amount').value) || 0;
+                items.push({ type: typeVal, amount: amtVal });
             });
+
+            const entryId = id ? id : Date.now().toString();
+            const entryData = {
+                id: entryId,
+                name,
+                type,
+                owner,
+                month,
+                items: items,
+                allocated: parseFloat(allocated),
+                spent: 0
+            };
+
+            if (!id) {
+                entryData.createdAt = window.getFormattedCreatedTime();
+            } else {
+                const existingBudget = window.budgets.find(b => b.id === id);
+                if (existingBudget && existingBudget.createdAt) {
+                    entryData.createdAt = existingBudget.createdAt;
+                } else {
+                    entryData.createdAt = window.getFormattedCreatedTime();
+                }
+            }
+
+            const btn = document.getElementById('save-budget-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                // Update Local Storage Fallback Immediately
+                const idx = window.budgets.findIndex(b => b.id === entryId);
+                if (idx > -1) window.budgets[idx] = entryData;
+                else window.budgets.push(entryData);
+                localStorage.setItem('spo_budget_data', JSON.stringify(window.budgets));
+
+                if (db) {
+                    await setDoc(doc(db, "budgets", entryId), entryData);
+                }
+
+                window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
+                window.closeBudgetModal();
+                window.renderUI();
+            } catch(e) {
+                window.showToast("Error saving budget", "error");
+            } finally {
+                btn.innerHTML = 'Save Entry';
+                btn.disabled = false;
+            }
         };
+
+
+
 
         window.budgetItems = [];
         window.addBudgetItem = (item = null) => {
@@ -2267,6 +2290,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
 
+
         window.openPinRequestModal = (id = null, prefillSlot = null, prefillStart = null, isPinAction = false) => {
             const form = document.getElementById('pin-request-form');
             form.reset();
@@ -2560,6 +2584,7 @@ import { sortTableData } from "./utils/tableSort.js";
             XLSX.utils.book_append_sheet(workbook, worksheet, "Pin Requests");
             XLSX.writeFile(workbook, "SPO_Pin_Requests_Export.xlsx");
         };
+
 
 
 
@@ -4192,6 +4217,7 @@ import { sortTableData } from "./utils/tableSort.js";
         window.smsRequests = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]');
 
 
+
         window.openSMSModal = function(id = null) {
             document.getElementById('sms-modal-form').reset();
             const requestorInput = document.getElementById('sms-requestor');
@@ -4480,6 +4506,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
 
+
         window.openPDRequestModal = (id = null) => {
             const form = document.getElementById('pd-request-form');
             if (form) form.reset();
@@ -4609,6 +4636,7 @@ import { sortTableData } from "./utils/tableSort.js";
             XLSX.utils.book_append_sheet(workbook, worksheet, "PD Requests");
             XLSX.writeFile(workbook, "SPO_PD_Requests_Export.xlsx");
         };
+
 
 
 
@@ -4828,6 +4856,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 document.getElementById('notif-dropdown').classList.add('hidden');
             }
         });
+
 
 
         window.renderNotificationsDropdown = () => {

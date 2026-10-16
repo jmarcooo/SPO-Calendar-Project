@@ -29,9 +29,8 @@ window.updateCampaignDropdown = () => {
                     document.getElementById('campaign-empty-state').style.display = 'block';
                 }
             }
-        };
-
+        };\n\n
 export function init(container) {
-    window.updateCampaignDropdown();
+if (window.updateCampaignDropdown) window.updateCampaignDropdown();
     return function cleanup() {};
 }

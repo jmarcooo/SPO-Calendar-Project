@@ -38,9 +38,14 @@ window.renderAdminPOCSettings = () => {
             });
 
             container.innerHTML = html;
-        };
-
+        };\n\n
 export function init(container) {
-    window.renderAdminPOCSettings();
+
+    const adminSettings = document.getElementById('admin-settings-section');
+    if (adminSettings && window.isAdminModeEnabled) {
+        adminSettings.style.display = 'block';
+        if (window.renderAdminPOCSettings) window.renderAdminPOCSettings();
+    }
+
     return function cleanup() {};
 }

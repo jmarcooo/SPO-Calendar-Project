@@ -1,3 +1,4 @@
+
 export function sortTableData(data, sortCol, sortAsc, getRankFn = null) {
     return [...data].sort((a, b) => {
         let valA = a[sortCol];
@@ -13,15 +14,11 @@ export function sortTableData(data, sortCol, sortAsc, getRankFn = null) {
             return dateB - dateA;
         }
 
-        // Handle specific type conversions if needed
         if (typeof valA === 'string') valA = valA.toLowerCase();
         if (typeof valB === 'string') valB = valB.toLowerCase();
-
-        // Arrays (like assignees)
         if (Array.isArray(valA)) valA = valA.join(', ');
         if (Array.isArray(valB)) valB = valB.join(', ');
 
-        // Numbers (like budget)
         if (['allocated', 'spent'].includes(sortCol) || typeof valA === 'number') {
             valA = parseFloat(valA) || 0;
             valB = parseFloat(valB) || 0;
@@ -35,7 +32,6 @@ export function sortTableData(data, sortCol, sortAsc, getRankFn = null) {
             return 0;
         }
 
-        // fallback empty check
         if (valA === undefined || valA === null) valA = '';
         if (valB === undefined || valB === null) valB = '';
 

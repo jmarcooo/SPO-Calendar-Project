@@ -54,9 +54,8 @@ window.renderPDRequestsTable = () => {
                 `;
             });
             tbody.innerHTML = html;
-        };
-
+        };\n\n
 export function init(container) {
-    window.renderPDRequestsTable();
+if (window.renderPDRequestsTable) window.renderPDRequestsTable();
     return function cleanup() {};
 }

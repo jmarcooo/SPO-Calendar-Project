@@ -65,9 +65,8 @@ window.renderSMSTable = function() {
                 `;
                 tbody.appendChild(row);
             });
-        };
-
+        };\n\n
 export function init(container) {
-    window.renderSMSTable();
+if (window.renderSMSTable) window.renderSMSTable();
     return function cleanup() {};
 }
