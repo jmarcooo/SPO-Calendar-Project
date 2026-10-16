@@ -38,7 +38,9 @@ window.renderAdminPOCSettings = () => {
             });
 
             container.innerHTML = html;
-        };\n\n
+        };
+
+
 export function init(container) {
 
     const adminSettings = document.getElementById('admin-settings-section');

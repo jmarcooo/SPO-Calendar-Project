@@ -71,7 +71,9 @@ html += `
                 `;
             });
             tbody.innerHTML = html;
-        };\n\n
+        };
+
+
 export function init(container) {
 if (window.renderCWRequestsTable) window.renderCWRequestsTable();
     return function cleanup() {};

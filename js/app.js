@@ -229,8 +229,8 @@ import { sortTableData } from "./utils/tableSort.js";
             tooltip.style.top = `${y}px`;
         };
 
-        let currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : window.getPHParts().month;
-        let currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : window.getPHParts().year;
+        window.currentMonth = localStorage.getItem('spo_current_month') !== null ? parseInt(localStorage.getItem('spo_current_month')) : window.getPHParts().month;
+        window.currentYear = localStorage.getItem('spo_current_year') !== null ? parseInt(localStorage.getItem('spo_current_year')) : window.getPHParts().year;
         let currentDateObj = null;
 
         window.tempSelectedDate = null;
@@ -284,7 +284,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
 
-        window.getCurrentMonthStr = () => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+        window.getCurrentMonthStr = () => `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}`;
 
         window.calculateStatus = (startDate, endDate) => {
             const today = window.getPHDateStr();
@@ -399,7 +399,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
 
             const calGrid = document.getElementById('calendar-grid');
-            if(calGrid) window.renderUI();
+            if(calGrid) if (window.renderUI) window.renderUI();
 
             if (!db) {
                 document.getElementById('ongoing-events-list').innerHTML = `<div class="text-center text-red-500 py-8 text-sm">Firebase Connection Error. Running locally.</div>`;
@@ -532,7 +532,7 @@ import { sortTableData } from "./utils/tableSort.js";
                     const currInput = document.getElementById('setting-budget-currency');
                     if (currInput) currInput.value = window.budgetSettings.currency;
                     updateCurrencySymbols();
-                    window.renderUI();
+                    if (window.renderUI) window.renderUI();
                 }
             });
             onSnapshot(doc(db, "settings", "adminPOCs"), (docSnap) => {
@@ -584,8 +584,8 @@ import { sortTableData } from "./utils/tableSort.js";
 
                 localStorage.setItem('spo_content_calendar_events', JSON.stringify(tempEvents));
                 window.events = tempEvents;
-                window.renderUI();
-                window.updateCampaignDropdown();
+                if (window.renderUI) window.renderUI();
+                if (window.updateCampaignDropdown) window.updateCampaignDropdown();
 
                 if (window.currentDrawerTaskId) {
                     const t = window.events.find(ev => ev.id === window.currentDrawerTaskId);
@@ -630,7 +630,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 localStorage.setItem('spo_budget_data', JSON.stringify(tempBudgets));
                 window.budgets = tempBudgets;
                 updateBudgetOwnerDropdown();
-                window.renderUI();
+                if (window.renderUI) window.renderUI();
             });
         }
 
@@ -933,13 +933,13 @@ import { sortTableData } from "./utils/tableSort.js";
         window.setGlobalTypeFilter = (val) => {
             window.globalTypeFilter = val;
             localStorage.setItem('spo_global_type_filter', val);
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
         }
 
         window.setGlobalCategoryFilter = (val) => {
             window.globalCategoryFilter = val;
             localStorage.setItem('spo_global_category_filter', val);
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
         }
 
         window.filterEventsByGlobalCategory = (eventList) => {
@@ -976,7 +976,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 localStorage.setItem('spo_budget_settings', JSON.stringify(window.budgetSettings));
                 window.showToast("Saved Locally", "success");
                 updateCurrencySymbols();
-                window.renderUI();
+                if (window.renderUI) window.renderUI();
                 return;
             }
 
@@ -992,9 +992,9 @@ import { sortTableData } from "./utils/tableSort.js";
         window.syncBudgetMonth = (val) => {
             if (val) {
                 const parts = val.split('-');
-                currentYear = parseInt(parts[0]);
-                currentMonth = parseInt(parts[1]) - 1;
-                window.renderUI();
+                window.currentYear = parseInt(parts[0]);
+                window.currentMonth = parseInt(parts[1]) - 1;
+                if (window.renderUI) window.renderUI();
             }
         }
 
@@ -1175,7 +1175,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 await window.syncEventToFirestore(eventData);
                 window.showToast(id ? "Item updated" : "Item created", "success");
                 window.closeAddModal();
-                window.renderUI();
+                if (window.renderUI) window.renderUI();
             } catch (err) {
                 console.error("Save Event Error:", err);
             } finally {
@@ -1194,7 +1194,7 @@ import { sortTableData } from "./utils/tableSort.js";
             }
             window.showToast("Item deleted", "success");
             window.closeAddModal();
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
         }
 
         window.triggerReminder = (id, title, assigneesStr) => {
@@ -1233,7 +1233,7 @@ import { sortTableData } from "./utils/tableSort.js";
             window.pdRequests = [];
 
             window.showToast("Data clearing initiated", "success");
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
             window.renderQuickLinks();
         };
 
@@ -1247,7 +1247,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 } catch(e){}
             }
             window.showToast("All budgets cleared", "success");
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
         };
 
         window.exportTasksExcel = () => {
@@ -1607,17 +1607,17 @@ import { sortTableData } from "./utils/tableSort.js";
 
         window.setAssigneeFilter = (val) => {
             window.assigneeFilter = val;
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.setFilter = (val) => {
             window.statusFilter = val;
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.setSearch = (val) => {
             window.searchQuery = val;
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.handleSort = (col) => {
@@ -1627,24 +1627,24 @@ import { sortTableData } from "./utils/tableSort.js";
                 window.sortCol = col;
                 window.sortAsc = true;
             }
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
 
 
         window.setBudgetOwnerFilter = (val) => {
             window.budgetFilterOwner = val;
-            window.renderBudgetTable();
+            if (window.renderBudgetTable) window.renderBudgetTable();
         };
 
         window.setBudgetSearch = (val) => {
             window.budgetSearchQuery = val;
-            window.renderBudgetTable();
+            if (window.renderBudgetTable) window.renderBudgetTable();
         }
 
         window.setBudgetMonthFilter = (val) => {
             window.budgetFilterMonth = val;
-            window.renderBudgetTable();
+            if (window.renderBudgetTable) window.renderBudgetTable();
         }
 
         window.handleBudgetSort = (col) => {
@@ -1654,7 +1654,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 window.budgetSortCol = col;
                 window.budgetSortAsc = true;
             }
-            window.renderBudgetTable();
+            if (window.renderBudgetTable) window.renderBudgetTable();
         }
 
 
@@ -1725,7 +1725,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
                 window.showToast(id ? "Budget entry updated" : "Budget entry added", "success");
                 window.closeBudgetModal();
-                window.renderUI();
+                if (window.renderUI) window.renderUI();
             } catch(e) {
                 window.showToast("Error saving budget", "error");
             } finally {
@@ -1808,7 +1808,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 try { await deleteDoc(doc(db, "budgets", id)); } catch(e) {}
             }
             window.showToast("Budget entry deleted", "success");
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
         };
 
         window.openBudgetModal = (id = null) => {
@@ -1900,15 +1900,15 @@ import { sortTableData } from "./utils/tableSort.js";
             const drawer = document.getElementById('budget-drawer');
 
             const years = new Set();
-            years.add(currentYear.toString());
+            years.add(window.currentYear.toString());
             window.budgets.forEach(b => {
                 if (b.month) years.add(b.month.split('-')[0]);
             });
 
             const yearSelect = document.getElementById('budget-drawer-year');
-            yearSelect.innerHTML = Array.from(years).sort().reverse().map(y => `<option value="${y}" ${y === currentYear.toString() ? 'selected' : ''}>${y}</option>`).join('');
+            yearSelect.innerHTML = Array.from(years).sort().reverse().map(y => `<option value="${y}" ${y === window.currentYear.toString() ? 'selected' : ''}>${y}</option>`).join('');
 
-            window.renderBudgetDrawerContent(currentYear.toString());
+            window.renderBudgetDrawerContent(window.currentYear.toString());
             overlay.classList.remove('hidden');
             void overlay.offsetWidth;
             overlay.classList.remove('opacity-0');
@@ -1984,25 +1984,25 @@ import { sortTableData } from "./utils/tableSort.js";
         };
 
         window.changeMonth = (dir) => {
-            currentMonth += dir;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            } else if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
+            window.currentMonth += dir;
+            if (window.currentMonth < 0) {
+                window.currentMonth = 11;
+                window.currentYear--;
+            } else if (window.currentMonth > 11) {
+                window.currentMonth = 0;
+                window.currentYear++;
             }
-            localStorage.setItem('spo_current_month', currentMonth);
-            localStorage.setItem('spo_current_year', currentYear);
-            window.renderUI();
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            if (window.renderUI) window.renderUI();
         };
 
         window.resetToToday = () => {
-            currentMonth = new Date().getMonth();
-            currentYear = new Date().getFullYear();
-            localStorage.setItem('spo_current_month', currentMonth);
-            localStorage.setItem('spo_current_year', currentYear);
-            window.renderUI();
+            window.currentMonth = new Date().getMonth();
+            window.currentYear = new Date().getFullYear();
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            if (window.renderUI) window.renderUI();
         };
 
 
@@ -2282,7 +2282,7 @@ import { sortTableData } from "./utils/tableSort.js";
                         window.renderDrawerChecklist(evt);
                         window.updateDrawerProgressUI(evt);
                     }
-                    window.renderTasksTable();
+                    if (window.renderTasksTable) window.renderTasksTable();
                     window.renderOngoingEvents();
                 }
             }
@@ -3210,7 +3210,7 @@ import { sortTableData } from "./utils/tableSort.js";
                             window.updateDrawerProgressUI(evt);
                         }
                     }
-                    window.renderTasksTable();
+                    if (window.renderTasksTable) window.renderTasksTable();
                     window.renderOngoingEvents();
                 }
             }
@@ -3600,7 +3600,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 window.syncEventToFirestore(task);
                 window.updateDrawerProgressUI(task);
                 window.renderDrawerChecklist(task);
-                window.renderUI();
+                if (window.renderUI) window.renderUI();
 
                 setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
             }
@@ -3616,7 +3616,7 @@ import { sortTableData } from "./utils/tableSort.js";
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
             window.renderDrawerChecklist(task);
-            window.renderUI();
+            if (window.renderUI) window.renderUI();
 
             setTimeout(() => { document.getElementById('hashtag-input')?.focus(); }, 10);
         };
@@ -3823,7 +3823,7 @@ import { sortTableData } from "./utils/tableSort.js";
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
             window.renderDrawerChecklist(task);
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
             window.renderOngoingEvents();
         };
 
@@ -3848,7 +3848,7 @@ import { sortTableData } from "./utils/tableSort.js";
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
             window.renderDrawerChecklist(task);
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.updateDocumentField = (taskId, idx, key, val) => {
@@ -3860,7 +3860,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.addPostId = (taskId) => {
@@ -3883,7 +3883,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.removePostId = (taskId, idx) => {
@@ -3896,7 +3896,7 @@ import { sortTableData } from "./utils/tableSort.js";
             window.syncEventToFirestore(task);
             window.updateDrawerProgressUI(task);
             window.renderDrawerChecklist(task);
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
         };
 
         window.jumpToTask = (id) => {
@@ -3906,7 +3906,7 @@ import { sortTableData } from "./utils/tableSort.js";
             if (searchInput) searchInput.value = '';
             window.searchQuery = '';
 
-            window.renderTasksTable();
+            if (window.renderTasksTable) window.renderTasksTable();
 
             setTimeout(() => {
                 const row = document.getElementById(`task-row-${id}`);

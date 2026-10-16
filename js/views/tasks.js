@@ -168,7 +168,9 @@ window.renderTasksTable = () => {
                 `;
                 tasksTable.appendChild(tr);
             });
-        }\n\n
+        }
+
+
 export function init(container) {
 if (window.renderTasksTable) window.renderTasksTable();
     return function cleanup() {};

@@ -22,7 +22,9 @@ window.switchPRView = (view) => {
                 timelineContainer.classList.remove('hidden');
                 window.renderPRTimeline();
             }
-        };\n\n
+        };
+
+
 export function init(container) {
 
     const savedView = localStorage.getItem('spo_pr_view') || 'table';

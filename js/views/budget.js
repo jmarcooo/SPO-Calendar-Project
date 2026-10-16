@@ -101,7 +101,9 @@ window.renderBudgetTable = () => {
             document.getElementById('budget-total-allocated').innerText = window.formatCurrency(totalAllocated);
 
             // Remaining removed
-        }\n\nwindow.updateBudgetItemTypes = () => {
+        }
+
+window.updateBudgetItemTypes = () => {
             const budgetType = document.getElementById('budget-type').value;
             const typeContainers = document.querySelectorAll('.budget-item-type-container');
             typeContainers.forEach(container => {
@@ -123,7 +125,9 @@ window.renderBudgetTable = () => {
                     }
                 }
             });
-        };\n\n
+        };
+
+
 export function init(container) {
 if (window.renderBudgetTable) window.renderBudgetTable();
     return function cleanup() {};

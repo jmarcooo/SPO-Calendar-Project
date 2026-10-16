@@ -4,9 +4,9 @@ window.updateStats = () => {
             const filtered = window.filterEventsByGlobalCategory(window.events);
             const currStr = window.getCurrentMonthStr();
 
-            const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
-            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+            const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
+            const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
             const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
 
@@ -73,27 +73,29 @@ window.updateStats = () => {
                 budgetPctEl.innerText = pctText;
                 budgetPctEl.className = `font-semibold ${available < 0 ? 'text-red-600' : 'text-blue-600'}`;
             }
-        }\n\nwindow.renderCalendar = () => {
+        }
+
+window.renderCalendar = () => {
             const calGrid = document.getElementById('calendar-grid');
             const calMonthYear = document.getElementById('calendar-month-year');
 
             if (!calGrid || !calMonthYear) return;
 
             calGrid.innerHTML = '';
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDay = new Date(window.currentYear, window.currentMonth, 1).getDay();
+            const daysInMonth = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            calMonthYear.innerText = `${monthNames[currentMonth]} ${currentYear}`;
+            calMonthYear.innerText = `${monthNames[window.currentMonth]} ${window.currentYear}`;
 
             const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
-            const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+            const isCurrentMonth = today.getMonth() === window.currentMonth && today.getFullYear() === window.currentYear;
             const currentDay = today.getDate();
 
             let weeks = [];
             let currentWeek = [];
-            const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
-            const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-            const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+            const prevMonthDays = new Date(window.currentYear, window.currentMonth, 0).getDate();
+            const prevMonth = window.currentMonth === 0 ? 11 : window.currentMonth - 1;
+            const prevYear = window.currentMonth === 0 ? window.currentYear - 1 : window.currentYear;
 
             for (let i = 0; i < firstDay; i++) {
                 const pDay = prevMonthDays - firstDay + i + 1;
@@ -102,7 +104,7 @@ window.updateStats = () => {
             }
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dateStr = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 currentWeek.push({ day, dateStr, isMuted: false });
                 if (currentWeek.length === 7) {
                     weeks.push(currentWeek);
@@ -112,8 +114,8 @@ window.updateStats = () => {
 
             if (currentWeek.length > 0) {
                 let nextDayCounter = 1;
-                const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
-                const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+                const nextMonth = window.currentMonth === 11 ? 0 : window.currentMonth + 1;
+                const nextYear = window.currentMonth === 11 ? window.currentYear + 1 : window.currentYear;
                 while (currentWeek.length < 7) {
                     const nDateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextDayCounter).padStart(2, '0')}`;
                     currentWeek.push({ day: nextDayCounter++, dateStr: nDateStr, isMuted: true });
@@ -226,14 +228,16 @@ window.updateStats = () => {
                 weekEl.innerHTML = bgGridHtml + contentGridHtml;
                 calGrid.appendChild(weekEl);
             });
-        }\n\nwindow.renderOngoingEvents = () => {
+        }
+
+window.renderOngoingEvents = () => {
             const ongoingList = document.getElementById('ongoing-events-list');
             if (!ongoingList) return;
 
             ongoingList.innerHTML = '';
-            const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
-            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+            const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
+            const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
             let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
             monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
@@ -342,7 +346,9 @@ window.updateStats = () => {
                 }
                 ongoingList.appendChild(el);
             });
-        }\n\nwindow.renderUI = () => {
+        }
+
+window.renderUI = () => {
             const currStr = window.getCurrentMonthStr();
             const monthInput = document.getElementById('setting-budget-month');
             const limitInput = document.getElementById('setting-budget-limit');
@@ -352,10 +358,10 @@ window.updateStats = () => {
             window.updateStats();
             window.renderCalendar();
             window.renderOngoingEvents();
-            window.renderTasksTable();
-            window.renderBudgetTable();
+            if(window.renderTasksTable) window.renderTasksTable();
+            if(window.renderBudgetTable) window.renderBudgetTable();
             if(window.updateCampaignDropdown) window.updateCampaignDropdown();
-        }\n\n
+        }
 export function init(container) {
 
     if (window.renderUI) window.renderUI();
