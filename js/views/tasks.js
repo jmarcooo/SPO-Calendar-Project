@@ -35,18 +35,23 @@ window.renderTasksTable = () => {
                 const bEnd = b.endDate || '';
 
                                 if (window.sortCol === 'default') {
-                    const getRank = (status) => {
-                        if (status === 'Ongoing') return 3;
-                        if (status === 'Upcoming') return 2;
-                        return 1;
-                    };
-                    const rankA = getRank(a.status);
-                    const rankB = getRank(b.status);
-                    if (rankA !== rankB) return rankB - rankA;
+                    const pDate = window.getPHParts();
+                    const nowStrSort = `${pDate.year}-${String(pDate.month + 1).padStart(2, '0')}-${String(pDate.date).padStart(2, '0')}`;
 
-                    const timeA = new Date(aStart).getTime() || 0;
-                    const timeB = new Date(bStart).getTime() || 0;
-                    return timeB - timeA;
+                    const getEventStatus = (e) => {
+                        const startStr = e.startDate || '';
+                        const endStr = e.endDate || startStr;
+                        if (e.status === 'Done' || endStr < nowStrSort) return 'Past';
+                        if (startStr > nowStrSort) return 'Upcoming';
+                        return 'Ongoing';
+                    };
+
+                    const rankA = getEventStatus(a) === 'Ongoing' ? 1 : (getEventStatus(a) === 'Upcoming' ? 2 : 3);
+                    const rankB = getEventStatus(b) === 'Ongoing' ? 1 : (getEventStatus(b) === 'Upcoming' ? 2 : 3);
+                    if (rankA !== rankB) return rankA - rankB;
+
+                    if (aStart !== bStart) return aStart.localeCompare(bStart);
+                    return aEnd.localeCompare(bEnd);
                 }
 
                 let valA = a[window.sortCol];
@@ -82,7 +87,12 @@ window.renderTasksTable = () => {
                 tr.id = `task-row-${evt.id}`;
 
                 let baseClass = 'cursor-pointer transition-colors duration-200 group';
-                if (evt.status === 'Done') {
+                const pDate = window.getPHParts();
+                const nowStrIter = `${pDate.year}-${String(pDate.month + 1).padStart(2, '0')}-${String(pDate.date).padStart(2, '0')}`;
+                const endStr = evt.endDate || evt.startDate || '';
+                const isPast = evt.status === 'Done' || endStr < nowStrIter;
+
+                if (isPast) {
                     baseClass += ' opacity-60 bg-gray-50 grayscale hover:bg-gray-100';
                 } else {
                     baseClass += ' hover:bg-indigo-50';
