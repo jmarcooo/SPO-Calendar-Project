@@ -287,10 +287,20 @@ window.sortTableData = sortTableData;
 
         window.getCurrentMonthStr = () => `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}`;
 
-        window.calculateStatus = (startDate, endDate) => {
+        window.calculateStatus = (startDate, endDate, requestStatus = null) => {
             const today = window.getPHDateStr();
-            if (today < startDate) return 'Upcoming';
-            if (today > endDate) return 'Done';
+            // Handle request status override
+            if (requestStatus === 'Completed' || requestStatus === 'Done' || requestStatus === 'Rejected') {
+                return 'Past'; // or Done depending on how it's handled downstream, but Past keeps sorting logic consistent. For now let's use Done if it was that. Wait, the new logic uses Past, Upcoming, Ongoing. Let's return Past for completed
+            }
+
+            let start = startDate || '';
+            let end = endDate || start;
+            if (start.includes(' ')) start = start.split(' ')[0];
+            if (end.includes(' ')) end = end.split(' ')[0];
+
+            if (today < start) return 'Upcoming';
+            if (today > end) return 'Past'; // Replaced Done with Past as per PR
             return 'Ongoing';
         }
 
@@ -2208,7 +2218,15 @@ window.sortTableData = sortTableData;
             document.getElementById('dt-template-title').value = task.templateTitle || '';
             document.getElementById('dt-template-id').value = task.templateId || '';
             document.getElementById('dt-template-caption').value = task.templateCaption || '';
-            window.currentDTHashtags = task.hashtags ? task.hashtags.split(' ').filter(t => t.trim() !== '') : [];
+
+            let tags = [];
+            if (Array.isArray(task.hashtags)) {
+                tags = task.hashtags;
+            } else if (typeof task.hashtags === 'string') {
+                tags = task.hashtags.split(' ').filter(t => t.trim() !== '');
+            }
+            window.currentDTHashtags = tags;
+
             window.renderDTHashtags();
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
