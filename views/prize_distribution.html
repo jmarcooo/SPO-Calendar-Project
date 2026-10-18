@@ -28,11 +28,14 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                            Campaign Name
-                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group" onclick="window.pdSortBy = 'campaignName'; window.pdSortDesc = !window.pdSortDesc; window.renderPDRequestsTable()">
+                                CAMPAIGN NAME <i class="fa-solid fa-sort ml-1"></i>
+                            </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group whitespace-nowrap">
                             Submission Time
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group whitespace-nowrap" onclick="window.pdSortBy = 'eventDatetime'; window.pdSortDesc = !window.pdSortDesc; window.renderPDRequestsTable()">
+                            Event Date <i class="fa-solid fa-sort ml-1"></i>
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Requested by
