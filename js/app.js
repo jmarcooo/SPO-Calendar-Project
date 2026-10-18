@@ -2195,7 +2195,7 @@ window.sortTableData = sortTableData;
 
             document.getElementById('dt-event-title').value = task.eventTitle || '';
             document.getElementById('dt-start-date').value = task.startDate || '';
-            document.getElementById('dt-end-date').value = task.endDate || '';
+            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = task.endDate || '';
             document.getElementById('dt-task-title').value = task.taskTitle || '';
             document.getElementById('dt-linked-task').value = task.linkedTaskId || '';
             document.getElementById('dt-task-desc').value = task.taskDesc || '';
