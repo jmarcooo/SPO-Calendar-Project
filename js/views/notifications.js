@@ -16,7 +16,7 @@ window.renderFullNotifications = () => {
             userNotifs.forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 mb-3 flex items-start ${isRead ? 'opacity-70' : 'ring-1 ring-indigo-500'}">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 mb-3 flex items-start cursor-pointer transition-colors hover:bg-slate-50 ${isRead ? 'opacity-70' : 'ring-1 ring-indigo-500'}" onclick="window.switchView('${n.targetModule}'); setTimeout(() => { ${n.targetModule === 'tasks' ? 'window.openEditModal(window.events.find(e => e.id === \'' + n.targetId + '\'))' : 'window.open' + (n.targetModule === 'daily_task' ? 'DailyTask' : n.targetModule === 'pin_request' ? 'PinRequest' : n.targetModule === 'sms' ? 'SMS' : n.targetModule === 'content_writer' ? 'CWRequest' : n.targetModule === 'prize_distribution' ? 'PDRequest' : '') + 'Details(\'' + n.targetId + '\')'} }, 300)">
                         <div class="h-8 w-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 mt-0.5">
                             <i class="fa-regular fa-bell"></i>
                         </div>
