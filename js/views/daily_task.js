@@ -43,7 +43,7 @@ window.renderDailyTasksTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
                 return;
             }
 
