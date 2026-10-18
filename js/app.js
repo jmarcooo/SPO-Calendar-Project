@@ -465,7 +465,8 @@ window.sortTableData = sortTableData;
                     tempNotifs.push(doc.data());
                 });
                 window.notifications = tempNotifs;
-                window.renderNotificationsDropdown();
+    localStorage.setItem('spo_notifications', JSON.stringify(tempNotifs));
+    window.renderNotificationsDropdown();
             });
 
             onSnapshot(collection(db, "pd_requests"), (snapshot) => {
@@ -5016,16 +5017,24 @@ window.sortTableData = sortTableData;
             }
         };
 
-        window.notifications = [];
+        window.notifications = JSON.parse(localStorage.getItem('spo_notifications') || '[]');
 window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
     let savedPOCs = {};
     try {
         savedPOCs = JSON.parse(localStorage.getItem('spo_admin_pocs')) || {};
     } catch(e){}
     const pocs = savedPOCs[pocModuleName] || [];
-    if (pocs.length === 0) return;
+
+    // Fallback: if there are no POCs assigned, let's log it for 'All' so at least an admin can see it
+    if (pocs.length === 0) {
+        await window.logNotification(message, 'All', targetModule, targetId);
+        return;
+    }
 
     for (const poc of pocs) {
+        // Log it even if it's the current user? No, we don't want to notify the user of their own action.
+        // Wait, why isn't it working? Is it because the POC is just an array of names like ['Freddy', 'admin']?
+        // Let's log to see. Actually, let's just use logNotification.
         if (poc !== window.currentUserProfile) {
             await window.logNotification(message, poc, targetModule, targetId);
         }
@@ -5033,7 +5042,6 @@ window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
 };
 
 window.logNotification = async (message, targetUser, targetModule = null, targetId = null) => {
-    if (!window.db) return;
     const notifId = "notif-" + Date.now();
     const notifData = {
         id: notifId,
@@ -5044,15 +5052,46 @@ window.logNotification = async (message, targetUser, targetModule = null, target
         createdTime: window.getFormattedCreatedTime(),
         readBy: []
     };
-    try {
-        const { setDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-        await setDoc(doc(window.db, "notifications", notifId), notifData);
-    } catch(e) {
-        console.error("Error logging notification:", e);
+
+    // Update local array and storage
+    if (!window.notifications) window.notifications = JSON.parse(localStorage.getItem('spo_notifications') || '[]');
+    window.notifications.unshift(notifData); // Add to beginning
+    localStorage.setItem('spo_notifications', JSON.stringify(window.notifications));
+
+    if (window.renderNotificationsDropdown) window.renderNotificationsDropdown();
+    if (window.renderFullNotifications) window.renderFullNotifications();
+
+    if (db) {
+        try {
+            await setDoc(doc(db, "notifications", notifId), notifData);
+        } catch(e) {
+            console.error("Error logging notification:", e);
+        }
     }
 };
 
-        window.toggleNotifications = () => {
+        window.handleNotificationClick = (moduleName, targetId) => {
+    window.switchView(moduleName);
+    setTimeout(() => {
+        if (moduleName === 'tasks') {
+            const evt = window.events.find(e => e.id === targetId);
+            if (evt) window.openEditModal(evt);
+        } else if (moduleName === 'daily_task') {
+            window.openDailyTaskDetails(targetId);
+        } else if (moduleName === 'pin_request') {
+            window.openPinRequestDetails(targetId);
+        } else if (moduleName === 'sms') {
+            window.openSMSDetails(targetId);
+        } else if (moduleName === 'content_writer') {
+            window.openCWRequestDetails(targetId);
+        } else if (moduleName === 'prize_distribution') {
+            window.openPDRequestDetails(targetId);
+        }
+        document.getElementById('notif-dropdown')?.classList.add('hidden');
+    }, 300);
+};
+
+window.toggleNotifications = () => {
             const dropdown = document.getElementById('notif-dropdown');
             if (dropdown.classList.contains('hidden')) {
                 dropdown.classList.remove('hidden');
@@ -5100,7 +5139,7 @@ window.logNotification = async (message, targetUser, targetModule = null, target
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100" onclick="window.switchView('${n.targetModule}'); setTimeout(() => { ${n.targetModule === 'tasks' ? 'window.openEditModal(window.events.find(e => e.id === \'' + n.targetId + '\'))' : 'window.open' + (n.targetModule === 'daily_task' ? 'DailyTask' : n.targetModule === 'pin_request' ? 'PinRequest' : n.targetModule === 'sms' ? 'SMS' : n.targetModule === 'content_writer' ? 'CWRequest' : n.targetModule === 'prize_distribution' ? 'PDRequest' : '') + 'Details(\'' + n.targetId + '\')'}; document.getElementById('notif-dropdown').classList.add('hidden'); }, 300)">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900">${n.message}</p>
                         <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
                     </div>
