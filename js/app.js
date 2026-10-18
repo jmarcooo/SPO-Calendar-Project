@@ -2194,8 +2194,14 @@ window.sortTableData = sortTableData;
             window.populateLinkedTasksDropdown();
 
             document.getElementById('dt-event-title').value = task.eventTitle || '';
-            document.getElementById('dt-start-date').value = task.startDate || '';
-            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = task.endDate || '';
+            let sDate = task.startDate || '';
+            if (sDate && sDate.includes(' ')) sDate = sDate.replace(' ', 'T');
+            document.getElementById('dt-start-date').value = sDate.substring(0, 16);
+            if (document.getElementById('dt-end-date')) {
+                let eDate = task.endDate || '';
+                if (eDate && eDate.includes(' ')) eDate = eDate.replace(' ', 'T');
+                document.getElementById('dt-end-date').value = eDate.substring(0, 16);
+            }
             document.getElementById('dt-task-title').value = task.taskTitle || '';
             document.getElementById('dt-linked-task').value = task.linkedTaskId || '';
             document.getElementById('dt-task-desc').value = task.taskDesc || '';
@@ -2204,7 +2210,6 @@ window.sortTableData = sortTableData;
             document.getElementById('dt-template-caption').value = task.templateCaption || '';
             window.currentDTHashtags = task.hashtags ? task.hashtags.split(' ').filter(t => t.trim() !== '') : [];
             window.renderDTHashtags();
-            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = task.endDate || '';
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
 
