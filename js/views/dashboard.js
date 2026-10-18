@@ -242,17 +242,30 @@ window.renderOngoingEvents = () => {
             let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
             monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
 
-            // sort by earliest to latest but grayed out completed past events and put those in bottom causing the current and only running event to be on top
-            // Completed tasks have evt.status === 'Done'
-            // We should put 'Done' at the bottom.
-            monthlyEvents.sort((a, b) => {
-                const aDone = a.status === 'Done' ? 1 : 0;
-                const bDone = b.status === 'Done' ? 1 : 0;
-                if (aDone !== bDone) return aDone - bDone; // put Done at the bottom
+            const pSort = window.getPHParts();
+            const nowStrSort = `${pSort.year}-${String(pSort.month + 1).padStart(2, '0')}-${String(pSort.date).padStart(2, '0')}`;
 
-                // then sort by earliest to latest
-                if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
-                return a.endDate.localeCompare(b.endDate);
+            const getEventStatus = (evt) => {
+                const startStr = evt.startDate || '';
+                const endStr = evt.endDate || startStr;
+                if (evt.status === 'Done' || endStr < nowStrSort) return 'Past';
+                if (startStr > nowStrSort) return 'Upcoming';
+                return 'Ongoing';
+            };
+
+            monthlyEvents.sort((a, b) => {
+                const rankA = getEventStatus(a) === 'Ongoing' ? 1 : (getEventStatus(a) === 'Upcoming' ? 2 : 3);
+                const rankB = getEventStatus(b) === 'Ongoing' ? 1 : (getEventStatus(b) === 'Upcoming' ? 2 : 3);
+
+                if (rankA !== rankB) return rankA - rankB;
+
+                const startA = a.startDate || '';
+                const startB = b.startDate || '';
+                if (startA !== startB) return startA.localeCompare(startB);
+
+                const endA = a.endDate || startA;
+                const endB = b.endDate || startB;
+                return endA.localeCompare(endB);
             });
 
             const ongoingCountEl = document.getElementById('ongoing-count');
@@ -285,7 +298,10 @@ window.renderOngoingEvents = () => {
                 const el = document.createElement('div');
                 el.title = window.getPendingSummary(evt);
 
-                const isPast = daysDiff < 0;
+                const nowStrIter = `${p.year}-${String(p.month + 1).padStart(2, '0')}-${String(p.date).padStart(2, '0')}`;
+                const startStr = evt.startDate || '';
+                const endStr = evt.endDate || startStr;
+                const isPast = evt.status === 'Done' || endStr < nowStrIter;
                 const opacityClass = isPast ? 'opacity-50 grayscale' : '';
 
                 if (itemType === 'event' || itemType === 'game') {
