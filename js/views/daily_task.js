@@ -79,6 +79,9 @@ window.renderDailyTasksTable = () => {
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${rowStatus}</span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
                             <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
