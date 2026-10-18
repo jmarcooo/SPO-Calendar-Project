@@ -5032,12 +5032,7 @@ window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
     }
 
     for (const poc of pocs) {
-        // Log it even if it's the current user? No, we don't want to notify the user of their own action.
-        // Wait, why isn't it working? Is it because the POC is just an array of names like ['Freddy', 'admin']?
-        // Let's log to see. Actually, let's just use logNotification.
-        if (poc !== window.currentUserProfile) {
-            await window.logNotification(message, poc, targetModule, targetId);
-        }
+        await window.logNotification(message, poc, targetModule, targetId);
     }
 };
 
