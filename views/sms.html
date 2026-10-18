@@ -28,14 +28,23 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
-                            Campaign Name
-                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group" onclick="window.smsSortBy = 'campaignName'; window.smsSortDesc = !window.smsSortDesc; window.renderSMSTable()">
+                                Campaign Name <i class="fa-solid fa-sort ml-1"></i>
+                            </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group whitespace-nowrap">
                             Created Date
                         </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="window.smsSortBy = 'eventDateTime'; window.smsSortDesc = !window.smsSortDesc; window.renderSMSTable()">
+                                EVENT DATE & TIME <i class="fa-solid fa-sort ml-1"></i>
+                            </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="window.smsSortBy = 'endDatetime'; window.smsSortDesc = !window.smsSortDesc; window.renderSMSTable()">
+                                END DATE & TIME <i class="fa-solid fa-sort ml-1"></i>
+                            </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Target Date
+                            Budget
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Campaign Status
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Audience Type

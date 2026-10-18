@@ -1,4 +1,5 @@
 import { sortTableData } from "./utils/tableSort.js";
+window.sortTableData = sortTableData;
 
 // --- GLOBAL TIMEZONE CONFIGURATION ---
         window.getPHParts = () => {
@@ -2047,6 +2048,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
             document.getElementById('detail-task-title').innerText = task.taskTitle || 'Untitled Task';
             document.getElementById('detail-event-title').innerText = task.eventTitle || 'No Event';
+            if (document.getElementById('detail-dt-end-date')) document.getElementById('detail-dt-end-date').innerText = task.endDate || 'N/A';
 
             if (task.status === 'Pending' && window.isCurrentUserPOC('daily_task')) {
                 task.status = 'Under Review';
@@ -2152,7 +2154,9 @@ import { sortTableData } from "./utils/tableSort.js";
         window.openDailyTaskModal = () => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
-
+            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = '';
+            window.currentDTHashtags = [];
+            if (window.renderDTHashtags) window.renderDTHashtags();
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
             window.populateLinkedTasksDropdown();
             document.getElementById('daily-task-modal').classList.remove('hidden');
@@ -2161,7 +2165,9 @@ import { sortTableData } from "./utils/tableSort.js";
         window.openDailyTaskModalFromTask = (taskId) => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
-
+            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = '';
+            window.currentDTHashtags = [];
+            if (window.renderDTHashtags) window.renderDTHashtags();
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
             window.populateLinkedTasksDropdown();
 
@@ -2196,7 +2202,9 @@ import { sortTableData } from "./utils/tableSort.js";
             document.getElementById('dt-template-title').value = task.templateTitle || '';
             document.getElementById('dt-template-id').value = task.templateId || '';
             document.getElementById('dt-template-caption').value = task.templateCaption || '';
-            document.getElementById('dt-hashtags').value = task.hashtags || '';
+            window.currentDTHashtags = task.hashtags ? task.hashtags.split(' ').filter(t => t.trim() !== '') : [];
+            window.renderDTHashtags();
+            if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = task.endDate || '';
             document.getElementById('dt-linked-post').value = task.linkedPost || '';
             document.getElementById('dt-doc-link').value = task.docLink || '';
 
@@ -2205,6 +2213,37 @@ import { sortTableData } from "./utils/tableSort.js";
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
+
+        // --- Daily Task Hashtag Logic ---
+        window.currentDTHashtags = [];
+
+        window.addDTHashtag = function() {
+            const input = document.getElementById('dt-hashtag-input');
+            const val = input.value.trim();
+            if (val && !window.currentDTHashtags.includes(val)) {
+                window.currentDTHashtags.push(val);
+                input.value = '';
+                window.renderDTHashtags();
+            }
+        };
+
+        window.removeDTHashtag = function(index) {
+            window.currentDTHashtags.splice(index, 1);
+            window.renderDTHashtags();
+        };
+
+        window.renderDTHashtags = function() {
+            const container = document.getElementById('dt-hashtags-container');
+            if(!container) return;
+            container.innerHTML = '';
+            window.currentDTHashtags.forEach((tag, idx) => {
+                const pill = document.createElement('div');
+                pill.className = 'bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 flex items-center';
+                pill.innerHTML = `<span>${tag}</span><button type="button" class="ml-2 focus:outline-none" onclick="window.removeDTHashtag(${idx})"><i class="fa-solid fa-times text-indigo-500 hover:text-indigo-700"></i></button>`;
+                container.appendChild(pill);
+            });
+        };
+        // ------------------------------------
 
         window.saveDailyTask = () => {
             const eventTitle = document.getElementById('dt-event-title').value.trim();
@@ -2246,14 +2285,14 @@ import { sortTableData } from "./utils/tableSort.js";
 
             targetTask.eventTitle = eventTitle;
             targetTask.startDate = startDate;
-            targetTask.endDate = endDate;
+            targetTask.endDate = document.getElementById('dt-end-date') ? document.getElementById('dt-end-date').value : '';
             targetTask.taskTitle = taskTitle;
             targetTask.taskDesc = document.getElementById('dt-task-desc').value.trim();
             targetTask.templateTitle = document.getElementById('dt-template-title').value.trim();
             targetTask.linkedTaskId = linkedTaskId;
             targetTask.templateId = document.getElementById('dt-template-id').value.trim();
             targetTask.templateCaption = document.getElementById('dt-template-caption').value.trim();
-            targetTask.hashtags = document.getElementById('dt-hashtags').value.trim();
+            targetTask.hashtags = window.currentDTHashtags.join(' ');
             targetTask.linkedPost = document.getElementById('dt-linked-post').value.trim();
             targetTask.docLink = document.getElementById('dt-doc-link').value.trim();
             targetTask.requestor = requestor;
@@ -2645,37 +2684,57 @@ import { sortTableData } from "./utils/tableSort.js";
             });
 
 
-            // Sort by pin position modes or fallback to id
-            filtered.sort((a, b) => {
-                const aPage = parseInt(a.page) || 0;
-                const bPage = parseInt(b.page) || 0;
-                const aPos = parseInt(a.position) || 0;
-                const bPos = parseInt(b.position) || 0;
-                const aSort = parseInt(a.sort) || 0;
-                const bSort = parseInt(b.sort) || 0;
+            // Custom sorting logic
+            if (window.pinSortBy) {
+                filtered.sort((a, b) => {
+                    let valA = a[window.pinSortBy] || '';
+                    let valB = b[window.pinSortBy] || '';
+                    if (typeof valA === 'string') valA = valA.toLowerCase();
+                    if (typeof valB === 'string') valB = valB.toLowerCase();
 
-                const maxVal = 999;
-                const aP = aPage || maxVal; const bP = bPage || maxVal;
-                const aPo = aPos || maxVal; const bPo = bPos || maxVal;
-                const aS = aSort || maxVal; const bS = bSort || maxVal;
+                    if (valA < valB) return window.pinSortDesc ? 1 : -1;
+                    if (valA > valB) return window.pinSortDesc ? -1 : 1;
+                    return 0;
+                });
+            } else {
+                const rank = { 'Live': 1, 'Upcoming': 2, 'Ended': 3 };
+                filtered.sort((a, b) => {
+                    let sA = a.calculatedPinStatus;
+                    let sB = b.calculatedPinStatus;
+                    if (sA === 'Ended' && a.status !== 'Completed') sA = 'Live';
+                    if (sB === 'Ended' && b.status !== 'Completed') sB = 'Live';
+                    if (rank[sA] !== rank[sB]) return rank[sA] - rank[sB];
+                    // Secondary sorting by position modes
+                    const aPage = parseInt(a.page) || 0;
+                    const bPage = parseInt(b.page) || 0;
+                    const aPos = parseInt(a.position) || 0;
+                    const bPos = parseInt(b.position) || 0;
+                    const aSort = parseInt(a.sort) || 0;
+                    const bSort = parseInt(b.sort) || 0;
 
-                if (window.pinSortMode === 1 || !window.pinSortMode) {
-                    if (aS !== bS) return aS - bS;
-                    if (aP !== bP) return aP - bP;
-                    if (aPo !== bPo) return aPo - bPo;
-                } else if (window.pinSortMode === 2) {
-                    if (aPo !== bPo) return aPo - bPo;
-                    if (aP !== bP) return aP - bP;
-                    if (aS !== bS) return aS - bS;
-                } else {
-                    if (aP !== bP) return aP - bP;
-                    if (aPo !== bPo) return aPo - bPo;
-                    if (aS !== bS) return aS - bS;
-                }
+                    const maxVal = 999;
+                    const aP = aPage || maxVal; const bP = bPage || maxVal;
+                    const aPo = aPos || maxVal; const bPo = bPos || maxVal;
+                    const aS = aSort || maxVal; const bS = bSort || maxVal;
 
-                // Fallback to id descending
-                return parseInt(b.id || 0) - parseInt(a.id || 0);
-            });
+                    if (window.pinSortMode === 1 || !window.pinSortMode) {
+                        if (aS !== bS) return aS - bS;
+                        if (aP !== bP) return aP - bP;
+                        if (aPo !== bPo) return aPo - bPo;
+                    } else if (window.pinSortMode === 2) {
+                        if (aPo !== bPo) return aPo - bPo;
+                        if (aP !== bP) return aP - bP;
+                        if (aS !== bS) return aS - bS;
+                    } else {
+                        if (aP !== bP) return aP - bP;
+                        if (aPo !== bPo) return aPo - bPo;
+                        if (aS !== bS) return aS - bS;
+                    }
+
+                    // Fallback to start date
+                    return (b.startDate || '').localeCompare(a.startDate || '');
+                });
+            }
 
 
 
@@ -2695,6 +2754,11 @@ import { sortTableData } from "./utils/tableSort.js";
 
             let html = '';
             filtered.forEach(p => {
+                let rowStatus = p.calculatedPinStatus;
+                if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
+                const isPast = rowStatus === 'Ended';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
 
                 let pinStatusClass = 'text-gray-600 bg-gray-100';
@@ -2704,7 +2768,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
+                    <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
@@ -4035,6 +4099,7 @@ import { sortTableData } from "./utils/tableSort.js";
             const form = document.getElementById('cw-request-form');
             if (form) form.reset();
             document.getElementById('cwr-id').value = '';
+            if (document.getElementById('cwr-support-end-date')) document.getElementById('cwr-support-end-date').value = '';
             document.getElementById('cw-request-modal-title').innerText = 'Create Copy Writer Request';
             const supportTypeRadiosReset = document.getElementsByName('cwr-support-type');
             for (let i = 0; i < supportTypeRadiosReset.length; i++) supportTypeRadiosReset[i].checked = false;
@@ -4047,13 +4112,14 @@ import { sortTableData } from "./utils/tableSort.js";
                     document.getElementById('cwr-id').value = req.id;
 
                     document.getElementById('cwr-campaign-name').value = req.campaignName || '';
+            if (document.getElementById('cw-end-date')) document.getElementById('cw-end-date').value = req.endDate || '';
                     const supportTypeRadios = document.getElementsByName('cwr-support-type');
                     for (let i = 0; i < supportTypeRadios.length; i++) {
                         supportTypeRadios[i].checked = (supportTypeRadios[i].value === req.supportType);
                     }
                     document.getElementById('cwr-campaign-file').value = req.campaignFile || '';
                     document.getElementById('cwr-support-date').value = req.supportDate || '';
-                    document.getElementById('cwr-support-end-date').value = req.supportEndDate || '';
+                    document.getElementById('cwr-support-end-date').value = req.endDate || '';
                     document.getElementById('cwr-campaign-status').value = req.campaignStatus || 'Upcoming';
                     document.getElementById('cwr-priority-level').value = req.priorityLevel || 'S Level';
                     document.getElementById('cwr-priority-rationale').value = req.priorityRationale || '';
@@ -4112,14 +4178,16 @@ import { sortTableData } from "./utils/tableSort.js";
             const reqId = id ? id : Date.now().toString();
             const existing = id ? window.cwRequests.find(p => p.id === id) : null;
 
+            const supportEndDateField = document.getElementById('cwr-support-end-date') ? document.getElementById('cwr-support-end-date').value : '';
+
             const reqData = {
                 id: reqId,
                 requestedBy,
                 campaignName,
+                endDate: supportEndDateField,
                 campaignFile,
                 supportType,
                 supportDate,
-                supportEndDate,
                 campaignStatus,
                 priorityLevel,
                 priorityRationale,
@@ -4239,6 +4307,7 @@ import { sortTableData } from "./utils/tableSort.js";
                 if (req) {
                     document.getElementById('sms-id').value = req.id;
                     document.getElementById('sms-campaign-name').value = req.campaignName || '';
+            if (document.getElementById('sms-end-datetime')) document.getElementById('sms-end-datetime').value = req.endDatetime || '';
                     document.getElementById('sms-event-datetime').value = req.eventDateTime || '';
                     document.getElementById('sms-budget').value = req.budget || '';
                     document.getElementById('sms-doc-link').value = req.docLink || '';
@@ -4262,6 +4331,7 @@ import { sortTableData } from "./utils/tableSort.js";
             const id = document.getElementById('sms-id').value;
             const payload = {
                 campaignName: document.getElementById('sms-campaign-name').value,
+                endDatetime: document.getElementById('sms-end-datetime') ? document.getElementById('sms-end-datetime').value : '',
                 eventDateTime: document.getElementById('sms-event-datetime').value,
                 budget: parseFloat(document.getElementById('sms-budget').value),
                 docLink: document.getElementById('sms-doc-link').value,
@@ -4511,6 +4581,7 @@ import { sortTableData } from "./utils/tableSort.js";
             const form = document.getElementById('pd-request-form');
             if (form) form.reset();
             document.getElementById('pdr-id').value = '';
+            if (document.getElementById('pdr-event-datetime')) document.getElementById('pdr-event-datetime').value = '';
             document.getElementById('pd-request-modal-title').innerText = 'Create Prize Distribution Request';
 
             if (id) {
@@ -4518,6 +4589,11 @@ import { sortTableData } from "./utils/tableSort.js";
                 if (req) {
                     document.getElementById('pdr-id').value = req.id;
                     document.getElementById('pdr-campaign-name').value = req.campaignName || '';
+            if (document.getElementById('pdr-event-datetime')) {
+                let edv = req.eventDatetime || '';
+                if (edv.includes(' ')) edv = edv.replace(' ', 'T');
+                document.getElementById('pdr-event-datetime').value = edv.substring(0, 16);
+            }
 
                     document.getElementById('pdr-campaign-doc').value = req.campaignDocLink || '';
                     document.getElementById('pdr-winner-list-doc').value = req.winnerListDocLink || '';
@@ -4540,6 +4616,7 @@ import { sortTableData } from "./utils/tableSort.js";
 
             const id = document.getElementById('pdr-id').value;
             const campaignName = document.getElementById('pdr-campaign-name').value.trim();
+            const eventDatetime = document.getElementById('pdr-event-datetime') ? document.getElementById('pdr-event-datetime').value.trim() : '';
             const requestedBy = window.currentUserProfile || 'Unknown';
             const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
             const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
@@ -4555,6 +4632,7 @@ import { sortTableData } from "./utils/tableSort.js";
             const reqData = {
                 id: reqId,
                 campaignName,
+                eventDatetime,
                 requestedBy,
                 campaignDocLink,
                 winnerListDocLink,
@@ -4706,6 +4784,7 @@ import { sortTableData } from "./utils/tableSort.js";
             }
 
             document.getElementById('detail-cwr-campaign-name').innerText = req.campaignName || 'N/A';
+        if(document.getElementById('detail-cwr-end-date')) document.getElementById('detail-cwr-end-date').innerText = req.endDate || '-';
             document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
             const reqStatus = req.requestStatus || 'Pending';
             const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
@@ -4729,7 +4808,7 @@ import { sortTableData } from "./utils/tableSort.js";
             }
 
             document.getElementById('detail-cwr-support-date').innerText = req.supportDate || 'N/A';
-            document.getElementById('detail-cwr-support-end-date').innerText = req.supportEndDate || 'N/A';
+            document.getElementById('detail-cwr-support-end-date').innerText = req.endDate || 'N/A';
             document.getElementById('detail-cwr-priority-level').innerText = req.priorityLevel || 'N/A';
             document.getElementById('detail-cwr-priority-rationale').innerText = req.priorityRationale || 'N/A';
             document.getElementById('detail-cwr-posting-requirements').innerText = req.postingRequirements || 'N/A';
@@ -4769,6 +4848,7 @@ import { sortTableData } from "./utils/tableSort.js";
             }
 
             document.getElementById('detail-pdr-campaign-name').innerText = req.campaignName || 'N/A';
+            if (document.getElementById('detail-pdr-event-datetime')) document.getElementById('detail-pdr-event-datetime').innerText = req.eventDatetime || 'N/A';
             document.getElementById('detail-pdr-requested-by').innerText = req.requestedBy || 'N/A';
             document.getElementById('detail-pdr-status').innerText = req.status || 'N/A';
 

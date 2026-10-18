@@ -1,5 +1,3 @@
-import { sortTableData } from "../utils/tableSort.js";
-
 window.renderPDRequestsTable = () => {
             const tbody = document.getElementById('pd-requests-table-body');
             if (!tbody) return;
@@ -15,29 +13,48 @@ window.renderPDRequestsTable = () => {
                 return true;
             });
 
+            if (window.pdSortBy) {
+                filtered = window.sortTableData(filtered, window.pdSortBy, window.pdSortDesc);
+            } else {
+                const rank = { 'Ongoing': 1, 'Upcoming': 2, 'Past': 3 };
+                filtered.sort((a, b) => {
+                    let sA = window.calculateStatus(a.eventDatetime, a.eventDatetime, a.status);
+                    let sB = window.calculateStatus(b.eventDatetime, b.eventDatetime, b.status);
+                    if (sA === 'Past' && a.status !== 'Completed' && a.status !== 'Rejected') sA = 'Ongoing';
+                    if (sB === 'Past' && b.status !== 'Completed' && b.status !== 'Rejected') sB = 'Ongoing';
+                    if (rank[sA] !== rank[sB]) return rank[sA] - rank[sB];
+                    return (b.submissionTime || '').localeCompare(a.submissionTime || '');
+                });
+            }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500">No PD requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No PD requests found.</td></tr>';
                 return;
             }
 
             let html = '';
             filtered.forEach(p => {
+                let rowStatus = window.calculateStatus(p.eventDatetime, p.eventDatetime, p.status);
+                if (rowStatus === 'Past' && p.status !== 'Completed' && p.status !== 'Rejected') rowStatus = 'Ongoing';
+                const isPast = rowStatus === 'Past';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
                 else if (p.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
                 else if (p.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
 
                 html += `
-                    <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPDRequestDetails('${p.id}')">
+                    <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPDRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.eventDatetime || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            ${(function(){
+                            ${(() => {
                                 let n = p.requestedBy || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900">${n}</span></div>`;
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
