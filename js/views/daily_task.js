@@ -50,9 +50,14 @@ window.renderDailyTasksTable = () => {
             let html = '';
             filtered.forEach(task => {
                 let rowStatus = window.calculateStatus(task.startDate, task.endDate || task.startDate, task.status);
+
+                // Only gray out if the date itself is past, ignoring request status override.
+                // window.calculateStatus uses Philippine time. We can just use the status returned without status override for opacity.
+                let dateStatus = window.calculateStatus(task.startDate, task.endDate || task.startDate, null);
+                const isPastDate = dateStatus === 'Past';
+
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
-                const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
 
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (task.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
@@ -63,6 +68,9 @@ window.renderDailyTasksTable = () => {
 
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
+                const displayStart = task.startDate ? task.startDate.replace('T', ' ') : '';
+                const displayEnd = task.endDate ? task.endDate.replace('T', ' ') : '-';
+
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -70,8 +78,8 @@ window.renderDailyTasksTable = () => {
                             <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.createdTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.startDate}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.endDate || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayStart}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">${initial}</div>
