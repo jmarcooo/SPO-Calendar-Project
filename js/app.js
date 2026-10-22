@@ -1691,7 +1691,8 @@ window.sortTableData = sortTableData;
 
             const id = document.getElementById('budget-id').value;
             const month = document.getElementById('budget-month').value;
-            const owner = window.currentUserProfile || 'Unknown';
+            const existingBudget = id ? window.budgets.find(b => b.id === id) : null;
+            const owner = existingBudget && existingBudget.owner ? existingBudget.owner : (window.currentUserProfile || 'Unknown');
             const name = document.getElementById('budget-name').value.trim();
             const type = document.getElementById('budget-type').value;
             const allocated = document.getElementById('budget-allocated').value;
@@ -2294,7 +2295,9 @@ window.sortTableData = sortTableData;
             const endDate = document.getElementById('dt-end-date').value;
             const taskTitle = document.getElementById('dt-task-title').value.trim();
             const linkedTaskId = document.getElementById('dt-linked-task').value;
-            const requestor = window.currentUserProfile || 'Unknown';
+            const dtId = document.getElementById('dt-id').value;
+            const existingTask = dtId ? window.dailyTasks.find(t => t.id === dtId) : null;
+            const requestor = existingTask && existingTask.requestor ? existingTask.requestor : (window.currentUserProfile || 'Unknown');
 
             if (!eventTitle || !startDate || !endDate || !taskTitle) {
                 alert("Please fill in all required fields (*).");
@@ -2309,7 +2312,6 @@ window.sortTableData = sortTableData;
                 String(now.getMinutes()).padStart(2, '0') + ":" +
                 String(now.getSeconds()).padStart(2, '0');
 
-            const dtId = document.getElementById('dt-id').value;
             let targetTask = null;
             let isNew = false;
 
@@ -2558,12 +2560,12 @@ window.sortTableData = sortTableData;
             const priority = document.getElementById('pr-priority').value;
             const postId = document.getElementById('pr-post-id').value.trim();
             const postTitle = document.getElementById('pr-post-title').value.trim();
-            const owner = window.currentUserProfile || 'Unknown';
             const remark = document.getElementById('pr-remark').value.trim();
 
             const reqId = id ? id : Date.now().toString();
 
             const existing = id ? window.pinRequests.find(p => p.id === id) : null;
+            const owner = existing && existing.owner ? existing.owner : (window.currentUserProfile || 'Unknown');
             let status = existing ? existing.status : 'Pending';
 
             if (page && position && sortVal) {
@@ -3410,7 +3412,8 @@ window.sortTableData = sortTableData;
             const id = document.getElementById('ql-id').value;
             const title = document.getElementById('ql-title').value.trim();
             const url = document.getElementById('ql-url').value.trim();
-            const createdBy = window.currentUserProfile || 'Unknown';
+            const existingLink = id ? window.quickLinks.find(l => l.id === id) : null;
+            const createdBy = existingLink && existingLink.createdBy ? existingLink.createdBy : (window.currentUserProfile || 'Unknown');
 
             const btn = document.getElementById('save-ql-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -4214,7 +4217,8 @@ window.sortTableData = sortTableData;
             if (!form.reportValidity()) return;
 
             const id = document.getElementById('cwr-id').value;
-            const requestedBy = window.currentUserProfile || 'Unknown';
+            const existingCw = id ? window.cwRequests.find(p => p.id === id) : null;
+            const requestedBy = existingCw && existingCw.requestedBy ? existingCw.requestedBy : (window.currentUserProfile || 'Unknown');
             const campaignName = document.getElementById('cwr-campaign-name').value.trim();
             const campaignFile = document.getElementById('cwr-campaign-file').value.trim();
             let supportType = '';
@@ -4696,7 +4700,8 @@ window.sortTableData = sortTableData;
             const id = document.getElementById('pdr-id').value;
             const campaignName = document.getElementById('pdr-campaign-name').value.trim();
             const eventDatetime = document.getElementById('pdr-event-datetime') ? document.getElementById('pdr-event-datetime').value.trim() : '';
-            const requestedBy = window.currentUserProfile || 'Unknown';
+            const existingPd = id ? window.pdRequests.find(p => p.id === id) : null;
+            const requestedBy = existingPd && existingPd.requestedBy ? existingPd.requestedBy : (window.currentUserProfile || 'Unknown');
             const campaignDocLink = document.getElementById('pdr-campaign-doc').value.trim();
             const winnerListDocLink = document.getElementById('pdr-winner-list-doc').value.trim();
             const budgetAmount = parseFloat(document.getElementById('pdr-budget-amount').value) || 0;
