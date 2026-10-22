@@ -49,7 +49,7 @@ window.renderDailyTasksTable = () => {
 
             let html = '';
             filtered.forEach(task => {
-                let rowStatus = window.calculateStatus(task.startDate, task.endDate || task.startDate, task.status);
+                let rowStatus = window.calculateStatus(task.startDate, task.endDate || task.startDate, null);
 
                 // Only gray out if the date itself is past, ignoring request status override.
                 // window.calculateStatus uses Philippine time. We can just use the status returned without status override for opacity.
