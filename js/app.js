@@ -351,6 +351,11 @@ window.sortTableData = sortTableData;
         };
 
         window.initApp = () => {
+            // Request desktop notification permission if not already granted/denied
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+
             const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const filterEl = document.getElementById('budget-filter-month');
@@ -465,7 +470,8 @@ window.sortTableData = sortTableData;
                     tempNotifs.push(doc.data());
                 });
                 window.notifications = tempNotifs;
-                window.renderNotificationsDropdown();
+    localStorage.setItem('spo_notifications', JSON.stringify(tempNotifs));
+    window.renderNotificationsDropdown();
             });
 
             onSnapshot(collection(db, "pd_requests"), (snapshot) => {
@@ -1066,8 +1072,16 @@ window.sortTableData = sortTableData;
         }
 
         window.syncEventToFirestore = async (task) => {
-            // Local fallback
-            const idx = window.events.findIndex(e => e.id === task.id);
+    let oldTask = window.events.find(e => e.id === task.id);
+    if (oldTask && oldTask.progress !== task.progress) {
+        if (task.requestor && task.requestor !== window.currentUserProfile) {
+            window.logNotification(`Task "${task.title}" progress was updated to ${task.progress}% by ${window.currentUserProfile}`, task.requestor, 'tasks', task.id);
+        }
+        if (task.owner && task.owner !== window.currentUserProfile && task.owner !== task.requestor) {
+            window.logNotification(`Task "${task.title}" progress was updated to ${task.progress}% by ${window.currentUserProfile}`, task.owner, 'tasks', task.id);
+        }
+    }
+    const idx = window.events.findIndex(e => e.id === task.id);
             if (idx > -1) window.events[idx] = task;
             else window.events.push(task);
             localStorage.setItem('spo_content_calendar_events', JSON.stringify(window.events));
@@ -2125,6 +2139,12 @@ window.sortTableData = sortTableData;
         };
 
         window.syncDailyTaskToFirestore = async (task) => {
+    const oldTask = window.dailyTasks.find(t => t.id === task.id);
+    if (oldTask && oldTask.status !== task.status) {
+        if (task.requestor && task.requestor !== window.currentUserProfile) {
+            window.logNotification(`Daily Task "${task.taskTitle}" status was updated to ${task.status} by ${window.currentUserProfile}`, task.requestor, 'daily_task', task.id);
+        }
+    }
             const idx = window.dailyTasks.findIndex(t => t.id === task.id);
             if (idx > -1) window.dailyTasks[idx] = task;
             else window.dailyTasks.push(task);
@@ -2323,8 +2343,9 @@ window.sortTableData = sortTableData;
             if (!dtId) targetTask.status = 'Pending';
 
             if (isNew) {
-                window.dailyTasks.push(targetTask);
-            }
+        window.dailyTasks.push(targetTask);
+        window.notifyPOCs(`New Daily Task "${targetTask.taskTitle}" submitted by ${window.currentUserProfile}`, 'daily_task', 'daily_task', targetTask.id);
+    }
             window.syncDailyTaskToFirestore(targetTask);
 
             document.getElementById('daily-task-form').reset();
@@ -2573,9 +2594,19 @@ window.sortTableData = sortTableData;
             btn.disabled = true;
 
             try {
-                const idx = window.pinRequests.findIndex(p => p.id === reqId);
+
+    const oldPin = window.pinRequests.find(p => p.id === reqId);
+    if (oldPin && oldPin.status !== reqData.status) {
+        if (reqData.owner && reqData.owner !== window.currentUserProfile) {
+            window.logNotification(`Pin Request "${reqData.campaignName}" status was updated to ${reqData.status} by ${window.currentUserProfile}`, reqData.owner, 'pin_request', reqData.id);
+        }
+    }
+    const idx = window.pinRequests.findIndex(p => p.id === reqId);
                 if (idx > -1) window.pinRequests[idx] = reqData;
-                else window.pinRequests.push(reqData);
+    else {
+        window.pinRequests.push(reqData);
+        window.notifyPOCs(`New Pin Request "${reqData.campaignName}" submitted by ${window.currentUserProfile}`, 'post_management', 'pin_request', reqData.id);
+    }
 
                 localStorage.setItem('spo_pin_requests', JSON.stringify(window.pinRequests));
 
@@ -3234,6 +3265,12 @@ window.sortTableData = sortTableData;
             req.sort = document.getElementById('pa-sort').value;
             req.status = 'Completed';
             req.updateDate = window.getFormattedCreatedTime();
+    if (req.owner && req.owner !== window.currentUserProfile) {
+        window.logNotification(`Pin Request "${req.campaignName}" was Completed by ${window.currentUserProfile}`, req.owner, 'pin_request', req.id);
+    }
+    if (req.requestedBy && req.requestedBy !== window.currentUserProfile) {
+        window.logNotification(`Request "${req.campaignName || req.taskTitle}" was Completed by ${window.currentUserProfile}`, req.requestedBy, req.category === 'sms' ? 'sms' : (req.campaignName ? 'prize_distribution' : 'daily_task'), req.id);
+    }
 
             const btn = document.getElementById('save-pa-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -4229,9 +4266,19 @@ window.sortTableData = sortTableData;
             btn.disabled = true;
 
             try {
-                const idx = window.cwRequests.findIndex(p => p.id === reqId);
+
+    const oldCw = window.cwRequests.find(p => p.id === reqId);
+    if (oldCw && oldCw.requestStatus !== reqData.requestStatus) {
+        if (reqData.requestedBy && reqData.requestedBy !== window.currentUserProfile) {
+            window.logNotification(`CW Request "${reqData.campaignName}" status was updated to ${reqData.requestStatus} by ${window.currentUserProfile}`, reqData.requestedBy, 'content_writer', reqData.id);
+        }
+    }
+    const idx = window.cwRequests.findIndex(p => p.id === reqId);
                 if (idx > -1) window.cwRequests[idx] = reqData;
-                else window.cwRequests.push(reqData);
+    else {
+        window.cwRequests.push(reqData);
+        window.notifyPOCs(`New Content Writer Request "${reqData.campaignName}" submitted by ${window.currentUserProfile}`, 'copy_writer', 'content_writer', reqData.id);
+    }
 
                 localStorage.setItem('spo_cw_requests', JSON.stringify(window.cwRequests));
 
@@ -4375,9 +4422,18 @@ window.sortTableData = sortTableData;
                     ...payload
                 };
                 window.smsRequests.push(newReq);
+    window.notifyPOCs(`New SMS Request "${newReq.campaignName}" submitted by ${window.currentUserProfile}`, 'sms', 'sms', newReq.id);
             }
 
             const reqToSave = id ? window.smsRequests.find(r => r.id === id) : window.smsRequests[window.smsRequests.length - 1];
+    if (id) {
+        const oldReq = JSON.parse(localStorage.getItem('spo_sms_requests') || '[]').find(r => r.id === id);
+        if (oldReq && oldReq.requestStatus !== reqToSave.requestStatus) {
+            if (reqToSave.requestedBy && reqToSave.requestedBy !== window.currentUserProfile) {
+                window.logNotification(`SMS Request "${reqToSave.campaignName}" status was updated to ${reqToSave.requestStatus} by ${window.currentUserProfile}`, reqToSave.requestedBy, 'sms', reqToSave.id);
+            }
+        }
+    }
             localStorage.setItem('spo_sms_requests', JSON.stringify(window.smsRequests));
 
             if (db) {
@@ -4671,9 +4727,19 @@ window.sortTableData = sortTableData;
             btn.disabled = true;
 
             try {
-                const idx = window.pdRequests.findIndex(p => p.id === reqId);
+
+    const oldPd = window.pdRequests.find(p => p.id === reqId);
+    if (oldPd && oldPd.status !== reqData.status) {
+        if (reqData.requestedBy && reqData.requestedBy !== window.currentUserProfile) {
+            window.logNotification(`PD Request "${reqData.campaignName}" status was updated to ${reqData.status} by ${window.currentUserProfile}`, reqData.requestedBy, 'prize_distribution', reqData.id);
+        }
+    }
+    const idx = window.pdRequests.findIndex(p => p.id === reqId);
                 if (idx > -1) window.pdRequests[idx] = reqData;
-                else window.pdRequests.push(reqData);
+    else {
+        window.pdRequests.push(reqData);
+        window.notifyPOCs(`New Prize Distribution Request "${reqData.campaignName}" submitted by ${window.currentUserProfile}`, 'prize_distribution', 'prize_distribution', reqData.id);
+    }
 
                 localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
 
@@ -4771,6 +4837,10 @@ window.sortTableData = sortTableData;
             if (!req) return;
 
             if (req.status === 'Pending' && window.isCurrentUserPOC('post_management')) {
+        if (req.owner && req.owner !== window.currentUserProfile) {
+            window.logNotification(`Pin Request "${req.campaignName}" is now Under Review by ${window.currentUserProfile}`, req.owner, 'pin_request', req.id);
+        }
+
                 req.status = 'Under Review';
                 window.syncPinRequestSilent(req);
             }
@@ -4852,7 +4922,10 @@ window.sortTableData = sortTableData;
             try {
                 const idx = window.pdRequests.findIndex(p => p.id === reqData.id);
                 if (idx > -1) window.pdRequests[idx] = reqData;
-                else window.pdRequests.push(reqData);
+    else {
+        window.pdRequests.push(reqData);
+        window.notifyPOCs(`New Prize Distribution Request "${reqData.campaignName}" submitted by ${window.currentUserProfile}`, 'prize_distribution', 'prize_distribution', reqData.id);
+    }
 
                 localStorage.setItem('spo_pd_requests', JSON.stringify(window.pdRequests));
                 if (db) await setDoc(doc(db, "pd_requests", reqData.id), reqData);
@@ -4866,6 +4939,10 @@ window.sortTableData = sortTableData;
             if (!req) return;
 
             if (req.status === 'Pending' && window.isCurrentUserPOC('prize_distribution')) {
+        if (req.requestedBy && req.requestedBy !== window.currentUserProfile) {
+            window.logNotification(`PD Request "${req.campaignName}" is now In Progress by ${window.currentUserProfile}`, req.requestedBy, 'prize_distribution', req.id);
+        }
+
                 req.status = 'Under Review';
                 window.syncPDRequestSilent(req);
             }
@@ -4924,6 +5001,12 @@ window.sortTableData = sortTableData;
 
             req.status = 'Completed';
             req.updateDate = window.getFormattedCreatedTime();
+    if (req.owner && req.owner !== window.currentUserProfile) {
+        window.logNotification(`Pin Request "${req.campaignName}" was Completed by ${window.currentUserProfile}`, req.owner, 'pin_request', req.id);
+    }
+    if (req.requestedBy && req.requestedBy !== window.currentUserProfile) {
+        window.logNotification(`Request "${req.campaignName || req.taskTitle}" was Completed by ${window.currentUserProfile}`, req.requestedBy, req.category === 'sms' ? 'sms' : (req.campaignName ? 'prize_distribution' : 'daily_task'), req.id);
+    }
 
             const btn = document.getElementById('save-pdc-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -4939,9 +5022,90 @@ window.sortTableData = sortTableData;
             }
         };
 
-        window.notifications = [];
+        window.notifications = JSON.parse(localStorage.getItem('spo_notifications') || '[]');
+window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
+    let savedPOCs = {};
+    try {
+        savedPOCs = JSON.parse(localStorage.getItem('spo_admin_pocs')) || {};
+    } catch(e){}
+    const pocs = savedPOCs[pocModuleName] || [];
 
-        window.toggleNotifications = () => {
+    // Fallback: if there are no POCs assigned, let's log it for 'All' so at least an admin can see it
+    if (pocs.length === 0) {
+        await window.logNotification(message, 'All', targetModule, targetId);
+        return;
+    }
+
+    for (const poc of pocs) {
+        await window.logNotification(message, poc, targetModule, targetId);
+    }
+};
+
+window.logNotification = async (message, targetUser, targetModule = null, targetId = null) => {
+    const notifId = "notif-" + Date.now();
+    const notifData = {
+        id: notifId,
+        message,
+        targetUser,
+        targetModule,
+        targetId,
+        createdTime: window.getFormattedCreatedTime(),
+        readBy: []
+    };
+
+    // Update local array and storage
+    if (!window.notifications) window.notifications = JSON.parse(localStorage.getItem('spo_notifications') || '[]');
+    window.notifications.unshift(notifData); // Add to beginning
+    localStorage.setItem('spo_notifications', JSON.stringify(window.notifications));
+
+    if (window.renderNotificationsDropdown) window.renderNotificationsDropdown();
+    if (window.renderFullNotifications) window.renderFullNotifications();
+
+    // Show toast and desktop notification if it's for the current user or 'All'
+    if (targetUser === window.currentUserProfile || targetUser === 'All') {
+        if (window.showToast) {
+            window.showToast(message, 'info', 'fa-bell');
+        }
+
+        if (Notification.permission === "granted") {
+            new Notification("SPO Content Calendar", {
+                body: message,
+                icon: "favicon.svg"
+            });
+        }
+    }
+
+    if (db) {
+        try {
+            await setDoc(doc(db, "notifications", notifId), notifData);
+        } catch(e) {
+            console.error("Error logging notification:", e);
+        }
+    }
+};
+
+        window.handleNotificationClick = (moduleName, targetId) => {
+    window.switchView(moduleName);
+    setTimeout(() => {
+        if (moduleName === 'tasks') {
+            const evt = window.events.find(e => e.id === targetId);
+            if (evt) window.openEditModal(evt);
+        } else if (moduleName === 'daily_task') {
+            window.openDailyTaskDetails(targetId);
+        } else if (moduleName === 'pin_request') {
+            window.openPinRequestDetails(targetId);
+        } else if (moduleName === 'sms') {
+            window.openSMSDetails(targetId);
+        } else if (moduleName === 'content_writer') {
+            window.openCWRequestDetails(targetId);
+        } else if (moduleName === 'prize_distribution') {
+            window.openPDRequestDetails(targetId);
+        }
+        document.getElementById('notif-dropdown')?.classList.add('hidden');
+    }, 300);
+};
+
+window.toggleNotifications = () => {
             const dropdown = document.getElementById('notif-dropdown');
             if (dropdown.classList.contains('hidden')) {
                 dropdown.classList.remove('hidden');
@@ -4989,7 +5153,7 @@ window.sortTableData = sortTableData;
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900">${n.message}</p>
                         <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
                     </div>
