@@ -351,6 +351,11 @@ window.sortTableData = sortTableData;
         };
 
         window.initApp = () => {
+            // Request desktop notification permission if not already granted/denied
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+
             const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
             window.budgetFilterMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             const filterEl = document.getElementById('budget-filter-month');
@@ -5055,6 +5060,20 @@ window.logNotification = async (message, targetUser, targetModule = null, target
 
     if (window.renderNotificationsDropdown) window.renderNotificationsDropdown();
     if (window.renderFullNotifications) window.renderFullNotifications();
+
+    // Show toast and desktop notification if it's for the current user or 'All'
+    if (targetUser === window.currentUserProfile || targetUser === 'All') {
+        if (window.showToast) {
+            window.showToast(message, 'info', 'fa-bell');
+        }
+
+        if (Notification.permission === "granted") {
+            new Notification("SPO Content Calendar", {
+                body: message,
+                icon: "favicon.svg"
+            });
+        }
+    }
 
     if (db) {
         try {
