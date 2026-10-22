@@ -1723,6 +1723,10 @@ window.sortTableData = sortTableData;
                 spent: 0
             };
 
+            if (id) {
+                entryData.editedBy = window.currentUserProfile || 'Unknown';
+            }
+
             if (!id) {
                 entryData.createdAt = window.getFormattedCreatedTime();
             } else {
@@ -2341,6 +2345,9 @@ window.sortTableData = sortTableData;
             targetTask.linkedPost = document.getElementById('dt-linked-post').value.trim();
             targetTask.docLink = document.getElementById('dt-doc-link').value.trim();
             targetTask.requestor = requestor;
+            if (dtId) {
+                targetTask.editedBy = window.currentUserProfile || 'Unknown';
+            }
             // status is handled by lifecycle, not from form input
             if (!dtId) targetTask.status = 'Pending';
 
@@ -2590,6 +2597,10 @@ window.sortTableData = sortTableData;
                 position: document.getElementById('pr-position').value || '',
                 sort: document.getElementById('pr-sort').value || ''
             };
+
+            if (id) {
+                reqData.editedBy = window.currentUserProfile || 'Unknown';
+            }
 
             const btn = document.getElementById('save-pr-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -3431,6 +3442,10 @@ window.sortTableData = sortTableData;
             };
 
             if (id) {
+                linkData.editedBy = window.currentUserProfile || 'Unknown';
+            }
+
+            if (id) {
                 const existing = window.quickLinks.find(l => l.id === id);
                 if (existing) {
                     linkData.createdTime = existing.createdTime || timestamp;
@@ -4265,6 +4280,10 @@ window.sortTableData = sortTableData;
                 updateDate: window.getFormattedCreatedTime()
             };
 
+            if (id) {
+                reqData.editedBy = window.currentUserProfile || 'Unknown';
+            }
+
             const btn = document.getElementById('save-cwr-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
             btn.disabled = true;
@@ -4414,6 +4433,7 @@ window.sortTableData = sortTableData;
             };
 
             if (id) {
+                payload.editedBy = window.currentUserProfile || 'Unknown';
                 const index = window.smsRequests.findIndex(r => r.id === id);
                 if (index > -1) {
                     window.smsRequests[index] = { ...window.smsRequests[index], ...payload };
@@ -4726,6 +4746,10 @@ window.sortTableData = sortTableData;
                 submissionTime: existing && existing.submissionTime ? existing.submissionTime : window.getFormattedCreatedTime(),
                 updateDate: window.getFormattedCreatedTime()
             };
+
+            if (id) {
+                reqData.editedBy = window.currentUserProfile || 'Unknown';
+            }
 
             const btn = document.getElementById('save-pdr-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
