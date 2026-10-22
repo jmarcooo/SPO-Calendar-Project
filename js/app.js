@@ -288,7 +288,7 @@ window.sortTableData = sortTableData;
         window.getCurrentMonthStr = () => `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}`;
 
         window.calculateStatus = (startDate, endDate, requestStatus = null) => {
-            const today = window.getPHDateStr();
+            const now = window.getFormattedCreatedTime(); // "YYYY-MM-DD HH:MM:SS"
             // Handle request status override
             if (requestStatus === 'Completed' || requestStatus === 'Done' || requestStatus === 'Rejected') {
                 return 'Past'; // or Done depending on how it's handled downstream, but Past keeps sorting logic consistent. For now let's use Done if it was that. Wait, the new logic uses Past, Upcoming, Ongoing. Let's return Past for completed
@@ -296,11 +296,21 @@ window.sortTableData = sortTableData;
 
             let start = startDate || '';
             let end = endDate || start;
-            if (start.includes(' ')) start = start.split(' ')[0];
-            if (end.includes(' ')) end = end.split(' ')[0];
 
-            if (today < start) return 'Upcoming';
-            if (today > end) return 'Past'; // Replaced Done with Past as per PR
+            // Normalize 'T' to space for comparison
+            start = start.replace('T', ' ');
+            end = end.replace('T', ' ');
+
+            // If time is missing, pad to represent the whole day
+            if (start.length === 10) start += " 00:00:00";
+            if (end.length === 10) end += " 23:59:59";
+
+            // Ensure padding for cases where time might be " HH:MM" without seconds
+            if (start.length === 16) start += ":00";
+            if (end.length === 16) end += ":00";
+
+            if (now < start) return 'Upcoming';
+            if (now > end) return 'Past';
             return 'Ongoing';
         }
 
