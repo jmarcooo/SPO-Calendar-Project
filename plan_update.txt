@@ -1,0 +1,10 @@
+1. Update `renderGameCards` in `js/app.js` to change the card layout.
+2. The user wants the cards to look like a profile card with a banner at the top, a square icon in the middle (overlapping the banner and the white body), and the title below it.
+3. Replace the current card layout with one that has:
+   - A banner at the top (`bg-slate-200` or an image, probably just a color like `bg-indigo-100` or something generic if there's no banner image). Or maybe use the first post image if available? We can just use a placeholder banner or generic gradient.
+   - A square box overlapping the banner and body, with a game icon inside.
+   - The game title centered below the icon.
+   - Keep the start date and progress bar inside the card.
+4. Verify the frontend via Playwright and manually.
+5. Pre-commit steps.
+6. Submit changes.

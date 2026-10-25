@@ -963,22 +963,34 @@ window.sortTableData = sortTableData;
                 const isActive = window.currentGameId === g.id;
                 const borderClass = isActive ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200/60 hover:border-indigo-300';
 
+                const hasBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
+                const bannerStyle = hasBanner ? `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;` : 'background: linear-gradient(to right, #6366f1, #a855f7);';
+
                 cardsHtml += `
-                    <div onclick="window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all p-4 border ${borderClass}">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-800">${g.campaignType || 'Game Launch'}</span>
-                            <span class="text-xs text-gray-500">${g.startDate.split(' ')[0]}</span>
+                    <div onclick="window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                        <div class="h-24 w-full relative" style="${bannerStyle}">
+                            <div class="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded font-medium">${g.campaignType || 'Game Launch'}</div>
                         </div>
-                        <h4 class="font-bold text-gray-900 text-sm mb-2 truncate" title="${g.title}">${g.title}</h4>
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span>Progress</span>
-                            <span class="font-bold text-indigo-600">${pFormatted}%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-1.5 mt-1">
-                            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${g.progress || 0}%"></div>
+                        <div class="px-4 pb-4 relative flex-1 flex flex-col items-center">
+                            <div class="w-16 h-16 bg-white border-4 border-white shadow-sm flex items-center justify-center -mt-8 mb-2 z-10 overflow-hidden relative">
+                                <i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-sm mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
+                            <p class="text-xs text-gray-500 mb-3 text-center">${g.startDate.split(' ')[0]}</p>
+
+                            <div class="w-full mt-auto">
+                                <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                                    <span>Progress</span>
+                                    <span class="font-bold text-indigo-600">${pFormatted}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                    <div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${g.progress || 0}%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
+
             });
 
             container.innerHTML = cardsHtml;
