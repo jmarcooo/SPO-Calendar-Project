@@ -1077,8 +1077,11 @@ window.sortTableData = sortTableData;
 
 
         window.renderGameDetails = (gameId) => {
-            const event = window.allEvents.find(e => String(e.id) === String(gameId));
-            if (!event) return;
+            const event = window.events.find(e => String(e.id) === String(gameId)) || window.allEvents.find(e => String(e.id) === String(gameId));
+            if (!event) {
+                console.error("Game event not found for id:", gameId);
+                return;
+            }
             window.openGameDrawer(event);
         };
 
