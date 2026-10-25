@@ -893,9 +893,106 @@ window.sortTableData = sortTableData;
             `;
         };
 
+
+
+        window.changeGameMonth = (dir) => {
+            window.currentMonth += dir;
+            if (window.currentMonth < 0) {
+                window.currentMonth = 11;
+                window.currentYear--;
+            } else if (window.currentMonth > 11) {
+                window.currentMonth = 0;
+                window.currentYear++;
+            }
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            window.renderGameCards();
+        };
+
+        window.resetGameMonth = () => {
+            const ph = window.getPHParts();
+            window.currentMonth = ph.month - 1;
+            window.currentYear = ph.year;
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            window.renderGameCards();
+        };
+
+        window.renderGameCards = () => {
+            const container = document.getElementById('game-cards-container');
+            const monthLabel = document.getElementById('new-games-month-label');
+            if (!container) return;
+
+            const monthStr = window.getCurrentMonthStr();
+            const date = new Date(window.currentYear, window.currentMonth, 1);
+            const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            if (monthLabel) {
+                monthLabel.innerText = `Showing games for ${monthName}`;
+            }
+
+            const gamesOnly = window.events.filter(e => {
+                const iType = e.itemType || (e.isEventOnly ? 'event' : 'task');
+                if (iType !== 'game') return false;
+
+                // Filter by month
+                if (e.startDate && e.startDate.startsWith(monthStr)) return true;
+                if (e.endDate && e.endDate.startsWith(monthStr)) return true;
+
+                // Also show games that span across the month
+                if (e.startDate && e.endDate) {
+                    if (e.startDate < monthStr + "-01" && e.endDate > monthStr + "-31") return true;
+                }
+
+                return false;
+            });
+
+            gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
+
+            if (gamesOnly.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400"></i>
+                    <p class="text-sm font-medium">No new games found for this month.</p>
+                </div>`;
+                return;
+            }
+
+            let cardsHtml = '';
+            gamesOnly.forEach(g => {
+                const pFormatted = (g.progress || 0).toFixed(0);
+                const isActive = window.currentGameId === g.id;
+                const borderClass = isActive ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200/60 hover:border-indigo-300';
+
+                cardsHtml += `
+                    <div onclick="window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all p-4 border ${borderClass}">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-800">${g.campaignType || 'Game Launch'}</span>
+                            <span class="text-xs text-gray-500">${g.startDate.split(' ')[0]}</span>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-sm mb-2 truncate" title="${g.title}">${g.title}</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>Progress</span>
+                            <span class="font-bold text-indigo-600">${pFormatted}%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5 mt-1">
+                            <div class="bg-indigo-600 h-1.5 rounded-full" style="width: ${g.progress || 0}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = cardsHtml;
+        };
+
         window.renderGameDetails = (gameId) => {
+            window.currentGameId = gameId;
             const contentArea = document.getElementById('game-content-area');
             const emptyState = document.getElementById('game-empty-state');
+
+            // Re-render cards to update selected state
+            if (document.getElementById('game-cards-container')) {
+                window.renderGameCards();
+            }
 
             if (!gameId) {
                 contentArea.classList.add('hidden');
