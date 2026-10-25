@@ -973,7 +973,7 @@ window.sortTableData = sortTableData;
                 }
 
                 cardsHtml += `
-                    <div onclick="window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                    <div onclick=\"event.stopPropagation(); window.renderGameDetails('${g.id}')\" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
                         <div class="h-24 w-full relative" style="${bannerStyle}">
                             <div class="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded font-medium">${g.campaignType || 'Game Launch'}</div>
                         </div>
@@ -1003,7 +1003,7 @@ window.sortTableData = sortTableData;
         };
 
         // Game Settings Drawer Logic
-        window.openGameDrawer = (event) => {
+        window.openGameDrawer = function(event) {
             document.getElementById('game-drawer-id').value = event.id;
             document.getElementById('game-drawer-title').textContent = event.title || 'Game Settings';
 
@@ -1031,7 +1031,7 @@ window.sortTableData = sortTableData;
             }, 10);
         };
 
-        window.closeGameDrawer = () => {
+        window.closeGameDrawer = function() {
             const overlay = document.getElementById('game-drawer-overlay');
             const drawer = document.getElementById('game-drawer');
 
@@ -1043,7 +1043,7 @@ window.sortTableData = sortTableData;
             }, 300);
         };
 
-        window.saveGameDrawer = async () => {
+        window.saveGameDrawer = async function() {
             const id = document.getElementById('game-drawer-id').value;
             const iconUrl = document.getElementById('game-drawer-icon').value.trim();
             const bannerUrl = document.getElementById('game-drawer-banner').value.trim();
@@ -1076,13 +1076,17 @@ window.sortTableData = sortTableData;
         };
 
 
-        window.renderGameDetails = (gameId) => {
+        window.renderGameDetails = function(gameId) {
             const event = window.events.find(e => String(e.id) === String(gameId)) || window.allEvents.find(e => String(e.id) === String(gameId));
             if (!event) {
                 console.error("Game event not found for id:", gameId);
                 return;
             }
-            window.openGameDrawer(event);
+            if (typeof window.openGameDrawer === 'function') {
+                window.openGameDrawer(event);
+            } else {
+                console.error("window.openGameDrawer is not defined");
+            }
         };
 
 
