@@ -963,8 +963,14 @@ window.sortTableData = sortTableData;
                 const isActive = window.currentGameId === g.id;
                 const borderClass = isActive ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200/60 hover:border-indigo-300';
 
-                const hasBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
-                const bannerStyle = hasBanner ? `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;` : 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
+                const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
+                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                if (hasCustomBanner) {
+                    bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
+                } else if (hasLegacyBanner) {
+                    bannerStyle = `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
+                }
 
                 cardsHtml += `
                     <div onclick="window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
@@ -973,7 +979,7 @@ window.sortTableData = sortTableData;
                         </div>
                         <div class="px-4 pb-4 relative flex-1 flex flex-col items-center">
                             <div class="w-16 h-16 bg-white border-4 border-white shadow-sm flex items-center justify-center -mt-8 mb-2 z-10 overflow-hidden relative">
-                                <i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>
+                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>`}
                             </div>
                             <h4 class="font-bold text-gray-900 text-sm mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
                             <p class="text-xs text-gray-500 mb-3 text-center">${g.startDate.split(' ')[0]}</p>
@@ -996,93 +1002,87 @@ window.sortTableData = sortTableData;
             container.innerHTML = cardsHtml;
         };
 
+        // Game Settings Drawer Logic
+        window.openGameDrawer = (event) => {
+            document.getElementById('game-drawer-id').value = event.id;
+            document.getElementById('game-drawer-title').textContent = event.title || 'Game Settings';
+
+            // Populate fields
+            document.getElementById('game-drawer-icon').value = event.iconUrl || '';
+            document.getElementById('game-drawer-banner').value = event.bannerUrl || '';
+
+            // Format datetime-local (YYYY-MM-DDTHH:MM:SS) if exists
+            let launchDate = '';
+            if (event.officialLaunchDate) {
+                try {
+                    launchDate = event.officialLaunchDate.replace(' ', 'T');
+                } catch(e){}
+            }
+            document.getElementById('game-drawer-launch').value = launchDate;
+
+            // Show drawer
+            const overlay = document.getElementById('game-drawer-overlay');
+            const drawer = document.getElementById('game-drawer');
+            overlay.classList.remove('hidden');
+            // small delay for transition
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                drawer.classList.remove('translate-x-full');
+            }, 10);
+        };
+
+        window.closeGameDrawer = () => {
+            const overlay = document.getElementById('game-drawer-overlay');
+            const drawer = document.getElementById('game-drawer');
+
+            overlay.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        };
+
+        window.saveGameDrawer = async () => {
+            const id = document.getElementById('game-drawer-id').value;
+            const iconUrl = document.getElementById('game-drawer-icon').value.trim();
+            const bannerUrl = document.getElementById('game-drawer-banner').value.trim();
+            const launchInput = document.getElementById('game-drawer-launch').value;
+
+            let officialLaunchDate = '';
+            if(launchInput) {
+                officialLaunchDate = launchInput.replace('T', ' ');
+            }
+
+            try {
+                const db = window.firebase.firestore();
+                await db.collection('events_v2').doc(id).update({
+                    iconUrl: iconUrl,
+                    bannerUrl: bannerUrl,
+                    officialLaunchDate: officialLaunchDate
+                });
+
+                window.showToast('Game Settings updated successfully!', 'success');
+                window.closeGameDrawer();
+
+                // Re-render cards to show updated images
+                if (window.location.hash === '#/new-games') {
+                    setTimeout(() => window.renderGameCards(), 100);
+                }
+            } catch (error) {
+                console.error("Error saving game settings:", error);
+                window.showToast('Error saving game settings.', 'error');
+            }
+        };
+
+
         window.renderGameDetails = (gameId) => {
-            window.currentGameId = gameId;
-            const contentArea = document.getElementById('game-content-area');
-            const emptyState = document.getElementById('game-empty-state');
-
-            // Re-render cards to update selected state
-            if (document.getElementById('game-cards-container')) {
-                window.renderGameCards();
-            }
-
-            if (!gameId) {
-                contentArea.classList.add('hidden');
-                contentArea.classList.remove('grid');
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            const game = window.events.find(e => e.id === gameId);
-            if (!game) return;
-
-            contentArea.classList.remove('hidden');
-            contentArea.classList.add('grid');
-            emptyState.style.display = 'none';
-
-            window.currentGamePosts = game.fields?.postIds || [];
-            window.currentCarouselIndex = 0;
-
-            window.renderGameCarousel();
-            window.renderGameRightSide(game);
-            window.renderGamePerformance();
+            const event = window.allEvents.find(e => String(e.id) === String(gameId));
+            if (!event) return;
+            window.openGameDrawer(event);
         };
 
 
-        window.renderGameCarousel = () => {
-            const container = document.getElementById('game-carousel-container');
-            const counter = document.getElementById('game-carousel-counter');
-            if(!container) return;
-
-            if (window.currentGamePosts.length === 0) {
-                container.innerHTML = `
-                    <div class="text-gray-400 flex flex-col items-center">
-                        <i class="fa-regular fa-image text-4xl mb-2"></i>
-                        <p class="text-sm">No Post IDs/Visuals added to this game.</p>
-                    </div>
-                `;
-                counter.innerText = '0 / 0';
-                return;
-            }
-
-            const post = window.currentGamePosts[window.currentCarouselIndex];
-            counter.innerText = `${window.currentCarouselIndex + 1} / ${window.currentGamePosts.length}`;
-
-            const link = window.getGeneratedPostLink(post.id);
-            const hasImg = post.imgUrl && window.isValidURL(post.imgUrl);
-
-            let html = `
-                <div class="w-full flex flex-col items-center h-full justify-center pb-4">
-                    <div class="w-full max-w-md aspect-[4/5] bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60 flex items-center justify-center mb-6 relative shadow-inner">
-                        ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
-
-                        ${window.currentGamePosts.length > 1 ? `
-                            <button onclick="window.changeGameCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <button onclick="window.changeGameCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
-                        ` : ''}
-                    </div>
-
-                    <div class="w-full max-w-md bg-slate-50 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
-                            <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
-                        </div>
-                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
-                            <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
-                        </a>
-                    </div>
-
-                    ${window.currentGamePosts.length > 1 ? `
-                        <div class="flex space-x-1.5 mt-5">
-                            ${window.currentGamePosts.map((_, i) => `
-                                <button onclick="window.goToGameCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-            container.innerHTML = html;
-        };
 
         window.changeGameCarouselSlide = (dir) => {
             window.currentCarouselIndex += dir;
@@ -1092,137 +1092,8 @@ window.sortTableData = sortTableData;
             window.renderGamePerformance();
         };
 
-        window.goToGameCarouselSlide = (idx) => {
-            window.currentCarouselIndex = idx;
-            window.renderGameCarousel();
-            window.renderGamePerformance();
-        };
 
-        window.renderGameRightSide = (game) => {
-            const container = document.getElementById('game-stats-container');
-            if(!container) return;
 
-            const pFormatted = (game.progress || 0).toFixed(2);
-            const assignsStr = (game.assignees && game.assignees.length > 0) ? game.assignees.join(', ') : 'Unassigned';
-
-            const fields = game.fields || {};
-            const operations = [
-                { key: 'gameReview', label: 'Game Review' },
-                { key: 'dailyGame', label: 'Daily Game' },
-                { key: 'contentWriters', label: 'Content Writers' },
-                { key: 'imChannels', label: 'IM Channels' },
-                { key: 'trackableLinks', label: 'Trackable Links' },
-                { key: 'sms', label: 'SMS' },
-                { key: 'postPinned', label: 'Post Pinned' },
-                { key: 'rewardDistributed', label: 'Reward Distributed' },
-                { key: 'rewardsBanner', label: 'Rewards Banner' }
-            ];
-
-            let opsHtml = operations.map(op => {
-                const val = fields[op.key] || 'Pending';
-                let color = 'text-gray-500';
-                let icon = 'fa-circle text-[8px]';
-                if (val === 'Yes') { color = 'text-emerald-600'; icon = 'fa-check'; }
-                if (val === 'N/A') { color = 'text-gray-400'; icon = 'fa-minus'; }
-                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
-            }).join('');
-
-            container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
-                </div>
-                <div class="p-5 flex-1 overflow-y-auto space-y-6">
-                    <div>
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
-                            <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${game.progress || 0}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Timeline</span>
-                            <span class="text-sm font-medium text-gray-900">${game.startDate} to ${game.endDate}</span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Status</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${game.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${game.status}</span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
-                            <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
-                        <div class="bg-white border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
-                            ${opsHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.renderGamePerformance = () => {
-            const container = document.getElementById('game-performance-container');
-            if (!container) return;
-
-            if (window.currentGamePosts.length === 0) {
-                container.innerHTML = `
-                    <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                        <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
-                        <i class="fa-solid fa-chart-area text-4xl mb-3 text-gray-300"></i>
-                        <p class="text-sm">Add a Post ID to view performance data.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const post = window.currentGamePosts[window.currentCarouselIndex];
-            const postIdDisplay = post.id || 'Pending ID';
-
-            container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
-                </div>
-                <div class="p-5 flex-1 overflow-y-auto space-y-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
-                        <span class="text-xs font-mono text-gray-700 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
-                        <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
-                    </div>
-                </div>
-            `;
-        };
 
 
         window.migrateLocalData = async () => {
