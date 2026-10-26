@@ -1055,8 +1055,9 @@ window.sortTableData = sortTableData;
             }
 
             try {
-                const db = window.firebase.firestore();
-                await db.collection('events_v2').doc(id).update({
+                if (!db) { throw new Error("Firebase DB not initialized."); }
+
+                await updateDoc(doc(db, 'events_v2', id), {
                     iconUrl: iconUrl,
                     bannerUrl: bannerUrl,
                     officialLaunchDate: officialLaunchDate
