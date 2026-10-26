@@ -536,18 +536,6 @@ window.moveEventTooltip = (e) => {
                     tempPdRequests.push(doc.data());
                 });
 
-                const localPdStr = localStorage.getItem('spo_pd_requests');
-                if (tempPdRequests.length === 0 && localPdStr && localPdStr !== '[]') {
-                    const localData = JSON.parse(localPdStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "pd_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_pd_requests');
-                        window.showToast("Local PD requests synced to cloud!", "success");
-                    }
-                }
-
                 localStorage.setItem('spo_pd_requests', JSON.stringify(tempPdRequests));
                 window.pdRequests = tempPdRequests;
                 if (window.currentView === 'prize_distribution' && window.renderPDRequestsTable) {
@@ -562,18 +550,6 @@ window.moveEventTooltip = (e) => {
                 snapshot.forEach((doc) => {
                     tempCwRequests.push(doc.data());
                 });
-
-                const localCwStr = localStorage.getItem('spo_cw_requests');
-                if (tempCwRequests.length === 0 && localCwStr && localCwStr !== '[]') {
-                    const localData = JSON.parse(localCwStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) {
-                            setDoc(doc(db, "cw_requests", p.id), p);
-                        }
-                        localStorage.removeItem('spo_cw_requests');
-                        window.showToast("Local CW requests synced to cloud!", "success");
-                    }
-                }
 
                 localStorage.setItem('spo_cw_requests', JSON.stringify(tempCwRequests));
                 window.cwRequests = tempCwRequests;
@@ -677,15 +653,6 @@ window.moveEventTooltip = (e) => {
             onSnapshot(collection(db, "sms_requests"), (snapshot) => {
                 let tempSMS = [];
                 snapshot.forEach((doc) => { tempSMS.push(doc.data()); });
-
-                const localStr = localStorage.getItem('spo_sms_requests');
-                if (tempSMS.length === 0 && localStr && localStr !== '[]') {
-                    const localData = JSON.parse(localStr);
-                    if (localData.length > 0) {
-                        for (let p of localData) { setDoc(doc(db, "sms_requests", p.id), p); }
-                        localStorage.removeItem('spo_sms_requests');
-                    }
-                }
 
                 localStorage.setItem('spo_sms_requests', JSON.stringify(tempSMS));
                 window.smsRequests = tempSMS;
