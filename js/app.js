@@ -1,3 +1,18 @@
+
+// Initialize Theme
+const initTheme = () => {
+    const savedColor = localStorage.getItem('spo_theme_color') || 'indigo';
+    document.documentElement.setAttribute('data-theme', savedColor);
+
+    const isDark = localStorage.getItem('spo_dark_mode') === 'true';
+    if (isDark) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+};
+initTheme();
+
 import { sortTableData } from "./utils/tableSort.js";
 window.sortTableData = sortTableData;
 
@@ -108,11 +123,11 @@ window.sortTableData = sortTableData;
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
                             <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
-                                ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>`}
+                                ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-primary-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-slate-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -122,11 +137,11 @@ window.sortTableData = sortTableData;
                 // Restore standard tooltip layout
                 tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
                 tooltip.innerHTML = `
-                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 dark:text-white mb-2 truncate shrink-0"></h4>
                     <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
                         <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
                     </div>
-                    <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+                    <p id="tooltip-date" class="text-xs text-gray-500 dark:text-slate-400 mt-2 shrink-0"></p>
                 `;
                 const titleEl = document.getElementById('tooltip-title');
                 const imgContainer = document.getElementById('tooltip-image-container');
@@ -718,7 +733,7 @@ window.moveEventTooltip = (e) => {
 
             if (window.currentCampaignPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="text-gray-400 flex flex-col items-center">
+                    <div class="text-gray-400 dark:text-slate-500 flex flex-col items-center">
                         <i class="fa-regular fa-image text-4xl mb-2"></i>
                         <p class="text-sm">No Post IDs/Visuals added to this task.</p>
                     </div>
@@ -739,17 +754,17 @@ window.moveEventTooltip = (e) => {
                         ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
 
                         ${window.currentCampaignPosts.length > 1 ? `
-                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
+                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
                         ` : ''}
                     </div>
 
                     <div class="w-full max-w-md bg-slate-50 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
-                            <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
+                            <span class="text-sm font-bold uppercase tracking-wider text-primary-600">${post.type || 'Platform'}</span>
+                            <span class="text-sm text-gray-500 dark:text-slate-400 font-mono">${post.id || 'No ID'}</span>
                         </div>
-                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
+                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-primary-600 hover:bg-primary-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
                             <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
                         </a>
                     </div>
@@ -757,7 +772,7 @@ window.moveEventTooltip = (e) => {
                     ${window.currentCampaignPosts.length > 1 ? `
                         <div class="flex space-x-1.5 mt-5">
                             ${window.currentCampaignPosts.map((_, i) => `
-                                <button onclick="window.goToCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
+                                <button onclick="window.goToCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-primary-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
                             `).join('')}
                         </div>
                     ` : ''}
@@ -802,45 +817,45 @@ window.moveEventTooltip = (e) => {
 
             let opsHtml = operations.map(op => {
                 const val = fields[op.key] || 'Pending';
-                let color = 'text-gray-500';
+                let color = 'text-gray-500 dark:text-slate-400';
                 let icon = 'fa-circle text-[8px]';
                 if (val === 'Yes') { color = 'text-emerald-600'; icon = 'fa-check'; }
-                if (val === 'N/A') { color = 'text-gray-400'; icon = 'fa-minus'; }
-                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
+                if (val === 'N/A') { color = 'text-gray-400', 'dark:text-slate-500'; icon = 'fa-minus'; }
+                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
             }).join('');
 
             container.innerHTML = `
                 <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-6">
                     <div>
                         <div class="flex justify-between items-end mb-1">
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
-                            <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
+                            <span class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Overall Progress</span>
+                            <span class="text-lg font-bold text-primary-600">${pFormatted}%</span>
                         </div>
                         <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
+                            <div class="bg-primary-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Timeline</span>
-                            <span class="text-sm font-medium text-gray-900">${task.startDate} to ${task.endDate}</span>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Timeline</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">${task.startDate} to ${task.endDate}</span>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Status</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${task.status}</span>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Status</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-primary-100 text-primary-800'}">${task.status}</span>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
-                            <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Team Assigned</span>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">${assignsStr}</span>
                         </div>
                     </div>
 
                     <div>
-                        <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
+                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
                         <div class="bg-white border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
                             ${opsHtml}
                         </div>
@@ -856,9 +871,9 @@ window.moveEventTooltip = (e) => {
             if (window.currentCampaignPosts.length === 0) {
                 container.innerHTML = `
                     <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                        <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                        <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     </div>
-                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
+                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 text-center">
                         <i class="fa-solid fa-chart-area text-4xl mb-3 text-gray-300"></i>
                         <p class="text-sm">Add a Post ID to view performance data.</p>
                     </div>
@@ -871,36 +886,36 @@ window.moveEventTooltip = (e) => {
 
             container.innerHTML = `
                 <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-4">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
-                        <span class="text-xs font-mono text-gray-700 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
+                        <span class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase">Metrics For</span>
+                        <span class="text-xs font-mono text-gray-700 dark:text-slate-300 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
+                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Total Reach</span>
+                        <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
+                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Engagements</span>
+                        <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
+                        <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Link Clicks</span>
+                        <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
-                        <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
+                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-primary-400 text-2xl mb-3"></i>
+                        <p class="text-xs text-gray-500 dark:text-slate-400 font-medium">Live API syncing for platform metrics is currently under development.</p>
                     </div>
                 </div>
             `;
@@ -963,8 +978,8 @@ window.moveEventTooltip = (e) => {
             gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
 
             if (gamesOnly.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500">
-                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400"></i>
+                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-slate-400">
+                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400 dark:text-slate-500"></i>
                     <p class="text-sm font-medium">No new games found for this month.</p>
                 </div>`;
                 return;
@@ -974,7 +989,7 @@ window.moveEventTooltip = (e) => {
             gamesOnly.forEach(g => {
                 const pFormatted = (g.progress || 0).toFixed(0);
                 const isActive = window.currentGameId === g.id;
-                const borderClass = isActive ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200/60 hover:border-indigo-300';
+                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200' : 'border-slate-200/60 hover:border-primary-300';
 
                 const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
@@ -996,11 +1011,11 @@ cardsHtml += `
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
                             <div class="w-24 h-24 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
-                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-indigo-500 absolute"></i>`}
+                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-primary-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-slate-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -1174,8 +1189,8 @@ cardsHtml += `
                 if (container) {
                     container.innerHTML += `
                         <div class="flex items-center">
-                            <input id="${id}" name="assignees" type="checkbox" value="${member}" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                            <label for="${id}" class="ml-2 block text-sm text-gray-700">${member}</label>
+                            <input id="${id}" name="assignees" type="checkbox" value="${member}" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-slate-600 rounded">
+                            <label for="${id}" class="ml-2 block text-sm text-gray-700 dark:text-slate-300">${member}</label>
                         </div>
                     `;
                 }
@@ -1753,7 +1768,7 @@ cardsHtml += `
             }
 
             if (results.length === 0) {
-                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No results found for "${val}"</div>`;
+                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-slate-400">No results found for "${val}"</div>`;
             } else {
                 // limit to 10 results
                 const limited = results.slice(0, 10);
@@ -1761,19 +1776,19 @@ cardsHtml += `
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
                     <div class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
-                        <div class="h-8 w-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mr-3 shrink-0">
+                        <div class="h-8 w-8 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mr-3 shrink-0">
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
                         <div class="flex flex-col overflow-hidden">
-                            <span class="text-sm font-semibold text-gray-900 truncate">${safeTitle}</span>
-                            <span class="text-xs text-gray-500">${r.type}</span>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">${safeTitle}</span>
+                            <span class="text-xs text-gray-500 dark:text-slate-400">${r.type}</span>
                         </div>
                     </div>
                     `;
                 }).join('');
 
                 if (results.length > 10) {
-                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
+                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 dark:text-slate-400 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
                 }
             }
 
@@ -1806,18 +1821,18 @@ cardsHtml += `
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
-                        nav.classList.add('bg-indigo-50', 'text-indigo-700');
-                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
+                        nav.classList.add('bg-primary-50', 'text-primary-700');
+                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
-                            icon.classList.add('text-indigo-500');
-                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.add('text-primary-500');
+                            icon.classList.remove('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     } else {
-                        nav.classList.remove('bg-indigo-50', 'text-indigo-700');
-                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
+                        nav.classList.remove('bg-primary-50', 'text-primary-700');
+                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
-                            icon.classList.remove('text-indigo-500');
-                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.remove('text-primary-500');
+                            icon.classList.add('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     }
                 }
@@ -2011,7 +2026,7 @@ cardsHtml += `
             const itemId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
 
             const div = document.createElement('div');
-            div.className = "flex space-x-2 items-center bg-gray-50 p-2 rounded-xl border border-gray-200";
+            div.className = "flex space-x-2 items-center bg-gray-50 dark:bg-slate-800 p-2 rounded-xl border border-gray-200";
             div.id = `budget-item-${itemId}`;
 
             const selType = item ? item.type : '';
@@ -2021,14 +2036,14 @@ cardsHtml += `
             let typeInputHtml = '';
 
             if (budgetType === 'Campaign Expenses') {
-                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
                     <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                     <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                     <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
                     <option value="Game Review" ${selType==='Game Review'?'selected':''}>Game Review</option>
                 </select>`;
             } else {
-                typeInputHtml = `<input type="text" class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
+                typeInputHtml = `<input type="text" class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm" placeholder="Expense Type" required value="${selType}">`;
             }
 
             div.innerHTML = `
@@ -2037,9 +2052,9 @@ cardsHtml += `
                 </div>
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <span class="text-gray-500 sm:text-xs">₱</span>
+                        <span class="text-gray-500 dark:text-slate-400 sm:text-xs">₱</span>
                     </div>
-                    <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-primary-500">
                 </div>
                 <button type="button" onclick="window.removeBudgetItem('${itemId}')" class="text-red-500 hover:text-red-700 p-1">
                     <i class="fa-solid fa-times"></i>
@@ -2144,12 +2159,12 @@ cardsHtml += `
                 b.items.forEach(it => {
                     const li = document.createElement('li');
                     li.className = 'px-4 py-3 flex justify-between items-center bg-white hover:bg-slate-50';
-                    li.innerHTML = `<span class="font-medium text-gray-700">${it.type}</span><span class="text-indigo-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
+                    li.innerHTML = `<span class="font-medium text-gray-700 dark:text-slate-300">${it.type}</span><span class="text-primary-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
                     ul.appendChild(li);
                 });
             } else {
                 // fallback
-                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 text-center italic">No items found</li>`;
+                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 dark:text-slate-400 text-center italic">No items found</li>`;
             }
 
             document.getElementById('budget-details-modal').classList.remove('hidden');
@@ -2217,7 +2232,7 @@ cardsHtml += `
             activeMonths.sort().reverse();
 
             if (activeMonths.length === 0) {
-                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>';
+                content.innerHTML = '<div class="p-6 text-center text-gray-500 dark:text-slate-400">No budget data found for this year.</div>';
                 return;
             }
 
@@ -2234,15 +2249,15 @@ cardsHtml += `
 
                 html += `
                     <div class="bg-white border-b border-slate-200/60 p-4">
-                        <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
+                        <h3 class="text-md font-bold text-gray-900 dark:text-white mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Total Spent</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                            <div class="bg-slate-50 p-2 rounded border border-slate-100 dark:border-slate-700">
+                                <span class="block text-xs text-gray-500 dark:text-slate-400">Total Spent</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(spent)}</span>
                             </div>
-                            <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Month Limit</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                            <div class="bg-slate-50 p-2 rounded border border-slate-100 dark:border-slate-700">
+                                <span class="block text-xs text-gray-500 dark:text-slate-400">Month Limit</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(limit)}</span>
                             </div>
                         </div>
                     </div>
@@ -2327,7 +2342,7 @@ cardsHtml += `
             const statusEl = document.getElementById('detail-status-text');
             if (statusEl) {
                 statusEl.innerText = reqStatus;
-                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             }
             document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
@@ -2337,7 +2352,7 @@ cardsHtml += `
             if (task.linkedTaskId) {
                 const linkedTaskEvent = window.events.find(e => e.id === task.linkedTaskId);
                 if (linkedTaskEvent) {
-                    linkedTaskDisplay.innerHTML = `<button onclick="window.jumpToTask('${task.linkedTaskId}'); window.closeDailyTaskDetails();" class="text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer text-left focus:outline-none">${linkedTaskEvent.title}</button>`;
+                    linkedTaskDisplay.innerHTML = `<button onclick="window.jumpToTask('${task.linkedTaskId}'); window.closeDailyTaskDetails();" class="text-primary-600 hover:text-primary-800 hover:underline cursor-pointer text-left focus:outline-none">${linkedTaskEvent.title}</button>`;
                 } else {
                     linkedTaskDisplay.innerText = 'Unknown Task';
                 }
@@ -2524,8 +2539,8 @@ cardsHtml += `
             container.innerHTML = '';
             window.currentDTHashtags.forEach((tag, idx) => {
                 const pill = document.createElement('div');
-                pill.className = 'bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 flex items-center';
-                pill.innerHTML = `<span>${tag}</span><button type="button" class="ml-2 focus:outline-none" onclick="window.removeDTHashtag(${idx})"><i class="fa-solid fa-times text-indigo-500 hover:text-indigo-700"></i></button>`;
+                pill.className = 'bg-primary-100 text-primary-700 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 flex items-center';
+                pill.innerHTML = `<span>${tag}</span><button type="button" class="ml-2 focus:outline-none" onclick="window.removeDTHashtag(${idx})"><i class="fa-solid fa-times text-primary-500 hover:text-primary-700"></i></button>`;
                 container.appendChild(pill);
             });
         };
@@ -2638,7 +2653,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700');
                     }
                 });
 
@@ -2647,7 +2662,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700');
                     }
                 });
 
@@ -2660,7 +2675,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700');
                     }
                 });
 
@@ -2669,7 +2684,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = true;
-                        el.classList.add('bg-gray-100');
+                        el.classList.add('bg-gray-100 dark:bg-slate-700');
                     }
                 });
 
@@ -2724,14 +2739,14 @@ cardsHtml += `
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100');
+                                el.classList.remove('bg-gray-100 dark:bg-slate-700');
                             }
                         });
                         pinSettings.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100');
+                                el.classList.remove('bg-gray-100 dark:bg-slate-700');
                             }
                         });
                         if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
@@ -3046,14 +3061,14 @@ cardsHtml += `
             const sortIcon = document.getElementById('pin-sort-icon');
             if (sortIcon) {
                 sortIcon.className = 'fa-solid ml-1 transition-colors ' +
-                    (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-indigo-600' :
-                    (window.pinSortMode === 2 ? 'fa-sort-amount-down text-indigo-600' : 'fa-list-ol text-indigo-600'));
+                    (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
+                    (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
                 sortIcon.title = window.pinSortMode === 1 ? 'Sort: Sort > Page > Position' :
                     (window.pinSortMode === 2 ? 'Sort: Position > Page > Sort' : 'Sort: Page > Position > Sort');
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No pin requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No pin requests found.</td></tr>';
                 return;
             }
 
@@ -3062,24 +3077,24 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
 
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
 
-                let pinStatusClass = 'text-gray-600 bg-gray-100';
+                let pinStatusClass = 'text-gray-600 bg-gray-100 dark:bg-slate-700';
                 if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-indigo-600 bg-indigo-100';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.category || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.startDate || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.category || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.startDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
@@ -3087,7 +3102,7 @@ cardsHtml += `
                             ${(function(){
                                 let n = p.owner || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white">' + n + '</span></div>';
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
@@ -3095,15 +3110,15 @@ cardsHtml += `
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
                             <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
@@ -3141,11 +3156,11 @@ cardsHtml += `
 
             // Timeline Header
 
-            const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-indigo-600' :
-                (window.pinSortMode === 2 ? 'fa-sort-amount-down text-indigo-600' : 'fa-list-ol text-indigo-600'));
+            const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
+                (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
 
             let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
-                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 transition-colors group select-none">
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
 
@@ -3153,8 +3168,8 @@ cardsHtml += `
                 const dateStr = d.toISOString().split('T')[0];
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
                 html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
-                    <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
-                    <div class="flex text-[10px] text-gray-500 divide-x divide-slate-200/60 h-4">
+                    <div class="py-1 bg-slate-200 dark:bg-slate-600/50 text-xs font-bold text-gray-800 dark:text-slate-200 border-b border-slate-200/60">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-gray-500 dark:text-slate-400 divide-x divide-slate-200/60 h-4">
                         <div class="flex-1">00:00</div>
                         <div class="flex-1">12:00</div>
                     </div>
@@ -3205,16 +3220,16 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-10">
-                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-700">${slot.id}</span>
+                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 transition-colors relative group h-10">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white sticky left-0 z-10 flex items-center justify-center">
+                        <span class="text-sm font-bold text-gray-700 dark:text-slate-300">${slot.id}</span>
                     </div>
                     <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
 
                 // Add grid lines for background
                 days.forEach((_, i) => {
                     html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100 dark:border-slate-700/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
                 });
 
                 // Add gray overlay for past time
@@ -3352,7 +3367,7 @@ cardsHtml += `
             }
 
             if (!startDateVal) {
-                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">Select a start date to view availability</div>';
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 dark:text-slate-500 text-sm">Select a start date to view availability</div>';
                 return;
             }
 
@@ -3407,11 +3422,11 @@ cardsHtml += `
             };
 
             let html = `
-                <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 shadow-sm">
-                    <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400"></i></div>
+                <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-300 shadow-sm">
+                    <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:bg-slate-600" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400 dark:text-slate-500"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
-                        <i class="fa-solid fa-arrow-right text-gray-400"></i>
+                        <i class="fa-solid fa-arrow-right text-gray-400 dark:text-slate-500"></i>
                         <span>${formatStr(endDate)}</span>
                     </div>
                 </div>
@@ -3449,23 +3464,23 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 hover:bg-indigo-50/50 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 hover:bg-primary-50/50 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
-                    rowClasses += " bg-indigo-50";
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-indigo-500 rounded flex items-center justify-center bg-indigo-100/50 text-indigo-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
+                    rowClasses += " bg-primary-50";
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100/50 text-primary-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
                     rowClasses += " bg-red-50 cursor-not-allowed";
-                    rowClasses = rowClasses.replace("hover:bg-indigo-50/50", "");
+                    rowClasses = rowClasses.replace("hover:bg-primary-50/50", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 text-[10px] pointer-events-none">Existing pin</div>`;
 
                     html += `
                         <div class="${rowClasses}">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
                             <div class="flex-1 relative">
@@ -3476,7 +3491,7 @@ cardsHtml += `
                 } else {
                     html += `
                         <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
                             <div class="flex-1 relative">
@@ -3487,7 +3502,7 @@ cardsHtml += `
                 }
             });
 
-            html += `<div class="text-center py-2 text-[10px] text-gray-400 bg-slate-50 border-t border-gray-200">Scroll for more positions ↓</div>`;
+            html += `<div class="text-center py-2 text-[10px] text-gray-400 dark:text-slate-500 bg-slate-50 border-t border-gray-200">Scroll for more positions ↓</div>`;
 
             container.innerHTML = html;
         };
@@ -3601,7 +3616,7 @@ cardsHtml += `
             container.innerHTML = '';
 
             if (window.quickLinks.length === 0) {
-                container.innerHTML = '<div class="px-3 py-2 text-xs text-gray-400 italic">No quick links added.</div>';
+                container.innerHTML = '<div class="px-3 py-2 text-xs text-gray-400 dark:text-slate-500 italic">No quick links added.</div>';
                 return;
             }
 
@@ -3612,15 +3627,15 @@ cardsHtml += `
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
                 el.innerHTML = `
-                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
-                        <i class="fa-solid fa-link mr-3 text-gray-400 group-hover:text-indigo-500 transition-colors shrink-0"></i>
+                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
+                        <i class="fa-solid fa-link mr-3 text-gray-400 dark:text-slate-500 group-hover:text-primary-500 transition-colors shrink-0"></i>
                         <span class="truncate">${link.title}</span>
                     </a>
                     <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
-                        <button onclick="openQuickLinkModal('${link.id}')" class="text-gray-400 hover:text-indigo-600 p-1" title="Edit">
+                        <button onclick="openQuickLinkModal('${link.id}')" class="text-gray-400 dark:text-slate-500 hover:text-primary-600 p-1" title="Edit">
                             <i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i>
                         </button>
-                        <button onclick="deleteQuickLink('${link.id}')" class="text-gray-400 hover:text-red-600 p-1" title="Delete">
+                        <button onclick="deleteQuickLink('${link.id}')" class="text-gray-400 dark:text-slate-500 hover:text-red-600 p-1" title="Delete">
                             <i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i>
                         </button>
                     </div>
@@ -3944,12 +3959,12 @@ cardsHtml += `
 
             const bar = document.getElementById('drawer-progress-bar');
             bar.style.width = `${p}%`;
-            bar.classList.remove('bg-emerald-500', 'bg-indigo-600', 'bg-gray-400');
+            bar.classList.remove('bg-emerald-500', 'bg-primary-600', 'bg-gray-400');
 
             if (p === 100) {
                 bar.classList.add('bg-emerald-500');
             } else if (p > 0) {
-                bar.classList.add('bg-indigo-600');
+                bar.classList.add('bg-primary-600');
             } else {
                 bar.classList.add('bg-gray-400');
             }
@@ -4034,15 +4049,15 @@ cardsHtml += `
 
             const makeAccordion = (title, done, total, content, isOpen = true) => {
                 const isAllDone = done === total;
-                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700';
+                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700 dark:text-slate-300';
                 return `
                     <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
-                        <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                        <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 dark:text-slate-200 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
                                 <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
                             </div>
-                            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200 group-open:rotate-180"></i>
+                            <i class="fa-solid fa-chevron-down text-gray-400 dark:text-slate-500 transition-transform duration-200 group-open:rotate-180"></i>
                         </summary>
                         <div class="p-4 space-y-4 border-t border-slate-200/60">
                             ${content}
@@ -4055,15 +4070,15 @@ cardsHtml += `
                 const val = f[key] || 'Pending';
                 return `
                     <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <label class="text-sm font-medium text-gray-700 mb-2">${label}</label>
+                        <label class="text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">${label}</label>
                         <div class="flex space-x-4">
                             <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
-                                <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer">
-                                <span class="ml-2 text-sm text-gray-700 cursor-pointer">Yes</span>
+                                <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">Yes</span>
                             </label>
                             <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
-                                <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer">
-                                <span class="ml-2 text-sm text-gray-700 cursor-pointer">N/A</span>
+                                <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">N/A</span>
                             </label>
                         </div>
                     </div>
@@ -4074,12 +4089,12 @@ cardsHtml += `
                 const docs = Array.isArray(f.documents) ? f.documents : [];
                 let rowsHtml = docs.map((d, i) => {
                     const isUrlValid = d.url === '' || window.isValidURL(d.url);
-                    const borderClass = isUrlValid ? 'border-gray-300 focus:ring-indigo-500' : 'border-red-500 text-red-900';
+                    const borderClass = isUrlValid ? 'border-gray-300 dark:border-slate-600 focus:ring-primary-500' : 'border-red-500 text-red-900';
                     return `
                         <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                             <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             <div class="flex items-center space-x-2 pr-8">
-                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                                 <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white">
                             </div>
                             ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format.</p>` : ''}
@@ -4089,11 +4104,11 @@ cardsHtml += `
 
                 return `
                     <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
-                            <label class="block text-sm font-medium text-gray-700">Documents</label>
-                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
+                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Documents</label>
+                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4101,17 +4116,17 @@ cardsHtml += `
             const makeHashtagsHtml = () => {
                 const tags = Array.isArray(f.hashtags) ? f.hashtags : [];
                 let pills = tags.map((t, i) => `
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mr-2 mb-2">
                         ${t}
-                        <button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                        <button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-primary-500 hover:text-primary-800"><i class="fa-solid fa-xmark"></i></button>
                     </span>
                 `).join('');
 
                 return `
                     <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Hashtags (Max 10)</label>
                         <div class="flex flex-wrap mb-1">${pills}</div>
-                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
                     </div>
                 `;
             };
@@ -4122,22 +4137,22 @@ cardsHtml += `
                     <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                         <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
-                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
-                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                         <div>
-                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-indigo-500 bg-white">
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                     </div>
                 `).join('');
 
                 return `
                     <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
-                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
-                            <label class="block text-sm font-medium text-gray-700">Post IDs</label>
-                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                        <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Post IDs</label>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4146,8 +4161,8 @@ cardsHtml += `
                 const isChecked = f[key] ? 'checked' : '';
                 return `
                     <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 transition-colors">
-                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-indigo-600 bg-slate-100 border-gray-300 rounded cursor-pointer">
-                        <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
+                        <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 bg-slate-100 border-gray-300 dark:border-slate-600 rounded cursor-pointer">
+                        <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300 cursor-pointer flex-1">${label}</label>
                     </div>
                 `;
             };
@@ -4293,9 +4308,9 @@ cardsHtml += `
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     row.classList.remove('hover:bg-slate-50');
-                    row.classList.add('bg-indigo-100');
+                    row.classList.add('bg-primary-100');
                     setTimeout(() => {
-                        row.classList.remove('bg-indigo-100');
+                        row.classList.remove('bg-primary-100');
                         row.classList.add('hover:bg-slate-50');
                     }, 2000);
                 }
@@ -4306,7 +4321,7 @@ cardsHtml += `
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
 
-            let bg = 'bg-gray-800';
+            let bg = 'bg-gray-800 dark:bg-slate-900';
             let icon = 'fa-circle-info';
             let iconColor = 'text-blue-400';
 
@@ -4314,7 +4329,7 @@ cardsHtml += `
             if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
             if (iconOverride) { icon = iconOverride; }
 
-            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-xl shadow toast-enter dark:text-gray-400 dark:bg-gray-800`;
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-xl shadow toast-enter dark:text-gray-400 dark:text-slate-500 dark:bg-gray-800 dark:bg-slate-900`;
             toast.innerHTML = `
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-xl">
                     <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
@@ -4371,9 +4386,9 @@ cardsHtml += `
             if (!container || !input) return;
 
             let pills = window.cwTempHashtags.map((t, i) => `
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 mr-2 mb-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mr-2 mb-2">
                     ${t}
-                    <button type="button" onclick="removeCWhashtag(${i})" class="ml-1 text-indigo-500 hover:text-indigo-800"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="removeCWhashtag(${i})" class="ml-1 text-primary-500 hover:text-primary-800"><i class="fa-solid fa-xmark"></i></button>
                 </span>
             `).join('');
 
@@ -4843,7 +4858,7 @@ cardsHtml += `
             const reqStatus = req.requestStatus || 'Pending';
             const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
             document.getElementById('sms-details-request-status').innerText = reqStatus;
-            document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+            document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             document.getElementById('sms-details-id').value = req.id;
 
             const metricsSection = document.getElementById('sms-details-completion-metrics');
@@ -5151,7 +5166,7 @@ cardsHtml += `
             const statusEl = document.getElementById('cw-details-request-status');
             if (statusEl) {
                 statusEl.innerText = reqStatus;
-                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 text-gray-800'}`;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             }
             const idEl = document.getElementById('cw-details-id');
             if(idEl) idEl.value = req.id;
@@ -5412,7 +5427,7 @@ window.toggleNotifications = () => {
             }
 
             if (userNotifs.length === 0) {
-                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>';
+                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500 dark:text-slate-400">No new notifications.</div>';
                 return;
             }
 
@@ -5420,9 +5435,9 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-indigo-50/30'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
-                        <p class="text-xs font-medium text-gray-900">${n.message}</p>
-                        <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
+                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50/30'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                        <p class="text-xs font-medium text-gray-900 dark:text-white">${n.message}</p>
+                        <p class="text-[10px] text-gray-500 dark:text-slate-400 mt-1">${n.createdTime}</p>
                     </div>
                 `;
             });
@@ -5488,14 +5503,14 @@ window.toggleNotifications = () => {
         window.updateUserProfileIcon = () => {
             const btn = document.getElementById('user-profile-btn');
             if (window.currentUserProfile) {
-                btn.innerHTML = `<span class="text-sm font-bold text-indigo-700">${window.currentUserProfile.charAt(0)}</span>`;
+                btn.innerHTML = `<span class="text-sm font-bold text-primary-700">${window.currentUserProfile.charAt(0)}</span>`;
                 btn.title = `User Profile: ${window.currentUserProfile}`;
-                btn.classList.add('bg-indigo-100', 'border-indigo-300');
-                btn.classList.remove('bg-slate-200', 'border-slate-300/60');
+                btn.classList.add('bg-primary-100', 'border-primary-300');
+                btn.classList.remove('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300/60');
             } else {
                 btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
                 btn.title = "User Profile";
-                btn.classList.remove('bg-indigo-100', 'border-indigo-300');
-                btn.classList.add('bg-slate-200', 'border-slate-300/60');
+                btn.classList.remove('bg-primary-100', 'border-primary-300');
+                btn.classList.add('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300/60');
             }
         };

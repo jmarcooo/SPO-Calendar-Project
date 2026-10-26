@@ -10,14 +10,14 @@ window.switchPRView = (view) => {
             if (!btnTable || !btnTimeline || !tableContainer || !timelineContainer) return;
 
             if (view === 'table') {
-                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
-                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-primary-600 shadow-sm transition-all";
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-300 transition-all";
                 tableContainer.classList.remove('hidden');
                 timelineContainer.classList.add('hidden');
                 window.renderPinRequestsTable();
             } else {
-                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
-                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all";
+                btnTimeline.className = "px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-primary-600 shadow-sm transition-all";
+                btnTable.className = "px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-300 transition-all";
                 tableContainer.classList.add('hidden');
                 timelineContainer.classList.remove('hidden');
                 window.renderPRTimeline();
