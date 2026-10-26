@@ -33,17 +33,17 @@ window.renderCWRequestsTable = () => {
 
             let html = '';
             filtered.forEach(p => {
-                const priorityClass = p.priorityLevel === 'High' ? 'text-red-600 bg-red-100' : (p.priorityLevel === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+                const priorityClass = p.priorityLevel === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100' : (p.priorityLevel === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100' : 'text-blue-600 dark:text-blue-400 bg-blue-100');
 
                 let rowStatus = window.calculateStatus(p.supportDate, p.endDate || p.supportDate, p.requestStatus);
                 if (rowStatus === 'Past' && p.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
                 const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 bg-gray-100 dark:bg-slate-700';
-                if (p.requestStatus === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
-                else if (p.requestStatus === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
-                else if (p.requestStatus === 'Pending') statusClass = 'text-primary-600 bg-primary-100';
+                let statusClass = 'text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
+                if (p.requestStatus === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
+                else if (p.requestStatus === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100';
+                else if (p.requestStatus === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100';
 
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openCWRequestDetails('${p.id}')">
@@ -54,7 +54,7 @@ window.renderCWRequestsTable = () => {
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.supportDate || ''}</td>
                         <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${p.campaignStatus || '-'}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${p.campaignStatus || '-'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel || 'Medium'}</span>
@@ -63,16 +63,16 @@ window.renderCWRequestsTable = () => {
                             ${(() => {
                                 let n = p.requestedBy || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white">${n}</span></div>`;
+                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white">${n}</span></div>`;
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.requestStatus || 'Pending'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(p.requestStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) ? `<button onclick="event.stopPropagation(); window.completeCWRequest('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="event.stopPropagation(); window.openCWRequestModal('${p.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="event.stopPropagation(); window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            ${(p.requestStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) ? `<button onclick="event.stopPropagation(); window.completeCWRequest('${p.id}')" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openCWRequestModal('${p.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deleteCWRequest('${p.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;

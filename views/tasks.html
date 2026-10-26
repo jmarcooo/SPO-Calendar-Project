@@ -1,6 +1,6 @@
             <div id="view-tasks" >
-                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60" id="progress-tracking">
-                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 border border-slate-200 dark:border-slate-700" id="progress-tracking">
+                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white">Detailed Progress Tracking</h3>
                             <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-slate-400">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
@@ -12,7 +12,7 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200/60 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                         <div class="relative flex-1 max-w-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400 dark:text-slate-500"></i>
@@ -29,12 +29,12 @@
                             <option value="Done">Done</option>
                         </select>
                         <button onclick="exportTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 focus:outline-none transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export to Excel
+                            <i class="fa-solid fa-file-excel text-emerald-600 dark:text-emerald-400 mr-2"></i>Export to Excel
                         </button>
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                             <thead class="bg-slate-50 dark:bg-slate-900">
                                 <tr>
                                     <th scope="col" onclick="handleSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
@@ -58,7 +58,7 @@
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200" id="tasks-table-body">
+                            <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700" id="tasks-table-body">
                                 <tr><td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-slate-400">Loading tasks...</td></tr>
                             </tbody>
                         </table>

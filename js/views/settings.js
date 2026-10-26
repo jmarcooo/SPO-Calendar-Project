@@ -16,7 +16,7 @@ window.renderAdminPOCSettings = () => {
                 const currentPOCs = savedPOCs[module.id] || [];
 
                 html += `
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 rounded-xl">
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl">
                         <h4 class="text-sm font-semibold text-gray-800 dark:text-slate-200 mb-3">${module.name} (Max 3)</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 `;
@@ -25,7 +25,7 @@ window.renderAdminPOCSettings = () => {
                     const isChecked = currentPOCs.includes(user) ? 'checked' : '';
                     html += `
                         <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">
-                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-primary-600 focus:ring-primary-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
+                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-primary-600 dark:text-primary-400 focus:ring-primary-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
                             <span>${user}</span>
                         </label>
                     `;

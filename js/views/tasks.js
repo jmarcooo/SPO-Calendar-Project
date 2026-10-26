@@ -13,7 +13,7 @@ window.renderTasksTable = () => {
             ['title', 'startDate', 'endDate', 'assignees', 'status', 'progress'].forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
                 if (icon) {
-                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-primary-600' : 'fa-sort-down text-primary-600') : 'fa-sort text-gray-300 group-hover:text-gray-500 dark:text-slate-400');
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-primary-600 dark:text-primary-400' : 'fa-sort-down text-primary-600 dark:text-primary-400') : 'fa-sort text-gray-300 group-hover:text-gray-500 dark:text-slate-400');
                 }
             });
 
@@ -93,9 +93,9 @@ window.renderTasksTable = () => {
                 const isPast = evt.status === 'Done' || endStr < nowStrIter;
 
                 if (isPast) {
-                    baseClass += ' opacity-60 bg-gray-50 dark:bg-slate-800 grayscale hover:bg-gray-100 dark:bg-slate-700';
+                    baseClass += ' opacity-60 bg-gray-50 dark:bg-slate-800 grayscale hover:bg-gray-100 dark:hover:bg-slate-600/50 dark:bg-slate-700';
                 } else {
-                    baseClass += ' hover:bg-primary-50';
+                    baseClass += ' hover:bg-primary-50 dark:bg-primary-500/20';
                 }
                 tr.className = baseClass;
 
@@ -145,7 +145,7 @@ window.renderTasksTable = () => {
                             if(assigns.length === 0) return '<span class="text-gray-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
                             return '<div class="flex items-center space-x-3"><div class="flex items-center -space-x-1">' + assigns.map(a => {
                                 let init = a.charAt(0).toUpperCase();
-                                return '<div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
+                                return '<div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
                             }).join('') + '</div><span class="text-sm text-gray-900 dark:text-white">' + assigns.join(', ') + '</span></div>';
                         })()}
                     </td>
@@ -155,7 +155,7 @@ window.renderTasksTable = () => {
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-col w-full max-w-[150px]">
                             <div class="flex items-center mb-1">
-                                <span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span>
+                                <span class="text-xs font-medium text-gray-600 dark:text-slate-400 mr-2">${pFormatted}%</span>
                             </div>
                             <div class="w-full bg-slate-100 rounded-full h-2">
                                 <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
@@ -164,13 +164,13 @@ window.renderTasksTable = () => {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-1.5 rounded transition-colors" title="Send Reminder">
+                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 dark:text-amber-400 hover:text-amber-900 bg-amber-50 dark:bg-amber-500/20 p-1.5 rounded transition-colors" title="Send Reminder">
                                 <i class="fa-regular fa-bell"></i>
                             </button>
-                            <button onclick="openEditById('${evt.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openEditById('${evt.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 p-1.5 rounded transition-colors" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>

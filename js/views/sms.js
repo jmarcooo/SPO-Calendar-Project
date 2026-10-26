@@ -50,7 +50,7 @@ window.renderSMSTable = function() {
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
@@ -70,10 +70,10 @@ window.renderSMSTable = function() {
                         PHP ${parseFloat(req.budget || 0).toFixed(2)}
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${rowStatus || '-'}</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${rowStatus || '-'}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${req.audienceType || '-'}</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${req.audienceType || '-'}</span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm">
@@ -83,8 +83,8 @@ window.renderSMSTable = function() {
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 hover:text-primary-900 group-hover:bg-primary-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
-                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 group-hover:bg-primary-50 dark:bg-primary-500/20 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 ml-2 group-hover:bg-red-50 dark:bg-red-500/20 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(row);
