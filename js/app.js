@@ -84,23 +84,68 @@ window.sortTableData = sortTableData;
             if (!evt) return;
 
             const tooltip = document.getElementById('event-hover-tooltip');
-            const titleEl = document.getElementById('tooltip-title');
-            const imgContainer = document.getElementById('tooltip-image-container');
-            const imgEl = document.getElementById('tooltip-image');
-            const dateEl = document.getElementById('tooltip-date');
 
-            titleEl.innerText = evt.title;
-            dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+            if (evt.itemType === 'game') {
+                const launchDate = evt.officialLaunchDate;
+                const status = launchDate ? 'Launched' : 'Upcoming';
+                const displayDate = launchDate ? launchDate : (evt.startDate ? evt.startDate.split(' ')[0] : 'TBD');
+                const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
 
-            const hasValidImage = (evt.itemType === 'event' || evt.itemType === 'game') && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+                const hasCustomBanner = evt.bannerUrl && window.isValidURL(evt.bannerUrl);
+                const hasLegacyBanner = evt.fields && evt.fields.postIds && evt.fields.postIds[0] && evt.fields.postIds[0].imgUrl && window.isValidURL(evt.fields.postIds[0].imgUrl);
+                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                if (hasCustomBanner) {
+                    bannerStyle = `background-image: url('${evt.bannerUrl}'); background-size: cover; background-position: center;`;
+                } else if (hasLegacyBanner) {
+                    bannerStyle = `background-image: url('${evt.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
+                } else if (evt.imageLink && window.isValidURL(evt.imageLink)) {
+                    bannerStyle = `background-image: url('${evt.imageLink}'); background-size: cover; background-position: center;`;
+                }
 
-            if (hasValidImage) {
-                imgEl.src = evt.imageLink;
-                imgContainer.classList.remove('hidden');
-                tooltip.style.width = "700px";
+                tooltip.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col w-[320px]">
+                        <div class="h-[18rem] w-full relative" style="${bannerStyle}">
+                        </div>
+                        <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
+                            <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
+                                ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>`}
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
+                            <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
+                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                        </div>
+                    </div>
+                `;
+                tooltip.style.width = "320px";
+                tooltip.className = "fixed z-50 hidden transform transition-opacity duration-200 opacity-0 pointer-events-none"; // strip padding and border
             } else {
-                imgContainer.classList.add('hidden');
-                tooltip.style.width = "auto";
+                // Restore standard tooltip layout
+                tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
+                tooltip.innerHTML = `
+                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+                    <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                        <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
+                    </div>
+                    <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+                `;
+                const titleEl = document.getElementById('tooltip-title');
+                const imgContainer = document.getElementById('tooltip-image-container');
+                const imgEl = document.getElementById('tooltip-image');
+                const dateEl = document.getElementById('tooltip-date');
+
+                titleEl.innerText = evt.title;
+                dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+
+                const hasValidImage = evt.itemType === 'event' && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+
+                if (hasValidImage) {
+                    imgEl.src = evt.imageLink;
+                    imgContainer.classList.remove('hidden');
+                    tooltip.style.width = "700px";
+                } else {
+                    imgContainer.classList.add('hidden');
+                    tooltip.style.width = "auto";
+                }
             }
 
             tooltip.classList.remove('hidden');
@@ -112,16 +157,17 @@ window.sortTableData = sortTableData;
             }, 50);
         };
 
-        window.hideEventTooltip = () => {
-            const tooltip = document.getElementById('event-hover-tooltip');
-            tooltip.classList.add('opacity-0');
-            clearTimeout(tooltipTimeout);
-            tooltipTimeout = setTimeout(() => {
-                tooltip.classList.add('hidden');
-            }, 200);
-        };
+window.hideEventTooltip = () => {
+    const tooltip = document.getElementById('event-hover-tooltip');
+    if (!tooltip) return;
+    tooltip.classList.add('opacity-0');
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = setTimeout(() => {
+        tooltip.classList.add('hidden');
+    }, 200);
+};
 
-        window.moveEventTooltip = (e) => {
+window.moveEventTooltip = (e) => {
             const tooltip = document.getElementById('event-hover-tooltip');
             if (tooltip.classList.contains('hidden')) return;
 
@@ -979,7 +1025,7 @@ window.sortTableData = sortTableData;
                 const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
 cardsHtml += `
                     <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
-                        <div class="h-32 w-full relative" style="${bannerStyle}">
+                        <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
                             <div class="w-24 h-24 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
