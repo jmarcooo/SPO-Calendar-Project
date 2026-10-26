@@ -43,7 +43,7 @@ window.sortTableData = sortTableData;
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -1057,11 +1057,20 @@ window.sortTableData = sortTableData;
             try {
                 if (!db) { throw new Error("Firebase DB not initialized."); }
 
-                await updateDoc(doc(db, 'events_v2', id), {
+                const eventRef = doc(db, 'events', id);
+                await setDoc(eventRef, {
                     iconUrl: iconUrl,
                     bannerUrl: bannerUrl,
                     officialLaunchDate: officialLaunchDate
-                });
+                }, { merge: true });
+
+                // Update local memory so UI changes instantly
+                const evtIndex = window.events.findIndex(e => String(e.id) === String(id));
+                if (evtIndex > -1) {
+                    window.events[evtIndex].iconUrl = iconUrl;
+                    window.events[evtIndex].bannerUrl = bannerUrl;
+                    window.events[evtIndex].officialLaunchDate = officialLaunchDate;
+                }
 
                 window.showToast('Game Settings updated successfully!', 'success');
                 window.closeGameDrawer();
