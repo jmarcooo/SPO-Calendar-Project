@@ -967,14 +967,14 @@ window.sortTableData = sortTableData;
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
                 let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
                 if (hasCustomBanner) {
-                    bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
+                    bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: top;`;
                 } else if (hasLegacyBanner) {
-                    bannerStyle = `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
+                    bannerStyle = `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: top;`;
                 }
 
                 cardsHtml += `
                     <div onclick=\"event.stopPropagation(); window.renderGameDetails('${g.id}')\" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
-                        <div class="h-24 w-full relative" style="${bannerStyle}">
+                        <div class="h-60 w-full relative" style="${bannerStyle}">
                             <div class="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded font-medium">${g.campaignType || 'Game Launch'}</div>
                         </div>
                         <div class="px-4 pb-4 relative flex-1 flex flex-col items-center">
