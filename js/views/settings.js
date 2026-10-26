@@ -16,7 +16,7 @@ window.renderAdminPOCSettings = () => {
                 const currentPOCs = savedPOCs[module.id] || [];
 
                 html += `
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <h4 class="text-sm font-semibold text-gray-800 dark:text-slate-200 mb-3">${module.name} (Max 3)</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 `;

@@ -12,7 +12,7 @@ export function init(container) {
 
     const activeNav = document.getElementById('nav-new_games');
     if (activeNav) {
-        activeNav.classList.remove('text-gray-600', 'hover:bg-slate-50');
+        activeNav.classList.remove('text-gray-600', 'hover:bg-slate-50 dark:bg-slate-900');
         activeNav.classList.add('bg-primary-50', 'text-primary-600');
         const activeIcon = activeNav.querySelector('.nav-icon');
         if (activeIcon) {

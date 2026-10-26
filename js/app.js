@@ -118,11 +118,11 @@ window.sortTableData = sortTableData;
                 }
 
                 tooltip.innerHTML = `
-                    <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col w-[320px]">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden flex flex-col w-[320px]">
                         <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
-                            <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
                                 ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-primary-500 absolute"></i>`}
                             </div>
                             <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
@@ -135,7 +135,7 @@ window.sortTableData = sortTableData;
                 tooltip.className = "fixed z-50 hidden transform transition-opacity duration-200 opacity-0 pointer-events-none"; // strip padding and border
             } else {
                 // Restore standard tooltip layout
-                tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
+                tooltip.className = "fixed z-50 hidden flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
                 tooltip.innerHTML = `
                     <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 dark:text-white mb-2 truncate shrink-0"></h4>
                     <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
@@ -754,12 +754,12 @@ window.moveEventTooltip = (e) => {
                         ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
 
                         ${window.currentCampaignPosts.length > 1 ? `
-                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
+                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-800/90 hover:bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-200 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
                         ` : ''}
                     </div>
 
-                    <div class="w-full max-w-md bg-slate-50 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
+                    <div class="w-full max-w-md bg-slate-50 dark:bg-slate-900 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-sm font-bold uppercase tracking-wider text-primary-600">${post.type || 'Platform'}</span>
                             <span class="text-sm text-gray-500 dark:text-slate-400 font-mono">${post.id || 'No ID'}</span>
@@ -825,7 +825,7 @@ window.moveEventTooltip = (e) => {
             }).join('');
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-6">
@@ -840,15 +840,15 @@ window.moveEventTooltip = (e) => {
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Timeline</span>
                             <span class="text-sm font-medium text-gray-900 dark:text-white">${task.startDate} to ${task.endDate}</span>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Status</span>
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-primary-100 text-primary-800'}">${task.status}</span>
                         </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Team Assigned</span>
                             <span class="text-sm font-medium text-gray-900 dark:text-white">${assignsStr}</span>
                         </div>
@@ -856,7 +856,7 @@ window.moveEventTooltip = (e) => {
 
                     <div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
-                        <div class="bg-white border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
                             ${opsHtml}
                         </div>
                     </div>
@@ -870,7 +870,7 @@ window.moveEventTooltip = (e) => {
 
             if (window.currentCampaignPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
+                    <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
                         <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     </div>
                     <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 text-center">
@@ -885,7 +885,7 @@ window.moveEventTooltip = (e) => {
             const postIdDisplay = post.id || 'Pending ID';
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
                 </div>
@@ -895,25 +895,25 @@ window.moveEventTooltip = (e) => {
                         <span class="text-xs font-mono text-gray-700 dark:text-slate-300 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Total Reach</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Engagements</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md shadow-slate-200/50 relative overflow-hidden">
                         <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Link Clicks</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white">--</span>
                     </div>
 
-                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+                    <div class="mt-8 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
                         <i class="fa-solid fa-wand-magic-sparkles text-primary-400 text-2xl mb-3"></i>
                         <p class="text-xs text-gray-500 dark:text-slate-400 font-medium">Live API syncing for platform metrics is currently under development.</p>
                     </div>
@@ -978,7 +978,7 @@ window.moveEventTooltip = (e) => {
             gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
 
             if (gamesOnly.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-slate-400">
+                container.innerHTML = `<div class="col-span-full bg-slate-50 dark:bg-slate-900 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400 dark:text-slate-500"></i>
                     <p class="text-sm font-medium">No new games found for this month.</p>
                 </div>`;
@@ -1006,11 +1006,11 @@ window.moveEventTooltip = (e) => {
                 const displayDate = launchDate ? launchDate : g.startDate.split(' ')[0];
                 const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
 cardsHtml += `
-                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
                         <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
+                            <div class="w-24 h-24 bg-white dark:bg-slate-800 border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
                                 ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-primary-500 absolute"></i>`}
                             </div>
                             <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
@@ -1775,7 +1775,7 @@ cardsHtml += `
                 resultsList.innerHTML = limited.map(r => {
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
-                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
+                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 dark:bg-slate-900 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
                         <div class="h-8 w-8 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mr-3 shrink-0">
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
@@ -1822,14 +1822,14 @@ cardsHtml += `
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-primary-50', 'text-primary-700');
-                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900', 'dark:hover:text-white');
+                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500');
                             icon.classList.remove('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'text-primary-700');
-                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900', 'dark:hover:text-white');
+                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500');
                             icon.classList.add('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
@@ -2036,7 +2036,7 @@ cardsHtml += `
             let typeInputHtml = '';
 
             if (budgetType === 'Campaign Expenses') {
-                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm bg-white dark:bg-slate-800">
                     <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                     <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                     <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
@@ -2158,7 +2158,7 @@ cardsHtml += `
             if (b.items && b.items.length > 0) {
                 b.items.forEach(it => {
                     const li = document.createElement('li');
-                    li.className = 'px-4 py-3 flex justify-between items-center bg-white hover:bg-slate-50';
+                    li.className = 'px-4 py-3 flex justify-between items-center bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900';
                     li.innerHTML = `<span class="font-medium text-gray-700 dark:text-slate-300">${it.type}</span><span class="text-primary-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
                     ul.appendChild(li);
                 });
@@ -2248,14 +2248,14 @@ cardsHtml += `
                 const monthName = d.toLocaleString('default', { month: 'long', year: 'numeric' });
 
                 html += `
-                    <div class="bg-white border-b border-slate-200/60 p-4">
+                    <div class="bg-white dark:bg-slate-800 border-b border-slate-200/60 p-4">
                         <h3 class="text-md font-bold text-gray-900 dark:text-white mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-slate-50 p-2 rounded border border-slate-100 dark:border-slate-700">
+                            <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-100 dark:border-slate-700">
                                 <span class="block text-xs text-gray-500 dark:text-slate-400">Total Spent</span>
                                 <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(spent)}</span>
                             </div>
-                            <div class="bg-slate-50 p-2 rounded border border-slate-100 dark:border-slate-700">
+                            <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-100 dark:border-slate-700">
                                 <span class="block text-xs text-gray-500 dark:text-slate-400">Month Limit</span>
                                 <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(limit)}</span>
                             </div>
@@ -3077,7 +3077,7 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors group cursor-pointer';
 
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
 
@@ -3159,7 +3159,7 @@ cardsHtml += `
             const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
                 (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
 
-            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
+            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 dark:bg-slate-900 sticky top-0 z-10">
                 <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
@@ -3220,8 +3220,8 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 transition-colors relative group h-10">
-                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white sticky left-0 z-10 flex items-center justify-center">
+                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-900 transition-colors relative group h-10">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
                         <span class="text-sm font-bold text-gray-700 dark:text-slate-300">${slot.id}</span>
                     </div>
                     <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
@@ -3422,7 +3422,7 @@ cardsHtml += `
             };
 
             let html = `
-                <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-300 shadow-sm">
+                <div class="sticky top-0 bg-slate-50 dark:bg-slate-900 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-300 shadow-sm">
                     <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:bg-slate-600" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400 dark:text-slate-500"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
@@ -3480,7 +3480,7 @@ cardsHtml += `
 
                     html += `
                         <div class="${rowClasses}">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
                             <div class="flex-1 relative">
@@ -3491,7 +3491,7 @@ cardsHtml += `
                 } else {
                     html += `
                         <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
                             <div class="flex-1 relative">
@@ -3502,7 +3502,7 @@ cardsHtml += `
                 }
             });
 
-            html += `<div class="text-center py-2 text-[10px] text-gray-400 dark:text-slate-500 bg-slate-50 border-t border-gray-200">Scroll for more positions ↓</div>`;
+            html += `<div class="text-center py-2 text-[10px] text-gray-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 border-t border-gray-200">Scroll for more positions ↓</div>`;
 
             container.innerHTML = html;
         };
@@ -3622,7 +3622,7 @@ cardsHtml += `
 
             window.quickLinks.forEach(link => {
                 const el = document.createElement('div');
-                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 rounded-xl group transition-colors";
+                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 dark:bg-slate-900 rounded-xl group transition-colors";
 
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
@@ -4051,8 +4051,8 @@ cardsHtml += `
                 const isAllDone = done === total;
                 const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700 dark:text-slate-300';
                 return `
-                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
-                        <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 dark:text-slate-200 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white dark:bg-slate-800 shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
+                        <summary class="cursor-pointer bg-slate-50 dark:bg-slate-900 px-4 py-3 font-semibold text-gray-800 dark:text-slate-200 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
                                 <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
@@ -4069,14 +4069,14 @@ cardsHtml += `
             const makeRadioHtml = (key, label) => {
                 const val = f[key] || 'Pending';
                 return `
-                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="flex flex-col p-3 bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <label class="text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">${label}</label>
                         <div class="flex space-x-4">
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:bg-slate-900 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">Yes</span>
                             </label>
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:bg-slate-900 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">N/A</span>
                             </label>
@@ -4091,11 +4091,11 @@ cardsHtml += `
                     const isUrlValid = d.url === '' || window.isValidURL(d.url);
                     const borderClass = isUrlValid ? 'border-gray-300 dark:border-slate-600 focus:ring-primary-500' : 'border-red-500 text-red-900';
                     return `
-                        <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
+                        <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200/60 rounded-xl relative">
                             <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             <div class="flex items-center space-x-2 pr-8">
-                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white">
+                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
+                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white dark:bg-slate-800">
                             </div>
                             ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format.</p>` : ''}
                         </div>
@@ -4103,7 +4103,7 @@ cardsHtml += `
                 }).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Documents</label>
                             <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
@@ -4123,7 +4123,7 @@ cardsHtml += `
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Hashtags (Max 10)</label>
                         <div class="flex flex-wrap mb-1">${pills}</div>
                         <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
@@ -4134,20 +4134,20 @@ cardsHtml += `
             const makePostIdsHtml = () => {
                 const posts = Array.isArray(f.postIds) ? f.postIds : [];
                 let rowsHtml = posts.map((p, i) => `
-                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
+                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200/60 rounded-xl relative">
                         <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
-                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
                         </div>
                         <div>
-                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
                         </div>
                     </div>
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Post IDs</label>
                             <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
@@ -4160,7 +4160,7 @@ cardsHtml += `
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center p-3 bg-white dark:bg-slate-800 border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 dark:bg-slate-900 transition-colors">
                         <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 bg-slate-100 border-gray-300 dark:border-slate-600 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300 cursor-pointer flex-1">${label}</label>
                     </div>
@@ -4307,11 +4307,11 @@ cardsHtml += `
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-slate-50');
+                    row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-900');
                     row.classList.add('bg-primary-100');
                     setTimeout(() => {
                         row.classList.remove('bg-primary-100');
-                        row.classList.add('hover:bg-slate-50');
+                        row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-900');
                     }, 2000);
                 }
             }, 100);
@@ -5435,7 +5435,7 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50/30'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:bg-slate-900 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50/30'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900 dark:text-white">${n.message}</p>
                         <p class="text-[10px] text-gray-500 dark:text-slate-400 mt-1">${n.createdTime}</p>
                     </div>

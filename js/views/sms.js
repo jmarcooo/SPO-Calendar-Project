@@ -33,7 +33,7 @@ window.renderSMSTable = function() {
             tbody.innerHTML = '';
             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(req => {
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-slate-50 transition-colors cursor-pointer';
+                row.className = 'hover:bg-slate-50 dark:bg-slate-900 transition-colors cursor-pointer';
                 row.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openSMSDetails(req.id);
@@ -56,7 +56,7 @@ window.renderSMSTable = function() {
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
                 if (rowStatus === 'Past' && req.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 transition-colors cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors cursor-pointer';
 
                 row.className = rowOpacityClass;
                 row.innerHTML = `

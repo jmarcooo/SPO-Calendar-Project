@@ -55,7 +55,7 @@ window.renderBudgetTable = () => {
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors duration-200 cursor-pointer';
+                tr.className = 'hover:bg-slate-50 dark:bg-slate-900 transition-colors duration-200 cursor-pointer';
                 tr.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openBudgetDetails(b.id);
@@ -112,7 +112,7 @@ window.updateBudgetItemTypes = () => {
 
                 if (budgetType === 'Campaign Expenses') {
                     if (currentInput.tagName !== 'SELECT') {
-                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 dark:border-slate-600 rounded-lg py-1.5 px-2 sm:text-sm bg-white dark:bg-slate-800">
                             <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                             <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                             <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
