@@ -43,7 +43,7 @@ window.sortTableData = sortTableData;
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -84,23 +84,68 @@ window.sortTableData = sortTableData;
             if (!evt) return;
 
             const tooltip = document.getElementById('event-hover-tooltip');
-            const titleEl = document.getElementById('tooltip-title');
-            const imgContainer = document.getElementById('tooltip-image-container');
-            const imgEl = document.getElementById('tooltip-image');
-            const dateEl = document.getElementById('tooltip-date');
 
-            titleEl.innerText = evt.title;
-            dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+            if (evt.itemType === 'game') {
+                const launchDate = evt.officialLaunchDate;
+                const status = launchDate ? 'Launched' : 'Upcoming';
+                const displayDate = launchDate ? launchDate : (evt.startDate ? evt.startDate.split(' ')[0] : 'TBD');
+                const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
 
-            const hasValidImage = (evt.itemType === 'event' || evt.itemType === 'game') && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+                const hasCustomBanner = evt.bannerUrl && window.isValidURL(evt.bannerUrl);
+                const hasLegacyBanner = evt.fields && evt.fields.postIds && evt.fields.postIds[0] && evt.fields.postIds[0].imgUrl && window.isValidURL(evt.fields.postIds[0].imgUrl);
+                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                if (hasCustomBanner) {
+                    bannerStyle = `background-image: url('${evt.bannerUrl}'); background-size: cover; background-position: center;`;
+                } else if (hasLegacyBanner) {
+                    bannerStyle = `background-image: url('${evt.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
+                } else if (evt.imageLink && window.isValidURL(evt.imageLink)) {
+                    bannerStyle = `background-image: url('${evt.imageLink}'); background-size: cover; background-position: center;`;
+                }
 
-            if (hasValidImage) {
-                imgEl.src = evt.imageLink;
-                imgContainer.classList.remove('hidden');
-                tooltip.style.width = "700px";
+                tooltip.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col w-[320px]">
+                        <div class="h-[18rem] w-full relative" style="${bannerStyle}">
+                        </div>
+                        <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
+                            <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
+                                ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-indigo-500 absolute"></i>`}
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
+                            <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
+                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                        </div>
+                    </div>
+                `;
+                tooltip.style.width = "320px";
+                tooltip.className = "fixed z-50 hidden transform transition-opacity duration-200 opacity-0 pointer-events-none"; // strip padding and border
             } else {
-                imgContainer.classList.add('hidden');
-                tooltip.style.width = "auto";
+                // Restore standard tooltip layout
+                tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
+                tooltip.innerHTML = `
+                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+                    <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
+                        <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
+                    </div>
+                    <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+                `;
+                const titleEl = document.getElementById('tooltip-title');
+                const imgContainer = document.getElementById('tooltip-image-container');
+                const imgEl = document.getElementById('tooltip-image');
+                const dateEl = document.getElementById('tooltip-date');
+
+                titleEl.innerText = evt.title;
+                dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
+
+                const hasValidImage = evt.itemType === 'event' && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+
+                if (hasValidImage) {
+                    imgEl.src = evt.imageLink;
+                    imgContainer.classList.remove('hidden');
+                    tooltip.style.width = "700px";
+                } else {
+                    imgContainer.classList.add('hidden');
+                    tooltip.style.width = "auto";
+                }
             }
 
             tooltip.classList.remove('hidden');
@@ -112,16 +157,17 @@ window.sortTableData = sortTableData;
             }, 50);
         };
 
-        window.hideEventTooltip = () => {
-            const tooltip = document.getElementById('event-hover-tooltip');
-            tooltip.classList.add('opacity-0');
-            clearTimeout(tooltipTimeout);
-            tooltipTimeout = setTimeout(() => {
-                tooltip.classList.add('hidden');
-            }, 200);
-        };
+window.hideEventTooltip = () => {
+    const tooltip = document.getElementById('event-hover-tooltip');
+    if (!tooltip) return;
+    tooltip.classList.add('opacity-0');
+    clearTimeout(tooltipTimeout);
+    tooltipTimeout = setTimeout(() => {
+        tooltip.classList.add('hidden');
+    }, 200);
+};
 
-        window.moveEventTooltip = (e) => {
+window.moveEventTooltip = (e) => {
             const tooltip = document.getElementById('event-hover-tooltip');
             if (tooltip.classList.contains('hidden')) return;
 
@@ -892,6 +938,221 @@ window.sortTableData = sortTableData;
                 </div>
             `;
         };
+
+
+
+        window.changeGameMonth = (dir) => {
+            window.currentMonth += dir;
+            if (window.currentMonth < 0) {
+                window.currentMonth = 11;
+                window.currentYear--;
+            } else if (window.currentMonth > 11) {
+                window.currentMonth = 0;
+                window.currentYear++;
+            }
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            window.renderGameCards();
+        };
+
+        window.resetGameMonth = () => {
+            const ph = window.getPHParts();
+            window.currentMonth = ph.month - 1;
+            window.currentYear = ph.year;
+            localStorage.setItem('spo_current_month', window.currentMonth);
+            localStorage.setItem('spo_current_year', window.currentYear);
+            window.renderGameCards();
+        };
+
+        window.renderGameCards = () => {
+            const container = document.getElementById('game-cards-container');
+            const monthLabel = document.getElementById('new-games-month-label');
+            if (!container) return;
+
+            const monthStr = window.getCurrentMonthStr();
+            const date = new Date(window.currentYear, window.currentMonth, 1);
+            const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            if (monthLabel) {
+                monthLabel.innerText = `Showing games for ${monthName}`;
+            }
+
+            const gamesOnly = window.events.filter(e => {
+                const iType = e.itemType || (e.isEventOnly ? 'event' : 'task');
+                if (iType !== 'game') return false;
+
+                // Filter by month
+                if (e.startDate && e.startDate.startsWith(monthStr)) return true;
+                if (e.endDate && e.endDate.startsWith(monthStr)) return true;
+
+                // Also show games that span across the month
+                if (e.startDate && e.endDate) {
+                    if (e.startDate < monthStr + "-01" && e.endDate > monthStr + "-31") return true;
+                }
+
+                return false;
+            });
+
+            gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
+
+            if (gamesOnly.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400"></i>
+                    <p class="text-sm font-medium">No new games found for this month.</p>
+                </div>`;
+                return;
+            }
+
+            let cardsHtml = '';
+            gamesOnly.forEach(g => {
+                const pFormatted = (g.progress || 0).toFixed(0);
+                const isActive = window.currentGameId === g.id;
+                const borderClass = isActive ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-slate-200/60 hover:border-indigo-300';
+
+                const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
+                const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
+                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                if (hasCustomBanner) {
+                    bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
+                } else if (hasLegacyBanner) {
+                    bannerStyle = `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
+                }
+
+
+                const launchDate = g.officialLaunchDate;
+                const status = launchDate ? 'Launched' : 'Upcoming';
+                const displayDate = launchDate ? launchDate : g.startDate.split(' ')[0];
+                const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
+cardsHtml += `
+                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                        <div class="h-[18rem] w-full relative" style="${bannerStyle}">
+                        </div>
+                        <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
+                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-indigo-500 absolute"></i>`}
+                            </div>
+                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
+                            <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
+                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                        </div>
+                    </div>
+                `;
+
+            });
+
+            container.innerHTML = cardsHtml;
+        };
+
+        // Game Settings Drawer Logic
+        window.openGameDrawer = function(event) {
+            document.getElementById('game-drawer-id').value = event.id;
+            document.getElementById('game-drawer-title').textContent = event.title || 'Game Settings';
+
+            // Populate fields
+            document.getElementById('game-drawer-icon').value = event.iconUrl || '';
+            document.getElementById('game-drawer-banner').value = event.bannerUrl || '';
+
+            // Format datetime-local (YYYY-MM-DDTHH:MM:SS) if exists
+            let launchDate = '';
+            if (event.officialLaunchDate) {
+                try {
+                    launchDate = event.officialLaunchDate.replace(' ', 'T');
+                } catch(e){}
+            }
+            document.getElementById('game-drawer-launch').value = launchDate;
+
+            // Show drawer
+            const overlay = document.getElementById('game-drawer-overlay');
+            const drawer = document.getElementById('game-drawer');
+            overlay.classList.remove('hidden');
+            // small delay for transition
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                drawer.classList.remove('translate-x-full');
+            }, 10);
+        };
+
+        window.closeGameDrawer = function() {
+            const overlay = document.getElementById('game-drawer-overlay');
+            const drawer = document.getElementById('game-drawer');
+
+            overlay.classList.add('opacity-0');
+            drawer.classList.add('translate-x-full');
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        };
+
+        window.saveGameDrawer = async function() {
+            const id = document.getElementById('game-drawer-id').value;
+            const iconUrl = document.getElementById('game-drawer-icon').value.trim();
+            const bannerUrl = document.getElementById('game-drawer-banner').value.trim();
+            const launchInput = document.getElementById('game-drawer-launch').value;
+
+            let officialLaunchDate = '';
+            if(launchInput) {
+                officialLaunchDate = launchInput.replace('T', ' ');
+            }
+
+            try {
+                if (!db) { throw new Error("Firebase DB not initialized."); }
+
+                const eventRef = doc(db, 'events', id);
+                await setDoc(eventRef, {
+                    iconUrl: iconUrl,
+                    bannerUrl: bannerUrl,
+                    officialLaunchDate: officialLaunchDate
+                }, { merge: true });
+
+                // Update local memory so UI changes instantly
+                const evtIndex = window.events.findIndex(e => String(e.id) === String(id));
+                if (evtIndex > -1) {
+                    window.events[evtIndex].iconUrl = iconUrl;
+                    window.events[evtIndex].bannerUrl = bannerUrl;
+                    window.events[evtIndex].officialLaunchDate = officialLaunchDate;
+                }
+
+                window.showToast('Game Settings updated successfully!', 'success');
+                window.closeGameDrawer();
+
+                // Re-render cards to show updated images
+                if (window.location.hash === '#/new-games') {
+                    setTimeout(() => window.renderGameCards(), 100);
+                }
+            } catch (error) {
+                console.error("Error saving game settings:", error);
+                window.showToast('Error saving game settings.', 'error');
+            }
+        };
+
+
+        window.renderGameDetails = function(gameId) {
+            const event = window.events.find(e => String(e.id) === String(gameId)) || window.allEvents.find(e => String(e.id) === String(gameId));
+            if (!event) {
+                console.error("Game event not found for id:", gameId);
+                return;
+            }
+            if (typeof window.openGameDrawer === 'function') {
+                window.openGameDrawer(event);
+            } else {
+                console.error("window.openGameDrawer is not defined");
+            }
+        };
+
+
+
+        window.changeGameCarouselSlide = (dir) => {
+            window.currentCarouselIndex += dir;
+            if (window.currentCarouselIndex < 0) window.currentCarouselIndex = window.currentGamePosts.length - 1;
+            if (window.currentCarouselIndex >= window.currentGamePosts.length) window.currentCarouselIndex = 0;
+            window.renderGameCarousel();
+            window.renderGamePerformance();
+        };
+
+
+
+
 
         window.migrateLocalData = async () => {
             if(!confirm("This will upload all tasks and budgets saved locally on this browser to your Firebase Cloud Database. Do you want to proceed?")) return;
