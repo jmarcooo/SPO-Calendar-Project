@@ -1822,17 +1822,17 @@ cardsHtml += `
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
-                        nav.classList.remove('text-gray-600', 'dark:text-slate-300', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.remove('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500');
-                            icon.classList.remove('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
+                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
-                        nav.classList.add('text-gray-600', 'dark:text-slate-300', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.add('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500');
-                            icon.classList.add('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
+                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     }
                 }
@@ -2337,7 +2337,7 @@ cardsHtml += `
                 window.syncDailyTaskToFirestore(task);
                 if (window.renderDailyTasksTable) window.renderDailyTasksTable();
             }
-            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' };
             const reqStatus = task.status || 'Pending';
             const statusEl = document.getElementById('detail-status-text');
             if (statusEl) {
@@ -2653,7 +2653,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2662,7 +2662,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2675,7 +2675,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2684,7 +2684,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = true;
-                        el.classList.add('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                        el.classList.add('bg-gray-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2739,14 +2739,14 @@ cardsHtml += `
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
                             }
                         });
                         pinSettings.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
+                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
                             }
                         });
                         if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
@@ -3079,11 +3079,11 @@ cardsHtml += `
                 const isPast = rowStatus === 'Ended';
                 const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                const priorityClass = p.priority === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900' : (p.priority === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 dark:bg-blue-900');
+                const priorityClass = p.priority === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900' : (p.priority === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900');
 
                 let pinStatusClass = 'text-gray-600 dark:text-gray-400 bg-slate-100 dark:bg-slate-700';
-                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900 dark:bg-emerald-900';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-900 dark:bg-primary-900';
+                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-900';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
@@ -3106,7 +3106,7 @@ cardsHtml += `
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' : (p.status === 'Under Review' ? 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200')}">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : (p.status === 'Under Review' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200')}">
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
@@ -3959,7 +3959,7 @@ cardsHtml += `
 
             const bar = document.getElementById('drawer-progress-bar');
             bar.style.width = `${p}%`;
-            bar.classList.remove('bg-emerald-50', 'dark:bg-emerald-900', 'bg-primary-600', 'bg-gray-400');
+            bar.classList.remove('bg-emerald-50', 'bg-primary-600', 'bg-gray-400', 'dark:bg-emerald-900');
 
             if (p === 100) {
                 bar.classList.add('bg-emerald-50', 'dark:bg-emerald-900');
@@ -4307,11 +4307,11 @@ cardsHtml += `
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900');
-                    row.classList.add('bg-primary-100 dark:bg-primary-900');
+                    row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    row.classList.add('bg-primary-100', 'dark:bg-primary-900');
                     setTimeout(() => {
-                        row.classList.remove('bg-primary-100 dark:bg-primary-900');
-                        row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900');
+                        row.classList.remove('bg-primary-100', 'dark:bg-primary-900');
+                        row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700');
                     }, 2000);
                 }
             }, 100);
@@ -4395,10 +4395,10 @@ cardsHtml += `
             container.innerHTML = pills;
             if (window.cwTempHashtags.length >= 10) {
                 input.disabled = true;
-                input.classList.add('bg-slate-100', 'dark:bg-slate-700', 'cursor-not-allowed');
+                input.classList.add('bg-slate-100', 'cursor-not-allowed', 'dark:bg-slate-700');
             } else {
                 input.disabled = false;
-                input.classList.remove('bg-slate-100', 'dark:bg-slate-700', 'cursor-not-allowed');
+                input.classList.remove('bg-slate-100', 'cursor-not-allowed', 'dark:bg-slate-700');
             }
         };
 
@@ -4589,7 +4589,7 @@ cardsHtml += `
                     const statusEl = document.getElementById('cw-details-request-status');
                     if(statusEl) {
                         statusEl.innerText = 'Completed';
-                        statusEl.className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200';
+                        statusEl.className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
                     }
                 }
             }
@@ -4856,7 +4856,7 @@ cardsHtml += `
             document.getElementById('sms-details-requestor').innerHTML = window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor;
 
             const reqStatus = req.requestStatus || 'Pending';
-            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' };
             document.getElementById('sms-details-request-status').innerText = reqStatus;
             document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-slate-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             document.getElementById('sms-details-id').value = req.id;
@@ -5162,7 +5162,7 @@ cardsHtml += `
         if(document.getElementById('detail-cwr-end-date')) document.getElementById('detail-cwr-end-date').innerText = req.endDate || '-';
             document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
             const reqStatus = req.requestStatus || 'Pending';
-            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' };
             const statusEl = document.getElementById('cw-details-request-status');
             if (statusEl) {
                 statusEl.innerText = reqStatus;
@@ -5505,12 +5505,12 @@ window.toggleNotifications = () => {
             if (window.currentUserProfile) {
                 btn.innerHTML = `<span class="text-sm font-bold text-primary-700">${window.currentUserProfile.charAt(0)}</span>`;
                 btn.title = `User Profile: ${window.currentUserProfile}`;
-                btn.classList.add('bg-primary-100 dark:bg-primary-900', 'border-primary-300');
+                btn.classList.add('bg-primary-100', 'dark:bg-primary-900', 'border-primary-300');
                 btn.classList.remove('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300', 'dark:border-slate-600');
             } else {
                 btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
                 btn.title = "User Profile";
-                btn.classList.remove('bg-primary-100 dark:bg-primary-900', 'border-primary-300');
+                btn.classList.remove('bg-primary-100', 'dark:bg-primary-900', 'border-primary-300');
                 btn.classList.add('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300', 'dark:border-slate-600');
             }
         };
