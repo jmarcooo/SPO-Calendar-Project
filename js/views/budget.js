@@ -79,16 +79,16 @@ window.renderBudgetTable = () => {
                             try { const o = JSON.parse(n); n = o.name || o.username || n; } catch(e){}
                             if (n === 'Unassigned' || !n) return '<span class="text-gray-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
                             let initial = n.charAt(0).toUpperCase();
-                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white ">' + n + '</span></div>';
+                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white ">' + n + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 text-right font-medium text-gray-900 dark:text-white ">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 p-1.5 rounded transition-colors" title="Delete">
+                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-900 p-1.5 rounded transition-colors" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>

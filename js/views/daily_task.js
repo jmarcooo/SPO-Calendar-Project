@@ -59,10 +59,10 @@ window.renderDailyTasksTable = () => {
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
                 const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-gray-900 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
-                if (task.status === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
-                else if (task.status === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100';
-                else if (task.status === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100';
+                let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-gray-900 dark:bg-slate-700';
+                if (task.status === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900';
+                else if (task.status === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900';
+                else if (task.status === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-900';
 
                 let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${task.status || 'Pending'}</span>`;
 
@@ -82,7 +82,7 @@ window.renderDailyTasksTable = () => {
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div>
+                                <div class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div>
                                 <span class="text-sm text-gray-900 dark:text-white ">${task.requestor}</span>
                             </div>
                         </td>
@@ -91,9 +91,9 @@ window.renderDailyTasksTable = () => {
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${rowStatus}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-50 dark:bg-emerald-9000/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-900 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-900 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;

@@ -41,16 +41,16 @@ window.renderSMSTable = function() {
                 };
 
                 const statusColors = {
-                    'Pending': 'bg-yellow-100 text-yellow-800',
-                    'Under Review': 'bg-blue-100 text-blue-800',
-                    'Completed': 'bg-green-100 text-green-800'
+                    'Pending': 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800',
+                    'Under Review': 'bg-blue-100 dark:bg-blue-900 text-blue-800',
+                    'Completed': 'bg-green-100 dark:bg-green-900 text-green-800'
                 };
                 const reqStatus = req.requestStatus || 'Pending';
-                const statusClass = statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200';
+                const statusClass = statusColors[reqStatus] || 'bg-gray-100 dark:bg-gray-900 dark:bg-slate-700 text-gray-800 dark:text-slate-200';
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-50 dark:bg-emerald-9000/20 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-900 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
@@ -83,8 +83,8 @@ window.renderSMSTable = function() {
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 group-hover:bg-primary-50 dark:bg-primary-500/20 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
-                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 ml-2 group-hover:bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 group-hover:bg-primary-50 dark:bg-primary-500 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 ml-2 group-hover:bg-red-50 dark:bg-red-900 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(row);

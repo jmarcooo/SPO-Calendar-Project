@@ -3464,19 +3464,19 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-primary-50 dark:bg-primary-900/50 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-primary-50 dark:bg-primary-900 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
                     rowClasses += " bg-primary-50 dark:bg-primary-900";
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900/50 text-primary-700 text-xs font-bold shadow-sm dark:shadow-none pointer-events-none">Selected - available</div>`;
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900 text-primary-700 text-xs font-bold shadow-sm dark:shadow-none pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
                     rowClasses += " bg-red-50 dark:bg-red-900 cursor-not-allowed";
-                    rowClasses = rowClasses.replace("hover:bg-primary-50 dark:bg-primary-900/50", "");
+                    rowClasses = rowClasses.replace("hover:bg-primary-50 dark:bg-primary-900", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 dark:text-red-400 text-[10px] pointer-events-none">Existing pin</div>`;
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 dark:bg-red-900 border border-red-200 rounded flex items-center justify-center text-red-600 dark:text-red-400 text-[10px] pointer-events-none">Existing pin</div>`;
 
                     html += `
                         <div class="${rowClasses}">
@@ -4106,7 +4106,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Documents</label>
-                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
+                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
@@ -4150,7 +4150,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Post IDs</label>
-                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
