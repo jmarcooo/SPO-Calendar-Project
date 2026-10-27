@@ -140,7 +140,7 @@
                     <i class="fa-solid fa-gift mr-3 text-gray-400 dark:text-slate-500 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Prize Distribution
                 </a>
 
-                <div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-700 dark:border-slate-700"></div>
+                <div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-700"></div>
                 <div class="flex justify-between items-center px-3 mb-2">
                     <h3 class="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Quick Links</h3>
                     <button onclick="openQuickLinkModal()" class="text-gray-400 dark:text-slate-500 hover:text-primary-600 dark:text-primary-400 transition-colors" title="Add Quick Link">
@@ -151,7 +151,7 @@
                     <!-- Quick links will be dynamically populated here -->
                 </div>
 
-                <div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-700 dark:border-slate-700"></div>
+                <div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-700"></div>
                 <a href="#settings" id="nav-settings" class="flex items-center px-3 py-2 text-gray-600 dark:text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:text-white rounded-xl group font-medium transition-colors nav-item">
                     <i class="fa-solid fa-gear mr-3 text-gray-400 dark:text-slate-500 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Settings
                 </a>
@@ -199,11 +199,11 @@
                     <input type="hidden" id="ql-id">
                     <div>
                         <label for="ql-title" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="ql-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="text" id="ql-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="ql-url" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Link / URL <span class="text-red-500">*</span></label>
-                        <input type="url" id="ql-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="url" id="ql-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
 
                 </form>
@@ -231,31 +231,31 @@
                     
                     <div>
                         <label for="event-title" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Task / Event Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div class="flex space-x-4">
                         <div class="flex-1">
                             <label for="event-start-date" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="flex-1" id="event-end-date-container">
                             <label for="event-end-date" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
 
                     <div id="document-link-container">
                         <label for="event-document-link" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Document Link</label>
-                        <input type="url" id="event-document-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="url" id="event-document-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
 
                     <div id="image-link-container" style="display: none;">
                         <label for="event-image-link" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Image URL <span class="text-xs text-gray-500 dark:text-slate-400 ">(Optional)</span></label>
-                        <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div id="campaign-type-container">
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Type <span class="text-red-500">*</span></label>
-                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             <option value="All">All</option>
                             <option value="Game Promotion">Game Promotion</option>
                             <option value="Platform Feature">Platform Feature</option>
@@ -292,15 +292,15 @@
                     <input type="hidden" id="budget-id">
                     <div>
                         <label for="budget-name" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign / Project Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="budget-month" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Date <span class="text-red-500">*</span></label>
-                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Budget Type <span class="text-red-500">*</span></label>
-                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             <option value="Campaign Expenses">Campaign Expenses</option>
                             <option value="Offline Rewards">Offline Rewards</option>
                             <option value="Monthly Expenses">Monthly Expenses</option>
@@ -334,7 +334,7 @@
 
     <!-- Right Drawer for Task Checklist Progress -->
     <div id="drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeTaskDrawer()"></div>
-    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700 dark:border-slate-700">
+    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700">
         <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-start bg-slate-50 dark:bg-slate-900 shrink-0">
             <h2 id="drawer-title" class="text-xl font-bold text-gray-900 dark:text-white leading-tight pr-4">Task Title</h2>
             <button onclick="closeTaskDrawer()" class="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:text-slate-300 dark:text-slate-400 p-1">
@@ -358,7 +358,7 @@
 
     <!-- Right Drawer for View All Budgets -->
     <div id="budget-drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeBudgetDrawer()"></div>
-    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700 dark:border-slate-700">
+    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700">
         <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900 shrink-0">
             <h2 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">All Months Budget</h2>
             <button onclick="closeBudgetDrawer()" class="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:text-slate-300 dark:text-slate-400 p-1">
@@ -367,7 +367,7 @@
         </div>
         <div class="p-4 border-b border-slate-200 dark:border-slate-700 shrink-0 bg-white dark:bg-slate-800">
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Select Year</label>
-            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 focus:ring-primary-500 sm:text-sm bg-white dark:bg-slate-800"></select>
+            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 focus:ring-primary-500 sm:text-sm bg-white dark:bg-slate-800"></select>
         </div>
         <div class="p-0 flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900" id="budget-drawer-content"></div>
     </div>
@@ -512,15 +512,15 @@
                     <input type="hidden" id="pa-id">
                     <div>
                         <label for="pa-page" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Page <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-page" min="1" max="2" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-page" min="1" max="2" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="pa-position" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Position <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-position" min="1" max="10" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-position" min="1" max="10" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
                         <label for="pa-sort" class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Sort <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-sort" min="1" max="3" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                        <input type="number" id="pa-sort" min="1" max="3" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                     </div>
                 </form>
             </div>
@@ -553,19 +553,19 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign / Game Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                                <input type="text" id="pr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Start Date <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="pr-start-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <input type="datetime-local" id="pr-start-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">End Date <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="pr-end-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <input type="datetime-local" id="pr-end-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Category <span class="text-red-500">*</span></label>
-                                <select id="pr-category" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                                <select id="pr-category" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                     <option value="PGC">PGC</option>
                                     <option value="UGC">UGC</option>
                                     <option value="Perya Host">Perya Host</option>
@@ -574,7 +574,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Priority <span class="text-red-500">*</span></label>
-                                <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                                <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                     <option value="High">High</option>
                                     <option value="Medium">Medium</option>
                                     <option value="Low">Low</option>
@@ -582,16 +582,16 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Post ID <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-post-id" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                                <input type="text" id="pr-post-id" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Post Title <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                                <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             </div>
 
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Remarks</label>
-                                <textarea id="pr-remark" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
+                                <textarea id="pr-remark" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
                             </div>
                         </div>
 
@@ -601,15 +601,15 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Page</label>
-                                    <input type="number" id="pr-page" min="1" max="2" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                                    <input type="number" id="pr-page" min="1" max="2" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Position</label>
-                                    <input type="number" id="pr-position" min="1" max="10" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                                    <input type="number" id="pr-position" min="1" max="10" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Sort/Refresh Round</label>
-                                    <input type="number" id="pr-sort" min="1" max="3" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                                    <input type="number" id="pr-sort" min="1" max="3" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                             </div>
                             <div class="mt-4 text-sm font-medium text-primary-700">
@@ -625,7 +625,7 @@
                         <h4 class="text-md font-bold text-gray-900 dark:text-white ">Slot Availability</h4>
                         <div class="flex items-center space-x-2">
                             <label class="text-xs font-medium text-gray-700 dark:text-slate-300 ">Start Date:</label>
-                            <input type="date" id="modal-timeline-start-date" class="border border-gray-300 dark:border-slate-600 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
+                            <input type="date" id="modal-timeline-start-date" class="border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 dark:text-slate-400 mb-3">View 7-day slot availability starting from the selected date</p>
@@ -668,57 +668,57 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Event Title <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-event-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-event-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Start Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="dt-start-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="datetime-local" step="1" id="dt-start-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">End Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="dt-end-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="datetime-local" step="1" id="dt-end-date" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Task Title <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-task-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-task-title" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Linked Task</label>
-                            <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm cursor-pointer">
+                            <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm cursor-pointer">
                                 <option value="">None</option>
                             </select>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Task Description</label>
-                            <textarea id="dt-task-desc" rows="3" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
+                            <textarea id="dt-task-desc" rows="3" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Template Title</label>
-                            <input type="text" id="dt-template-title" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-template-title" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Template ID</label>
-                            <input type="text" id="dt-template-id" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="dt-template-id" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Template Caption</label>
-                            <textarea id="dt-template-caption" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
+                            <textarea id="dt-template-caption" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Hashtags</label>
                             <div class="flex flex-wrap mb-1" id="dt-hashtags-container"></div>
                             <div class="flex mt-1">
-                                <input type="text" id="dt-hashtag-input" placeholder="Type hashtag and press Enter or Add" onkeydown="if(event.key === 'Enter') { event.preventDefault(); window.addDTHashtag(); }" class="block w-full border border-gray-300 dark:border-slate-600 rounded-l-xl shadow-md dark:shadow-none py-2 px-3 sm:text-sm">
+                                <input type="text" id="dt-hashtag-input" placeholder="Type hashtag and press Enter or Add" onkeydown="if(event.key === 'Enter') { event.preventDefault(); window.addDTHashtag(); }" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-l-xl shadow-md dark:shadow-none py-2 px-3 sm:text-sm">
                                 <button type="button" onclick="window.addDTHashtag()" class="bg-primary-600 text-white px-3 py-2 rounded-r-xl hover:bg-primary-700"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Linked Post URL</label>
-                            <input type="url" id="dt-linked-post" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="dt-linked-post" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Document Link</label>
-                            <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
 
 
@@ -754,7 +754,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="md:col-span-2 mt-2 border-t border-slate-200 dark:border-slate-700 pt-4">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Support Type <span class="text-red-500">*</span></label>
@@ -775,24 +775,24 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign File (Link)</label>
-                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Support Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Support End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Duration (Days)</label>
-                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm cursor-not-allowed">
+                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm cursor-not-allowed">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Status <span class="text-red-500">*</span></label>
-                            <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                            <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 <option value="Upcoming">Upcoming</option>
                                 <option value="Active">Active</option>
                                 <option value="Completed">Completed</option>
@@ -803,18 +803,18 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Priority Level <span class="text-red-500">*</span></label>
-                            <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
+                            <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 <option value="S Level">S Level</option>
                                 <option value="A Level">A Level</option>
                             </select>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Priority Rationale</label>
-                            <input type="text" id="cwr-priority-rationale" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="cwr-priority-rationale" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Posting Requirements</label>
-                            <textarea id="cwr-posting-requirements" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
+                            <textarea id="cwr-posting-requirements" rows="2" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
 
                         <div class="md:col-span-2">
@@ -841,17 +841,17 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Game Configuration</label>
-                            <input type="text" id="cwr-game-configuration" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="cwr-game-configuration" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Hashtags (Max 10)</label>
                             <div class="flex flex-wrap mb-1" id="cwr-hashtags-container"></div>
-                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 focus:ring-primary-500">
+                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="w-full text-sm border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 focus:ring-primary-500">
                         </div>
 
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Special Payout / Credits</label>
-                            <input type="text" id="cwr-special-payout" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="cwr-special-payout" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
 
 
@@ -885,20 +885,20 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Event/Campaign Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="pdr-event-datetime" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="datetime-local" step="1" id="pdr-event-datetime" required class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Campaign Document Link</label>
-                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Winner List Document Link</label>
-                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div class="sm:col-span-2">
@@ -917,7 +917,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <span class="text-gray-500 dark:text-slate-400 sm:text-sm">₱</span>
                                 </div>
-                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             </div>
                         </div>
                         <div>
@@ -926,7 +926,7 @@
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <span class="text-gray-500 dark:text-slate-400 sm:text-sm">₱</span>
                                 </div>
-                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
+                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm">
                             </div>
                         </div>
 
@@ -1186,7 +1186,7 @@
             </div>
             <div class="p-6">
                 <p class="text-sm text-gray-600 dark:text-slate-300 dark:text-slate-400 mb-4">Please select who you are:</p>
-                <select id="user-profile-select" class="block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                <select id="user-profile-select" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500">
                     <option value="">-- Select User --</option>
                     <option value="Freddy">Freddy</option>
                     <option value="Renee">Renee</option>
@@ -1221,29 +1221,29 @@
                 <input type="hidden" id="sms-id">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event/Campaign Title <span class="text-red-500">*</span></label>
-                    <input type="text" id="sms-campaign-name" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-shadow">
+                    <input type="text" id="sms-campaign-name" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-shadow">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event Date and Time <span class="text-red-500">*</span></label>
-                                <input type="text" id="sms-event-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <input type="text" id="sms-event-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">End Date and Time</label>
-                                <input type="text" id="sms-end-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <input type="text" id="sms-end-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Budget (PHP) <span class="text-red-500">*</span></label>
-                        <input type="number" id="sms-budget" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                        <input type="number" id="sms-budget" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event/Campaign Document Link <span class="text-red-500">*</span></label>
-                    <input type="url" id="sms-doc-link" required placeholder="https://example.com/doc" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <input type="url" id="sms-doc-link" required placeholder="https://example.com/doc" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Short Link <span class="text-red-500">*</span></label>
-                    <input type="url" id="sms-short-link" required placeholder="https://bp.plus/r/y4a" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <input type="url" id="sms-short-link" required placeholder="https://bp.plus/r/y4a" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
                 <div class="hidden">
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Requested By <span class="text-red-500">*</span></label>
@@ -1270,12 +1270,12 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Number of Users Clicked <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-clicked" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <input type="number" id="smsc-clicked" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Actual Number Of Recipients <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-recipients" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <input type="number" id="smsc-recipients" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div>
@@ -1286,7 +1286,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Actual Budget Used (PHP) <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-actual-budget" min="0" step="0.01" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <input type="number" id="smsc-actual-budget" min="0" step="0.01" required class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-5 border-t border-slate-100 dark:border-slate-700 mt-6">
@@ -1379,7 +1379,7 @@
 
     <!-- Game Settings Drawer -->
     <div id="game-drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="window.closeGameDrawer()"></div>
-    <div id="game-drawer" class="fixed inset-y-0 right-0 w-full max-w-lg bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700 dark:border-slate-700">
+    <div id="game-drawer" class="fixed inset-y-0 right-0 w-full max-w-lg bg-white dark:bg-slate-800 shadow-2xl dark:shadow-none transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200 dark:border-slate-700">
 
         <!-- Header -->
         <div class="px-6 py-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 sticky top-0 z-10">
@@ -1401,13 +1401,13 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Icon Image URL</label>
-                    <input type="url" id="game-drawer-icon" placeholder="https://example.com/icon.png" class="block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="url" id="game-drawer-icon" placeholder="https://example.com/icon.png" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
                     <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Square image for the game icon.</p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Game Review Banner URL</label>
-                    <input type="url" id="game-drawer-banner" placeholder="https://example.com/banner.jpg" class="block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="url" id="game-drawer-banner" placeholder="https://example.com/banner.jpg" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
                     <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Rectangular image for the game banner.</p>
                 </div>
             </div>
@@ -1417,7 +1417,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Launch Date</label>
-                    <input type="datetime-local" step="1" id="game-drawer-launch" class="block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="datetime-local" step="1" id="game-drawer-launch" class="block w-full border border-gray-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder-gray-400 dark:border-slate-600 rounded-lg shadow-sm dark:shadow-none py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
                     <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Confirm the official launch date here. This is separate from the target creation date.</p>
                 </div>
             </div>
