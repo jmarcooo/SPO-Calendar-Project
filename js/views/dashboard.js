@@ -176,7 +176,7 @@ window.renderCalendar = () => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
 
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50 dark:bg-slate-900/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50 dark:bg-slate-900' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
 
                     contentGridHtml += `
@@ -198,10 +198,10 @@ window.renderCalendar = () => {
                     let formattedTitle = '';
 
                     if (itemType === 'event') {
-                        statusColor = 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-800 border-emerald-200';
+                        statusColor = 'bg-emerald-50 dark:bg-emerald-50 dark:bg-emerald-9000/20 text-emerald-800 border-emerald-200';
                         formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else if (itemType === 'game') {
-                        statusColor = 'bg-red-50 dark:bg-red-500/20 text-red-800 border-red-200';
+                        statusColor = 'bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 text-red-800 border-red-200';
                         formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-red-500"></i>${evt.title}`;
                     } else {
                         statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
@@ -310,9 +310,9 @@ window.renderOngoingEvents = () => {
                     let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-emerald-500';
                     let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-emerald-900';
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
-                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 dark:bg-emerald-500/20 border-emerald-200 text-emerald-700';
+                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 dark:bg-emerald-50 dark:bg-emerald-9000/20 border-emerald-200 text-emerald-700';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -333,10 +333,10 @@ window.renderOngoingEvents = () => {
 
                     const p = evt.progress || 0;
                     const pFormatted = p.toFixed(2);
-                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
+                    const pColor = p === 100 ? 'bg-emerald-50 dark:bg-emerald-9000' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">

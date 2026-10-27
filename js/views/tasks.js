@@ -93,7 +93,7 @@ window.renderTasksTable = () => {
                 const isPast = evt.status === 'Done' || endStr < nowStrIter;
 
                 if (isPast) {
-                    baseClass += ' opacity-60 bg-gray-50 dark:bg-slate-800 grayscale hover:bg-gray-100 dark:hover:bg-slate-600/50 dark:bg-slate-700';
+                    baseClass += ' opacity-60 bg-gray-50 dark:bg-gray-900 dark:bg-slate-800 grayscale hover:bg-gray-100 dark:hover:bg-slate-600/50 dark:bg-slate-700';
                 } else {
                     baseClass += ' hover:bg-primary-50 dark:bg-primary-500/20';
                 }
@@ -111,7 +111,7 @@ window.renderTasksTable = () => {
 
                 const p = evt.progress || 0;
                 const pFormatted = p.toFixed(2);
-                const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
+                const pColor = p === 100 ? 'bg-emerald-50 dark:bg-emerald-9000' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
 
                 const formatShortDate = (dStr) => {
                     if (!dStr) return '';
@@ -164,13 +164,13 @@ window.renderTasksTable = () => {
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 dark:text-amber-400 hover:text-amber-900 bg-amber-50 dark:bg-amber-500/20 p-1.5 rounded transition-colors" title="Send Reminder">
+                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 dark:text-amber-400 hover:text-amber-900 bg-amber-50 dark:bg-amber-50 dark:bg-amber-9000/20 p-1.5 rounded transition-colors" title="Send Reminder">
                                 <i class="fa-regular fa-bell"></i>
                             </button>
                             <button onclick="openEditById('${evt.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 p-1.5 rounded transition-colors" title="Delete">
+                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 p-1.5 rounded transition-colors" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>

@@ -57,7 +57,7 @@ window.renderDailyTasksTable = () => {
                 const isPastDate = dateStatus === 'Past';
 
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
-                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-gray-900 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
                 if (task.status === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
@@ -91,9 +91,9 @@ window.renderDailyTasksTable = () => {
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${rowStatus}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-50 dark:bg-emerald-9000/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
                             <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;

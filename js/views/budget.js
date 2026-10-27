@@ -55,7 +55,7 @@ window.renderBudgetTable = () => {
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 cursor-pointer';
+                tr.className = 'hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors duration-200 cursor-pointer';
                 tr.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openBudgetDetails(b.id);
@@ -88,7 +88,7 @@ window.renderBudgetTable = () => {
                             <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 p-1.5 rounded transition-colors" title="Delete">
+                            <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-50 dark:bg-red-9000/20 p-1.5 rounded transition-colors" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>

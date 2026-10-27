@@ -108,7 +108,7 @@ window.sortTableData = sortTableData;
 
                 const hasCustomBanner = evt.bannerUrl && window.isValidURL(evt.bannerUrl);
                 const hasLegacyBanner = evt.fields && evt.fields.postIds && evt.fields.postIds[0] && evt.fields.postIds[0].imgUrl && window.isValidURL(evt.fields.postIds[0].imgUrl);
-                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                let bannerStyle = 'background: var(--color-primary-500, #6366f1);';
                 if (hasCustomBanner) {
                     bannerStyle = `background-image: url('${evt.bannerUrl}'); background-size: cover; background-position: center;`;
                 } else if (hasLegacyBanner) {
@@ -896,19 +896,19 @@ window.moveEventTooltip = (e) => {
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-50 dark:bg-blue-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Total Reach</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-50 dark:bg-emerald-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Engagements</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-50 dark:bg-amber-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Link Clicks</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
@@ -993,7 +993,7 @@ window.moveEventTooltip = (e) => {
 
                 const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
-                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                let bannerStyle = 'background: var(--color-primary-500, #6366f1);';
                 if (hasCustomBanner) {
                     bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
                 } else if (hasLegacyBanner) {
@@ -1010,7 +1010,7 @@ cardsHtml += `
                         <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white dark:bg-slate-800 border-4 border-white shadow-md dark:shadow-none rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
+                            <div class="w-24 h-24 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-md dark:shadow-none rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
                                 ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-primary-500 absolute"></i>`}
                             </div>
                             <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
@@ -1775,7 +1775,7 @@ cardsHtml += `
                 resultsList.innerHTML = limited.map(r => {
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
-                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer rounded-lg border-b border-gray-100 dark:border-slate-700 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
+                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 cursor-pointer rounded-lg border-b border-gray-100 dark:border-slate-700 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
                         <div class="h-8 w-8 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-500 flex items-center justify-center mr-3 shrink-0">
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
@@ -1821,15 +1821,15 @@ cardsHtml += `
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
-                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
-                        nav.classList.remove('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'dark:bg-primary-900', 'text-primary-700');
+                        nav.classList.remove('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:bg-slate-900', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500');
                             icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     } else {
-                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
-                        nav.classList.add('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'dark:bg-primary-900', 'text-primary-700');
+                        nav.classList.add('text-gray-600', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:bg-slate-900', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500');
                             icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-slate-400');
@@ -2026,7 +2026,7 @@ cardsHtml += `
             const itemId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
 
             const div = document.createElement('div');
-            div.className = "flex space-x-2 items-center bg-gray-50 dark:bg-slate-800 p-2 rounded-xl border border-gray-200 dark:border-slate-700";
+            div.className = "flex space-x-2 items-center bg-gray-50 dark:bg-gray-900 dark:bg-slate-800 p-2 rounded-xl border border-gray-200 dark:border-slate-700";
             div.id = `budget-item-${itemId}`;
 
             const selType = item ? item.type : '';
@@ -2158,7 +2158,7 @@ cardsHtml += `
             if (b.items && b.items.length > 0) {
                 b.items.forEach(it => {
                     const li = document.createElement('li');
-                    li.className = 'px-4 py-3 flex justify-between items-center bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700';
+                    li.className = 'px-4 py-3 flex justify-between items-center bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700';
                     li.innerHTML = `<span class="font-medium text-gray-700 dark:text-slate-300 ">${it.type}</span><span class="text-primary-600 dark:text-primary-400 font-semibold">${window.formatCurrency(it.amount)}</span>`;
                     ul.appendChild(li);
                 });
@@ -2653,7 +2653,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-slate-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2662,7 +2662,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-slate-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2675,7 +2675,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-slate-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2684,7 +2684,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = true;
-                        el.classList.add('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.add('bg-slate-100', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2739,14 +2739,14 @@ cardsHtml += `
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                                el.classList.remove('bg-slate-100', 'dark:bg-slate-700');
                             }
                         });
                         pinSettings.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                                el.classList.remove('bg-slate-100', 'dark:bg-slate-700');
                             }
                         });
                         if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
@@ -3077,7 +3077,7 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-gray-900 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 const priorityClass = p.priority === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900' : (p.priority === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900');
 
@@ -3220,7 +3220,7 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors relative group h-10">
+                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors relative group h-10">
                     <div class="w-32 shrink-0 border-r border-slate-200 dark:border-slate-700 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
                         <span class="text-sm font-bold text-gray-700 dark:text-slate-300 ">${slot.id}</span>
                     </div>
@@ -3622,7 +3622,7 @@ cardsHtml += `
 
             window.quickLinks.forEach(link => {
                 const el = document.createElement('div');
-                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl group transition-colors";
+                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded-xl group transition-colors";
 
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
@@ -3959,10 +3959,10 @@ cardsHtml += `
 
             const bar = document.getElementById('drawer-progress-bar');
             bar.style.width = `${p}%`;
-            bar.classList.remove('bg-emerald-50', 'bg-primary-600', 'bg-gray-400', 'dark:bg-emerald-900');
+            bar.classList.remove('bg-emerald-50', 'dark:bg-emerald-900', 'bg-primary-600', 'bg-gray-400', 'dark:bg-emerald-900');
 
             if (p === 100) {
-                bar.classList.add('bg-emerald-50', 'dark:bg-emerald-900');
+                bar.classList.add('bg-emerald-50', 'dark:bg-emerald-900', 'dark:bg-emerald-900');
             } else if (p > 0) {
                 bar.classList.add('bg-primary-600');
             } else {
@@ -4072,11 +4072,11 @@ cardsHtml += `
                     <div class="flex flex-col p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <label class="text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">${label}</label>
                         <div class="flex space-x-4">
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-primary-600 dark:text-primary-400 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">Yes</span>
                             </label>
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-primary-600 dark:text-primary-400 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">N/A</span>
                             </label>
@@ -4106,7 +4106,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Documents</label>
-                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
+                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
@@ -4150,7 +4150,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Post IDs</label>
-                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
@@ -4160,7 +4160,7 @@ cardsHtml += `
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                    <div class="flex items-center p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 cursor-pointer hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors">
                         <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 dark:text-primary-400 bg-slate-100 dark:bg-slate-700 border-gray-300 dark:border-slate-600 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300 cursor-pointer flex-1">${label}</label>
                     </div>
@@ -4307,11 +4307,11 @@ cardsHtml += `
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    row.classList.remove('hover:bg-slate-50', 'dark:bg-slate-900', 'dark:hover:bg-slate-700');
                     row.classList.add('bg-primary-100', 'dark:bg-primary-900');
                     setTimeout(() => {
                         row.classList.remove('bg-primary-100', 'dark:bg-primary-900');
-                        row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                        row.classList.add('hover:bg-slate-50', 'dark:bg-slate-900', 'dark:hover:bg-slate-700');
                     }, 2000);
                 }
             }, 100);
@@ -4329,7 +4329,7 @@ cardsHtml += `
             if (type === 'error') { icon = 'fa-circle-xmark'; iconColor = 'text-red-400'; }
             if (iconOverride) { icon = iconOverride; }
 
-            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-xl shadow toast-enter dark:text-gray-400 dark:bg-gray-800 dark:bg-slate-900`;
+            toast.className = `flex items-center w-full max-w-xs p-4 text-white ${bg} rounded-xl shadow toast-enter dark:text-gray-400 dark:bg-slate-900`;
             toast.innerHTML = `
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-xl">
                     <i class="fa-solid ${icon} ${iconColor} text-lg"></i>
@@ -5435,7 +5435,7 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50 dark:bg-primary-900'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50 dark:bg-primary-900'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900 dark:text-white ">${n.message}</p>
                         <p class="text-[10px] text-gray-500 dark:text-slate-400 mt-1">${n.createdTime}</p>
                     </div>

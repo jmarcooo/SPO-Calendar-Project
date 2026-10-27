@@ -21,11 +21,11 @@
                             </select>
                         </div>
                         <div class="flex space-x-2">
-                            <button onclick="saveBudgetSettings()" class="bg-primary-50 dark:bg-primary-900 text-primary-700 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-500/30 border border-primary-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium">Save Limit</button>
-                            <button onclick="migrateLocalData()" class="bg-amber-50 dark:bg-amber-900 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-500/30 border border-amber-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium">
+                            <button onclick="saveBudgetSettings()" class="bg-primary-50 dark:bg-primary-900 text-primary-700 hover:bg-primary-100 dark:hover:bg-primary-800 border border-primary-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium">Save Limit</button>
+                            <button onclick="migrateLocalData()" class="bg-amber-50 dark:bg-amber-900 text-amber-700 hover:bg-amber-100 dark:hover:bg-amber-800 dark:bg-amber-900 border border-amber-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium">
                                 <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
                             </button>
-                            <button onclick="clearAllBudgets()" class="bg-red-50 dark:bg-red-900 text-red-700 hover:bg-red-100 dark:hover:bg-red-500/30 border border-red-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium transition-colors">
+                            <button onclick="clearAllBudgets()" class="bg-red-50 dark:bg-red-900 text-red-700 hover:bg-red-100 dark:hover:bg-red-800 dark:bg-red-900 border border-red-200 py-1.5 px-3 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium transition-colors">
                                 <i class="fa-solid fa-trash-can mr-1"></i> Clear
                             </button>
                         </div>
@@ -39,7 +39,7 @@
                             <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-slate-400 " id="budget-table-subtitle">Track campaign budgets, expenses, and remaining balances.</p>
                         </div>
                         <div class="mt-4 sm:mt-0 flex space-x-3">
-                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 text-sm font-medium rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">
+                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 text-sm font-medium rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700">
                                 <i class="fa-solid fa-list-ul mr-2"></i> View All Months
                             </button>
                             <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-white bg-primary-600 hover:bg-primary-700">
@@ -59,7 +59,7 @@
                             <option value="All">All Owners</option>
                         </select>
                         <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-primary-500 sm:text-sm rounded-xl cursor-pointer">
-                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-600 dark:text-emerald-400 mr-2"></i>Export
                         </button>
                     </div>
