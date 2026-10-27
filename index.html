@@ -34,6 +34,18 @@
         }
       }
     </script>
+
+    <script>
+        (function() {
+            const savedColor = localStorage.getItem('spo_theme_color') || 'indigo';
+            document.documentElement.setAttribute('data-theme', savedColor);
+
+            const isDark = localStorage.getItem('theme') === 'dark' || localStorage.getItem('spo_theme_dark') === 'true' || localStorage.getItem('spo_dark_mode') === 'true';
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
 
 <body class="text-gray-800 dark:text-slate-200 h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-900">

@@ -1815,7 +1815,7 @@ cardsHtml += `
                 history.pushState(null, null, '#' + viewName);
             }
 
-            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'new_games', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
