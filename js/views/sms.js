@@ -26,14 +26,14 @@ window.renderSMSTable = function() {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No SMS requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400 ">No SMS requests found.</td></tr>';
                 return;
             }
 
             tbody.innerHTML = '';
             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(req => {
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-slate-50 dark:bg-slate-900 transition-colors cursor-pointer';
+                row.className = 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer';
                 row.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openSMSDetails(req.id);
@@ -56,26 +56,26 @@ window.renderSMSTable = function() {
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
                 if (rowStatus === 'Past' && req.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer';
 
                 row.className = rowOpacityClass;
                 row.innerHTML = `
-                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white ">
                         ${req.campaignName || '-'}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.createdAt || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.eventDateTime || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.endDatetime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${req.createdAt || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${req.eventDateTime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${req.endDatetime || '-'}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 font-medium">
                         PHP ${parseFloat(req.budget || 0).toFixed(2)}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${rowStatus || '-'}</span>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${rowStatus || '-'}</span>
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${req.audienceType || '-'}</span>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${req.audienceType || '-'}</span>
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
                             ${reqStatus}

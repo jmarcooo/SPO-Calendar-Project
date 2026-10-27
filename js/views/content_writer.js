@@ -27,7 +27,7 @@ window.renderCWRequestsTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No CW requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400 ">No CW requests found.</td></tr>';
                 return;
             }
 
@@ -38,9 +38,9 @@ window.renderCWRequestsTable = () => {
                 let rowStatus = window.calculateStatus(p.supportDate, p.endDate || p.supportDate, p.requestStatus);
                 if (rowStatus === 'Past' && p.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
+                let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
                 if (p.requestStatus === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
                 else if (p.requestStatus === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100';
                 else if (p.requestStatus === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100';
@@ -50,11 +50,11 @@ window.renderCWRequestsTable = () => {
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.submissionTime || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.supportDate || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${p.supportDate || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${p.campaignStatus || '-'}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${p.campaignStatus || '-'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel || 'Medium'}</span>
@@ -63,7 +63,7 @@ window.renderCWRequestsTable = () => {
                             ${(() => {
                                 let n = p.requestedBy || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white">${n}</span></div>`;
+                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white ">${n}</span></div>`;
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">

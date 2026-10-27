@@ -1,11 +1,11 @@
 <div id="view-settings" class="space-y-6">
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 border border-slate-200 dark:border-slate-700 p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 p-6">
         <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white mb-4">Settings</h3>
-        <p class="text-sm text-gray-500 dark:text-slate-400">Settings configuration options will be available here.</p>
+        <p class="text-sm text-gray-500 dark:text-slate-400 ">Settings configuration options will be available here.</p>
     </div>
 
 
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 p-6 relative overflow-hidden mb-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 p-6 relative overflow-hidden mb-6">
         <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white mb-4 flex items-center">
             <i class="fa-solid fa-palette mr-2 text-primary-500"></i> Appearance
         </h3>
@@ -30,10 +30,10 @@
                         <div class="block bg-gray-200 dark:bg-slate-600 w-14 h-8 rounded-full transition-colors"></div>
                         <div class="dot absolute left-1 top-1 bg-white dark:bg-slate-800 w-6 h-6 rounded-full transition-transform transform dark:translate-x-6 flex items-center justify-center">
                             <i class="fa-solid fa-sun text-yellow-500 text-xs dark:hidden"></i>
-                            <i class="fa-solid fa-moon text-slate-800 text-xs hidden dark:block"></i>
+                            <i class="fa-solid fa-moon text-slate-800 dark:text-slate-200 text-xs hidden dark:block"></i>
                         </div>
                     </div>
-                    <div class="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300">
+                    <div class="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300 ">
                         Enable Dark Theme
                     </div>
                 </label>
@@ -41,19 +41,19 @@
         </div>
     </div>
 
-    <div id="admin-settings-section" style="display: none;" class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 border border-primary-200 p-6 relative overflow-hidden">
+    <div id="admin-settings-section" style="display: none;" class="bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 border border-primary-200 p-6 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-2 h-full bg-primary-500"></div>
         <h3 class="text-lg leading-6 font-bold text-primary-700 mb-4 flex items-center">
             <i class="fa-solid fa-lock-open mr-2"></i> Admin Settings
         </h3>
-        <p class="text-sm text-gray-600 dark:text-slate-400 mb-6">Manage global configuration including Points of Contact (POC) for various modules. Max 3 POCs per module.</p>
+        <p class="text-sm text-gray-600 dark:text-slate-300 dark:text-slate-400 mb-6">Manage global configuration including Points of Contact (POC) for various modules. Max 3 POCs per module.</p>
 
         <div id="poc-settings-container" class="space-y-6">
             <!-- POC sections injected by JS -->
         </div>
 
         <div class="mt-6 flex justify-end">
-            <button onclick="window.saveAdminPOCs()" class="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors">
+            <button onclick="window.saveAdminPOCs()" class="px-4 py-2 border border-transparent shadow-sm dark:shadow-none text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors">
                 <i class="fa-solid fa-save mr-2"></i> Save POC Assignments
             </button>
         </div>

@@ -176,12 +176,12 @@ window.renderCalendar = () => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
 
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-slate-50 dark:bg-slate-900 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50 dark:bg-slate-900/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50 dark:bg-slate-900/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
 
                     contentGridHtml += `
                         <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-none flex justify-start relative">
-                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 dark:text-slate-300 h-7 w-7 flex items-center justify-center')}">
+                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md dark:shadow-none' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 dark:text-slate-300 h-7 w-7 flex items-center justify-center')}">
                                 ${dayObj.day}
                             </span>
                             ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Today</span>' : ''}
@@ -217,7 +217,7 @@ window.renderCalendar = () => {
                         : `onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)"`;
 
                     contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
+                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 mx-1 mb-1 hover:shadow-md dark:shadow-none transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
                             <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
                                 ${formattedTitle}
                             </div>
@@ -293,7 +293,7 @@ window.renderOngoingEvents = () => {
                 const p = window.getPHParts();
                 const nowUtc = Date.UTC(p.year, p.month, p.date);
                 const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
-                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-slate-400';
+                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-slate-400 ';
 
                 const el = document.createElement('div');
                 el.title = window.getPendingSummary(evt);
@@ -312,7 +312,7 @@ window.renderOngoingEvents = () => {
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 dark:bg-emerald-500/20 border-emerald-200 text-emerald-700';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -320,7 +320,7 @@ window.renderOngoingEvents = () => {
                                 <div class="flex items-center">
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${typeBg}">${typeLabel}</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-gray-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Pending</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Pending</span>
                             </div>
                             <p class="text-sm font-bold ${titleColor} truncate mb-2">${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-center justify-between w-full">
@@ -336,7 +336,7 @@ window.renderOngoingEvents = () => {
                     const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -349,10 +349,10 @@ window.renderOngoingEvents = () => {
                                 <span class="text-xs ${urgency} font-medium flex items-center mb-1"><i class="fa-regular fa-calendar mr-1.5 text-red-500"></i><span class="text-red-500">${displayDate}</span></span>
                                 <div class="flex flex-col items-end w-2/3">
                                     <div class="flex items-center justify-between mb-1.5 w-full">
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-slate-400">Progress</span>
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-slate-400">${pFormatted}%</span>
+                                        <span class="text-[10px] font-bold text-gray-600 dark:text-slate-300 dark:text-slate-400 ">Progress</span>
+                                        <span class="text-[10px] font-bold text-gray-600 dark:text-slate-300 dark:text-slate-400 ">${pFormatted}%</span>
                                     </div>
-                                    <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
                                         <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
                                     </div>
                                 </div>

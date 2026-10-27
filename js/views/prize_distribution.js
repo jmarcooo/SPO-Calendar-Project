@@ -27,7 +27,7 @@ window.renderPDRequestsTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No PD requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400 ">No PD requests found.</td></tr>';
                 return;
             }
 
@@ -36,9 +36,9 @@ window.renderPDRequestsTable = () => {
                 let rowStatus = window.calculateStatus(p.eventDatetime, p.eventDatetime, p.status);
                 if (rowStatus === 'Past' && p.status !== 'Completed' && p.status !== 'Rejected') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
+                let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
                 if (p.status === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
                 else if (p.status === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100';
                 else if (p.status === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100';
@@ -48,17 +48,17 @@ window.renderPDRequestsTable = () => {
                         <td class="px-3 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.submissionTime || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.eventDatetime || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${p.eventDatetime || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             ${(() => {
                                 let n = p.requestedBy || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white">${n}</span></div>`;
+                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white ">${n}</span></div>`;
                             })()}
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900 dark:text-white">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
-                                                <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900 dark:text-white">${p.status === 'Completed' ? (window.formatCurrency ? window.formatCurrency(p.actualAmount) : p.actualAmount) : '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900 dark:text-white ">${window.formatCurrency ? window.formatCurrency(p.budgetAmount) : p.budgetAmount}</td>
+                                                <td class="px-3 py-4 whitespace-nowrap text-right text-sm text-gray-900 dark:text-white ">${p.status === 'Completed' ? (window.formatCurrency ? window.formatCurrency(p.actualAmount) : p.actualAmount) : '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.status}</span>
                         </td>

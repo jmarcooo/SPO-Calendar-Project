@@ -6,14 +6,14 @@ window.renderTasksTable = () => {
 
             tasksTable.innerHTML = '';
             if (window.events.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No content tasks found. Create one to get started.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400 ">No content tasks found. Create one to get started.</td></tr>`;
                 return;
             }
 
             ['title', 'startDate', 'endDate', 'assignees', 'status', 'progress'].forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
                 if (icon) {
-                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-primary-600 dark:text-primary-400' : 'fa-sort-down text-primary-600 dark:text-primary-400') : 'fa-sort text-gray-300 group-hover:text-gray-500 dark:text-slate-400');
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-primary-600 dark:text-primary-400' : 'fa-sort-down text-primary-600 dark:text-primary-400') : 'fa-sort text-gray-300 group-hover:text-gray-500 dark:text-slate-400 ');
                 }
             });
 
@@ -78,7 +78,7 @@ window.renderTasksTable = () => {
             });
 
             if (filteredEvents.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No tasks match your filters.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400 ">No tasks match your filters.</td></tr>`;
                 return;
             }
 
@@ -134,19 +134,19 @@ window.renderTasksTable = () => {
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">
                         ${formatShortDate(evt.startDate)}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">
                         ${formatShortDate(evt.endDate)}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">
                         ${(function(){
                             if(assigns.length === 0) return '<span class="text-gray-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
                             return '<div class="flex items-center space-x-3"><div class="flex items-center -space-x-1">' + assigns.map(a => {
                                 let init = a.charAt(0).toUpperCase();
                                 return '<div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
-                            }).join('') + '</div><span class="text-sm text-gray-900 dark:text-white">' + assigns.join(', ') + '</span></div>';
+                            }).join('') + '</div><span class="text-sm text-gray-900 dark:text-white ">' + assigns.join(', ') + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -155,9 +155,9 @@ window.renderTasksTable = () => {
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-col w-full max-w-[150px]">
                             <div class="flex items-center mb-1">
-                                <span class="text-xs font-medium text-gray-600 dark:text-slate-400 mr-2">${pFormatted}%</span>
+                                <span class="text-xs font-medium text-gray-600 dark:text-slate-300 dark:text-slate-400 mr-2">${pFormatted}%</span>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
+                            <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
                                 <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
                             </div>
                         </div>

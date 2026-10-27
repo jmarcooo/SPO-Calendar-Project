@@ -43,7 +43,7 @@ window.renderDailyTasksTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No daily tasks found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400 ">No daily tasks found.</td></tr>';
                 return;
             }
 
@@ -57,9 +57,9 @@ window.renderDailyTasksTable = () => {
                 const isPastDate = dateStatus === 'Past';
 
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
-                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:bg-slate-900 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
+                let statusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
                 if (task.status === 'Completed') statusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100';
                 else if (task.status === 'Under Review') statusClass = 'text-amber-600 dark:text-amber-400 bg-amber-100';
                 else if (task.status === 'Pending') statusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100';
@@ -77,18 +77,18 @@ window.renderDailyTasksTable = () => {
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
                             <div class="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${task.createdTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayStart}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayEnd}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${task.createdTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${displayStart}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 ">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">${initial}</div>
-                                <span class="text-sm text-gray-900 dark:text-white">${task.requestor}</span>
+                                <span class="text-sm text-gray-900 dark:text-white ">${task.requestor}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:border-slate-700">${rowStatus}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">${rowStatus}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-500/20 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
