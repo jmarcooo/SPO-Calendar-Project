@@ -28,7 +28,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 relative overflow-hidden flex flex-col justify-between h-32">
                         <div class="flex justify-between items-center w-full">
                             <div class="text-sm font-medium text-gray-500 dark:text-slate-400 truncate">Available Budget (<span id="stat-budget-month-label"></span>)</div>
-                            <div class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 uppercase border border-blue-100" id="stat-budget-currency">PHP</div>
+                            <div class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400 uppercase border border-blue-100" id="stat-budget-currency">PHP</div>
                         </div>
                         <div class="mt-2 text-4xl font-bold text-blue-600 dark:text-blue-400" id="stat-budget">₱0.00</div>
                         <div class="flex justify-between items-center text-xs mt-auto">
@@ -46,13 +46,13 @@
                                 <div class="flex items-center space-x-4">
                                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight" id="calendar-month-year">Month Year</h2>
                                     <div class="flex bg-slate-100 dark:bg-slate-700 rounded-xl p-0.5 border border-slate-200 dark:border-slate-700">
-                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white dark:bg-slate-800 hover:shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-600 dark:text-slate-300 dark:text-slate-400 transition-all">
+                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white dark:bg-slate-800 hover:shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-600 dark:text-slate-400 transition-all">
                                             <i class="fa-solid fa-chevron-left text-sm"></i>
                                         </button>
                                         <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 dark:text-slate-300 hover:bg-white dark:bg-slate-800 hover:shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 rounded-xl transition-all">
                                             Today
                                         </button>
-                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white dark:bg-slate-800 hover:shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-600 dark:text-slate-300 dark:text-slate-400 transition-all">
+                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white dark:bg-slate-800 hover:shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-gray-600 dark:text-slate-400 transition-all">
                                             <i class="fa-solid fa-chevron-right text-sm"></i>
                                         </button>
                                     </div>
@@ -83,13 +83,13 @@
 
                             <!-- Calendar Grid -->
                             <div class="grid grid-cols-7 gap-px bg-slate-100 dark:bg-slate-700 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">SUN</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">MON</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">TUE</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">WED</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">THU</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">FRI</div>
-                                <div class="bg-slate-50 dark:bg-slate-900 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">SAT</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">SUN</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">MON</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">TUE</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">WED</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">THU</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">FRI</div>
+                                <div class="bg-slate-50 dark:bg-slate-800 py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 tracking-wider">SAT</div>
                             </div>
                             <div id="calendar-grid" class="flex flex-col gap-px bg-slate-100 dark:bg-slate-700 border-l border-r border-b border-slate-200 dark:border-slate-700 rounded-b-lg">
                                 <!-- Dynamically generated days -->
@@ -103,7 +103,7 @@
                             <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
                                 <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center space-x-2">
                                     <span>Events & Tasks</span>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800" id="ongoing-count">0</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-800" id="ongoing-count">0</span>
                                 </h2>
                                 <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                                     <i class="fa-solid fa-plus mr-1"></i> New Event

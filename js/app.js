@@ -759,7 +759,7 @@ window.moveEventTooltip = (e) => {
                         ` : ''}
                     </div>
 
-                    <div class="w-full max-w-md bg-slate-50 dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
+                    <div class="w-full max-w-md bg-slate-50 dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-sm font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400">${post.type || 'Platform'}</span>
                             <span class="text-sm text-gray-500 dark:text-slate-400 font-mono">${post.id || 'No ID'}</span>
@@ -821,11 +821,11 @@ window.moveEventTooltip = (e) => {
                 let icon = 'fa-circle text-[8px]';
                 if (val === 'Yes') { color = 'text-emerald-600 dark:text-emerald-400'; icon = 'fa-check'; }
                 if (val === 'N/A') { color = 'text-gray-400 dark:text-slate-500'; icon = 'fa-minus'; }
-                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700 last:border-0"><span class="text-sm text-gray-600 dark:text-slate-300 dark:text-slate-400 ">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
+                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700 last:border-0"><span class="text-sm text-gray-600 dark:text-slate-400 ">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
             }).join('');
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white "><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-6">
@@ -840,15 +840,15 @@ window.moveEventTooltip = (e) => {
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Timeline</span>
                             <span class="text-sm font-medium text-gray-900 dark:text-white ">${task.startDate} to ${task.endDate}</span>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Status</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-primary-100 text-primary-800'}">${task.status}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800' : 'bg-primary-100 dark:bg-primary-900 text-primary-800'}">${task.status}</span>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
                             <span class="block text-xs text-gray-500 dark:text-slate-400 mb-1">Team Assigned</span>
                             <span class="text-sm font-medium text-gray-900 dark:text-white ">${assignsStr}</span>
                         </div>
@@ -870,7 +870,7 @@ window.moveEventTooltip = (e) => {
 
             if (window.currentCampaignPosts.length === 0) {
                 container.innerHTML = `
-                    <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
+                    <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-t-lg flex justify-between items-center">
                         <h4 class="text-sm font-bold text-gray-900 dark:text-white "><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
                     </div>
                     <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 text-center">
@@ -885,9 +885,9 @@ window.moveEventTooltip = (e) => {
             const postIdDisplay = post.id || 'Pending ID';
 
             container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-t-lg flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-t-lg flex justify-between items-center">
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white "><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 dark:bg-blue-900 text-blue-800">Beta</span>
                 </div>
                 <div class="p-5 flex-1 overflow-y-auto space-y-4">
                     <div class="flex justify-between items-center mb-2">
@@ -913,7 +913,7 @@ window.moveEventTooltip = (e) => {
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
 
-                    <div class="mt-8 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+                    <div class="mt-8 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
                         <i class="fa-solid fa-wand-magic-sparkles text-primary-400 text-2xl mb-3"></i>
                         <p class="text-xs text-gray-500 dark:text-slate-400 font-medium">Live API syncing for platform metrics is currently under development.</p>
                     </div>
@@ -978,7 +978,7 @@ window.moveEventTooltip = (e) => {
             gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
 
             if (gamesOnly.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-slate-400 ">
+                container.innerHTML = `<div class="col-span-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-slate-400 ">
                     <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400 dark:text-slate-500"></i>
                     <p class="text-sm font-medium">No new games found for this month.</p>
                 </div>`;
@@ -1776,7 +1776,7 @@ cardsHtml += `
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
                     <div class="flex items-center px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer rounded-lg border-b border-gray-100 dark:border-slate-700 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
-                        <div class="h-8 w-8 rounded-full bg-primary-50 dark:bg-primary-500/20 text-primary-500 flex items-center justify-center mr-3 shrink-0">
+                        <div class="h-8 w-8 rounded-full bg-primary-50 dark:bg-primary-900 text-primary-500 flex items-center justify-center mr-3 shrink-0">
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
                         <div class="flex flex-col overflow-hidden">
@@ -1821,14 +1821,14 @@ cardsHtml += `
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
-                        nav.classList.add('bg-primary-50', 'dark:bg-primary-500/20', 'text-primary-700');
+                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
                         nav.classList.remove('text-gray-600', 'dark:text-slate-300', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500');
                             icon.classList.remove('text-gray-400', 'dark:text-slate-500', 'group-hover:text-gray-500', 'dark:text-slate-400');
                         }
                     } else {
-                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-500/20', 'text-primary-700');
+                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700');
                         nav.classList.add('text-gray-600', 'dark:text-slate-300', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500');
@@ -2251,11 +2251,11 @@ cardsHtml += `
                     <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4">
                         <h3 class="text-md font-bold text-gray-900 dark:text-white mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-100 dark:border-slate-700">
+                            <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded border border-slate-100 dark:border-slate-700">
                                 <span class="block text-xs text-gray-500 dark:text-slate-400 ">Total Spent</span>
                                 <span class="font-semibold text-gray-900 dark:text-white ">${window.formatCurrency(spent)}</span>
                             </div>
-                            <div class="bg-slate-50 dark:bg-slate-900 p-2 rounded border border-slate-100 dark:border-slate-700">
+                            <div class="bg-slate-50 dark:bg-slate-800 p-2 rounded border border-slate-100 dark:border-slate-700">
                                 <span class="block text-xs text-gray-500 dark:text-slate-400 ">Month Limit</span>
                                 <span class="font-semibold text-gray-900 dark:text-white ">${window.formatCurrency(limit)}</span>
                             </div>
@@ -2337,12 +2337,12 @@ cardsHtml += `
                 window.syncDailyTaskToFirestore(task);
                 if (window.renderDailyTasksTable) window.renderDailyTasksTable();
             }
-            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
             const reqStatus = task.status || 'Pending';
             const statusEl = document.getElementById('detail-status-text');
             if (statusEl) {
                 statusEl.innerText = reqStatus;
-                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-slate-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             }
             document.getElementById('detail-start-date').innerText = task.startDate || 'N/A';
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
@@ -2539,7 +2539,7 @@ cardsHtml += `
             container.innerHTML = '';
             window.currentDTHashtags.forEach((tag, idx) => {
                 const pill = document.createElement('div');
-                pill.className = 'bg-primary-100 text-primary-700 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 flex items-center';
+                pill.className = 'bg-primary-100 dark:bg-primary-900 text-primary-700 rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 flex items-center';
                 pill.innerHTML = `<span>${tag}</span><button type="button" class="ml-2 focus:outline-none" onclick="window.removeDTHashtag(${idx})"><i class="fa-solid fa-times text-primary-500 hover:text-primary-700"></i></button>`;
                 container.appendChild(pill);
             });
@@ -2653,7 +2653,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2662,7 +2662,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2675,7 +2675,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = false;
-                        el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2684,7 +2684,7 @@ cardsHtml += `
                     const el = document.getElementById(fid);
                     if(el) {
                         el.disabled = true;
-                        el.classList.add('bg-gray-100', 'dark:bg-slate-700');
+                        el.classList.add('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                     }
                 });
 
@@ -2739,14 +2739,14 @@ cardsHtml += `
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                                el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                             }
                         });
                         pinSettings.forEach(fid => {
                             const el = document.getElementById(fid);
                             if(el) {
                                 el.disabled = false;
-                                el.classList.remove('bg-gray-100', 'dark:bg-slate-700');
+                                el.classList.remove('bg-gray-100 dark:bg-slate-700', 'dark:bg-slate-700');
                             }
                         });
                         if(pinSettingsSection) pinSettingsSection.classList.remove('hidden');
@@ -3079,11 +3079,11 @@ cardsHtml += `
                 const isPast = rowStatus === 'Ended';
                 const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                const priorityClass = p.priority === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-500/20' : (p.priority === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/20' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/20');
+                const priorityClass = p.priority === 'High' ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900' : (p.priority === 'Medium' ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900' : 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 dark:bg-blue-900');
 
-                let pinStatusClass = 'text-gray-600 dark:text-slate-300 dark:text-slate-400 bg-gray-100 dark:bg-slate-700';
-                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/20';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-500/20';
+                let pinStatusClass = 'text-gray-600 dark:text-gray-400 bg-slate-100 dark:bg-slate-700';
+                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900 dark:bg-emerald-900';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 dark:text-primary-400 bg-primary-100 dark:bg-primary-900 dark:bg-primary-900';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
@@ -3102,11 +3102,11 @@ cardsHtml += `
                             ${(function(){
                                 let n = p.owner || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white ">' + n + '</span></div>';
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white ">' + n + '</span></div>';
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 text-green-800' : (p.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800')}">
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' : (p.status === 'Under Review' ? 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200' : 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200')}">
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
@@ -3117,9 +3117,9 @@ cardsHtml += `
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
                                                 <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500/20 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-500/20 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-900 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-900 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-900 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -3159,8 +3159,8 @@ cardsHtml += `
             const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600 dark:text-primary-400' :
                 (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600 dark:text-primary-400' : 'fa-list-ol text-primary-600 dark:text-primary-400'));
 
-            let html = `<div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 sticky top-0 z-10">
-                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200 dark:border-slate-700 p-2 text-xs font-bold text-gray-600 dark:text-slate-300 dark:text-slate-400 uppercase flex items-center justify-center bg-slate-100 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:bg-slate-600 transition-colors group select-none">
+            let html = `<div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200 dark:border-slate-700 p-2 text-xs font-bold text-gray-600 dark:text-slate-400 uppercase flex items-center justify-center bg-slate-100 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
 
@@ -3236,7 +3236,7 @@ cardsHtml += `
                 const nowMs = window.getPHFakeUtcMs();
                 if (nowMs > weekStartMs) {
                     const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
-                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 dark:bg-slate-700/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
                 }
 
                 // Find requests matching this slot
@@ -3265,15 +3265,15 @@ cardsHtml += `
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
 
-                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    let baseColorClass = 'bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-500/30 hover:ring-blue-400 dark:hover:ring-blue-500';
                     if (req.category === 'PGC' || req.category === 'Content Writer') {
-                        baseColorClass = 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-800 border border-emerald-200 hover:ring-emerald-400';
+                        baseColorClass = 'bg-emerald-50 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-500/30 hover:ring-emerald-400 dark:hover:ring-emerald-500';
                     } else if (req.category === 'UGC' || req.category === 'Perya Host') {
-                        baseColorClass = 'bg-red-50 dark:bg-red-500/20 text-red-800 border border-red-200 hover:ring-red-400';
+                        baseColorClass = 'bg-red-50 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-500/30 hover:ring-red-400 dark:hover:ring-red-500';
                     } else if (req.status === 'Completed') {
-                        baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                        baseColorClass = 'bg-blue-50 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-500/30 hover:ring-blue-400 dark:hover:ring-blue-500';
                     } else if (req.status === 'Under Review') {
-                        baseColorClass = 'bg-amber-50 dark:bg-amber-500/20 text-amber-800 border border-amber-200 hover:ring-amber-400';
+                        baseColorClass = 'bg-amber-50 dark:bg-amber-900 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-500/30 hover:ring-amber-400 dark:hover:ring-amber-500';
                     }
 
                     const isPast = eMs < window.getPHFakeUtcMs();
@@ -3422,7 +3422,7 @@ cardsHtml += `
             };
 
             let html = `
-                <div class="sticky top-0 bg-slate-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-300 shadow-sm dark:shadow-none">
+                <div class="sticky top-0 bg-slate-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-300 shadow-sm dark:shadow-none">
                     <div class="w-20 shrink-0 border-r border-gray-200 dark:border-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:bg-slate-600" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400 dark:text-slate-500"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
@@ -3464,17 +3464,17 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-primary-50 dark:bg-primary-500/20/50 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-primary-50 dark:bg-primary-900/50 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
-                    rowClasses += " bg-primary-50 dark:bg-primary-500/20";
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100/50 text-primary-700 text-xs font-bold shadow-sm dark:shadow-none pointer-events-none">Selected - available</div>`;
+                    rowClasses += " bg-primary-50 dark:bg-primary-900";
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900/50 text-primary-700 text-xs font-bold shadow-sm dark:shadow-none pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
-                    rowClasses += " bg-red-50 dark:bg-red-500/20 cursor-not-allowed";
-                    rowClasses = rowClasses.replace("hover:bg-primary-50 dark:bg-primary-500/20/50", "");
+                    rowClasses += " bg-red-50 dark:bg-red-900 cursor-not-allowed";
+                    rowClasses = rowClasses.replace("hover:bg-primary-50 dark:bg-primary-900/50", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 dark:text-red-400 text-[10px] pointer-events-none">Existing pin</div>`;
 
@@ -3502,7 +3502,7 @@ cardsHtml += `
                 }
             });
 
-            html += `<div class="text-center py-2 text-[10px] text-gray-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-700">Scroll for more positions ↓</div>`;
+            html += `<div class="text-center py-2 text-[10px] text-gray-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700">Scroll for more positions ↓</div>`;
 
             container.innerHTML = html;
         };
@@ -3627,7 +3627,7 @@ cardsHtml += `
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
                 el.innerHTML = `
-                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 dark:text-slate-300 dark:text-slate-400 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
+                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 dark:text-slate-400 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
                         <i class="fa-solid fa-link mr-3 text-gray-400 dark:text-slate-500 group-hover:text-primary-500 transition-colors shrink-0"></i>
                         <span class="truncate">${link.title}</span>
                     </a>
@@ -3959,10 +3959,10 @@ cardsHtml += `
 
             const bar = document.getElementById('drawer-progress-bar');
             bar.style.width = `${p}%`;
-            bar.classList.remove('bg-emerald-50', 'dark:bg-emerald-500/20', 'bg-primary-600', 'bg-gray-400');
+            bar.classList.remove('bg-emerald-50', 'dark:bg-emerald-900', 'bg-primary-600', 'bg-gray-400');
 
             if (p === 100) {
-                bar.classList.add('bg-emerald-50', 'dark:bg-emerald-500/20');
+                bar.classList.add('bg-emerald-50', 'dark:bg-emerald-900');
             } else if (p > 0) {
                 bar.classList.add('bg-primary-600');
             } else {
@@ -4049,10 +4049,10 @@ cardsHtml += `
 
             const makeAccordion = (title, done, total, content, isOpen = true) => {
                 const isAllDone = done === total;
-                const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 ';
+                const badgeClass = isAllDone ? 'bg-emerald-100 dark:bg-emerald-900 text-emerald-700' : 'bg-slate-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 ';
                 return `
                     <details class="group mb-3 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 overflow-hidden" ${isOpen ? 'open' : ''}>
-                        <summary class="cursor-pointer bg-slate-50 dark:bg-slate-900 px-4 py-3 font-semibold text-gray-800 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-600 dark:bg-slate-700 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
+                        <summary class="cursor-pointer bg-slate-50 dark:bg-slate-800 px-4 py-3 font-semibold text-gray-800 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-600 dark:bg-slate-700 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
                                 <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${done} / ${total}</span>
@@ -4091,8 +4091,8 @@ cardsHtml += `
                     const isUrlValid = d.url === '' || window.isValidURL(d.url);
                     const borderClass = isUrlValid ? 'border-gray-300 dark:border-slate-600 focus:ring-primary-500' : 'border-red-500 text-red-900';
                     return `
-                        <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl relative">
-                            <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-500/20 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl relative">
+                            <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-900 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             <div class="flex items-center space-x-2 pr-8">
                                 <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
                                 <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 ${borderClass} bg-white dark:bg-slate-800">
@@ -4106,7 +4106,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Documents</label>
-                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
+                            <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
@@ -4116,7 +4116,7 @@ cardsHtml += `
             const makeHashtagsHtml = () => {
                 const tags = Array.isArray(f.hashtags) ? f.hashtags : [];
                 let pills = tags.map((t, i) => `
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mr-2 mb-2">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 mr-2 mb-2">
                         ${t}
                         <button type="button" onclick="removeHashtag('${evt.id}', ${i})" class="ml-1 text-primary-500 hover:text-primary-800"><i class="fa-solid fa-xmark"></i></button>
                     </span>
@@ -4134,8 +4134,8 @@ cardsHtml += `
             const makePostIdsHtml = () => {
                 const posts = Array.isArray(f.postIds) ? f.postIds : [];
                 let rowsHtml = posts.map((p, i) => `
-                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl relative">
-                        <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-500/20 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl relative">
+                        <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-900 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
                             <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
                             <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 py-1.5 px-3 focus:ring-primary-500 bg-white dark:bg-slate-800">
@@ -4150,7 +4150,7 @@ cardsHtml += `
                     <div class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 dark:border-slate-700 pb-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 ">Post IDs</label>
-                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
+                            <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:bg-primary-900 dark:hover:bg-primary-500/30 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
                         ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-slate-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
@@ -4308,9 +4308,9 @@ cardsHtml += `
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900');
-                    row.classList.add('bg-primary-100');
+                    row.classList.add('bg-primary-100 dark:bg-primary-900');
                     setTimeout(() => {
-                        row.classList.remove('bg-primary-100');
+                        row.classList.remove('bg-primary-100 dark:bg-primary-900');
                         row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700', 'dark:hover:bg-slate-900');
                     }, 2000);
                 }
@@ -4386,7 +4386,7 @@ cardsHtml += `
             if (!container || !input) return;
 
             let pills = window.cwTempHashtags.map((t, i) => `
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 mr-2 mb-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900 text-primary-700 mr-2 mb-2">
                     ${t}
                     <button type="button" onclick="removeCWhashtag(${i})" class="ml-1 text-primary-500 hover:text-primary-800"><i class="fa-solid fa-xmark"></i></button>
                 </span>
@@ -4589,7 +4589,7 @@ cardsHtml += `
                     const statusEl = document.getElementById('cw-details-request-status');
                     if(statusEl) {
                         statusEl.innerText = 'Completed';
-                        statusEl.className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                        statusEl.className = 'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200';
                     }
                 }
             }
@@ -4856,9 +4856,9 @@ cardsHtml += `
             document.getElementById('sms-details-requestor').innerHTML = window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor;
 
             const reqStatus = req.requestStatus || 'Pending';
-            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
             document.getElementById('sms-details-request-status').innerText = reqStatus;
-            document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
+            document.getElementById('sms-details-request-status').className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-slate-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             document.getElementById('sms-details-id').value = req.id;
 
             const metricsSection = document.getElementById('sms-details-completion-metrics');
@@ -5162,11 +5162,11 @@ cardsHtml += `
         if(document.getElementById('detail-cwr-end-date')) document.getElementById('detail-cwr-end-date').innerText = req.endDate || '-';
             document.getElementById('detail-cwr-requested-by').innerText = req.requestedBy || 'N/A';
             const reqStatus = req.requestStatus || 'Pending';
-            const statusColors = { 'Pending': 'bg-yellow-100 text-yellow-800', 'Under Review': 'bg-blue-100 text-blue-800', 'Completed': 'bg-green-100 text-green-800' };
+            const statusColors = { 'Pending': 'bg-yellow-100 dark:bg-yellow-900 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200', 'Under Review': 'bg-blue-100 dark:bg-blue-900 dark:bg-blue-900 text-blue-800 dark:text-blue-200', 'Completed': 'bg-green-100 dark:bg-green-900 dark:bg-green-900 text-green-800 dark:text-green-200' };
             const statusEl = document.getElementById('cw-details-request-status');
             if (statusEl) {
                 statusEl.innerText = reqStatus;
-                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
+                statusEl.className = `px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[reqStatus] || 'bg-slate-100 dark:bg-slate-700 text-gray-800 dark:text-slate-200'}`;
             }
             const idEl = document.getElementById('cw-details-id');
             if(idEl) idEl.value = req.id;
@@ -5435,7 +5435,7 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50 dark:bg-primary-500/20/30'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50 dark:bg-primary-900'} border border-transparent hover:border-slate-100 dark:border-slate-700" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900 dark:text-white ">${n.message}</p>
                         <p class="text-[10px] text-gray-500 dark:text-slate-400 mt-1">${n.createdTime}</p>
                     </div>
@@ -5505,12 +5505,12 @@ window.toggleNotifications = () => {
             if (window.currentUserProfile) {
                 btn.innerHTML = `<span class="text-sm font-bold text-primary-700">${window.currentUserProfile.charAt(0)}</span>`;
                 btn.title = `User Profile: ${window.currentUserProfile}`;
-                btn.classList.add('bg-primary-100', 'border-primary-300');
+                btn.classList.add('bg-primary-100 dark:bg-primary-900', 'border-primary-300');
                 btn.classList.remove('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300', 'dark:border-slate-600');
             } else {
                 btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
                 btn.title = "User Profile";
-                btn.classList.remove('bg-primary-100', 'border-primary-300');
+                btn.classList.remove('bg-primary-100 dark:bg-primary-900', 'border-primary-300');
                 btn.classList.add('bg-slate-200', 'dark:bg-slate-600', 'border-slate-300', 'dark:border-slate-600');
             }
         };
