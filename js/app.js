@@ -896,19 +896,19 @@ window.moveEventTooltip = (e) => {
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-50 dark:bg-blue-900"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500 dark:bg-blue-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Total Reach</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-50 dark:bg-emerald-900"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500 dark:bg-emerald-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Engagements</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-50 dark:bg-amber-900"></div>
+                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500 dark:bg-amber-900"></div>
                         <span class="block text-xs font-medium text-gray-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Link Clicks</span>
                         <span class="text-2xl font-bold text-gray-900 dark:text-white ">--</span>
                     </div>

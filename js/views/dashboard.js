@@ -198,7 +198,7 @@ window.renderCalendar = () => {
                     let formattedTitle = '';
 
                     if (itemType === 'event') {
-                        statusColor = 'bg-emerald-50 dark:bg-emerald-900 text-emerald-800 border-emerald-200';
+                        statusColor = 'bg-emerald-500 text-emerald-800 border-emerald-200';
                         formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else if (itemType === 'game') {
                         statusColor = 'bg-red-50 dark:bg-red-900 text-red-800 border-red-200';
@@ -310,7 +310,7 @@ window.renderOngoingEvents = () => {
                     let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-emerald-500';
                     let titleColor = itemType === 'game' ? 'text-rose-900' : 'text-emerald-900';
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
-                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-50 dark:bg-emerald-900 border-emerald-200 text-emerald-700';
+                    let typeBg = itemType === 'game' ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-emerald-500 border-emerald-200 text-emerald-700';
 
                     el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
 
@@ -333,7 +333,7 @@ window.renderOngoingEvents = () => {
 
                     const p = evt.progress || 0;
                     const pFormatted = p.toFixed(2);
-                    const pColor = p === 100 ? 'bg-emerald-50 dark:bg-emerald-900' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
+                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
                     el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 dark:shadow-slate-900/50 transition-all cursor-pointer ${opacityClass}`;
@@ -341,7 +341,7 @@ window.renderOngoingEvents = () => {
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 dark:bg-primary-500 text-primary-500 border-primary-200">Task</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 dark:bg-primary-900 text-primary-500 border-primary-200">Task</span>
                                 <span class="text-sm font-bold text-primary-500">${assignsStr}</span>
                             </div>
                             <p class="text-sm font-bold text-primary-500 truncate mb-2"><i class="fa-solid fa-list-check text-primary-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>

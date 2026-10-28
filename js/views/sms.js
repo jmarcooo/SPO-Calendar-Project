@@ -50,7 +50,7 @@ window.renderSMSTable = function() {
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-50 dark:bg-emerald-900 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 bg-emerald-500 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
@@ -83,7 +83,7 @@ window.renderSMSTable = function() {
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 group-hover:bg-primary-50 dark:bg-primary-500 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 group-hover:bg-primary-50 dark:bg-primary-900 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
                         <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 ml-2 group-hover:bg-red-50 dark:bg-red-900 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;

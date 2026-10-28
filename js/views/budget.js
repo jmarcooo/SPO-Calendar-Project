@@ -85,7 +85,7 @@ window.renderBudgetTable = () => {
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 text-right font-medium text-gray-900 dark:text-white ">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-500 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 dark:text-primary-400 hover:text-primary-900 bg-primary-50 dark:bg-primary-900 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 dark:text-red-400 hover:text-red-900 bg-red-50 dark:bg-red-900 p-1.5 rounded transition-colors" title="Delete">
