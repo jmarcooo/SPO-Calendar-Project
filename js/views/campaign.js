@@ -1,40 +1,75 @@
 import { sortTableData } from "../utils/tableSort.js";
 
-window.updateCampaignDropdown = () => {
-            const select = document.getElementById('campaign-task-selector');
-            if (!select) return;
+window.currentSPOTeamPostsSort = { column: 'datePosted', direction: 'desc' };
 
-            const currVal = select.value;
-            let options = '<option value="">-- Select a Task --</option>';
+window.sortSPOTeamPosts = (column) => {
+    if (window.currentSPOTeamPostsSort.column === column) {
+        window.currentSPOTeamPostsSort.direction = window.currentSPOTeamPostsSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+        window.currentSPOTeamPostsSort.column = column;
+        window.currentSPOTeamPostsSort.direction = 'asc';
+    }
+    window.renderSPOTeamPostsTable();
+};
 
-            const tasksOnly = window.events.filter(e => {
-                const iType = e.itemType || (e.isEventOnly ? 'event' : 'task');
-                return iType === 'task';
-            });
-            tasksOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
+window.renderSPOTeamPostsTable = () => {
+    const tbody = document.getElementById('spo-team-posts-tbody');
+    const emptyState = document.getElementById('spo-team-posts-empty');
+    if (!tbody || !emptyState) return;
 
-            tasksOnly.forEach(e => {
-                options += `<option value="${e.id}">[${e.campaignType || 'All'}] ${e.title}</option>`;
-            });
+    let posts = window.spoTeamPosts || [];
 
-            select.innerHTML = options;
+    if (posts.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+    }
 
-            if(currVal && tasksOnly.find(e => e.id === currVal)) {
-                select.value = currVal;
-            } else {
-                const contentArea = document.getElementById('campaign-content-area');
-                if (contentArea) {
-                    contentArea.classList.add('hidden');
-                    contentArea.classList.remove('grid');
-                    const emptyState = document.getElementById('campaign-empty-state');
-                    if (emptyState) emptyState.style.display = 'block';
+    emptyState.classList.add('hidden');
 
-                }
-            }
-        };
+    posts = [...posts]; // clone for sorting
 
+    const col = window.currentSPOTeamPostsSort.column;
+    const dir = window.currentSPOTeamPostsSort.direction === 'asc' ? 1 : -1;
+
+    posts.sort((a, b) => {
+        let valA = a[col] || '';
+        let valB = b[col] || '';
+        if (col === 'datePosted') {
+            valA = new Date(valA).getTime();
+            valB = new Date(valB).getTime();
+        } else {
+            valA = valA.toString().toLowerCase();
+            valB = valB.toString().toLowerCase();
+        }
+        if (valA < valB) return -1 * dir;
+        if (valA > valB) return 1 * dir;
+        return 0;
+    });
+
+    tbody.innerHTML = posts.map(post => {
+        const datePostedDisplay = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
+        return `
+            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="if(!event.target.closest('a')) window.openSPOTeamPostModal('${post.id}')">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${post.title || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${datePostedDisplay}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${post.createdBy || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                        ${post.accountUsed || '-'}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:underline">
+                    ${post.postUrl ? `<a href="${post.postUrl}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>` : '-'}
+                </td>
+            </tr>
+        `;
+    }).join('');
+};
 
 export function init(container) {
-if (window.updateCampaignDropdown) window.updateCampaignDropdown();
+    if (window.renderSPOTeamPostsTable) {
+        window.renderSPOTeamPostsTable();
+    }
     return function cleanup() {};
 }

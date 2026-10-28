@@ -1394,5 +1394,51 @@
         </div>
     </div>
 
+
+    <!-- SPO Team Post Modal -->
+    <div id="spo-team-post-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900" id="spo-team-post-modal-title">Add SPO Team Post</h3>
+                <button onclick="window.closeSPOTeamPostModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <form id="spo-team-post-form" class="space-y-4">
+                    <input type="hidden" id="stp-id">
+                    <div>
+                        <label for="stp-title" class="block text-sm font-medium text-gray-700">Title <span class="text-red-500">*</span></label>
+                        <input type="text" id="stp-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="stp-date" class="block text-sm font-medium text-gray-700">Date Posted <span class="text-red-500">*</span></label>
+                        <input type="datetime-local" id="stp-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="stp-account" class="block text-sm font-medium text-gray-700">Account Used <span class="text-red-500">*</span></label>
+                        <select id="stp-account" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm bg-white">
+                            <option value="">-- Select Account --</option>
+                            <option value="OhMyBingBing">OhMyBingBing</option>
+                            <option value="BingoPlusPH">BingoPlusPH</option>
+                            <option value="BPGameMaster">BPGameMaster</option>
+                            <option value="BossVIP">BossVIP</option>
+                            <option value="VIPCommunity">VIPCommunity</option>
+                            <option value="BingoplusSports">BingoplusSports</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="stp-url" class="block text-sm font-medium text-gray-700">Post URL <span class="text-red-500">*</span></label>
+                        <input type="url" id="stp-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-2 px-3 sm:text-sm">
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
+                <button type="button" onclick="window.closeSPOTeamPostModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+                <button type="button" onclick="window.saveSPOTeamPost(event)" class="bg-indigo-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 text-sm font-medium text-white hover:bg-indigo-700" id="save-stp-btn">Save Post</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

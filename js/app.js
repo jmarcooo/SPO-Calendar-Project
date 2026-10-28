@@ -661,6 +661,20 @@ window.moveEventTooltip = (e) => {
                 }
             });
 
+
+            onSnapshot(collection(db, "spo_team_posts"), (snapshot) => {
+                let tempPosts = [];
+                snapshot.forEach((doc) => {
+                    tempPosts.push(doc.data());
+                });
+                localStorage.setItem('spo_team_posts', JSON.stringify(tempPosts));
+                window.spoTeamPosts = tempPosts;
+                if (window.currentView === 'campaign' && window.renderSPOTeamPostsTable) {
+                    window.renderSPOTeamPostsTable();
+                }
+            }, (error) => {
+                console.error("SPO Team Posts Error:", error);
+            });
             onSnapshot(collection(db, "budgets"), (snapshot) => {
                 let tempBudgets = [];
                 snapshot.forEach((doc) => tempBudgets.push(doc.data()));
@@ -3539,7 +3553,87 @@ cardsHtml += `
         };
 
 
-        window.openTypeModal = (dateStr = null) => {
+
+        window.openSPOTeamPostModal = (id = null) => {
+            const form = document.getElementById('spo-team-post-form');
+            if (form) form.reset();
+            const titleEl = document.getElementById('spo-team-post-modal-title');
+            const saveBtn = document.getElementById('save-stp-btn');
+
+            if (id && typeof id === 'string') {
+                const posts = JSON.parse(localStorage.getItem('spo_team_posts') || '[]');
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    if (titleEl) titleEl.innerText = 'Edit SPO Team Post';
+                    if (saveBtn) saveBtn.innerText = 'Update Post';
+                    document.getElementById('stp-id').value = id;
+                    document.getElementById('stp-title').value = post.title || '';
+                    document.getElementById('stp-date').value = post.datePosted || '';
+                    document.getElementById('stp-account').value = post.accountUsed || '';
+                    document.getElementById('stp-url').value = post.postUrl || '';
+                }
+            } else {
+                if (titleEl) titleEl.innerText = 'Add SPO Team Post';
+                if (saveBtn) saveBtn.innerText = 'Save Post';
+                document.getElementById('stp-id').value = '';
+            }
+
+            document.getElementById('spo-team-post-modal').classList.remove('hidden');
+        };
+
+        window.closeSPOTeamPostModal = () => {
+            document.getElementById('spo-team-post-modal').classList.add('hidden');
+        };
+
+        window.saveSPOTeamPost = async (e) => {
+            if (e) e.preventDefault();
+            const form = document.getElementById('spo-team-post-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const id = document.getElementById('stp-id').value;
+            const isNew = !id;
+            const postId = isNew ? crypto.randomUUID() : id;
+
+            const postData = {
+                title: document.getElementById('stp-title').value.trim(),
+                datePosted: document.getElementById('stp-date').value,
+                accountUsed: document.getElementById('stp-account').value,
+                postUrl: document.getElementById('stp-url').value.trim(),
+            };
+
+            const currentUser = localStorage.getItem('spo_current_user') || 'Unknown';
+            const currentTime = window.getFormattedCreatedTime();
+
+            if (isNew) {
+                postData.id = postId;
+                postData.createdBy = currentUser;
+                postData.createdAt = currentTime;
+            } else {
+                const existingPost = window.spoTeamPosts.find(p => p.id === postId);
+                postData.id = postId;
+                postData.createdBy = existingPost ? existingPost.createdBy : currentUser;
+                postData.createdAt = existingPost ? existingPost.createdAt : currentTime;
+                postData.editedBy = currentUser;
+                postData.editedTime = currentTime;
+            }
+
+            try {
+                await setDoc(doc(db, 'spo_team_posts', postId), postData, { merge: true });
+                window.closeSPOTeamPostModal();
+                window.showToast(isNew ? 'Post added successfully!' : 'Post updated successfully!', 'success');
+                if (window.currentView === 'campaign' && window.renderSPOTeamPostsTable) {
+                    window.renderSPOTeamPostsTable();
+                }
+            } catch (error) {
+                console.error("Error saving post: ", error);
+                window.showToast('Failed to save post.', 'error');
+            }
+        };
+
+window.openTypeModal = (dateStr = null) => {
             window.tempSelectedDate = dateStr;
             document.getElementById('type-modal').classList.remove('hidden');
         }
