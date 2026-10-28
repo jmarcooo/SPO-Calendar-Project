@@ -176,15 +176,15 @@ window.renderCalendar = () => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
 
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-slate-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-indigo-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-slate-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
 
                     contentGridHtml += `
                         <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-none flex justify-start relative">
-                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-indigo-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">
+                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">
                                 ${dayObj.day}
                             </span>
-                            ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Today</span>' : ''}
+                            ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-primary-600 uppercase tracking-wider">Today</span>' : ''}
                         </div>
                     `;
                 });
@@ -333,7 +333,7 @@ window.renderOngoingEvents = () => {
 
                     const p = evt.progress || 0;
                     const pFormatted = p.toFixed(2);
-                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-indigo-500' : 'bg-gray-300');
+                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
                     el.className = `flex items-start p-4 bg-white hover:bg-slate-50 rounded-xl mb-3 border border-slate-200/60 shadow-md shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
@@ -341,10 +341,10 @@ window.renderOngoingEvents = () => {
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-indigo-50 text-indigo-500 border-indigo-200">Task</span>
-                                <span class="text-sm font-bold text-indigo-500">${assignsStr}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 text-primary-500 border-primary-200">Task</span>
+                                <span class="text-sm font-bold text-primary-500">${assignsStr}</span>
                             </div>
-                            <p class="text-sm font-bold text-indigo-500 truncate mb-2"><i class="fa-solid fa-list-check text-indigo-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                            <p class="text-sm font-bold text-primary-500 truncate mb-2"><i class="fa-solid fa-list-check text-primary-500 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
                             <div class="flex items-end justify-between w-full mt-1">
                                 <span class="text-xs ${urgency} font-medium flex items-center mb-1"><i class="fa-regular fa-calendar mr-1.5 text-red-500"></i><span class="text-red-500">${displayDate}</span></span>
                                 <div class="flex flex-col items-end w-2/3">

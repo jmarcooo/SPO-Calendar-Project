@@ -25,7 +25,7 @@ window.renderAdminPOCSettings = () => {
                     const isChecked = currentPOCs.includes(user) ? 'checked' : '';
                     html += `
                         <label class="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer">
-                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-indigo-600 focus:ring-indigo-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
+                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-primary-600 focus:ring-primary-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
                             <span>${user}</span>
                         </label>
                     `;
@@ -41,7 +41,20 @@ window.renderAdminPOCSettings = () => {
         };
 
 
+window.changeTheme = (themeName) => {
+    localStorage.setItem('spo_theme', themeName);
+    if (typeof applyTheme === 'function') {
+        applyTheme(themeName);
+    } else {
+        window.location.reload();
+    }
+};
+
 export function init(container) {
+    const themeSelector = document.getElementById('theme-selector');
+    if (themeSelector) {
+        themeSelector.value = localStorage.getItem('spo_theme') || 'indigo';
+    }
 
     const adminSettings = document.getElementById('admin-settings-section');
     if (adminSettings && window.isAdminModeEnabled) {

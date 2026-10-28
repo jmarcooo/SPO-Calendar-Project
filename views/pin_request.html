@@ -7,10 +7,10 @@
             </div>
             <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
                 <div class="flex items-center bg-slate-100 p-1 rounded-xl shadow-inner shadow-slate-200/50 border border-slate-200/60">
-                    <button id="btn-pr-view-table" onclick="window.switchPRView('table')" class="px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-indigo-600 shadow-sm transition-all">Table List</button>
+                    <button id="btn-pr-view-table" onclick="window.switchPRView('table')" class="px-4 py-1.5 text-sm font-medium rounded-lg bg-white text-primary-600 shadow-sm transition-all">Table List</button>
                     <button id="btn-pr-view-timeline" onclick="window.switchPRView('timeline')" class="px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-700 transition-all">Weekly Slot Timeline</button>
                 </div>
-                <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                     <i class="fa-solid fa-plus mr-2"></i> Create Pin Request
                 </button>
             </div>
@@ -22,16 +22,16 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fa-solid fa-search text-gray-400"></i>
                 </div>
-                <input type="text" id="pin-search-input" oninput="window.renderPinRequestsTable()" placeholder="Search by campaign, post ID, or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <input type="text" id="pin-search-input" oninput="window.renderPinRequestsTable()" placeholder="Search by campaign, post ID, or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
             </div>
-            <select id="pin-category-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+            <select id="pin-category-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                 <option value="All">All Categories</option>
                 <option value="PGC">PGC</option>
                 <option value="UGC">UGC</option>
                 <option value="Perya Host">Perya Host</option>
                 <option value="Content Writer">Content Writer</option>
             </select>
-            <select id="pin-status-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+            <select id="pin-status-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                 <option value="All">All Pin Statuses</option>
                 <option value="Upcoming">Upcoming</option>
                 <option value="Live">Live</option>
@@ -91,7 +91,7 @@
                 <div class="flex items-center space-x-4">
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1">Start Date</label>
-                        <input type="date" id="pr-timeline-start-date" onchange="window.renderPRTimeline()" class="block w-40 border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                        <input type="date" id="pr-timeline-start-date" onchange="window.renderPRTimeline()" class="block w-40 border border-gray-300 rounded-lg shadow-sm py-1.5 px-3 sm:text-sm focus:ring-primary-500 focus:border-primary-500 bg-white">
                     </div>
                 </div>
             </div>
