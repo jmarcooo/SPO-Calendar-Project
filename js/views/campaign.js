@@ -26,7 +26,9 @@ window.updateCampaignDropdown = () => {
                 if (contentArea) {
                     contentArea.classList.add('hidden');
                     contentArea.classList.remove('grid');
-                    document.getElementById('campaign-empty-state').style.display = 'block';
+                    const emptyState = document.getElementById('campaign-empty-state');
+                    if (emptyState) emptyState.style.display = 'block';
+
                 }
             }
         };
