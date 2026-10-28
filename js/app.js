@@ -1424,6 +1424,7 @@ cardsHtml += `
 
             if (!id) {
                 eventData.CreatedTime = window.getFormattedCreatedTime();
+                window.sendLarkWebhook(`New Event/Task "${title}" created by ${window.currentUserProfile}`);
             } else if (existingEvent && existingEvent.CreatedTime) {
                 eventData.CreatedTime = existingEvent.CreatedTime;
             } else {
@@ -5297,6 +5298,10 @@ window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
     } catch(e){}
     const pocs = savedPOCs[pocModuleName] || [];
 
+
+    // Send Lark webhook notification
+    window.sendLarkWebhook(message);
+
     // Fallback: if there are no POCs assigned, let's log it for 'All' so at least an admin can see it
     if (pocs.length === 0) {
         await window.logNotification(message, 'All', targetModule, targetId);
@@ -5305,6 +5310,29 @@ window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
 
     for (const poc of pocs) {
         await window.logNotification(message, poc, targetModule, targetId);
+    }
+};
+
+
+window.sendLarkWebhook = async (message) => {
+    const webhookUrl = 'https://open.larksuite.com/open-apis/bot/v2/hook/bb939441-37a3-400a-b8cc-4d71ac0b707d';
+    const payload = {
+        msg_type: "text",
+        content: {
+            text: message
+        }
+    };
+
+    try {
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+    } catch (error) {
+        console.error('Error sending Lark notification:', error);
     }
 };
 
