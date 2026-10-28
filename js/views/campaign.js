@@ -1,6 +1,54 @@
 import { sortTableData } from "../utils/tableSort.js";
 
+
+window.copySPOTeamPostUrl = (url, event) => {
+    event.stopPropagation();
+    navigator.clipboard.writeText(url).then(() => {
+        window.showToast('Post URL copied to clipboard!', 'success');
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        window.showToast('Failed to copy URL.', 'error');
+    });
+};
+
 window.currentSPOTeamPostsSort = { column: 'datePosted', direction: 'desc' };
+
+
+
+window.extractSPOTeamPosts = () => {
+    let posts = window.spoTeamPosts || [];
+    if (window.spoTeamPostsMonthFilter) {
+        posts = posts.filter(post => {
+            if (!post.datePosted) return false;
+            return post.datePosted.startsWith(window.spoTeamPostsMonthFilter);
+        });
+    }
+
+    if (posts.length === 0) {
+        window.showToast('No data to extract for the selected filter.', 'error');
+        return;
+    }
+
+    const exportData = posts.map(post => ({
+        'Title': post.title || '',
+        'Date Posted': post.datePosted ? post.datePosted.replace('T', ' ') : '',
+        'Created By': post.createdBy || '',
+        'Account Used': post.accountUsed || '',
+        'Post URL': post.postUrl || ''
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "SPO Team Posts");
+
+    const filename = `SPO_Team_Posts_${window.spoTeamPostsMonthFilter || 'All'}.xlsx`;
+    XLSX.writeFile(wb, filename);
+};
+
+window.filterSPOTeamPostsByMonth = (monthStr) => {
+    window.spoTeamPostsMonthFilter = monthStr;
+    window.renderSPOTeamPostsTable();
+};
 
 window.sortSPOTeamPosts = (column) => {
     if (window.currentSPOTeamPostsSort.column === column) {
@@ -18,6 +66,13 @@ window.renderSPOTeamPostsTable = () => {
     if (!tbody || !emptyState) return;
 
     let posts = window.spoTeamPosts || [];
+
+    if (window.spoTeamPostsMonthFilter) {
+        posts = posts.filter(post => {
+            if (!post.datePosted) return false;
+            return post.datePosted.startsWith(window.spoTeamPostsMonthFilter);
+        });
+    }
 
     if (posts.length === 0) {
         tbody.innerHTML = '';
@@ -59,8 +114,15 @@ window.renderSPOTeamPostsTable = () => {
                         ${post.accountUsed || '-'}
                     </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:underline">
-                    ${post.postUrl ? `<a href="${post.postUrl}" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>` : '-'}
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    ${post.postUrl ? `
+                        <div class="flex items-center space-x-2">
+                            <a href="${post.postUrl}" target="_blank" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>
+                            <button onclick="window.copySPOTeamPostUrl('${post.postUrl}', event)" class="text-gray-400 hover:text-indigo-600 transition-colors" title="Copy URL">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    ` : '-'}
                 </td>
             </tr>
         `;
@@ -68,6 +130,13 @@ window.renderSPOTeamPostsTable = () => {
 };
 
 export function init(container) {
+    const now = new Date();
+    const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    window.spoTeamPostsMonthFilter = currentMonth;
+
+    const filterInput = document.getElementById('spo-team-posts-month-filter');
+    if (filterInput) filterInput.value = currentMonth;
+
     if (window.renderSPOTeamPostsTable) {
         window.renderSPOTeamPostsTable();
     }
