@@ -5316,14 +5316,37 @@ window.notifyPOCs = async (message, pocModuleName, targetModule, targetId) => {
 
 window.sendLarkWebhook = async (message) => {
     const webhookUrl = 'https://open.larksuite.com/open-apis/bot/v2/hook/bb939441-37a3-400a-b8cc-4d71ac0b707d';
-    const payload = {
-        msg_type: "text",
-        content: {
-            text: message
-        }
-    };
+    const secret = '7mZjqISmBj8xebcpqFlrIg';
 
     try {
+        const timestamp = Math.floor(Date.now() / 1000).toString();
+        const stringToSign = `${timestamp}\n${secret}`;
+
+        const enc = new TextEncoder();
+        const key = await window.crypto.subtle.importKey(
+            'raw',
+            enc.encode(stringToSign),
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        );
+        const signatureBuffer = await window.crypto.subtle.sign(
+            'HMAC',
+            key,
+            enc.encode('')
+        );
+        const hashArray = Array.from(new Uint8Array(signatureBuffer));
+        const sign = btoa(String.fromCharCode.apply(null, hashArray));
+
+        const payload = {
+            timestamp: timestamp,
+            sign: sign,
+            msg_type: "text",
+            content: {
+                text: message
+            }
+        };
+
         await fetch(webhookUrl, {
             method: 'POST',
             headers: {
