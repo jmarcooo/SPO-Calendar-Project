@@ -3554,7 +3554,59 @@ cardsHtml += `
 
 
 
-        window.openSPOTeamPostModal = (id = null) => {
+
+        window.openSPOTeamPostDetailsModal = (id) => {
+            const posts = JSON.parse(localStorage.getItem('spo_team_posts') || '[]');
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('detail-stp-title').innerText = post.title || '-';
+            document.getElementById('detail-stp-date').innerText = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
+            document.getElementById('detail-stp-account').innerText = post.accountUsed || '-';
+
+            const urlEl = document.getElementById('detail-stp-url');
+            if (post.postUrl) {
+                urlEl.href = post.postUrl;
+                urlEl.innerText = post.postUrl;
+            } else {
+                urlEl.removeAttribute('href');
+                urlEl.innerText = '-';
+            }
+
+            document.getElementById('detail-stp-created-by').innerText = post.createdBy || '-';
+            document.getElementById('detail-stp-created-at').innerText = post.createdAt || '-';
+
+            if (post.editedBy) {
+                document.getElementById('detail-stp-edited-by-container').classList.remove('hidden');
+                document.getElementById('detail-stp-edited-time-container').classList.remove('hidden');
+                document.getElementById('detail-stp-edited-by').innerText = post.editedBy;
+                document.getElementById('detail-stp-edited-time').innerText = post.editedTime || '-';
+            } else {
+                document.getElementById('detail-stp-edited-by-container').classList.add('hidden');
+                document.getElementById('detail-stp-edited-time-container').classList.add('hidden');
+            }
+
+            document.getElementById('spo-team-post-details-modal').classList.remove('hidden');
+        };
+
+        window.closeSPOTeamPostDetailsModal = () => {
+            document.getElementById('spo-team-post-details-modal').classList.add('hidden');
+        };
+
+        window.deleteSPOTeamPost = async (id, event) => {
+            if (event) event.stopPropagation();
+            if (confirm("Are you sure you want to delete this post?")) {
+                try {
+                    await deleteDoc(doc(db, 'spo_team_posts', id));
+                    window.showToast("Post deleted successfully.", "success");
+                } catch (error) {
+                    console.error("Error deleting post:", error);
+                    window.showToast("Failed to delete post.", "error");
+                }
+            }
+        };
+
+window.openSPOTeamPostModal = (id = null) => {
             const form = document.getElementById('spo-team-post-form');
             if (form) form.reset();
             const titleEl = document.getElementById('spo-team-post-modal-title');

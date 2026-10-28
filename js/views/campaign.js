@@ -105,7 +105,7 @@ window.renderSPOTeamPostsTable = () => {
     tbody.innerHTML = posts.map(post => {
         const datePostedDisplay = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
         return `
-            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="if(!event.target.closest('a')) window.openSPOTeamPostModal('${post.id}')">
+            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.openSPOTeamPostDetailsModal('${post.id}')">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${post.title || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${datePostedDisplay}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${post.createdBy || '-'}</td>
@@ -123,6 +123,16 @@ window.renderSPOTeamPostsTable = () => {
                             </button>
                         </div>
                     ` : '-'}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div class="flex items-center justify-end space-x-3">
+                        <button onclick="window.openSPOTeamPostModal('${post.id}'); event.stopPropagation();" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="window.deleteSPOTeamPost('${post.id}'); event.stopPropagation();" class="text-red-600 hover:text-red-900" title="Delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
