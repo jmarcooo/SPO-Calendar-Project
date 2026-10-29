@@ -43,7 +43,7 @@ window.renderDailyTasksTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No daily tasks found.</td></tr>';
                 return;
             }
 
@@ -62,7 +62,7 @@ window.renderDailyTasksTable = () => {
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (task.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
                 else if (task.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
-                else if (task.status === 'Pending') statusClass = 'text-indigo-600 bg-indigo-100';
+                else if (task.status === 'Pending') statusClass = 'text-primary-600 bg-primary-100';
 
                 let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${task.status || 'Pending'}</span>`;
 
@@ -74,16 +74,16 @@ window.renderDailyTasksTable = () => {
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${task.taskTitle}</div>
-                            <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
+                            <div class="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.createdTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayStart}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayEnd}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${task.createdTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayStart}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">${initial}</div>
-                                <span class="text-sm text-gray-900">${task.requestor}</span>
+                                <div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">${initial}</div>
+                                <span class="text-sm text-gray-900 dark:text-white">${task.requestor}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
@@ -92,7 +92,7 @@ window.renderDailyTasksTable = () => {
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
                             <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>

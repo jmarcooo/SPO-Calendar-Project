@@ -10,7 +10,7 @@ window.renderBudgetTable = () => {
             ['month', 'name', 'type', 'createdAt', 'owner', 'allocated'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
                 if (icon) {
-                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300');
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-primary-600' : 'fa-sort-down text-primary-600') : 'fa-sort text-gray-300');
                 }
             });
 
@@ -33,7 +33,7 @@ window.renderBudgetTable = () => {
 
 
             if (filteredBudgets.length === 0) {
-                table.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No budget entries found matching filters.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No budget entries found matching filters.</td></tr>`;
                 document.getElementById('budget-total-allocated').innerText = window.formatCurrency(0);
                 // document.getElementById('budget-total-spent').innerText = window.formatCurrency(0);
                 // Removed
@@ -63,29 +63,29 @@ window.renderBudgetTable = () => {
                 };
 
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">${(function(){
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500 dark:text-slate-400">${(function(){
                         if(!b.month) return 'N/A';
                         const parts = b.month.split('-');
                         if(parts.length !== 2) return b.month;
                         const date = new Date(parts[0], parseInt(parts[1])-1);
                         return date.toLocaleString('default', { month: 'long', year: 'numeric' });
                     })()}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.type || 'N/A'}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${b.createdAt || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white" title="${escName}">${b.name.length > 20 ? b.name.substring(0,20)+'...' : b.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${b.type || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${b.createdAt || '-'}</td>
                     <td class="px-6 py-4 whitespace-nowrap" title="${escOwner}">
                         ${(function(){
                             let n = escOwner;
                             try { const o = JSON.parse(n); n = o.name || o.username || n; } catch(e){}
-                            if (n === 'Unassigned' || !n) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
+                            if (n === 'Unassigned' || !n) return '<span class="text-gray-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
                             let initial = n.charAt(0).toUpperCase();
-                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white">' + n + '</span></div>';
                         })()}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium text-gray-900">${window.formatCurrency(alloc)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 text-right font-medium text-gray-900 dark:text-white">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
@@ -112,7 +112,7 @@ window.updateBudgetItemTypes = () => {
 
                 if (budgetType === 'Campaign Expenses') {
                     if (currentInput.tagName !== 'SELECT') {
-                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                        container.innerHTML = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white dark:bg-slate-800">
                             <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                             <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                             <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>

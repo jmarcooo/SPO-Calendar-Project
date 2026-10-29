@@ -26,7 +26,7 @@ window.renderSMSTable = function() {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500">No SMS requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No SMS requests found.</td></tr>';
                 return;
             }
 
@@ -60,22 +60,22 @@ window.renderSMSTable = function() {
 
                 row.className = rowOpacityClass;
                 row.innerHTML = `
-                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         ${req.campaignName || '-'}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.createdAt || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.eventDateTime || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${req.endDatetime || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.createdAt || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.eventDateTime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.endDatetime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 font-medium">
                         PHP ${parseFloat(req.budget || 0).toFixed(2)}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${rowStatus || '-'}</span>
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${req.audienceType || '-'}</span>
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
                             ${reqStatus}
@@ -83,7 +83,7 @@ window.renderSMSTable = function() {
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-indigo-600 hover:text-indigo-900 group-hover:bg-indigo-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 hover:text-primary-900 group-hover:bg-primary-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
                         <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
