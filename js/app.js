@@ -93,7 +93,7 @@ window.sortTableData = sortTableData;
 
                 const hasCustomBanner = evt.bannerUrl && window.isValidURL(evt.bannerUrl);
                 const hasLegacyBanner = evt.fields && evt.fields.postIds && evt.fields.postIds[0] && evt.fields.postIds[0].imgUrl && window.isValidURL(evt.fields.postIds[0].imgUrl);
-                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                let bannerStyle = 'background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-700));';
                 if (hasCustomBanner) {
                     bannerStyle = `background-image: url('${evt.bannerUrl}'); background-size: cover; background-position: center;`;
                 } else if (hasLegacyBanner) {
@@ -780,7 +780,7 @@ window.moveEventTooltip = (e) => {
             gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
 
             if (gamesOnly.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-slate-50 border border-slate-200/60 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500">
+                container.innerHTML = `<div class="col-span-full bg-slate-50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
                     <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400"></i>
                     <p class="text-sm font-medium">No new games found for this month.</p>
                 </div>`;
@@ -791,11 +791,11 @@ window.moveEventTooltip = (e) => {
             gamesOnly.forEach(g => {
                 const pFormatted = (g.progress || 0).toFixed(0);
                 const isActive = window.currentGameId === g.id;
-                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200' : 'border-slate-200/60 hover:border-primary-300';
+                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-900/50' : 'border-slate-200/60 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600';
 
                 const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
-                let bannerStyle = 'background: linear-gradient(to right, #6366f1, #a855f7);';
+                let bannerStyle = 'background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-700));';
                 if (hasCustomBanner) {
                     bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
                 } else if (hasLegacyBanner) {
@@ -808,14 +808,14 @@ window.moveEventTooltip = (e) => {
                 const displayDate = launchDate ? launchDate : g.startDate.split(' ')[0];
                 const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
 cardsHtml += `
-                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
                         <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
+                            <div class="w-24 h-24 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
                                 ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-primary-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
                             <p class="text-xs text-gray-500 text-center">${displayDate}</p>
                         </div>
@@ -1617,23 +1617,23 @@ cardsHtml += `
                 history.pushState(null, null, '#' + viewName);
             }
 
-            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
+            const views = ['dashboard', 'tasks', 'budget', 'campaign', 'new_games', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
-                        nav.classList.add('bg-primary-50', 'text-primary-700');
-                        nav.classList.remove('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
+                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900/20', 'text-primary-700', 'dark:text-primary-400');
+                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
-                            icon.classList.add('text-primary-500');
+                            icon.classList.add('text-primary-500', 'dark:text-primary-400');
                             icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
                         }
                     } else {
-                        nav.classList.remove('bg-primary-50', 'text-primary-700');
-                        nav.classList.add('text-gray-600', 'hover:bg-slate-50', 'hover:text-gray-900');
+                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900/20', 'text-primary-700', 'dark:text-primary-400');
+                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
-                            icon.classList.remove('text-primary-500');
+                            icon.classList.remove('text-primary-500', 'dark:text-primary-400');
                             icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
                         }
                     }
