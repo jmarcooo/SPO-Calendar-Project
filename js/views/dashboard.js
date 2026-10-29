@@ -168,23 +168,23 @@ window.renderCalendar = () => {
                 });
 
                 let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white min-h-[120px] flex-1';
-                let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 pointer-events-none">`;
+                weekEl.className = 'relative bg-white dark:bg-slate-800 min-h-[120px] flex-1';
+                let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 dark:divide-slate-700 pointer-events-none">`;
                 let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
 
                 week.forEach((dayObj, i) => {
                     const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
 
                     bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-slate-50 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+                        <div class="pointer-events-auto hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50 dark:bg-slate-900/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
                     `;
 
                     contentGridHtml += `
                         <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-none flex justify-start relative">
-                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 h-7 w-7 flex items-center justify-center' : 'text-gray-700 h-7 w-7 flex items-center justify-center')}">
+                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 dark:text-gray-600 h-7 w-7 flex items-center justify-center' : 'text-gray-700 dark:text-gray-300 h-7 w-7 flex items-center justify-center')}">
                                 ${dayObj.day}
                             </span>
-                            ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-primary-600 uppercase tracking-wider">Today</span>' : ''}
+                            ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Today</span>' : ''}
                         </div>
                     `;
                 });
@@ -198,13 +198,13 @@ window.renderCalendar = () => {
                     let formattedTitle = '';
 
                     if (itemType === 'event') {
-                        statusColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                        statusColor = 'bg-emerald-50 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50';
                         formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
                     } else if (itemType === 'game') {
-                        statusColor = 'bg-red-50 text-red-800 border-red-200';
+                        statusColor = 'bg-red-50 dark:bg-red-900/50 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700/50';
                         formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-red-500"></i>${evt.title}`;
                     } else {
-                        statusColor = 'bg-blue-100 text-blue-800 border border-blue-200';
+                        statusColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50';
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
                         formattedTitle = `<i class="fa-solid fa-list-check text-[10px] mr-1 opacity-70"></i>[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
                     }
