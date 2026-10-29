@@ -661,6 +661,20 @@ window.moveEventTooltip = (e) => {
                 }
             });
 
+
+            onSnapshot(collection(db, "spo_team_posts"), (snapshot) => {
+                let tempPosts = [];
+                snapshot.forEach((doc) => {
+                    tempPosts.push(doc.data());
+                });
+                localStorage.setItem('spo_team_posts', JSON.stringify(tempPosts));
+                window.spoTeamPosts = tempPosts;
+                if (window.currentView === 'campaign' && window.renderSPOTeamPostsTable) {
+                    window.renderSPOTeamPostsTable();
+                }
+            }, (error) => {
+                console.error("SPO Team Posts Error:", error);
+            });
             onSnapshot(collection(db, "budgets"), (snapshot) => {
                 let tempBudgets = [];
                 snapshot.forEach((doc) => tempBudgets.push(doc.data()));
@@ -677,29 +691,7 @@ window.moveEventTooltip = (e) => {
 
 
         window.renderCampaignDetails = (taskId) => {
-            const contentArea = document.getElementById('campaign-content-area');
-            const emptyState = document.getElementById('campaign-empty-state');
-
-            if (!taskId) {
-                contentArea.classList.add('hidden');
-                contentArea.classList.remove('grid');
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            const task = window.events.find(e => e.id === taskId);
-            if (!task) return;
-
-            contentArea.classList.remove('hidden');
-            contentArea.classList.add('grid');
-            emptyState.style.display = 'none';
-
-            window.currentCampaignPosts = task.fields.postIds || [];
-            window.currentCarouselIndex = 0;
-
-            window.renderCampaignCarousel();
-            window.renderCampaignRightSide(task);
-            window.renderCampaignPerformance();
+            // Functionality removed for now
         };
 
         window.getGeneratedPostLink = (idStr) => {
@@ -712,198 +704,23 @@ window.moveEventTooltip = (e) => {
         };
 
         window.renderCampaignCarousel = () => {
-            const container = document.getElementById('campaign-carousel-container');
-            const counter = document.getElementById('carousel-counter');
-            if(!container) return;
-
-            if (window.currentCampaignPosts.length === 0) {
-                container.innerHTML = `
-                    <div class="text-gray-400 flex flex-col items-center">
-                        <i class="fa-regular fa-image text-4xl mb-2"></i>
-                        <p class="text-sm">No Post IDs/Visuals added to this task.</p>
-                    </div>
-                `;
-                counter.innerText = '0 / 0';
-                return;
-            }
-
-            const post = window.currentCampaignPosts[window.currentCarouselIndex];
-            counter.innerText = `${window.currentCarouselIndex + 1} / ${window.currentCampaignPosts.length}`;
-
-            const link = window.getGeneratedPostLink(post.id);
-            const hasImg = post.imgUrl && window.isValidURL(post.imgUrl);
-
-            let html = `
-                <div class="w-full flex flex-col items-center h-full justify-center pb-4">
-                    <div class="w-full max-w-md aspect-[4/5] bg-slate-100 rounded-xl overflow-hidden border border-slate-200/60 flex items-center justify-center mb-6 relative shadow-inner">
-                        ${hasImg ? `<img src="${post.imgUrl}" class="w-full h-full object-cover" alt="Post Visual">` : `<i class="fa-solid fa-image text-6xl text-gray-300"></i>`}
-
-                        ${window.currentCampaignPosts.length > 1 ? `
-                            <button onclick="window.changeCarouselSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-left"></i></button>
-                            <button onclick="window.changeCarouselSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"><i class="fa-solid fa-chevron-right"></i></button>
-                        ` : ''}
-                    </div>
-
-                    <div class="w-full max-w-md bg-slate-50 rounded-xl p-5 border border-slate-200/60 shadow-md shadow-slate-200/50">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold uppercase tracking-wider text-indigo-600">${post.type || 'Platform'}</span>
-                            <span class="text-sm text-gray-500 font-mono">${post.id || 'No ID'}</span>
-                        </div>
-                        <a href="${link}" target="_blank" class="w-full flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors ${!post.id ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
-                            <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Visit Live Post
-                        </a>
-                    </div>
-
-                    ${window.currentCampaignPosts.length > 1 ? `
-                        <div class="flex space-x-1.5 mt-5">
-                            ${window.currentCampaignPosts.map((_, i) => `
-                                <button onclick="window.goToCarouselSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-colors ${i === window.currentCarouselIndex ? 'bg-indigo-600' : 'bg-gray-300 hover:bg-gray-400'}"></button>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-            container.innerHTML = html;
+            // Functionality removed for now
         };
 
         window.changeCarouselSlide = (dir) => {
-            window.currentCarouselIndex += dir;
-            if (window.currentCarouselIndex < 0) window.currentCarouselIndex = window.currentCampaignPosts.length - 1;
-            if (window.currentCarouselIndex >= window.currentCampaignPosts.length) window.currentCarouselIndex = 0;
-            window.renderCampaignCarousel();
-            window.renderCampaignPerformance();
+            // Functionality removed for now
         };
 
         window.goToCarouselSlide = (idx) => {
-            window.currentCarouselIndex = idx;
-            window.renderCampaignCarousel();
-            window.renderCampaignPerformance();
+            // Functionality removed for now
         };
 
         window.renderCampaignRightSide = (task) => {
-            const container = document.getElementById('campaign-stats-container');
-            if(!container) return;
-
-            const pFormatted = (task.progress || 0).toFixed(2);
-            const assignsStr = (task.assignees && task.assignees.length > 0) ? task.assignees.join(', ') : 'Unassigned';
-
-            const fields = task.fields || {};
-            const operations = [
-                { key: 'gameReview', label: 'Game Review' },
-                { key: 'dailyTask', label: 'Daily Task' },
-                { key: 'contentWriters', label: 'Content Writers' },
-                { key: 'imChannels', label: 'IM Channels' },
-                { key: 'trackableLinks', label: 'Trackable Links' },
-                { key: 'sms', label: 'SMS' },
-                { key: 'postPinned', label: 'Post Pinned' },
-                { key: 'rewardDistributed', label: 'Reward Distributed' },
-                { key: 'rewardsBanner', label: 'Rewards Banner' }
-            ];
-
-            let opsHtml = operations.map(op => {
-                const val = fields[op.key] || 'Pending';
-                let color = 'text-gray-500';
-                let icon = 'fa-circle text-[8px]';
-                if (val === 'Yes') { color = 'text-emerald-600'; icon = 'fa-check'; }
-                if (val === 'N/A') { color = 'text-gray-400'; icon = 'fa-minus'; }
-                return `<div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0"><span class="text-sm text-gray-600">${op.label}</span><span class="text-xs font-medium ${color}"><i class="fa-solid ${icon} mr-1.5"></i>${val}</span></div>`;
-            }).join('');
-
-            container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-bar mr-2 text-emerald-500"></i>Execution Summary</h4>
-                </div>
-                <div class="p-5 flex-1 overflow-y-auto space-y-6">
-                    <div>
-                        <div class="flex justify-between items-end mb-1">
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Overall Progress</span>
-                            <span class="text-lg font-bold text-indigo-600">${pFormatted}%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-indigo-600 h-2 rounded-full" style="width: ${task.progress || 0}%"></div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Timeline</span>
-                            <span class="text-sm font-medium text-gray-900">${task.startDate} to ${task.endDate}</span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Status</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${task.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-800'}">${task.status}</span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="block text-xs text-gray-500 mb-1">Team Assigned</span>
-                            <span class="text-sm font-medium text-gray-900">${assignsStr}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <span class="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 mt-4">Operations Checklist</span>
-                        <div class="bg-white border border-slate-200/60 rounded-xl px-3 py-1 shadow-md shadow-slate-200/50">
-                            ${opsHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
+            // Functionality removed for now
         };
 
         window.renderCampaignPerformance = () => {
-            const container = document.getElementById('campaign-performance-container');
-            if (!container) return;
-
-            if (window.currentCampaignPosts.length === 0) {
-                container.innerHTML = `
-                    <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                        <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
-                        <i class="fa-solid fa-chart-area text-4xl mb-3 text-gray-300"></i>
-                        <p class="text-sm">Add a Post ID to view performance data.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const post = window.currentCampaignPosts[window.currentCarouselIndex];
-            const postIdDisplay = post.id || 'Pending ID';
-
-            container.innerHTML = `
-                <div class="px-4 py-3 border-b border-slate-200/60 bg-slate-50 rounded-t-lg flex justify-between items-center">
-                    <h4 class="text-sm font-bold text-gray-900"><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i>Post Performance</h4>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-100 text-blue-800">Beta</span>
-                </div>
-                <div class="p-5 flex-1 overflow-y-auto space-y-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase">Metrics For</span>
-                        <span class="text-xs font-mono text-gray-700 bg-slate-100 px-2 py-1 rounded truncate max-w-[120px]" title="${postIdDisplay}">${postIdDisplay}</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Total Reach</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Engagements</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-md shadow-slate-200/50 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 h-full w-1 bg-amber-500"></div>
-                        <span class="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">Link Clicks</span>
-                        <span class="text-2xl font-bold text-gray-900">--</span>
-                    </div>
-
-                    <div class="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl mb-3"></i>
-                        <p class="text-xs text-gray-500 font-medium">Live API syncing for platform metrics is currently under development.</p>
-                    </div>
-                </div>
-            `;
+            // Functionality removed for now
         };
 
 
@@ -3736,7 +3553,139 @@ cardsHtml += `
         };
 
 
-        window.openTypeModal = (dateStr = null) => {
+
+
+        window.openSPOTeamPostDetailsModal = (id) => {
+            const posts = JSON.parse(localStorage.getItem('spo_team_posts') || '[]');
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('detail-stp-title').innerText = post.title || '-';
+            document.getElementById('detail-stp-date').innerText = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
+            document.getElementById('detail-stp-account').innerText = post.accountUsed || '-';
+
+            const urlEl = document.getElementById('detail-stp-url');
+            if (post.postUrl) {
+                urlEl.href = post.postUrl;
+                urlEl.innerText = post.postUrl;
+            } else {
+                urlEl.removeAttribute('href');
+                urlEl.innerText = '-';
+            }
+
+            document.getElementById('detail-stp-created-by').innerText = post.createdBy || '-';
+            document.getElementById('detail-stp-created-at').innerText = post.createdAt || '-';
+
+            if (post.editedBy) {
+                document.getElementById('detail-stp-edited-by-container').classList.remove('hidden');
+                document.getElementById('detail-stp-edited-time-container').classList.remove('hidden');
+                document.getElementById('detail-stp-edited-by').innerText = post.editedBy;
+                document.getElementById('detail-stp-edited-time').innerText = post.editedTime || '-';
+            } else {
+                document.getElementById('detail-stp-edited-by-container').classList.add('hidden');
+                document.getElementById('detail-stp-edited-time-container').classList.add('hidden');
+            }
+
+            document.getElementById('spo-team-post-details-modal').classList.remove('hidden');
+        };
+
+        window.closeSPOTeamPostDetailsModal = () => {
+            document.getElementById('spo-team-post-details-modal').classList.add('hidden');
+        };
+
+        window.deleteSPOTeamPost = async (id, event) => {
+            if (event) event.stopPropagation();
+            if (confirm("Are you sure you want to delete this post?")) {
+                try {
+                    await deleteDoc(doc(db, 'spo_team_posts', id));
+                    window.showToast("Post deleted successfully.", "success");
+                } catch (error) {
+                    console.error("Error deleting post:", error);
+                    window.showToast("Failed to delete post.", "error");
+                }
+            }
+        };
+
+window.openSPOTeamPostModal = (id = null) => {
+            const form = document.getElementById('spo-team-post-form');
+            if (form) form.reset();
+            const titleEl = document.getElementById('spo-team-post-modal-title');
+            const saveBtn = document.getElementById('save-stp-btn');
+
+            if (id && typeof id === 'string') {
+                const posts = JSON.parse(localStorage.getItem('spo_team_posts') || '[]');
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    if (titleEl) titleEl.innerText = 'Edit SPO Team Post';
+                    if (saveBtn) saveBtn.innerText = 'Update Post';
+                    document.getElementById('stp-id').value = id;
+                    document.getElementById('stp-title').value = post.title || '';
+                    document.getElementById('stp-date').value = post.datePosted || '';
+                    document.getElementById('stp-account').value = post.accountUsed || '';
+                    document.getElementById('stp-url').value = post.postUrl || '';
+                }
+            } else {
+                if (titleEl) titleEl.innerText = 'Add SPO Team Post';
+                if (saveBtn) saveBtn.innerText = 'Save Post';
+                document.getElementById('stp-id').value = '';
+            }
+
+            document.getElementById('spo-team-post-modal').classList.remove('hidden');
+        };
+
+        window.closeSPOTeamPostModal = () => {
+            document.getElementById('spo-team-post-modal').classList.add('hidden');
+        };
+
+        window.saveSPOTeamPost = async (e) => {
+            if (e) e.preventDefault();
+            const form = document.getElementById('spo-team-post-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const id = document.getElementById('stp-id').value;
+            const isNew = !id;
+            const postId = isNew ? crypto.randomUUID() : id;
+
+            const postData = {
+                title: document.getElementById('stp-title').value.trim(),
+                datePosted: document.getElementById('stp-date').value,
+                accountUsed: document.getElementById('stp-account').value,
+                postUrl: document.getElementById('stp-url').value.trim(),
+            };
+
+            const currentUser = localStorage.getItem('spo_current_user') || 'Unknown';
+            const currentTime = window.getFormattedCreatedTime();
+
+            if (isNew) {
+                postData.id = postId;
+                postData.createdBy = currentUser;
+                postData.createdAt = currentTime;
+            } else {
+                const existingPost = window.spoTeamPosts.find(p => p.id === postId);
+                postData.id = postId;
+                postData.createdBy = existingPost ? existingPost.createdBy : currentUser;
+                postData.createdAt = existingPost ? existingPost.createdAt : currentTime;
+                postData.editedBy = currentUser;
+                postData.editedTime = currentTime;
+            }
+
+            try {
+                await setDoc(doc(db, 'spo_team_posts', postId), postData, { merge: true });
+                window.closeSPOTeamPostModal();
+                window.showToast(isNew ? 'Post added successfully!' : 'Post updated successfully!', 'success');
+                if (window.currentView === 'campaign' && window.renderSPOTeamPostsTable) {
+                    window.renderSPOTeamPostsTable();
+                }
+            } catch (error) {
+                console.error("Error saving post: ", error);
+                window.showToast('Failed to save post.', 'error');
+            }
+        };
+
+window.openTypeModal = (dateStr = null) => {
             window.tempSelectedDate = dateStr;
             document.getElementById('type-modal').classList.remove('hidden');
         }
