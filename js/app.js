@@ -110,9 +110,9 @@ window.sortTableData = sortTableData;
                             <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
                                 ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-primary-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -120,13 +120,13 @@ window.sortTableData = sortTableData;
                 tooltip.className = "fixed z-50 hidden transform transition-opacity duration-200 opacity-0 pointer-events-none"; // strip padding and border
             } else {
                 // Restore standard tooltip layout
-                tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
+                tooltip.className = "fixed z-50 hidden flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/60 dark:border-slate-700 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
                 tooltip.innerHTML = `
-                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 dark:text-white mb-2 truncate shrink-0"></h4>
                     <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
                         <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
                     </div>
-                    <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+                    <p id="tooltip-date" class="text-xs text-gray-500 dark:text-gray-400 mt-2 shrink-0"></p>
                 `;
                 const titleEl = document.getElementById('tooltip-title');
                 const imgContainer = document.getElementById('tooltip-image-container');
@@ -817,7 +817,7 @@ cardsHtml += `
                             </div>
                             <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -1570,7 +1570,7 @@ cardsHtml += `
             }
 
             if (results.length === 0) {
-                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No results found for "${val}"</div>`;
+                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No results found for "${val}"</div>`;
             } else {
                 // limit to 10 results
                 const limited = results.slice(0, 10);
@@ -1582,15 +1582,15 @@ cardsHtml += `
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
                         <div class="flex flex-col overflow-hidden">
-                            <span class="text-sm font-semibold text-gray-900 truncate">${safeTitle}</span>
-                            <span class="text-xs text-gray-500">${r.type}</span>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">${safeTitle}</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${r.type}</span>
                         </div>
                     </div>
                     `;
                 }).join('');
 
                 if (results.length > 10) {
-                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
+                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
                 }
             }
 
@@ -1624,17 +1624,17 @@ cardsHtml += `
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
+                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900 dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500 dark:text-gray-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
+                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900 dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500 dark:text-gray-400');
                         }
                     }
                 }
@@ -1854,7 +1854,7 @@ cardsHtml += `
                 </div>
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <span class="text-gray-500 sm:text-xs">₱</span>
+                        <span class="text-gray-500 dark:text-gray-400 sm:text-xs">₱</span>
                     </div>
                     <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-primary-500">
                 </div>
@@ -1966,7 +1966,7 @@ cardsHtml += `
                 });
             } else {
                 // fallback
-                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 text-center italic">No items found</li>`;
+                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 dark:text-gray-400 text-center italic">No items found</li>`;
             }
 
             document.getElementById('budget-details-modal').classList.remove('hidden');
@@ -2034,7 +2034,7 @@ cardsHtml += `
             activeMonths.sort().reverse();
 
             if (activeMonths.length === 0) {
-                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>';
+                content.innerHTML = '<div class="p-6 text-center text-gray-500 dark:text-gray-400">No budget data found for this year.</div>';
                 return;
             }
 
@@ -2051,15 +2051,15 @@ cardsHtml += `
 
                 html += `
                     <div class="bg-white border-b border-slate-200/60 p-4">
-                        <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
+                        <h3 class="text-md font-bold text-gray-900 dark:text-white mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
                             <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Total Spent</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Total Spent</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(spent)}</span>
                             </div>
                             <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Month Limit</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Month Limit</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(limit)}</span>
                             </div>
                         </div>
                     </div>
@@ -2870,7 +2870,7 @@ cardsHtml += `
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No pin requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No pin requests found.</td></tr>';
                 return;
             }
 
@@ -2892,11 +2892,11 @@ cardsHtml += `
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.category || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.startDate || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.category || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.startDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
@@ -2904,7 +2904,7 @@ cardsHtml += `
                             ${(function(){
                                 let n = p.owner || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white">' + n + '</span></div>';
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
@@ -2912,7 +2912,7 @@ cardsHtml += `
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
@@ -2971,7 +2971,7 @@ cardsHtml += `
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
                 html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
                     <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
-                    <div class="flex text-[10px] text-gray-500 divide-x divide-slate-200/60 h-4">
+                    <div class="flex text-[10px] text-gray-500 dark:text-gray-400 divide-x divide-slate-200/60 h-4">
                         <div class="flex-1">00:00</div>
                         <div class="flex-1">12:00</div>
                     </div>
@@ -3429,7 +3429,7 @@ cardsHtml += `
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
                 el.innerHTML = `
-                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
+                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
                         <i class="fa-solid fa-link mr-3 text-gray-400 group-hover:text-primary-500 transition-colors shrink-0"></i>
                         <span class="truncate">${link.title}</span>
                     </a>
@@ -4042,7 +4042,7 @@ window.openTypeModal = (dateStr = null) => {
                             <label class="block text-sm font-medium text-gray-700">Documents</label>
                             <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-gray-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4086,7 +4086,7 @@ window.openTypeModal = (dateStr = null) => {
                             <label class="block text-sm font-medium text-gray-700">Post IDs</label>
                             <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-gray-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -5361,7 +5361,7 @@ window.toggleNotifications = () => {
             }
 
             if (userNotifs.length === 0) {
-                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>';
+                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500 dark:text-gray-400">No new notifications.</div>';
                 return;
             }
 
@@ -5370,8 +5370,8 @@ window.toggleNotifications = () => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
                     <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-slate-50 dark:bg-slate-800'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
-                        <p class="text-xs font-medium text-gray-900">${n.message}</p>
-                        <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
+                        <p class="text-xs font-medium text-gray-900 dark:text-white">${n.message}</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">${n.createdTime}</p>
                     </div>
                 `;
             });
