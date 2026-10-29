@@ -791,7 +791,7 @@ window.moveEventTooltip = (e) => {
             gamesOnly.forEach(g => {
                 const pFormatted = (g.progress || 0).toFixed(0);
                 const isActive = window.currentGameId === g.id;
-                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-900/50' : 'border-slate-200/60 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600';
+                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-slate-200/60 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600';
 
                 const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
@@ -1623,14 +1623,14 @@ cardsHtml += `
                 if(nav) {
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
-                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900/20', 'text-primary-700', 'dark:text-primary-400');
+                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
                         nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500', 'dark:text-primary-400');
                             icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
                         }
                     } else {
-                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900/20', 'text-primary-700', 'dark:text-primary-400');
+                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
                         nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500', 'dark:text-primary-400');
@@ -3266,17 +3266,17 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 hover:bg-primary-50/50 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
                     rowClasses += " bg-primary-50";
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100/50 text-primary-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900 text-primary-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
                     rowClasses += " bg-red-50 cursor-not-allowed";
-                    rowClasses = rowClasses.replace("hover:bg-primary-50/50", "");
+                    rowClasses = rowClasses.replace("hover:bg-slate-50 dark:hover:bg-slate-800", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 text-[10px] pointer-events-none">Existing pin</div>`;
 
@@ -5369,7 +5369,7 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-primary-50/30'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-slate-50 dark:bg-slate-800'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900">${n.message}</p>
                         <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
                     </div>

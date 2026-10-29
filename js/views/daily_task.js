@@ -43,7 +43,7 @@ window.renderDailyTasksTable = () => {
                 });
             }
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No daily tasks found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No daily tasks found.</td></tr>';
                 return;
             }
 
@@ -74,16 +74,16 @@ window.renderDailyTasksTable = () => {
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[200px]">${task.taskTitle}</div>
-                            <div class="text-xs text-gray-500 truncate max-w-[200px]">${task.eventTitle}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
+                            <div class="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${task.createdTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayStart}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${displayEnd}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${task.createdTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayStart}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">${initial}</div>
-                                <span class="text-sm text-gray-900">${task.requestor}</span>
+                                <span class="text-sm text-gray-900 dark:text-white">${task.requestor}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>

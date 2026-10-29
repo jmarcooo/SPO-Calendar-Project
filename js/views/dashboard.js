@@ -168,7 +168,7 @@ window.renderCalendar = () => {
                 });
 
                 let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white dark:bg-slate-800 min-h-[120px] flex-1';
+                weekEl.className = 'relative bg-white dark:bg-slate-800 dark:bg-slate-800 min-h-[120px] flex-1';
                 let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 dark:divide-slate-700 pointer-events-none">`;
                 let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
 
@@ -273,7 +273,7 @@ window.renderOngoingEvents = () => {
 
             if (monthlyEvents.length === 0) {
                 ongoingList.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 py-10">
+                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-slate-400 dark:text-gray-400 dark:text-slate-500 py-10">
                         <i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300 dark:text-gray-600"></i>
                         <p>No records this month.</p>
                     </div>
@@ -293,7 +293,7 @@ window.renderOngoingEvents = () => {
                 const p = window.getPHParts();
                 const nowUtc = Date.UTC(p.year, p.month, p.date);
                 const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
-                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-gray-400';
+                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-slate-400 dark:text-gray-400 dark:text-slate-500';
 
                 const el = document.createElement('div');
                 el.title = window.getPendingSummary(evt);
@@ -312,7 +312,7 @@ window.renderOngoingEvents = () => {
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let typeBg = itemType === 'game' ? 'bg-rose-50 dark:bg-rose-900/50 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400' : 'bg-emerald-50 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -336,12 +336,12 @@ window.renderOngoingEvents = () => {
                     const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md dark:shadow-none shadow-slate-200/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
                             <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 dark:bg-primary-900/50 text-primary-500 dark:text-primary-400 border-primary-200 dark:border-primary-800">Task</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 dark:bg-primary-900 text-primary-500 dark:text-primary-400 border-primary-200 dark:border-primary-800">Task</span>
                                 <span class="text-sm font-bold text-primary-500 dark:text-primary-400">${assignsStr}</span>
                             </div>
                             <p class="text-sm font-bold text-primary-500 dark:text-primary-400 truncate mb-2"><i class="fa-solid fa-list-check text-primary-500 dark:text-primary-400 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
@@ -349,8 +349,8 @@ window.renderOngoingEvents = () => {
                                 <span class="text-xs ${urgency} font-medium flex items-center mb-1"><i class="fa-regular fa-calendar mr-1.5 text-red-500"></i><span class="text-red-500">${displayDate}</span></span>
                                 <div class="flex flex-col items-end w-2/3">
                                     <div class="flex items-center justify-between mb-1.5 w-full">
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">Progress</span>
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">${pFormatted}%</span>
+                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 dark:text-slate-500">Progress</span>
+                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 dark:text-slate-500">${pFormatted}%</span>
                                     </div>
                                     <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
                                         <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
