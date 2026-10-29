@@ -83,7 +83,7 @@ window.renderSMSTable = function() {
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-indigo-600 hover:text-indigo-900 group-hover:bg-indigo-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 hover:text-primary-900 group-hover:bg-primary-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
                         <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;

@@ -16,8 +16,8 @@ window.renderFullNotifications = () => {
             userNotifs.forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 mb-3 flex items-start cursor-pointer transition-colors hover:bg-slate-50 ${isRead ? 'opacity-70' : 'ring-1 ring-indigo-500'}" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
-                        <div class="h-8 w-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 mt-0.5">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 mb-3 flex items-start cursor-pointer transition-colors hover:bg-slate-50 ${isRead ? 'opacity-70' : 'ring-1 ring-primary-500'}" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                        <div class="h-8 w-8 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center shrink-0 mt-0.5">
                             <i class="fa-regular fa-bell"></i>
                         </div>
                         <div class="ml-4 flex-1">

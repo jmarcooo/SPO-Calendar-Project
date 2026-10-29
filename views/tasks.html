@@ -6,7 +6,7 @@
                             <p class="mt-1 max-w-2xl text-sm text-gray-500">Manage task statuses, update progress, and send reminders. (Offline events & game launches are excluded)</p>
                         </div>
                         <div class="mt-4 sm:mt-0 flex space-x-3">
-                            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                            <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                                 <i class="fa-solid fa-plus mr-2"></i> New Task
                             </button>
                         </div>
@@ -17,12 +17,12 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fa-solid fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <input type="text" id="search-input" oninput="setSearch(this.value)" placeholder="Search by title or assignee..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
                         </div>
-                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                        <select id="assignee-filter-select" onchange="setAssigneeFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                             <option value="All">All Assignees</option>
                         </select>
-                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-xl cursor-pointer">
+                        <select id="filter-select" onchange="setFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                             <option value="All">All Statuses</option>
                             <option value="Upcoming">Upcoming</option>
                             <option value="Ongoing">Ongoing</option>

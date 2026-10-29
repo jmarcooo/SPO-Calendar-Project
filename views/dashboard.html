@@ -13,8 +13,8 @@
 
                         <div class="text-sm font-medium text-gray-500 truncate">Ongoing Tasks (<span class="stat-month-label"></span>)</div>
                         <div class="mt-2 flex items-baseline">
-                            <span class="text-4xl font-bold text-indigo-600" id="stat-progress">0</span>
-                            <span class="ml-2 text-sm font-medium text-indigo-400">in progress</span>
+                            <span class="text-4xl font-bold text-primary-600" id="stat-progress">0</span>
+                            <span class="ml-2 text-sm font-medium text-primary-400">in progress</span>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 p-5 relative overflow-hidden flex flex-col justify-between h-32">
@@ -60,7 +60,7 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-medium text-gray-700 hidden sm:inline">Type:</span>
-                                        <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
+                                        <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
                                             <option value="All">All Types</option>
                                             <option value="task">Tasks</option>
                                             <option value="event">Offline Events</option>
@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-medium text-gray-700 hidden sm:inline">Category:</span>
-                                        <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-xl cursor-pointer">
+                                        <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
                                             <option value="All">All</option>
                                             <option value="Game Promotion">Game Promotion</option>
                             <option value="Platform Feature">Platform Feature</option>
@@ -103,9 +103,9 @@
                             <div class="p-4 border-b border-slate-200/60 flex justify-between items-center">
                                 <h2 class="text-lg font-bold text-gray-900 flex items-center space-x-2">
                                     <span>Events & Tasks</span>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" id="ongoing-count">0</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800" id="ongoing-count">0</span>
                                 </h2>
-                                <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors">
+                                <button onclick="openTypeModal()" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                                     <i class="fa-solid fa-plus mr-1"></i> New Event
                                 </button>
                             </div>

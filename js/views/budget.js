@@ -10,7 +10,7 @@ window.renderBudgetTable = () => {
             ['month', 'name', 'type', 'createdAt', 'owner', 'allocated'].forEach(col => {
                 const icon = document.getElementById(`budget-sort-icon-${col}`);
                 if (icon) {
-                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-indigo-600' : 'fa-sort-down text-indigo-600') : 'fa-sort text-gray-300');
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.budgetSortCol === col ? (window.budgetSortAsc ? 'fa-sort-up text-primary-600' : 'fa-sort-down text-primary-600') : 'fa-sort text-gray-300');
                 }
             });
 
@@ -79,13 +79,13 @@ window.renderBudgetTable = () => {
                             try { const o = JSON.parse(n); n = o.name || o.username || n; } catch(e){}
                             if (n === 'Unassigned' || !n) return '<span class="text-gray-400 italic text-xs">Unassigned</span>';
                             let initial = n.charAt(0).toUpperCase();
-                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                            return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium text-gray-900">${window.formatCurrency(alloc)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="openBudgetModal('${b.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openBudgetModal('${b.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 p-1.5 rounded transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button onclick="deleteBudgetEntry('${b.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">

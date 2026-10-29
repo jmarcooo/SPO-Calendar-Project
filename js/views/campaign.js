@@ -110,7 +110,7 @@ window.renderSPOTeamPostsTable = () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${datePostedDisplay}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${post.createdBy || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800">
                         ${post.accountUsed || '-'}
                     </span>
                 </td>
@@ -118,7 +118,7 @@ window.renderSPOTeamPostsTable = () => {
                     ${post.postUrl ? `
                         <div class="flex items-center space-x-2">
                             <a href="${post.postUrl}" target="_blank" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>
-                            <button onclick="window.copySPOTeamPostUrl('${post.postUrl}', event)" class="text-gray-400 hover:text-indigo-600 transition-colors" title="Copy URL">
+                            <button onclick="window.copySPOTeamPostUrl('${post.postUrl}', event)" class="text-gray-400 hover:text-primary-600 transition-colors" title="Copy URL">
                                 <i class="fa-regular fa-copy"></i>
                             </button>
                         </div>
@@ -126,7 +126,7 @@ window.renderSPOTeamPostsTable = () => {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div class="flex items-center justify-end space-x-3">
-                        <button onclick="window.openSPOTeamPostModal('${post.id}'); event.stopPropagation();" class="text-indigo-600 hover:text-indigo-900" title="Edit">
+                        <button onclick="window.openSPOTeamPostModal('${post.id}'); event.stopPropagation();" class="text-primary-600 hover:text-primary-900" title="Edit">
                             <i class="fa-solid fa-pen"></i>
                         </button>
                         <button onclick="window.deleteSPOTeamPost('${post.id}'); event.stopPropagation();" class="text-red-600 hover:text-red-900" title="Delete">
