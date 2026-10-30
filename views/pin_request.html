@@ -1,5 +1,5 @@
 <div id="view-pin-request">
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 border border-slate-200/60 dark:border-slate-700" id="pin-request-tracking">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/60 dark:border-slate-700" id="pin-request-tracking">
         <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white">Pin Requests</h3>
@@ -10,7 +10,7 @@
                     <button id="btn-pr-view-table" onclick="window.switchPRView('table')" class="px-4 py-1.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800 text-primary-600 shadow-sm transition-all">Table List</button>
                     <button id="btn-pr-view-timeline" onclick="window.switchPRView('timeline')" class="px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-200 transition-all">Weekly Slot Timeline</button>
                 </div>
-                <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
+                <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                     <i class="fa-solid fa-plus mr-2"></i> Create Pin Request
                 </button>
             </div>
@@ -24,20 +24,20 @@
                 </div>
                 <input type="text" id="pin-search-input" oninput="window.renderPinRequestsTable()" placeholder="Search by campaign, post ID, or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl leading-5 bg-white dark:bg-slate-800 placeholder-gray-500 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
             </div>
-            <select id="pin-category-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
+            <select id="pin-category-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                 <option value="All">All Categories</option>
                 <option value="PGC">PGC</option>
                 <option value="UGC">UGC</option>
                 <option value="Perya Host">Perya Host</option>
                 <option value="Content Writer">Content Writer</option>
             </select>
-            <select id="pin-status-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
+            <select id="pin-status-filter" onchange="window.renderPinRequestsTable()" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-xl cursor-pointer">
                 <option value="All">All Pin Statuses</option>
                 <option value="Upcoming">Upcoming</option>
                 <option value="Live">Live</option>
                 <option value="Ended">Ended</option>
             </select>
-            <button onclick="window.exportPinRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 focus:outline-none transition-colors">
+            <button onclick="window.exportPinRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 focus:outline-none transition-colors">
                 <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
             </button>
         </div>

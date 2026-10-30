@@ -38,7 +38,7 @@ window.renderCWRequestsTable = () => {
                 let rowStatus = window.calculateStatus(p.supportDate, p.endDate || p.supportDate, p.requestStatus);
                 if (rowStatus === 'Past' && p.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (p.requestStatus === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';

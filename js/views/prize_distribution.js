@@ -36,7 +36,7 @@ window.renderPDRequestsTable = () => {
                 let rowStatus = window.calculateStatus(p.eventDatetime, p.eventDatetime, p.status);
                 if (rowStatus === 'Past' && p.status !== 'Completed' && p.status !== 'Rejected') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (p.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';

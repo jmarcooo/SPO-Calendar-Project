@@ -93,9 +93,9 @@ window.renderTasksTable = () => {
                 const isPast = evt.status === 'Done' || endStr < nowStrIter;
 
                 if (isPast) {
-                    baseClass += ' opacity-60 bg-gray-50 grayscale hover:bg-gray-100';
+                    baseClass += ' opacity-60 bg-gray-50 dark:bg-slate-800/50 grayscale hover:bg-gray-100 dark:hover:bg-slate-700';
                 } else {
-                    baseClass += ' hover:bg-primary-50';
+                    baseClass += ' hover:bg-slate-50 dark:hover:bg-slate-800';
                 }
                 tr.className = baseClass;
 

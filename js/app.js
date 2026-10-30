@@ -110,9 +110,9 @@ window.sortTableData = sortTableData;
                             <div class="w-20 h-20 bg-white border-4 border-white shadow-md rounded-2xl flex items-center justify-center -mt-10 mb-3 z-10 overflow-hidden relative">
                                 ${evt.iconUrl ? `<img src="${evt.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-2xl text-primary-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
+                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${evt.title}">${evt.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -120,13 +120,13 @@ window.sortTableData = sortTableData;
                 tooltip.className = "fixed z-50 hidden transform transition-opacity duration-200 opacity-0 pointer-events-none"; // strip padding and border
             } else {
                 // Restore standard tooltip layout
-                tooltip.className = "fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
+                tooltip.className = "fixed z-50 hidden flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/60 dark:border-slate-700 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none";
                 tooltip.innerHTML = `
-                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+                    <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 dark:text-white mb-2 truncate shrink-0"></h4>
                     <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
                         <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
                     </div>
-                    <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+                    <p id="tooltip-date" class="text-xs text-gray-500 dark:text-gray-400 mt-2 shrink-0"></p>
                 `;
                 const titleEl = document.getElementById('tooltip-title');
                 const imgContainer = document.getElementById('tooltip-image-container');
@@ -817,7 +817,7 @@ cardsHtml += `
                             </div>
                             <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
                             <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 text-center">${displayDate}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">${displayDate}</p>
                         </div>
                     </div>
                 `;
@@ -1570,7 +1570,7 @@ cardsHtml += `
             }
 
             if (results.length === 0) {
-                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No results found for "${val}"</div>`;
+                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No results found for "${val}"</div>`;
             } else {
                 // limit to 10 results
                 const limited = results.slice(0, 10);
@@ -1582,15 +1582,15 @@ cardsHtml += `
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
                         <div class="flex flex-col overflow-hidden">
-                            <span class="text-sm font-semibold text-gray-900 truncate">${safeTitle}</span>
-                            <span class="text-xs text-gray-500">${r.type}</span>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">${safeTitle}</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400">${r.type}</span>
                         </div>
                     </div>
                     `;
                 }).join('');
 
                 if (results.length > 10) {
-                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
+                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
                 }
             }
 
@@ -1627,14 +1627,14 @@ cardsHtml += `
                         nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
                         nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
                         }
                     }
                 }
@@ -1838,7 +1838,7 @@ cardsHtml += `
             let typeInputHtml = '';
 
             if (budgetType === 'Campaign Expenses') {
-                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                     <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                     <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                     <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
@@ -1854,7 +1854,7 @@ cardsHtml += `
                 </div>
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                        <span class="text-gray-500 sm:text-xs">₱</span>
+                        <span class="text-gray-500 dark:text-gray-400 sm:text-xs">₱</span>
                     </div>
                     <input type="number" step="0.01" min="0" value="${valAmt}" placeholder="Amount" oninput="window.calcBudgetTotal()" required class="budget-item-amount block w-full pl-6 border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm focus:outline-none focus:ring-1 focus:ring-primary-500">
                 </div>
@@ -1966,7 +1966,7 @@ cardsHtml += `
                 });
             } else {
                 // fallback
-                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 text-center italic">No items found</li>`;
+                ul.innerHTML = `<li class="px-4 py-3 text-gray-500 dark:text-gray-400 text-center italic">No items found</li>`;
             }
 
             document.getElementById('budget-details-modal').classList.remove('hidden');
@@ -2034,7 +2034,7 @@ cardsHtml += `
             activeMonths.sort().reverse();
 
             if (activeMonths.length === 0) {
-                content.innerHTML = '<div class="p-6 text-center text-gray-500">No budget data found for this year.</div>';
+                content.innerHTML = '<div class="p-6 text-center text-gray-500 dark:text-gray-400">No budget data found for this year.</div>';
                 return;
             }
 
@@ -2051,15 +2051,15 @@ cardsHtml += `
 
                 html += `
                     <div class="bg-white border-b border-slate-200/60 p-4">
-                        <h3 class="text-md font-bold text-gray-900 mb-2">${monthName}</h3>
+                        <h3 class="text-md font-bold text-gray-900 dark:text-white mb-2">${monthName}</h3>
                         <div class="grid grid-cols-2 gap-2 text-sm">
                             <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Total Spent</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(spent)}</span>
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Total Spent</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(spent)}</span>
                             </div>
                             <div class="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span class="block text-xs text-gray-500">Month Limit</span>
-                                <span class="font-semibold text-gray-900">${window.formatCurrency(limit)}</span>
+                                <span class="block text-xs text-gray-500 dark:text-gray-400">Month Limit</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">${window.formatCurrency(limit)}</span>
                             </div>
                         </div>
                     </div>
@@ -2870,7 +2870,7 @@ cardsHtml += `
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500">No pin requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No pin requests found.</td></tr>';
                 return;
             }
 
@@ -2879,24 +2879,24 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-400' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100 dark:bg-amber-900/50 dark:text-amber-400' : 'text-blue-600 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400');
 
-                let pinStatusClass = 'text-gray-600 bg-gray-100';
-                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100';
+                let pinStatusClass = 'text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-slate-300';
+                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-400';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100 dark:bg-primary-900/50 dark:text-primary-400';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">${p.campaignName}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.category || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.startDate || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.category || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.startDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
@@ -2904,7 +2904,7 @@ cardsHtml += `
                             ${(function(){
                                 let n = p.owner || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900">' + n + '</span></div>';
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white">' + n + '</span></div>';
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
@@ -2912,7 +2912,7 @@ cardsHtml += `
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
@@ -2961,17 +2961,17 @@ cardsHtml += `
             const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
                 (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
 
-            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
-                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 transition-colors group select-none">
+            let html = `<div class="flex border-b border-slate-200/60 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-bold text-gray-600 dark:text-slate-300 uppercase flex items-center justify-center bg-slate-100 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
 
             days.forEach(d => {
                 const dateStr = d.toISOString().split('T')[0];
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
-                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
-                    <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
-                    <div class="flex text-[10px] text-gray-500 divide-x divide-slate-200/60 h-4">
+                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 dark:border-slate-700 text-center">
+                    <div class="py-1 bg-slate-200/50 dark:bg-slate-700 text-xs font-bold text-gray-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-gray-500 dark:text-gray-400 divide-x divide-slate-200/60 dark:divide-slate-700 h-4">
                         <div class="flex-1">00:00</div>
                         <div class="flex-1">12:00</div>
                     </div>
@@ -3022,23 +3022,23 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-10">
-                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-700">${slot.id}</span>
+                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative group h-10">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
+                        <span class="text-sm font-bold text-gray-700 dark:text-slate-300">${slot.id}</span>
                     </div>
                     <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
 
                 // Add grid lines for background
                 days.forEach((_, i) => {
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 dark:border-slate-700 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 dark:border-slate-700/50 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
                 });
 
                 // Add gray overlay for past time
                 const nowMs = window.getPHFakeUtcMs();
                 if (nowMs > weekStartMs) {
                     const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
-                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 dark:bg-slate-900/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
                 }
 
                 // Find requests matching this slot
@@ -3067,15 +3067,15 @@ cardsHtml += `
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
 
-                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:ring-blue-500';
                     if (req.category === 'PGC' || req.category === 'Content Writer') {
-                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400';
+                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400 dark:bg-emerald-900/50 dark:text-emerald-200 dark:border-emerald-700 dark:hover:ring-emerald-500';
                     } else if (req.category === 'UGC' || req.category === 'Perya Host') {
-                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400';
+                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400 dark:bg-red-900/50 dark:text-red-200 dark:border-red-700 dark:hover:ring-red-500';
                     } else if (req.status === 'Completed') {
                         baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
                     } else if (req.status === 'Under Review') {
-                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400';
+                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-700 dark:hover:ring-amber-500';
                     }
 
                     const isPast = eMs < window.getPHFakeUtcMs();
@@ -3224,8 +3224,8 @@ cardsHtml += `
             };
 
             let html = `
-                <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 shadow-sm">
-                    <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400"></i></div>
+                <div class="sticky top-0 bg-slate-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-200 shadow-sm">
+                    <div class="w-20 shrink-0 border-r border-gray-200 dark:border-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400 dark:text-slate-400"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
                         <i class="fa-solid fa-arrow-right text-gray-400"></i>
@@ -3266,26 +3266,26 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
-                    rowClasses += " bg-primary-50";
+                    rowClasses += " bg-primary-50 dark:bg-primary-900";
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900 text-primary-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
-                    rowClasses += " bg-red-50 cursor-not-allowed";
+                    rowClasses += " bg-red-50 dark:bg-red-900/30 cursor-not-allowed";
                     rowClasses = rowClasses.replace("hover:bg-slate-50 dark:hover:bg-slate-800", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 text-[10px] pointer-events-none">Existing pin</div>`;
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded flex items-center justify-center text-red-600 dark:text-red-300 text-[10px] pointer-events-none">Existing pin</div>`;
 
                     html += `
                         <div class="${rowClasses}">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
-                            <div class="flex-1 relative">
+                            <div class="flex-1 relative bg-white dark:bg-slate-800">
                                 ${innerHTML}
                             </div>
                         </div>
@@ -3293,10 +3293,10 @@ cardsHtml += `
                 } else {
                     html += `
                         <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
-                            <div class="flex-1 relative">
+                            <div class="flex-1 relative bg-white dark:bg-slate-800">
                                 ${innerHTML}
                             </div>
                         </div>
@@ -3429,7 +3429,7 @@ cardsHtml += `
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
                 el.innerHTML = `
-                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
+                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
                         <i class="fa-solid fa-link mr-3 text-gray-400 group-hover:text-primary-500 transition-colors shrink-0"></i>
                         <span class="truncate">${link.title}</span>
                     </a>
@@ -3985,7 +3985,7 @@ window.openTypeModal = (dateStr = null) => {
                 const isAllDone = done === total;
                 const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700';
                 return `
-                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
+                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 dark:shadow-black/50 overflow-hidden" ${isOpen ? 'open' : ''}>
                         <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
@@ -4003,7 +4003,7 @@ window.openTypeModal = (dateStr = null) => {
             const makeRadioHtml = (key, label) => {
                 const val = f[key] || 'Pending';
                 return `
-                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <label class="text-sm font-medium text-gray-700 mb-2">${label}</label>
                         <div class="flex space-x-4">
                             <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
@@ -4028,8 +4028,8 @@ window.openTypeModal = (dateStr = null) => {
                         <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                             <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             <div class="flex items-center space-x-2 pr-8">
-                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white">
+                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 ${borderClass} bg-white">
                             </div>
                             ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format.</p>` : ''}
                         </div>
@@ -4037,12 +4037,12 @@ window.openTypeModal = (dateStr = null) => {
                 }).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
                             <label class="block text-sm font-medium text-gray-700">Documents</label>
                             <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-gray-400 mt-3 italic text-center">No documents added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4057,10 +4057,10 @@ window.openTypeModal = (dateStr = null) => {
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
                         <div class="flex flex-wrap mb-1">${pills}</div>
-                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
                     </div>
                 `;
             };
@@ -4071,22 +4071,22 @@ window.openTypeModal = (dateStr = null) => {
                     <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                         <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
-                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                         <div>
-                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                     </div>
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
                             <label class="block text-sm font-medium text-gray-700">Post IDs</label>
                             <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
                         </div>
-                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
+                        ${rowsHtml.length > 0 ? `<div class="space-y-1 mt-2">${rowsHtml}</div>` : '<p class="text-xs text-gray-500 dark:text-gray-400 mt-3 italic text-center">No post IDs added yet. Click + to add one.</p>'}
                     </div>
                 `;
             };
@@ -4094,7 +4094,7 @@ window.openTypeModal = (dateStr = null) => {
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 cursor-pointer hover:bg-slate-50 transition-colors">
                         <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 bg-slate-100 border-gray-300 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
                     </div>
@@ -5361,7 +5361,7 @@ window.toggleNotifications = () => {
             }
 
             if (userNotifs.length === 0) {
-                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>';
+                listEl.innerHTML = '<div class="p-4 text-center text-xs text-gray-500 dark:text-gray-400">No new notifications.</div>';
                 return;
             }
 
@@ -5370,8 +5370,8 @@ window.toggleNotifications = () => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
                     <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-slate-50 dark:bg-slate-800'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
-                        <p class="text-xs font-medium text-gray-900">${n.message}</p>
-                        <p class="text-[10px] text-gray-500 mt-1">${n.createdTime}</p>
+                        <p class="text-xs font-medium text-gray-900 dark:text-white">${n.message}</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">${n.createdTime}</p>
                     </div>
                 `;
             });

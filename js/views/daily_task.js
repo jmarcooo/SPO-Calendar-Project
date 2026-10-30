@@ -57,7 +57,7 @@ window.renderDailyTasksTable = () => {
                 const isPastDate = dateStatus === 'Past';
 
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
-                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 let statusClass = 'text-gray-600 bg-gray-100';
                 if (task.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';

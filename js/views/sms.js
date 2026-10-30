@@ -56,7 +56,7 @@ window.renderSMSTable = function() {
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
                 if (rowStatus === 'Past' && req.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer';
 
                 row.className = rowOpacityClass;
                 row.innerHTML = `
