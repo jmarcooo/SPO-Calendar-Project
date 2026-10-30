@@ -2961,17 +2961,17 @@ cardsHtml += `
             const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
                 (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
 
-            let html = `<div class="flex border-b border-slate-200/60 bg-slate-50 sticky top-0 z-10">
-                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-bold text-gray-600 uppercase flex items-center justify-center bg-slate-100 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 transition-colors group select-none">
+            let html = `<div class="flex border-b border-slate-200/60 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-bold text-gray-600 dark:text-slate-300 uppercase flex items-center justify-center bg-slate-100 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
 
             days.forEach(d => {
                 const dateStr = d.toISOString().split('T')[0];
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
-                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 text-center">
-                    <div class="py-1 bg-slate-200/50 text-xs font-bold text-gray-800 border-b border-slate-200/60">${dayName} ${dateStr}</div>
-                    <div class="flex text-[10px] text-gray-500 dark:text-gray-400 divide-x divide-slate-200/60 h-4">
+                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 dark:border-slate-700 text-center">
+                    <div class="py-1 bg-slate-200/50 dark:bg-slate-700 text-xs font-bold text-gray-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-gray-500 dark:text-gray-400 divide-x divide-slate-200/60 dark:divide-slate-700 h-4">
                         <div class="flex-1">00:00</div>
                         <div class="flex-1">12:00</div>
                     </div>
@@ -3022,23 +3022,23 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors relative group h-10">
-                    <div class="w-32 shrink-0 border-r border-slate-200/60 p-2 text-xs font-medium text-gray-700 bg-white sticky left-0 z-10 flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-700">${slot.id}</span>
+                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative group h-10">
+                    <div class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
+                        <span class="text-sm font-bold text-gray-700 dark:text-slate-300">${slot.id}</span>
                     </div>
                     <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
 
                 // Add grid lines for background
                 days.forEach((_, i) => {
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 dark:border-slate-700 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 dark:border-slate-700/50 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
                 });
 
                 // Add gray overlay for past time
                 const nowMs = window.getPHFakeUtcMs();
                 if (nowMs > weekStartMs) {
                     const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
-                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 dark:bg-slate-900/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
                 }
 
                 // Find requests matching this slot
@@ -3224,8 +3224,8 @@ cardsHtml += `
             };
 
             let html = `
-                <div class="sticky top-0 bg-slate-50 border-b border-gray-200 z-20 flex p-2 font-bold text-xs text-gray-700 shadow-sm">
-                    <div class="w-20 shrink-0 border-r border-gray-200 flex items-center justify-center cursor-pointer hover:bg-slate-200" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400"></i></div>
+                <div class="sticky top-0 bg-slate-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 z-20 flex p-2 font-bold text-xs text-gray-700 dark:text-slate-200 shadow-sm">
+                    <div class="w-20 shrink-0 border-r border-gray-200 dark:border-slate-700 flex items-center justify-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600" onclick="window.cycleModalTimelineSort()" title="Click to change sort order">Position <i class="fa-solid fa-arrow-down-a-z ml-1 text-gray-400 dark:text-slate-400"></i></div>
                     <div class="flex-1 flex justify-between px-2">
                         <span>${formatStr(startDate)}</span>
                         <i class="fa-solid fa-arrow-right text-gray-400"></i>
@@ -3266,26 +3266,26 @@ cardsHtml += `
                 const isSelected = id === selectedId;
                 const isOccupied = overlapping.length > 0;
 
-                let rowClasses = "flex border-b border-gray-100 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors relative group h-8";
+                let rowClasses = "flex border-b border-gray-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors relative group h-8";
                 let innerHTML = "";
 
                 if (isSelected) {
-                    rowClasses += " bg-primary-50";
+                    rowClasses += " bg-primary-50 dark:bg-primary-900";
                     innerHTML = `<div class="absolute inset-x-2 inset-y-1 border-2 border-primary-500 rounded flex items-center justify-center bg-primary-100 dark:bg-primary-900 text-primary-700 text-xs font-bold shadow-sm pointer-events-none">Selected - available</div>`;
                 }
 
                 if (isOccupied && !isSelected) {
-                    rowClasses += " bg-red-50 cursor-not-allowed";
+                    rowClasses += " bg-red-50 dark:bg-red-900/30 cursor-not-allowed";
                     rowClasses = rowClasses.replace("hover:bg-slate-50 dark:hover:bg-slate-800", "");
                     rowClasses = rowClasses.replace("cursor-pointer", "");
-                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 border border-red-200 rounded flex items-center justify-center text-red-600 text-[10px] pointer-events-none">Existing pin</div>`;
+                    innerHTML = `<div class="absolute inset-x-2 inset-y-1 bg-red-100 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded flex items-center justify-center text-red-600 dark:text-red-300 text-[10px] pointer-events-none">Existing pin</div>`;
 
                     html += `
                         <div class="${rowClasses}">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
-                            <div class="flex-1 relative">
+                            <div class="flex-1 relative bg-white dark:bg-slate-800">
                                 ${innerHTML}
                             </div>
                         </div>
@@ -3293,10 +3293,10 @@ cardsHtml += `
                 } else {
                     html += `
                         <div class="${rowClasses}" onclick="window.handleModalTimelineClick('${id}')">
-                            <div class="w-16 shrink-0 border-r border-gray-100 bg-white flex items-center justify-center text-xs font-bold text-gray-700 z-10 sticky left-0">
+                            <div class="w-16 shrink-0 border-r border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-slate-300 z-10 sticky left-0">
                                 ${id}
                             </div>
-                            <div class="flex-1 relative">
+                            <div class="flex-1 relative bg-white dark:bg-slate-800">
                                 ${innerHTML}
                             </div>
                         </div>
