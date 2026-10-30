@@ -117,7 +117,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="text-gray-800 dark:text-gray-200 h-screen flex flex-col overflow-hidden bg-slate-50  transition-colors duration-200">
+<body class="text-gray-800 dark:text-gray-200 h-screen flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
     <header class="h-16 flex items-center justify-between px-4 sm:px-6 bg-white dark:bg-slate-800 shrink-0 z-50 w-full border-b border-slate-200/60 dark:border-slate-700 relative transition-colors duration-200">
         <div class="flex items-center w-64 shrink-0">
             <div class="h-10 w-10 rounded-xl bg-primary-500 flex items-center justify-center cursor-pointer select-none mr-3" onclick="handleLogoClick()">
@@ -154,14 +154,14 @@
                 </div>
                 <!-- Notifications Dropdown -->
                 <div id="notif-dropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200/60 dark:border-slate-700 hidden flex flex-col z-50 transform origin-top-right transition-all">
-                    <div class="px-4 py-3 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center bg-slate-50  rounded-t-xl shrink-0">
+                    <div class="px-4 py-3 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50 rounded-t-xl shrink-0">
                         <h3 class="text-sm font-bold text-gray-900 dark:text-white">Recent Notifications</h3>
                     </div>
                     <div id="notif-list" class="max-h-80 overflow-y-auto p-2 space-y-1">
                         <!-- Notification items will go here -->
                         <div class="p-4 text-center text-xs text-gray-500 dark:text-slate-400">No new notifications.</div>
                     </div>
-                    <div class="px-4 py-2 border-t border-slate-200/60 dark:border-slate-700 bg-slate-50  rounded-b-xl shrink-0 text-center">
+                    <div class="px-4 py-2 border-t border-slate-200/60 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 rounded-b-xl shrink-0 text-center">
                         <button onclick="switchView('notifications'); toggleNotifications();" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors">View All Notifications</button>
                     </div>
                 </div>
@@ -228,7 +228,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-0">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-0 bg-slate-50 dark:bg-slate-900">
             <div id="main-content-container" class="w-full h-full"></div>
         </main>
     </div>
