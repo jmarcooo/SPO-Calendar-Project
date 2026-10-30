@@ -133,7 +133,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fa-solid fa-search text-gray-400"></i>
                 </div>
-                <input type="text" id="global-search" oninput="window.handleGlobalSearch()" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl leading-5 bg-slate-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors">
+                <input type="text" id="global-search" oninput="window.handleGlobalSearch()" placeholder="Search everywhere..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl leading-5 bg-slate-50 dark:bg-slate-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600 dark:focus:bg-slate-600 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors">
 
                 <!-- Global Search Results Dropdown -->
                 <div id="global-search-results" class="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200/60 dark:border-slate-700 hidden flex-col z-[100] max-h-96 overflow-y-auto transform origin-top transition-all">
@@ -144,11 +144,11 @@
             </div>
         </div>
         <div class="flex items-center space-x-3">
-            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none transition-colors">
+            <button id="btn-clear-data" style="display: none;" onclick="clearAllData()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none transition-colors">
                 <i class="fa-solid fa-trash-can mr-2"></i> Clear Data
             </button>
             <div class="relative">
-                <div onclick="toggleNotifications()" class="h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors cursor-pointer relative" title="Notifications">
+                <div onclick="toggleNotifications()" class="h-10 w-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors cursor-pointer relative" title="Notifications">
                     <i class="fa-regular fa-bell text-xl"></i>
                     <span id="notif-badge" class="absolute top-1 right-1 h-5 w-5 bg-red-500 rounded-full border-2 border-white hidden flex items-center justify-center text-[10px] font-bold text-white"></span>
                 </div>
@@ -159,7 +159,7 @@
                     </div>
                     <div id="notif-list" class="max-h-80 overflow-y-auto p-2 space-y-1">
                         <!-- Notification items will go here -->
-                        <div class="p-4 text-center text-xs text-gray-500">No new notifications.</div>
+                        <div class="p-4 text-center text-xs text-gray-500 dark:text-slate-400">No new notifications.</div>
                     </div>
                     <div class="px-4 py-2 border-t border-slate-200/60 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 rounded-b-xl shrink-0 text-center">
                         <button onclick="switchView('notifications'); toggleNotifications();" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors">View All Notifications</button>
@@ -181,37 +181,37 @@
                 <a href="#dashboard" id="nav-dashboard" class="flex items-center px-3 py-2 bg-primary-50 text-primary-700 rounded-xl group font-medium nav-item">
                     <i class="fa-solid fa-chart-pie mr-3 text-primary-500 nav-icon"></i> Calendar Dashboard
                 </a>
-                <a href="#tasks" id="nav-tasks" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-tasks mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Tasks & Progress
+                <a href="#tasks" id="nav-tasks" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-tasks mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Tasks & Progress
                 </a>
-                <a href="#budget" id="nav-budget" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-wallet mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Team Budget
+                <a href="#budget" id="nav-budget" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-wallet mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Team Budget
                 </a>
-                <a href="#campaign" id="nav-campaign" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-bullhorn mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SPO team posts
+                <a href="#campaign" id="nav-campaign" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-bullhorn mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> SPO team posts
                 </a>
-                <a href="#new_games" id="nav-new_games" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-gamepad mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> New Games
+                <a href="#new_games" id="nav-new_games" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-gamepad mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> New Games
                 </a>
-                <a href="#daily_task" id="nav-daily_task" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-clipboard-check mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Daily Task
+                <a href="#daily_task" id="nav-daily_task" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-clipboard-check mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Daily Task
                 </a>
-                <a href="#pin_request" id="nav-pin_request" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-thumbtack mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Post Management
+                <a href="#pin_request" id="nav-pin_request" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-thumbtack mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Post Management
                 </a>
-                <a href="#sms" id="nav-sms" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> SMS
+                <a href="#sms" id="nav-sms" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-comment-sms mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> SMS
                 </a>
-                <a href="#content_writer" id="nav-content_writer" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Copy Writer
+                <a href="#content_writer" id="nav-content_writer" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-pen-nib mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Copy Writer
                 </a>
-                <a href="#prize_distribution" id="nav-prize_distribution" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-gift mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Prize Distribution
+                <a href="#prize_distribution" id="nav-prize_distribution" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-gift mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Prize Distribution
                 </a>
 
                 <div class="pt-4 mt-2 border-t border-slate-200/60 dark:border-slate-700"></div>
                 <div class="flex justify-between items-center px-3 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quick Links</h3>
+                    <h3 class="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">Quick Links</h3>
                     <button onclick="openQuickLinkModal()" class="text-gray-400 dark:text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" title="Add Quick Link">
                         <i class="fa-solid fa-plus"></i>
                     </button>
@@ -221,8 +221,8 @@
                 </div>
 
                 <div class="pt-4 mt-2 border-t border-slate-200/60 dark:border-slate-700"></div>
-                <a href="#settings" id="nav-settings" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
-                    <i class="fa-solid fa-gear mr-3 text-gray-400 group-hover:text-gray-500 nav-icon"></i> Settings
+                <a href="#settings" id="nav-settings" class="flex items-center px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white rounded-xl group font-medium transition-colors nav-item">
+                    <i class="fa-solid fa-gear mr-3 text-gray-400 group-hover:text-gray-500 dark:text-slate-400 nav-icon"></i> Settings
                 </a>
             </nav>
         </aside>
@@ -235,8 +235,8 @@
 
     <!-- Type Selection Modal -->
     <div id="type-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
-            <h3 class="text-lg font-bold text-gray-900 mb-4">Create New...</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-sm w-full p-6 text-center transform transition-all">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Create New...</h3>
             <div class="space-y-3">
                 <button onclick="selectEventType('task')" class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-white bg-primary-600 hover:bg-primary-700 transition-colors">
                     <i class="fa-solid fa-list-check mr-2"></i> Content Task
@@ -249,17 +249,17 @@
                 </button>
             </div>
             <div class="mt-5">
-                <button onclick="closeTypeModal()" class="text-sm font-medium text-gray-500 hover:text-gray-700">Cancel</button>
+                <button onclick="closeTypeModal()" class="text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-gray-700">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Quick Link Modal -->
     <div id="quick-link-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="quick-link-modal-title">Add Quick Link</h3>
-                <button onclick="closeQuickLinkModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="quick-link-modal-title">Add Quick Link</h3>
+                <button onclick="closeQuickLinkModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -267,18 +267,18 @@
                 <form id="quick-link-form" class="space-y-4">
                     <input type="hidden" id="ql-id">
                     <div>
-                        <label for="ql-title" class="block text-sm font-medium text-gray-700">Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="ql-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="ql-title" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Title <span class="text-red-500">*</span></label>
+                        <input type="text" id="ql-title" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="ql-url" class="block text-sm font-medium text-gray-700">Link / URL <span class="text-red-500">*</span></label>
-                        <input type="url" id="ql-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="ql-url" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Link / URL <span class="text-red-500">*</span></label>
+                        <input type="url" id="ql-url" placeholder="https://..." required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
 
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
-                <button type="button" onclick="closeQuickLinkModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+            <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 bg-slate-50 dark:bg-slate-700 shrink-0">
+                <button type="button" onclick="closeQuickLinkModal()" class="bg-white dark:bg-slate-800 py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Cancel</button>
                 <button type="button" onclick="saveQuickLink(event)" class="bg-primary-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-white hover:bg-primary-700" id="save-ql-btn">Save</button>
             </div>
         </div>
@@ -286,10 +286,10 @@
 
     <!-- Add/Edit Event Modal -->
     <div id="event-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="modal-title">Add New Content</h3>
-                <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="modal-title">Add New Content</h3>
+                <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -299,31 +299,31 @@
                     <input type="hidden" id="event-item-type" value="task">
                     
                     <div>
-                        <label for="event-title" class="block text-sm font-medium text-gray-700">Task / Event Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="event-title" maxlength="100" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="event-title" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Task / Event Title <span class="text-red-500">*</span></label>
+                        <input type="text" id="event-title" maxlength="100" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div class="flex space-x-4">
                         <div class="flex-1">
-                            <label for="event-start-date" class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label for="event-start-date" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="event-start-date" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="flex-1" id="event-end-date-container">
-                            <label for="event-end-date" class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="event-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label for="event-end-date" class="block text-sm font-medium text-gray-700 dark:text-slate-300">End Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="event-end-date" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                     </div>
 
                     <div id="document-link-container">
-                        <label for="event-document-link" class="block text-sm font-medium text-gray-700">Document Link</label>
-                        <input type="url" id="event-document-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="event-document-link" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Document Link</label>
+                        <input type="url" id="event-document-link" placeholder="https://..." class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
 
                     <div id="image-link-container" style="display: none;">
-                        <label for="event-image-link" class="block text-sm font-medium text-gray-700">Image URL <span class="text-xs text-gray-500">(Optional)</span></label>
-                        <input type="url" id="event-image-link" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="event-image-link" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Image URL <span class="text-xs text-gray-500 dark:text-slate-400">(Optional)</span></label>
+                        <input type="url" id="event-image-link" placeholder="https://..." class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div id="campaign-type-container">
-                        <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
+                        <label for="event-campaign-type" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Type <span class="text-red-500">*</span></label>
                         <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="All">All</option>
                             <option value="Game Promotion">Game Promotion</option>
@@ -334,14 +334,14 @@
                         </select>
                     </div>
                     <div id="assignees-container">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Assign To (Team) <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Assign To (Team) <span class="text-red-500">*</span></label>
                         <div class="space-y-2" id="assignee-checkboxes"></div>
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
+            <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 bg-slate-50 dark:bg-slate-700 shrink-0">
                 <button type="button" id="delete-btn" style="display: none;" onclick="deleteTask(document.getElementById('event-id').value)" class="bg-red-50 text-red-600 hover:bg-red-100 py-2 px-4 border border-red-200 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium mr-auto">Delete</button>
-                <button type="button" onclick="closeAddModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+                <button type="button" onclick="closeAddModal()" class="bg-white dark:bg-slate-800 py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Cancel</button>
                 <button type="button" onclick="saveEvent(event)" class="bg-primary-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-white hover:bg-primary-700" id="save-btn">Save</button>
             </div>
         </div>
@@ -349,10 +349,10 @@
 
     <!-- Budget Add/Edit Modal -->
     <div id="budget-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="budget-modal-title">Add Budget Entry</h3>
-                <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="budget-modal-title">Add Budget Entry</h3>
+                <button onclick="closeBudgetModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -360,15 +360,15 @@
                 <form id="budget-form" class="space-y-4">
                     <input type="hidden" id="budget-id">
                     <div>
-                        <label for="budget-name" class="block text-sm font-medium text-gray-700">Campaign / Project Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="budget-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="budget-name" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign / Project Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="budget-name" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="budget-month" class="block text-sm font-medium text-gray-700">Campaign Date <span class="text-red-500">*</span></label>
-                        <input type="month" id="budget-month" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="budget-month" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Date <span class="text-red-500">*</span></label>
+                        <input type="month" id="budget-month" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
+                        <label for="budget-type" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Budget Type <span class="text-red-500">*</span></label>
                         <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="Campaign Expenses">Campaign Expenses</option>
                             <option value="Offline Rewards">Offline Rewards</option>
@@ -376,8 +376,8 @@
                         </select>
                     </div>
 
-                    <div class="border-t border-slate-200 pt-4 mt-4">
-                        <label class="block text-sm font-bold text-gray-900 mb-2">Items <span class="text-red-500">*</span></label>
+                    <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900 dark:text-white mb-2">Items <span class="text-red-500">*</span></label>
                         <div id="budget-items-container" class="space-y-3">
                             <!-- Items will be injected here -->
                         </div>
@@ -386,16 +386,16 @@
                         </button>
                     </div>
 
-                    <div class="border-t border-slate-200 pt-4 mt-4">
-                        <label class="block text-sm font-bold text-gray-900">Allocated Budget</label>
+                    <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
+                        <label class="block text-sm font-bold text-gray-900 dark:text-white">Allocated Budget</label>
                         <div class="mt-1 text-xl font-bold text-primary-600" id="budget-allocated-display">₱0.00</div>
                         <input type="hidden" id="budget-allocated" value="0">
                         <input type="hidden" id="budget-spent" value="0">
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
-                <button type="button" onclick="closeBudgetModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+            <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 bg-slate-50 dark:bg-slate-700 shrink-0">
+                <button type="button" onclick="closeBudgetModal()" class="bg-white dark:bg-slate-800 py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Cancel</button>
                 <button type="button" onclick="saveBudgetEntry(event)" class="bg-primary-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-white hover:bg-primary-700" id="save-budget-btn">Save Entry</button>
             </div>
         </div>
@@ -403,53 +403,53 @@
 
     <!-- Right Drawer for Task Checklist Progress -->
     <div id="drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeTaskDrawer()"></div>
-    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60">
-        <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-start bg-slate-50 shrink-0">
-            <h2 id="drawer-title" class="text-xl font-bold text-gray-900 leading-tight pr-4">Task Title</h2>
+    <div id="task-drawer" class="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60 dark:border-slate-700">
+        <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-start bg-slate-50 dark:bg-slate-700 shrink-0">
+            <h2 id="drawer-title" class="text-xl font-bold text-gray-900 dark:text-white leading-tight pr-4">Task Title</h2>
             <button onclick="closeTaskDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
-        <div class="px-6 py-5 border-b border-slate-200/60 shrink-0">
+        <div class="px-6 py-5 border-b border-slate-200/60 dark:border-slate-700 shrink-0">
             <div class="flex justify-between items-end mb-2">
-                <span class="text-sm font-medium text-gray-700">Overall Progress</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-slate-300">Overall Progress</span>
                 <span id="drawer-progress-text" class="text-lg font-bold text-primary-600">0.00%</span>
             </div>
             <div class="w-full bg-slate-100 rounded-full h-2.5">
                 <div id="drawer-progress-bar" class="bg-primary-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
         </div>
-        <div class="p-6 flex-1 overflow-y-auto bg-white">
-            <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Checklist Items</h4>
+        <div class="p-6 flex-1 overflow-y-auto bg-white dark:bg-slate-800">
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Checklist Items</h4>
             <div id="drawer-checklist" class="space-y-0"></div>
         </div>
     </div>
 
     <!-- Right Drawer for View All Budgets -->
     <div id="budget-drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeBudgetDrawer()"></div>
-    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60">
-        <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center bg-slate-50 shrink-0">
-            <h2 class="text-lg font-bold text-gray-900 leading-tight">All Months Budget</h2>
+    <div id="budget-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60 dark:border-slate-700">
+        <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700 shrink-0">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">All Months Budget</h2>
             <button onclick="closeBudgetDrawer()" class="text-gray-400 hover:text-gray-600 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
-        <div class="p-4 border-b border-slate-200/60 shrink-0 bg-white">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Select Year</label>
+        <div class="p-4 border-b border-slate-200/60 dark:border-slate-700 shrink-0 bg-white dark:bg-slate-800">
+            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Select Year</label>
             <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 focus:ring-primary-500 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600"></select>
         </div>
-        <div class="p-0 flex-1 overflow-y-auto bg-slate-50" id="budget-drawer-content"></div>
+        <div class="p-0 flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-700" id="budget-drawer-content"></div>
     </div>
 
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
     <!-- Tooltip Modal for Events -->
-    <div id="event-hover-tooltip" class="fixed z-50 hidden flex flex-col bg-white rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none">
-        <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 mb-2 truncate shrink-0"></h4>
+    <div id="event-hover-tooltip" class="fixed z-50 hidden flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-xl shadow-slate-200/50 border border-slate-200/60 dark:border-slate-700 p-4 max-w-[700px] transform transition-opacity duration-200 opacity-0 pointer-events-none">
+        <h4 id="tooltip-title" class="text-sm font-bold text-gray-900 dark:text-white mb-2 truncate shrink-0"></h4>
         <div id="tooltip-image-container" class="hidden w-full h-[600px] min-h-0 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center">
             <img id="tooltip-image" src="" alt="Event Image" class="w-full h-full object-contain">
         </div>
-        <p id="tooltip-date" class="text-xs text-gray-500 mt-2 shrink-0"></p>
+        <p id="tooltip-date" class="text-xs text-gray-500 dark:text-slate-400 mt-2 shrink-0"></p>
     </div>
 
     <!-- FIREBASE INTEGRATION SCRIPT -->
@@ -458,72 +458,72 @@
 
     <!-- Daily Task Details Modal -->
     <div id="daily-task-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Daily Task Details</h3>
-                <button onclick="closeDailyTaskDetails()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Daily Task Details</h3>
+                <button onclick="closeDailyTaskDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <div class="flex justify-between items-start">
                         <div>
-                            <h4 class="text-xl font-bold text-gray-900" id="detail-task-title">Task Title</h4>
-                            <p class="text-sm text-gray-500" id="detail-event-title">Event Title</p>
+                            <h4 class="text-xl font-bold text-gray-900 dark:text-white" id="detail-task-title">Task Title</h4>
+                            <p class="text-sm text-gray-500 dark:text-slate-400" id="detail-event-title">Event Title</p>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm font-medium text-gray-700">Status:</span>
+                            <span class="text-sm font-medium text-gray-700 dark:text-slate-300">Status:</span>
                             <span id="detail-status-text" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Pending</span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Dates</span>
-                            <div class="mt-1 text-gray-900"><span id="detail-start-date"></span> to <span id="detail-end-date"></span></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Dates</span>
+                            <div class="mt-1 text-gray-900 dark:text-white"><span id="detail-start-date"></span> to <span id="detail-end-date"></span></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requestor</span>
-                            <div class="mt-1 text-gray-900 flex items-center">
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Requestor</span>
+                            <div class="mt-1 text-gray-900 dark:text-white flex items-center">
                                 <i class="fa-solid fa-user-circle text-gray-400 mr-1.5"></i> <span id="detail-requestor"></span>
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Linked Task</span>
-                            <div class="mt-1 text-gray-900 font-medium" id="detail-linked-task"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Linked Task</span>
+                            <div class="mt-1 text-gray-900 dark:text-white font-medium" id="detail-linked-task"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Description</span>
-                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-task-desc"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Description</span>
+                            <div class="mt-1 text-gray-900 dark:text-white whitespace-pre-wrap" id="detail-task-desc"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template Title</span>
-                            <div class="mt-1 text-gray-900" id="detail-template-title"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Template Title</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-template-title"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template ID</span>
-                            <div class="mt-1 text-gray-900 font-mono text-xs" id="detail-template-id"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Template ID</span>
+                            <div class="mt-1 text-gray-900 dark:text-white font-mono text-xs" id="detail-template-id"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Template Caption</span>
-                            <div class="mt-1 text-gray-900 italic" id="detail-template-caption"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Template Caption</span>
+                            <div class="mt-1 text-gray-900 dark:text-white italic" id="detail-template-caption"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Hashtags</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Hashtags</span>
                             <div class="mt-1 text-primary-600 font-medium" id="detail-hashtags"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Linked Post URL</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Linked Post URL</span>
                             <div class="mt-1"><a href="#" id="detail-linked-post" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Document Link</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Document Link</span>
                             <div class="mt-1"><a href="#" id="detail-doc-link" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
                     </div>
 
-                    <div class="pt-4 mt-4 border-t border-slate-200">
+                    <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
                          <span class="text-xs text-gray-400">Created: <span id="detail-created-time"></span></span>
                     </div>
                 </div>
@@ -533,34 +533,34 @@
 
     <!-- Budget Details Modal -->
     <div id="budget-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0 bg-slate-50">
-                <h3 class="text-lg font-bold text-gray-900" id="budget-details-name">Budget Details</h3>
-                <button onclick="closeBudgetDetails()" class="text-gray-400 hover:text-gray-500 transition-colors">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-md w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-700">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="budget-details-name">Budget Details</h3>
+                <button onclick="closeBudgetDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400 transition-colors">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
             <div class="p-6 overflow-y-auto max-h-[70vh]">
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div>
-                        <span class="block text-xs font-semibold text-gray-500 uppercase">Month</span>
-                        <div class="mt-1 text-sm text-gray-900" id="budget-details-month"></div>
+                        <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Month</span>
+                        <div class="mt-1 text-sm text-gray-900 dark:text-white" id="budget-details-month"></div>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-gray-500 uppercase">Type</span>
-                        <div class="mt-1 text-sm text-gray-900" id="budget-details-type"></div>
+                        <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Type</span>
+                        <div class="mt-1 text-sm text-gray-900 dark:text-white" id="budget-details-type"></div>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-gray-500 uppercase">Created At</span>
-                        <div class="mt-1 text-sm text-gray-900" id="budget-details-created-at"></div>
+                        <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Created At</span>
+                        <div class="mt-1 text-sm text-gray-900 dark:text-white" id="budget-details-created-at"></div>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-gray-500 uppercase">Owner</span>
-                        <div class="mt-1 text-sm text-gray-900" id="budget-details-owner"></div>
+                        <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Owner</span>
+                        <div class="mt-1 text-sm text-gray-900 dark:text-white" id="budget-details-owner"></div>
                     </div>
                 </div>
-                <div class="border-t border-slate-200/60 pt-4">
-                    <h4 class="text-sm font-bold text-gray-900 mb-3 flex justify-between"><span>Total Allocated:</span> <span class="text-primary-600" id="budget-details-allocated"></span></h4>
+                <div class="border-t border-slate-200/60 dark:border-slate-700 pt-4">
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3 flex justify-between"><span>Total Allocated:</span> <span class="text-primary-600" id="budget-details-allocated"></span></h4>
                     <ul id="budget-details-items-list" class="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden shadow-sm"></ul>
                 </div>
             </div>
@@ -569,10 +569,10 @@
 
     <!-- Pin Action Modal -->
     <div id="pin-action-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Pin Details</h3>
-                <button onclick="closePinActionModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pin Details</h3>
+                <button onclick="closePinActionModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -580,21 +580,21 @@
                 <form id="pin-action-form" class="space-y-4">
                     <input type="hidden" id="pa-id">
                     <div>
-                        <label for="pa-page" class="block text-sm font-medium text-gray-700">Page <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-page" min="1" max="2" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="pa-page" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Page <span class="text-red-500">*</span></label>
+                        <input type="number" id="pa-page" min="1" max="2" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="pa-position" class="block text-sm font-medium text-gray-700">Position <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-position" min="1" max="10" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="pa-position" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Position <span class="text-red-500">*</span></label>
+                        <input type="number" id="pa-position" min="1" max="10" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="pa-sort" class="block text-sm font-medium text-gray-700">Sort <span class="text-red-500">*</span></label>
-                        <input type="number" id="pa-sort" min="1" max="3" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="pa-sort" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Sort <span class="text-red-500">*</span></label>
+                        <input type="number" id="pa-sort" min="1" max="3" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closePinActionModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePinActionModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="button" onclick="window.savePinAction()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors" id="save-pa-btn">
@@ -606,10 +606,10 @@
 
     <!-- Pin Request Modal -->
     <div id="pin-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="pin-request-modal-title">Create Pin Request</h3>
-                <button onclick="closePinRequestModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="pin-request-modal-title">Create Pin Request</h3>
+                <button onclick="closePinRequestModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -619,21 +619,21 @@
                     <form id="pin-request-form" class="space-y-4" onsubmit="event.preventDefault(); window.savePinRequest();">
                         <input type="hidden" id="pr-id">
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-200 pb-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-200 dark:border-slate-700 pb-4">
                             <div class="sm:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Campaign / Game Name <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign / Game Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="pr-campaign-name" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="pr-start-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Start Date <span class="text-red-500">*</span></label>
+                                <input type="datetime-local" id="pr-start-date" required onchange="window.renderModalTimeline()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                                <input type="datetime-local" id="pr-end-date" required onchange="window.renderModalTimeline()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">End Date <span class="text-red-500">*</span></label>
+                                <input type="datetime-local" id="pr-end-date" required onchange="window.renderModalTimeline()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Category <span class="text-red-500">*</span></label>
                                 <select id="pr-category" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                     <option value="PGC">PGC</option>
                                     <option value="UGC">UGC</option>
@@ -642,7 +642,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Priority <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Priority <span class="text-red-500">*</span></label>
                                 <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                     <option value="High">High</option>
                                     <option value="Medium">Medium</option>
@@ -650,35 +650,35 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Post ID <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-post-id" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Post ID <span class="text-red-500">*</span></label>
+                                <input type="text" id="pr-post-id" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Post Title <span class="text-red-500">*</span></label>
-                                <input type="text" id="pr-post-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Post Title <span class="text-red-500">*</span></label>
+                                <input type="text" id="pr-post-title" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Remarks</label>
-                                <textarea id="pr-remark" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Remarks</label>
+                                <textarea id="pr-remark" rows="2" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
                             </div>
                         </div>
 
                         <!-- Pin Settings Section -->
                         <div class="pt-2 hidden" id="pr-pin-settings-container">
-                            <h4 class="text-md font-bold text-gray-900 mb-3">Pin Settings</h4>
+                            <h4 class="text-md font-bold text-gray-900 dark:text-white mb-3">Pin Settings</h4>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Page</label>
-                                    <input type="number" id="pr-page" min="1" max="2" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Page</label>
+                                    <input type="number" id="pr-page" min="1" max="2" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Position</label>
-                                    <input type="number" id="pr-position" min="1" max="10" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Position</label>
+                                    <input type="number" id="pr-position" min="1" max="10" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Sort/Refresh Round</label>
-                                    <input type="number" id="pr-sort" min="1" max="3" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Sort/Refresh Round</label>
+                                    <input type="number" id="pr-sort" min="1" max="3" onchange="window.updateSelectedPosition()" class="mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800">
                                 </div>
                             </div>
                             <div class="mt-4 text-sm font-medium text-primary-700">
@@ -689,31 +689,31 @@
                 </div>
 
                 <!-- Right Column (Slot Availability) -->
-                <div class="flex-[1.5] bg-slate-50 rounded-xl p-4 border border-slate-200/60 shadow-inner flex flex-col h-[600px] hidden" id="pr-slot-availability-container">
+                <div class="flex-[1.5] bg-slate-50 dark:bg-slate-700 rounded-xl p-4 border border-slate-200/60 dark:border-slate-700 shadow-inner flex flex-col h-[600px] hidden" id="pr-slot-availability-container">
                     <div class="flex justify-between items-center mb-1">
-                        <h4 class="text-md font-bold text-gray-900">Slot Availability</h4>
+                        <h4 class="text-md font-bold text-gray-900 dark:text-white">Slot Availability</h4>
                         <div class="flex items-center space-x-2">
-                            <label class="text-xs font-medium text-gray-700">Start Date:</label>
-                            <input type="date" id="modal-timeline-start-date" class="border border-gray-300 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
+                            <label class="text-xs font-medium text-gray-700 dark:text-slate-300">Start Date:</label>
+                            <input type="date" id="modal-timeline-start-date" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 border border-gray-300 dark:border-slate-600 rounded-md py-1 px-2 text-xs" onchange="window.renderModalTimeline()">
                         </div>
                     </div>
-                    <p class="text-xs text-gray-500 mb-3">View 7-day slot availability starting from the selected date</p>
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mb-3">View 7-day slot availability starting from the selected date</p>
 
                     <!-- Legend -->
                     <div class="flex space-x-4 mb-3 text-xs text-gray-600">
-                        <div class="flex items-center"><span class="w-3 h-3 bg-white border border-gray-300 rounded-sm inline-block mr-1"></span>Available</div>
+                        <div class="flex items-center"><span class="w-3 h-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-sm inline-block mr-1"></span>Available</div>
                         <div class="flex items-center"><span class="w-3 h-3 bg-red-100 border border-red-200 rounded-sm inline-block mr-1"></span>Occupied</div>
                         <div class="flex items-center"><span class="w-3 h-3 border-2 border-primary-500 bg-primary-50 rounded-sm inline-block mr-1"></span>Selected</div>
                     </div>
 
-                    <div class="flex-1 overflow-auto border border-gray-200 bg-white rounded-lg relative" id="modal-timeline-container">
+                    <div class="flex-1 overflow-auto border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg relative" id="modal-timeline-container">
                         <div class="text-center py-10 text-gray-400 text-sm">Select start and end dates to view availability</div>
                     </div>
                 </div>
             </div>
 
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePinRequestModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="submit" form="pin-request-form" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors" id="save-pr-btn">
@@ -724,10 +724,10 @@
     </div>
     <!-- Daily Task Request Modal -->
     <div id="daily-task-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="daily-task-modal-title">Create Daily Task Request</h3>
-                <button onclick="closeDailyTaskModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="daily-task-modal-title">Create Daily Task Request</h3>
+                <button onclick="closeDailyTaskModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -736,66 +736,66 @@
                     <input type="hidden" id="dt-id">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Event Title <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-event-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Event Title <span class="text-red-500">*</span></label>
+                            <input type="text" id="dt-event-title" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Start Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="dt-start-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Start Date <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" step="1" id="dt-start-date" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">End Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="dt-end-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">End Date <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" step="1" id="dt-end-date" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Task Title <span class="text-red-500">*</span></label>
-                            <input type="text" id="dt-task-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Task Title <span class="text-red-500">*</span></label>
+                            <input type="text" id="dt-task-title" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Linked Task</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Linked Task</label>
                             <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm cursor-pointer dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="">None</option>
                             </select>
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Task Description</label>
-                            <textarea id="dt-task-desc" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Task Description</label>
+                            <textarea id="dt-task-desc" rows="3" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Template Title</label>
-                            <input type="text" id="dt-template-title" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Template Title</label>
+                            <input type="text" id="dt-template-title" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Template ID</label>
-                            <input type="text" id="dt-template-id" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Template ID</label>
+                            <input type="text" id="dt-template-id" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Template Caption</label>
-                            <textarea id="dt-template-caption" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Template Caption</label>
+                            <textarea id="dt-template-caption" rows="2" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Hashtags</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Hashtags</label>
                             <div class="flex flex-wrap mb-1" id="dt-hashtags-container"></div>
                             <div class="flex mt-1">
-                                <input type="text" id="dt-hashtag-input" placeholder="Type hashtag and press Enter or Add" onkeydown="if(event.key === 'Enter') { event.preventDefault(); window.addDTHashtag(); }" class="block w-full border border-gray-300 rounded-l-xl shadow-md py-2 px-3 sm:text-sm">
+                                <input type="text" id="dt-hashtag-input" placeholder="Type hashtag and press Enter or Add" onkeydown="if(event.key === 'Enter') { event.preventDefault(); window.addDTHashtag(); }" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full border border-gray-300 dark:border-slate-600 rounded-l-xl shadow-md py-2 px-3 sm:text-sm">
                                 <button type="button" onclick="window.addDTHashtag()" class="bg-primary-600 text-white px-3 py-2 rounded-r-xl hover:bg-primary-700"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Linked Post URL</label>
-                            <input type="url" id="dt-linked-post" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Linked Post URL</label>
+                            <input type="url" id="dt-linked-post" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Document Link</label>
-                            <input type="url" id="dt-doc-link" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Document Link</label>
+                            <input type="url" id="dt-doc-link" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
 
 
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closeDailyTaskModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="button" onclick="window.saveDailyTask()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors">
@@ -808,10 +808,10 @@
 
     <!-- Copy Writer Request Modal -->
     <div id="cw-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="cw-request-modal-title">Create Copy Writer Request</h3>
-                <button onclick="closeCWRequestModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="cw-request-modal-title">Create Copy Writer Request</h3>
+                <button onclick="closeCWRequestModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -822,45 +822,45 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="cwr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="cwr-campaign-name" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
-                        <div class="md:col-span-2 mt-2 border-t border-slate-200/60 pt-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Support Type <span class="text-red-500">*</span></label>
+                        <div class="md:col-span-2 mt-2 border-t border-slate-200/60 dark:border-slate-700 pt-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Support Type <span class="text-red-500">*</span></label>
                             <div class="flex items-center space-x-6">
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="cwr-support-type" value="Content Writers" required class="text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300">
-                                    <span class="ml-2 text-sm text-gray-700">Content Writers</span>
+                                    <input type="radio" name="cwr-support-type" value="Content Writers" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300 dark:border-slate-600">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Content Writers</span>
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="cwr-support-type" value="UGC" class="text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300">
-                                    <span class="ml-2 text-sm text-gray-700">UGC</span>
+                                    <input type="radio" name="cwr-support-type" value="UGC" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300 dark:border-slate-600">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">UGC</span>
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="cwr-support-type" value="Both" class="text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300">
-                                    <span class="ml-2 text-sm text-gray-700">Both</span>
+                                    <input type="radio" name="cwr-support-type" value="Both" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4 border-gray-300 dark:border-slate-600">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Both</span>
                                 </label>
                             </div>
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Campaign File (Link)</label>
-                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign File (Link)</label>
+                            <input type="url" id="cwr-campaign-file" placeholder="http://..." class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Support Start Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Support Start Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-date" required onchange="calculateCWDuration()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Support End Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Support End Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="cwr-support-end-date" required onchange="calculateCWDuration()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Duration (Days)</label>
-                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm cursor-not-allowed">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Duration (Days)</label>
+                            <input type="text" id="cwr-duration" readonly class="mt-1 block w-full bg-slate-100 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm cursor-not-allowed">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Campaign Status <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Status <span class="text-red-500">*</span></label>
                             <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="Upcoming">Upcoming</option>
                                 <option value="Active">Active</option>
@@ -871,64 +871,64 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Priority Level <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Priority Level <span class="text-red-500">*</span></label>
                             <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="S Level">S Level</option>
                                 <option value="A Level">A Level</option>
                             </select>
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Priority Rationale</label>
-                            <input type="text" id="cwr-priority-rationale" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Priority Rationale</label>
+                            <input type="text" id="cwr-priority-rationale" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Posting Requirements</label>
-                            <textarea id="cwr-posting-requirements" rows="2" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Posting Requirements</label>
+                            <textarea id="cwr-posting-requirements" rows="2" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm"></textarea>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Content Format</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Content Format</label>
                             <div class="flex flex-wrap gap-3">
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" name="cwr-content-format" value="Static Image" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-4 w-4">
-                                    <span class="ml-2 text-sm text-gray-700">Static Image</span>
+                                    <input type="checkbox" name="cwr-content-format" value="Static Image" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded border-gray-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Static Image</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" name="cwr-content-format" value="Video with Reaction" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-4 w-4">
-                                    <span class="ml-2 text-sm text-gray-700">Video with Reaction</span>
+                                    <input type="checkbox" name="cwr-content-format" value="Video with Reaction" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded border-gray-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Video with Reaction</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" name="cwr-content-format" value="Gameplay Screenshot" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-4 w-4">
-                                    <span class="ml-2 text-sm text-gray-700">Gameplay Screenshot</span>
+                                    <input type="checkbox" name="cwr-content-format" value="Gameplay Screenshot" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded border-gray-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Gameplay Screenshot</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" name="cwr-content-format" value="Screen Recording" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-4 w-4">
-                                    <span class="ml-2 text-sm text-gray-700">Screen Recording</span>
+                                    <input type="checkbox" name="cwr-content-format" value="Screen Recording" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded border-gray-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 h-4 w-4">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-slate-300">Screen Recording</span>
                                 </label>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Game Configuration</label>
-                            <input type="text" id="cwr-game-configuration" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Game Configuration</label>
+                            <input type="text" id="cwr-game-configuration" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Hashtags (Max 10)</label>
                             <div class="flex flex-wrap mb-1" id="cwr-hashtags-container"></div>
-                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500">
+                            <input type="text" id="cwr-hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleCWhashtagEnter(event)" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full text-sm border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500">
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Special Payout / Credits</label>
-                            <input type="text" id="cwr-special-payout" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Special Payout / Credits</label>
+                            <input type="text" id="cwr-special-payout" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
 
 
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closeCWRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closeCWRequestModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="button" onclick="window.saveCWRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors" id="save-cwr-btn">
@@ -940,10 +940,10 @@
 
     <!-- Prize Distribution Request Modal -->
     <div id="pd-request-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="pd-request-modal-title">Create Prize Distribution Request</h3>
-                <button onclick="closePDRequestModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="pd-request-modal-title">Create Prize Distribution Request</h3>
+                <button onclick="closePDRequestModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -953,26 +953,26 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Campaign Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="pdr-campaign-name" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="pdr-campaign-name" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Event/Campaign Date <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" step="1" id="pdr-event-datetime" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Event/Campaign Date <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" step="1" id="pdr-event-datetime" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Campaign Document Link</label>
-                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Campaign Document Link</label>
+                            <input type="url" id="pdr-campaign-doc" placeholder="http://..." class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Winner List Document Link</label>
-                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Winner List Document Link</label>
+                            <input type="url" id="pdr-winner-list-doc" placeholder="http://..." class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Attachment (Optional)</label>
-                            <div class="mt-1 border-2 border-dashed border-gray-300 rounded-xl px-6 pt-5 pb-6 flex justify-center cursor-not-allowed bg-slate-50">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Attachment (Optional)</label>
+                            <div class="mt-1 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl px-6 pt-5 pb-6 flex justify-center cursor-not-allowed bg-slate-50 dark:bg-slate-700">
                                 <div class="space-y-1 text-center text-gray-400">
                                     <i class="fa-solid fa-paperclip text-3xl mb-2"></i>
                                     <p class="text-sm">Upload attachment (Not functional yet)</p>
@@ -981,29 +981,29 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Budget Amount <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Budget Amount <span class="text-red-500">*</span></label>
                             <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                    <span class="text-gray-500 dark:text-slate-400 sm:text-sm">₱</span>
                                 </div>
-                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                                <input type="number" step="0.01" min="0" id="pdr-budget-amount" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full pl-7 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Actual Amount</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Actual Amount</label>
                             <div class="mt-1 relative rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">₱</span>
+                                    <span class="text-gray-500 dark:text-slate-400 sm:text-sm">₱</span>
                                 </div>
-                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="block w-full pl-7 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                                <input type="number" step="0.01" min="0" id="pdr-actual-amount" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full pl-7 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                             </div>
                         </div>
 
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closePDRequestModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDRequestModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="button" onclick="window.savePDRequest()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors" id="save-pdr-btn">
@@ -1015,70 +1015,70 @@
 
     <!-- Pin Request Details Modal -->
     <div id="pin-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Pin Request Details</h3>
-                <button onclick="closePinRequestDetails()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pin Request Details</h3>
+                <button onclick="closePinRequestDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign / Game Name</span>
-                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-pr-campaign-name"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign / Game Name</span>
+                            <div class="mt-1 text-gray-900 dark:text-white text-lg font-bold" id="detail-pr-campaign-name"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Start Date</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-start-date"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Start Date</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-start-date"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">End Date</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-end-date"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">End Date</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-end-date"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Category</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-category"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Category</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-category"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-priority"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Priority</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-priority"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Post ID</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-post-id"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Post ID</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-post-id"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Post Title</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-post-title"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Post Title</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-post-title"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Owner</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-owner"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Owner</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-owner"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Status</span>
-                            <div class="mt-1 text-gray-900" id="detail-pr-status"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Status</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-status"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Remark / Reason</span>
-                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-pr-remark"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Remark / Reason</span>
+                            <div class="mt-1 text-gray-900 dark:text-white whitespace-pre-wrap" id="detail-pr-remark"></div>
                         </div>
-                        <div class="sm:col-span-2 mt-4 pt-4 border-t border-slate-200">
-                            <h4 class="text-sm font-bold text-gray-900 mb-3">Pin Settings</h4>
+                        <div class="sm:col-span-2 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                            <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Pin Settings</h4>
                             <div class="grid grid-cols-3 gap-4">
                                 <div>
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Page</span>
-                                    <div class="mt-1 text-gray-900" id="detail-pr-page"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Page</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-page"></div>
                                 </div>
                                 <div>
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Position</span>
-                                    <div class="mt-1 text-gray-900" id="detail-pr-position"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Position</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-position"></div>
                                 </div>
                                 <div>
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Sort</span>
-                                    <div class="mt-1 text-gray-900" id="detail-pr-sort"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Sort</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-pr-sort"></div>
                                 </div>
                             </div>
                         </div>
@@ -1090,76 +1090,76 @@
 
     <!-- Copy Writer Request Details Modal -->
     <div id="cw-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Copy Writer Request Details</h3>
-                <button onclick="closeCWRequestDetails()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Copy Writer Request Details</h3>
+                <button onclick="closeCWRequestDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Name</span>
-                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-cwr-campaign-name"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign Name</span>
+                            <div class="mt-1 text-gray-900 dark:text-white text-lg font-bold" id="detail-cwr-campaign-name"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requested By</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-requested-by"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Requested By</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-requested-by"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Request Status</span>
-                            <div class="mt-1 text-gray-900"><span id="cw-details-request-status">-</span></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Request Status</span>
+                            <div class="mt-1 text-gray-900 dark:text-white"><span id="cw-details-request-status">-</span></div>
                             <input type="hidden" id="cw-details-id" value="">
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Status</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-campaign-status"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign Status</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-campaign-status"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support Type</span>
-                            <div class="mt-1 text-gray-900 font-medium" id="detail-cwr-support-type"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Support Type</span>
+                            <div class="mt-1 text-gray-900 dark:text-white font-medium" id="detail-cwr-support-type"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign File (Link)</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign File (Link)</span>
                             <div class="mt-1"><a href="#" id="detail-cwr-campaign-file" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support Start Date</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-support-date"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Support Start Date</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-support-date"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Support End Date</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-support-end-date"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Support End Date</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-support-end-date"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority Level</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-priority-level"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Priority Level</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-priority-level"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Priority Rationale</span>
-                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-cwr-priority-rationale"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Priority Rationale</span>
+                            <div class="mt-1 text-gray-900 dark:text-white whitespace-pre-wrap" id="detail-cwr-priority-rationale"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Posting Requirements</span>
-                            <div class="mt-1 text-gray-900 whitespace-pre-wrap" id="detail-cwr-posting-requirements"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Posting Requirements</span>
+                            <div class="mt-1 text-gray-900 dark:text-white whitespace-pre-wrap" id="detail-cwr-posting-requirements"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Content Format</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-content-format"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Content Format</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-content-format"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Game Configuration</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-game-configuration"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Game Configuration</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-game-configuration"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Official Hashtags</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Official Hashtags</span>
                             <div class="mt-1 text-primary-600 font-medium" id="detail-cwr-hashtags"></div>
                         </div>
                         <div class="md:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Special Payout / Credits</span>
-                            <div class="mt-1 text-gray-900" id="detail-cwr-special-payout"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Special Payout / Credits</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-cwr-special-payout"></div>
                         </div>
 
                     </div>
@@ -1170,47 +1170,47 @@
 
     <!-- Prize Distribution Request Details Modal -->
     <div id="pd-request-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Prize Distribution Request Details</h3>
-                <button onclick="closePDRequestDetails()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Prize Distribution Request Details</h3>
+                <button onclick="closePDRequestDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div class="sm:col-span-1">
-                                <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Name</span>
-                                <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-pdr-campaign-name"></div>
+                                <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign Name</span>
+                                <div class="mt-1 text-gray-900 dark:text-white text-lg font-bold" id="detail-pdr-campaign-name"></div>
                             </div>
                             <div class="sm:col-span-1">
-                                <span class="block text-xs font-semibold text-gray-500 uppercase">Event/Campaign Date</span>
-                                <div class="mt-1 text-gray-900" id="detail-pdr-event-datetime"></div>
+                                <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Event/Campaign Date</span>
+                                <div class="mt-1 text-gray-900 dark:text-white" id="detail-pdr-event-datetime"></div>
                             </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Requested By</span>
-                            <div class="mt-1 text-gray-900" id="detail-pdr-requested-by"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Requested By</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pdr-requested-by"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Status</span>
-                            <div class="mt-1 text-gray-900" id="detail-pdr-status"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Status</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-pdr-status"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Campaign Document Link</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Campaign Document Link</span>
                             <div class="mt-1"><a href="#" id="detail-pdr-campaign-doc" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Winner List Document Link</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Winner List Document Link</span>
                             <div class="mt-1"><a href="#" id="detail-pdr-winner-list-doc" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Budget Amount</span>
-                            <div class="mt-1 text-gray-900 font-bold" id="detail-pdr-budget-amount"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Budget Amount</span>
+                            <div class="mt-1 text-gray-900 dark:text-white font-bold" id="detail-pdr-budget-amount"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Actual Amount</span>
-                            <div class="mt-1 text-gray-900 font-bold" id="detail-pdr-actual-amount"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Actual Amount</span>
+                            <div class="mt-1 text-gray-900 dark:text-white font-bold" id="detail-pdr-actual-amount"></div>
                         </div>
                     </div>
                 </div>
@@ -1221,10 +1221,10 @@
 
     <!-- Prize Distribution Complete Modal -->
     <div id="pd-complete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Confirm Completion</h3>
-                <button onclick="closePDCompleteModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Confirm Completion</h3>
+                <button onclick="closePDCompleteModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -1232,8 +1232,8 @@
                 <input type="hidden" id="pdc-id">
                 <p class="text-sm text-gray-600">Are you sure you want to mark this prize distribution request as completed?</p>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end space-x-3 shrink-0">
-                <button type="button" onclick="closePDCompleteModal()" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-slate-50 transition-colors">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 shrink-0">
+                <button type="button" onclick="closePDCompleteModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-xl text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                     Cancel
                 </button>
                 <button type="button" onclick="savePDComplete()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors" id="save-pdc-btn">
@@ -1246,10 +1246,10 @@
 
     <!-- User Profile Modal -->
     <div id="user-profile-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">Select User Profile</h3>
-                <button onclick="closeUserProfileModal()" class="text-gray-400 hover:text-gray-500" id="close-user-profile-btn">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-sm w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Select User Profile</h3>
+                <button onclick="closeUserProfileModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400" id="close-user-profile-btn">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -1270,7 +1270,7 @@
                     <option value="Humphrey">Humphrey</option>
                 </select>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end shrink-0">
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end shrink-0">
                 <button type="button" onclick="saveUserProfile()" class="px-4 py-2 border border-transparent shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition-colors w-full">
                     Save Profile
                 </button>
@@ -1281,45 +1281,45 @@
 
     <!-- SMS Modal -->
     <div id="sms-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-        <div class="relative mx-auto p-6 border w-full max-w-lg shadow-2xl rounded-2xl bg-white m-4">
+        <div class="relative mx-auto p-6 border w-full max-w-lg shadow-2xl rounded-2xl bg-white dark:bg-slate-800 m-4">
             <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-gray-900" id="sms-modal-title">Create SMS Request</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="sms-modal-title">Create SMS Request</h3>
                 <button onclick="window.closeSMSModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <form id="sms-modal-form" onsubmit="window.saveSMSRequest(event)" class="space-y-4">
                 <input type="hidden" id="sms-id">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Event/Campaign Title <span class="text-red-500">*</span></label>
-                    <input type="text" id="sms-campaign-name" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event/Campaign Title <span class="text-red-500">*</span></label>
+                    <input type="text" id="sms-campaign-name" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-shadow">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Event Date and Time <span class="text-red-500">*</span></label>
-                                <input type="text" id="sms-event-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event Date and Time <span class="text-red-500">*</span></label>
+                                <input type="text" id="sms-event-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">End Date and Time</label>
-                                <input type="text" id="sms-end-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">End Date and Time</label>
+                                <input type="text" id="sms-end-datetime" placeholder="YYYY-MM-DD HH:MM:SS" pattern="\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                             </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Budget (PHP) <span class="text-red-500">*</span></label>
-                        <input type="number" id="sms-budget" step="0.01" min="0" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Budget (PHP) <span class="text-red-500">*</span></label>
+                        <input type="number" id="sms-budget" step="0.01" min="0" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Event/Campaign Document Link <span class="text-red-500">*</span></label>
-                    <input type="url" id="sms-doc-link" required placeholder="https://example.com/doc" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Event/Campaign Document Link <span class="text-red-500">*</span></label>
+                    <input type="url" id="sms-doc-link" required placeholder="https://example.com/doc" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Short Link <span class="text-red-500">*</span></label>
-                    <input type="url" id="sms-short-link" required placeholder="https://bp.plus/r/y4a" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Short Link <span class="text-red-500">*</span></label>
+                    <input type="url" id="sms-short-link" required placeholder="https://bp.plus/r/y4a" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
                 <div class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Requested By <span class="text-red-500">*</span></label>
-                    <input type="text" id="sms-requestor" required readonly class="w-full px-3 py-2 border border-gray-200 bg-gray-50 rounded-xl text-gray-600 cursor-not-allowed">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Requested By <span class="text-red-500">*</span></label>
+                    <input type="text" id="sms-requestor" required readonly class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-700 rounded-xl text-gray-600 cursor-not-allowed">
                 </div>
                 <div class="flex justify-end pt-4 space-x-3 border-t border-slate-100">
-                    <button type="button" onclick="window.closeSMSModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
+                    <button type="button" onclick="window.closeSMSModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none transition-colors">Cancel</button>
                     <button type="submit" class="px-4 py-2 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors shadow-primary-200">Save Request</button>
                 </div>
             </form>
@@ -1329,37 +1329,37 @@
 
     <!-- SMS Complete Modal -->
     <div id="sms-complete-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="relative mx-auto p-6 border w-full max-w-md shadow-2xl rounded-2xl bg-white m-4">
+        <div class="relative mx-auto p-6 border w-full max-w-md shadow-2xl rounded-2xl bg-white dark:bg-slate-800 m-4">
             <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-gray-900">Complete SMS Request</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Complete SMS Request</h3>
                 <button onclick="window.closeSMSCompleteModal()" class="text-gray-400 hover:text-gray-600 transition-colors"><i class="fa-solid fa-times text-xl"></i></button>
             </div>
             <form id="sms-complete-form" onsubmit="event.preventDefault(); window.submitSMSComplete();" class="space-y-4">
                 <input type="hidden" id="smsc-id">
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Number of Users Clicked <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-clicked" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Number of Users Clicked <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-clicked" min="0" required oninput="window.calcSMSRate()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Actual Number Of Recipients <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-recipients" min="0" required oninput="window.calcSMSRate()" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Actual Number Of Recipients <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-recipients" min="0" required oninput="window.calcSMSRate()" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Login Rate</label>
-                    <input type="text" id="smsc-rate" readonly class="w-full px-3 py-2 border border-gray-200 rounded-xl bg-gray-50 text-primary-600 font-bold focus:outline-none cursor-not-allowed">
-                    <p class="text-[10px] text-gray-500 mt-1">Automatically computed: (Users Clicked / Recipients) * 100</p>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Login Rate</label>
+                    <input type="text" id="smsc-rate" readonly class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50 dark:bg-slate-700 text-primary-600 font-bold focus:outline-none cursor-not-allowed">
+                    <p class="text-[10px] text-gray-500 dark:text-slate-400 mt-1">Automatically computed: (Users Clicked / Recipients) * 100</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Actual Budget Used (PHP) <span class="text-red-500">*</span></label>
-                    <input type="number" id="smsc-actual-budget" min="0" step="0.01" required class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Actual Budget Used (PHP) <span class="text-red-500">*</span></label>
+                    <input type="number" id="smsc-actual-budget" min="0" step="0.01" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow">
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-5 border-t border-slate-100 mt-6">
-                    <button type="button" onclick="window.closeSMSCompleteModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors">Cancel</button>
+                    <button type="button" onclick="window.closeSMSCompleteModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none transition-colors">Cancel</button>
                     <button type="submit" class="px-4 py-2 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">Confirm Completion</button>
                 </div>
             </form>
@@ -1368,78 +1368,78 @@
 
     <!-- SMS Details Modal -->
     <div id="sms-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">SMS Request Details</h3>
-                <button onclick="window.closeSMSDetails()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">SMS Request Details</h3>
+                <button onclick="window.closeSMSDetails()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Event/Campaign Title</dt>
-                            <dd class="mt-1 text-sm text-gray-900 font-semibold" id="sms-details-campaign-name">-</dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Event/Campaign Title</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold" id="sms-details-campaign-name">-</dd>
                         </div>
                         <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">Event Date and Time</dt>
-                                <dd class="mt-1 text-sm text-gray-900" id="sms-details-event-datetime">-</dd>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Event Date and Time</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white" id="sms-details-event-datetime">-</dd>
                             </div>
                             <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">End Date and Time</dt>
-                                <dd class="mt-1 text-sm text-gray-900" id="sms-details-end-datetime">-</dd>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">End Date and Time</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white" id="sms-details-end-datetime">-</dd>
                             </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Budget</dt>
-                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-budget">-</dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Budget</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white" id="sms-details-budget">-</dd>
                         </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Created At</dt>
-                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-created-at">-</dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Created At</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white" id="sms-details-created-at">-</dd>
                         </div>
                         <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Event/Campaign Document Link</dt>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Event/Campaign Document Link</dt>
                             <dd class="mt-1 text-sm text-primary-600 hover:text-primary-900"><a href="#" id="sms-details-doc-link" target="_blank">-</a></dd>
                         </div>
                         <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Short Link</dt>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Short Link</dt>
                             <dd class="mt-1 text-sm text-primary-600 hover:text-primary-900"><a href="#" id="sms-details-short-link" target="_blank">-</a></dd>
                         </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Requested By</dt>
-                            <dd class="mt-1 text-sm text-gray-900" id="sms-details-requestor">-</dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Requested By</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white" id="sms-details-requestor">-</dd>
                         </div>
                         <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Request Status</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><span id="sms-details-request-status">-</span></dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-slate-400">Request Status</dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white"><span id="sms-details-request-status">-</span></dd>
                             <input type="hidden" id="sms-details-id" value="">
                         </div>
-                        <div id="sms-details-completion-metrics" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden bg-slate-100 p-4 rounded-xl border border-slate-200 mt-2">
-                            <div class="sm:col-span-2 mb-2 border-b border-slate-200 pb-2">
+                        <div id="sms-details-completion-metrics" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden bg-slate-100 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mt-2">
+                            <div class="sm:col-span-2 mb-2 border-b border-slate-200 dark:border-slate-700 pb-2">
                                 <h4 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-chart-line text-primary-600 mr-2"></i>Completion Metrics</h4>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Number of Users Clicked</dt>
-                                <dd class="mt-1 text-sm font-semibold text-gray-900" id="sms-details-clicked">-</dd>
+                                <dt class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Number of Users Clicked</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white" id="sms-details-clicked">-</dd>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Actual Number of Recipients</dt>
-                                <dd class="mt-1 text-sm font-semibold text-gray-900" id="sms-details-recipients">-</dd>
+                                <dt class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Actual Number of Recipients</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white" id="sms-details-recipients">-</dd>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Actual Budget Used</dt>
+                                <dt class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Actual Budget Used</dt>
                                 <dd class="mt-1 text-sm font-semibold text-emerald-600" id="sms-details-actual-budget">-</dd>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium text-gray-500 uppercase tracking-wider">Login Rate</dt>
+                                <dt class="text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Login Rate</dt>
                                 <dd class="mt-1 text-sm font-bold text-primary-600" id="sms-details-login-rate">-</dd>
                             </div>
                         </div>
                     </dl>
                 </div>
-                <div class="px-6 py-4 border-t border-slate-200/60 bg-white flex justify-end shrink-0">
-                <button type="button" onclick="window.closeSMSDetails()" class="px-4 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Close</button>
+                <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 bg-white dark:bg-slate-800 flex justify-end shrink-0">
+                <button type="button" onclick="window.closeSMSDetails()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Close</button>
             </div>
             </div>
         </div>
@@ -1448,54 +1448,54 @@
 
     <!-- Game Settings Drawer -->
     <div id="game-drawer-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden transition-opacity duration-300 opacity-0" onclick="window.closeGameDrawer()"></div>
-    <div id="game-drawer" class="fixed inset-y-0 right-0 w-full max-w-lg bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60">
+    <div id="game-drawer" class="fixed inset-y-0 right-0 w-full max-w-lg bg-white dark:bg-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-slate-200/60 dark:border-slate-700">
 
         <!-- Header -->
-        <div class="px-6 py-5 border-b border-slate-200/60 flex justify-between items-center bg-white sticky top-0 z-10">
+        <div class="px-6 py-5 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 sticky top-0 z-10">
             <div>
-                <h2 id="game-drawer-title" class="text-xl font-bold text-gray-900 leading-tight">Game Settings</h2>
-                <p class="text-sm text-gray-500 mt-1">Update game details and launch dates.</p>
+                <h2 id="game-drawer-title" class="text-xl font-bold text-gray-900 dark:text-white leading-tight">Game Settings</h2>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Update game details and launch dates.</p>
             </div>
-            <button type="button" onclick="window.closeGameDrawer()" class="text-gray-400 hover:text-gray-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
+            <button type="button" onclick="window.closeGameDrawer()" class="text-gray-400 hover:text-gray-600 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 p-2 rounded-full transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
 
         <!-- Scrollable Content -->
-        <div class="p-6 flex-1 overflow-y-auto bg-slate-50 space-y-6">
+        <div class="p-6 flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-700 space-y-6">
             <input type="hidden" id="game-drawer-id">
 
-            <div class="space-y-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
-                <h3 class="text-sm font-bold text-gray-900 border-b border-slate-100 pb-2"><i class="fa-solid fa-image text-primary-500 mr-2"></i>Visuals</h3>
+            <div class="space-y-4 bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200/60 dark:border-slate-700 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white border-b border-slate-100 pb-2"><i class="fa-solid fa-image text-primary-500 mr-2"></i>Visuals</h3>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Icon Image URL</label>
-                    <input type="url" id="game-drawer-icon" placeholder="https://example.com/icon.png" class="block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Square image for the game icon.</p>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Icon Image URL</label>
+                    <input type="url" id="game-drawer-icon" placeholder="https://example.com/icon.png" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Square image for the game icon.</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Game Review Banner URL</label>
-                    <input type="url" id="game-drawer-banner" placeholder="https://example.com/banner.jpg" class="block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Rectangular image for the game banner.</p>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Game Review Banner URL</label>
+                    <input type="url" id="game-drawer-banner" placeholder="https://example.com/banner.jpg" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Rectangular image for the game banner.</p>
                 </div>
             </div>
 
-            <div class="space-y-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
-                <h3 class="text-sm font-bold text-gray-900 border-b border-slate-100 pb-2"><i class="fa-solid fa-calendar-days text-primary-500 mr-2"></i>Launch Details</h3>
+            <div class="space-y-4 bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200/60 dark:border-slate-700 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white border-b border-slate-100 pb-2"><i class="fa-solid fa-calendar-days text-primary-500 mr-2"></i>Launch Details</h3>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Official Launch Date</label>
-                    <input type="datetime-local" step="1" id="game-drawer-launch" class="block w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Confirm the official launch date here. This is separate from the target creation date.</p>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Official Launch Date</label>
+                    <input type="datetime-local" step="1" id="game-drawer-launch" class="dark:bg-slate-800 dark:text-white dark:border-slate-600 block w-full border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm py-2 px-3 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Confirm the official launch date here. This is separate from the target creation date.</p>
                 </div>
             </div>
 
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-slate-200/60 bg-white flex justify-end gap-3 sticky bottom-0">
-            <button type="button" onclick="window.closeGameDrawer()" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors">Cancel</button>
+        <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 bg-white dark:bg-slate-800 flex justify-end gap-3 sticky bottom-0">
+            <button type="button" onclick="window.closeGameDrawer()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm transition-colors">Cancel</button>
             <button type="button" onclick="window.saveGameDrawer()" class="px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700 shadow-sm transition-colors flex items-center"><i class="fa-solid fa-check mr-2"></i>Save Settings</button>
         </div>
     </div>
@@ -1503,10 +1503,10 @@
 
     <!-- SPO Team Post Modal -->
     <div id="spo-team-post-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900" id="spo-team-post-modal-title">Add SPO Team Post</h3>
-                <button onclick="window.closeSPOTeamPostModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-lg w-full flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white" id="spo-team-post-modal-title">Add SPO Team Post</h3>
+                <button onclick="window.closeSPOTeamPostModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -1514,15 +1514,15 @@
                 <form id="spo-team-post-form" class="space-y-4">
                     <input type="hidden" id="stp-id">
                     <div>
-                        <label for="stp-title" class="block text-sm font-medium text-gray-700">Title <span class="text-red-500">*</span></label>
-                        <input type="text" id="stp-title" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="stp-title" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Title <span class="text-red-500">*</span></label>
+                        <input type="text" id="stp-title" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="stp-date" class="block text-sm font-medium text-gray-700">Date Posted <span class="text-red-500">*</span></label>
-                        <input type="datetime-local" id="stp-date" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="stp-date" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Date Posted <span class="text-red-500">*</span></label>
+                        <input type="datetime-local" id="stp-date" required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                     <div>
-                        <label for="stp-account" class="block text-sm font-medium text-gray-700">Account Used <span class="text-red-500">*</span></label>
+                        <label for="stp-account" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Account Used <span class="text-red-500">*</span></label>
                         <select id="stp-account" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="">-- Select Account --</option>
                             <option value="OhMyBingBing">OhMyBingBing</option>
@@ -1534,13 +1534,13 @@
                         </select>
                     </div>
                     <div>
-                        <label for="stp-url" class="block text-sm font-medium text-gray-700">Post URL <span class="text-red-500">*</span></label>
-                        <input type="url" id="stp-url" placeholder="https://..." required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <label for="stp-url" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Post URL <span class="text-red-500">*</span></label>
+                        <input type="url" id="stp-url" placeholder="https://..." required class="dark:bg-slate-800 dark:text-white dark:border-slate-600 mt-1 block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
                     </div>
                 </form>
             </div>
-            <div class="px-6 py-4 border-t border-slate-200/60 flex justify-end space-x-3 bg-slate-50 shrink-0">
-                <button type="button" onclick="window.closeSPOTeamPostModal()" class="bg-white py-2 px-4 border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 hover:bg-slate-50">Cancel</button>
+            <div class="px-6 py-4 border-t border-slate-200/60 dark:border-slate-700 flex justify-end space-x-3 bg-slate-50 dark:bg-slate-700 shrink-0">
+                <button type="button" onclick="window.closeSPOTeamPostModal()" class="bg-white dark:bg-slate-800 py-2 px-4 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Cancel</button>
                 <button type="button" onclick="window.saveSPOTeamPost(event)" class="bg-primary-600 py-2 px-4 border border-transparent rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium text-white hover:bg-primary-700" id="save-stp-btn">Save Post</button>
             </div>
         </div>
@@ -1549,59 +1549,59 @@
 
     <!-- SPO Team Post Details Modal -->
     <div id="spo-team-post-details-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
-            <div class="px-6 py-4 border-b border-slate-200/60 flex justify-between items-center shrink-0">
-                <h3 class="text-lg font-bold text-gray-900">SPO Team Post Details</h3>
-                <button onclick="window.closeSPOTeamPostDetailsModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-200/60 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">SPO Team Post Details</h3>
+                <button onclick="window.closeSPOTeamPostDetailsModal()" class="text-gray-400 hover:text-gray-500 dark:text-slate-400">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            <div class="overflow-y-auto p-6 flex-1 bg-slate-50">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="overflow-y-auto p-6 flex-1 bg-slate-50 dark:bg-slate-700">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Title</span>
-                            <div class="mt-1 text-gray-900 text-lg font-bold" id="detail-stp-title"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Title</span>
+                            <div class="mt-1 text-gray-900 dark:text-white text-lg font-bold" id="detail-stp-title"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Date Posted</span>
-                            <div class="mt-1 text-gray-900" id="detail-stp-date"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Date Posted</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-date"></div>
                         </div>
                         <div>
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Account Used</span>
-                            <div class="mt-1 text-gray-900" id="detail-stp-account"></div>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Account Used</span>
+                            <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-account"></div>
                         </div>
                         <div class="sm:col-span-2">
-                            <span class="block text-xs font-semibold text-gray-500 uppercase">Post URL</span>
+                            <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Post URL</span>
                             <div class="mt-1"><a href="#" id="detail-stp-url" target="_blank" class="text-blue-600 hover:underline break-all"></a></div>
                         </div>
 
                         <!-- Metadata -->
-                        <div class="sm:col-span-2 pt-4 mt-4 border-t border-slate-200">
+                        <div class="sm:col-span-2 pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Created By</span>
-                                    <div class="mt-1 text-gray-900" id="detail-stp-created-by"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Created By</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-created-by"></div>
                                 </div>
                                 <div>
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Created At</span>
-                                    <div class="mt-1 text-gray-900" id="detail-stp-created-at"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Created At</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-created-at"></div>
                                 </div>
                                 <div id="detail-stp-edited-by-container" class="hidden">
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Edited By</span>
-                                    <div class="mt-1 text-gray-900" id="detail-stp-edited-by"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Edited By</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-edited-by"></div>
                                 </div>
                                 <div id="detail-stp-edited-time-container" class="hidden">
-                                    <span class="block text-xs font-semibold text-gray-500 uppercase">Edited Time</span>
-                                    <div class="mt-1 text-gray-900" id="detail-stp-edited-time"></div>
+                                    <span class="block text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase">Edited Time</span>
+                                    <div class="mt-1 text-gray-900 dark:text-white" id="detail-stp-edited-time"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/60 flex justify-end shrink-0">
-                <button type="button" onclick="window.closeSPOTeamPostDetailsModal()" class="px-4 py-2 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-slate-50 transition-colors">Close</button>
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-700 border-t border-slate-200/60 dark:border-slate-700 flex justify-end shrink-0">
+                <button type="button" onclick="window.closeSPOTeamPostDetailsModal()" class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Close</button>
             </div>
         </div>
     </div>

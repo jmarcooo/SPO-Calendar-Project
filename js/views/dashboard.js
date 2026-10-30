@@ -168,7 +168,7 @@ window.renderCalendar = () => {
                 });
 
                 let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white dark:bg-slate-800 dark:bg-slate-800 min-h-[120px] flex-1';
+                weekEl.className = 'relative bg-white dark:bg-slate-800 min-h-[120px] flex-1';
                 let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 dark:divide-slate-700 pointer-events-none">`;
                 let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
 
@@ -312,7 +312,7 @@ window.renderOngoingEvents = () => {
                     let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
                     let typeBg = itemType === 'game' ? 'bg-rose-50 dark:bg-rose-900/50 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400' : 'bg-emerald-50 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
@@ -336,7 +336,7 @@ window.renderOngoingEvents = () => {
                     const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
                     const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
+                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
 
                     el.innerHTML = `
                         <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
