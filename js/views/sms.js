@@ -33,7 +33,7 @@ window.renderSMSTable = function() {
             tbody.innerHTML = '';
             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(req => {
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-slate-50 transition-colors cursor-pointer';
+                row.className = 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer';
                 row.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openSMSDetails(req.id);

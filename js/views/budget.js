@@ -55,7 +55,7 @@ window.renderBudgetTable = () => {
                 const escOwner = (b.owner || 'Unassigned').replace(/"/g, '&quot;');
 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition-colors duration-200 cursor-pointer';
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-200 cursor-pointer';
                 tr.onclick = (event) => {
                     if(!event.target.closest('button')) {
                         window.openBudgetDetails(b.id);

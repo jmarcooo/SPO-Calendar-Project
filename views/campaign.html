@@ -10,7 +10,7 @@
                             <label for="spo-team-posts-month-filter" class="text-sm font-medium text-gray-700 dark:text-slate-200">Filter:</label>
                             <input type="month" id="spo-team-posts-month-filter" onchange="window.filterSPOTeamPostsByMonth(this.value)" class="block w-full border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 sm:text-sm bg-white dark:bg-slate-800">
                         </div>
-                        <button onclick="window.extractSPOTeamPosts()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 transition-colors">
+                        <button onclick="window.extractSPOTeamPosts()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-900 transition-colors">
                             <i class="fa-solid fa-download mr-2"></i> Extract
                         </button>
                         <button onclick="window.openSPOTeamPostModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-white bg-primary-600 hover:bg-primary-700 transition-colors">
@@ -24,16 +24,16 @@
                         <table class="min-w-full divide-y divide-slate-200/60">
                             <thead class="bg-slate-50 dark:bg-slate-900">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100" onclick="window.sortSPOTeamPosts('title')">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" onclick="window.sortSPOTeamPosts('title')">
                                         Title <i class="fa-solid fa-sort ml-1 text-gray-400"></i>
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100" onclick="window.sortSPOTeamPosts('datePosted')">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" onclick="window.sortSPOTeamPosts('datePosted')">
                                         Date Posted <i class="fa-solid fa-sort ml-1 text-gray-400"></i>
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100" onclick="window.sortSPOTeamPosts('createdBy')">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" onclick="window.sortSPOTeamPosts('createdBy')">
                                         Created By <i class="fa-solid fa-sort ml-1 text-gray-400"></i>
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100" onclick="window.sortSPOTeamPosts('accountUsed')">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800" onclick="window.sortSPOTeamPosts('accountUsed')">
                                         Account Used <i class="fa-solid fa-sort ml-1 text-gray-400"></i>
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">

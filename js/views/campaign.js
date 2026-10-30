@@ -105,7 +105,7 @@ window.renderSPOTeamPostsTable = () => {
     tbody.innerHTML = posts.map(post => {
         const datePostedDisplay = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
         return `
-            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.openSPOTeamPostDetailsModal('${post.id}')">
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer" onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.openSPOTeamPostDetailsModal('${post.id}')">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${post.title || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${datePostedDisplay}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${post.createdBy || '-'}</td>

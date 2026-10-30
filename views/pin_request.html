@@ -6,9 +6,9 @@
                 <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-slate-400">Manage and track pin requests.</p>
             </div>
             <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
-                <div class="flex items-center bg-slate-100 p-1 rounded-xl shadow-inner shadow-slate-200/50 border border-slate-200/60 dark:border-slate-700">
+                <div class="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shadow-inner shadow-slate-200/50 border border-slate-200/60 dark:border-slate-700">
                     <button id="btn-pr-view-table" onclick="window.switchPRView('table')" class="px-4 py-1.5 text-sm font-medium rounded-lg bg-white dark:bg-slate-800 text-primary-600 shadow-sm transition-all">Table List</button>
-                    <button id="btn-pr-view-timeline" onclick="window.switchPRView('timeline')" class="px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:text-slate-200 transition-all">Weekly Slot Timeline</button>
+                    <button id="btn-pr-view-timeline" onclick="window.switchPRView('timeline')" class="px-4 py-1.5 text-sm font-medium rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition-all">Weekly Slot Timeline</button>
                 </div>
                 <button onclick="window.openPinRequestModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition-colors">
                     <i class="fa-solid fa-plus mr-2"></i> Create Pin Request
@@ -37,7 +37,7 @@
                 <option value="Live">Live</option>
                 <option value="Ended">Ended</option>
             </select>
-            <button onclick="window.exportPinRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 focus:outline-none transition-colors">
+            <button onclick="window.exportPinRequestsExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-900 focus:outline-none transition-colors">
                 <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
             </button>
         </div>
@@ -46,7 +46,7 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-900">
                     <tr>
-                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group" onclick="window.pinSortBy = 'campaignName'; window.pinSortDesc = !window.pinSortDesc; window.renderPinRequestsTable()">
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 dark:hover:bg-slate-800 transition-colors group" onclick="window.pinSortBy = 'campaignName'; window.pinSortDesc = !window.pinSortDesc; window.renderPinRequestsTable()">
                             Campaign/Game Name <i class="fa-solid fa-sort ml-1 text-gray-300"></i>
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
@@ -67,7 +67,7 @@
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                             Request Status
                         </th>
-                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group" onclick="window.cyclePinSort()">
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 dark:hover:bg-slate-800 transition-colors group" onclick="window.cyclePinSort()">
                             Pin Position <i class="fa-solid fa-sort text-gray-300 ml-1" id="pin-sort-icon"></i>
                         </th>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">

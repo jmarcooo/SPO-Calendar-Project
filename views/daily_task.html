@@ -28,7 +28,7 @@
                 <option value="Under Review">Under Review</option>
                 <option value="Completed">Completed</option>
             </select>
-            <button onclick="window.exportDailyTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 focus:outline-none transition-colors">
+            <button onclick="window.exportDailyTasksExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 dark:bg-slate-900 focus:outline-none transition-colors">
                 <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
             </button>
         </div>
@@ -37,25 +37,25 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
                 <thead class="bg-slate-50 dark:bg-slate-900">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group" onclick="window.dtSortBy = 'taskTitle'; window.dtSortDesc = !window.dtSortDesc; window.renderDailyTasksTable()">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" onclick="window.dtSortBy = 'taskTitle'; window.dtSortDesc = !window.dtSortDesc; window.renderDailyTasksTable()">
                             Title <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             Created Time <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             Start Date <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             End Date <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             Requested By <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             Request Status <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors group">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
                             Campaign Status <i class="fa-solid fa-sort text-gray-300 ml-1"></i>
                         </th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>

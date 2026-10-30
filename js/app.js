@@ -1577,7 +1577,7 @@ cardsHtml += `
                 resultsList.innerHTML = limited.map(r => {
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
-                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
+                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
                         <div class="h-8 w-8 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mr-3 shrink-0">
                             <i class="fa-solid ${r.icon} text-sm"></i>
                         </div>
@@ -1960,7 +1960,7 @@ cardsHtml += `
             if (b.items && b.items.length > 0) {
                 b.items.forEach(it => {
                     const li = document.createElement('li');
-                    li.className = 'px-4 py-3 flex justify-between items-center bg-white hover:bg-slate-50';
+                    li.className = 'px-4 py-3 flex justify-between items-center bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700';
                     li.innerHTML = `<span class="font-medium text-gray-700">${it.type}</span><span class="text-primary-600 font-semibold">${window.formatCurrency(it.amount)}</span>`;
                     ul.appendChild(li);
                 });
@@ -3424,7 +3424,7 @@ cardsHtml += `
 
             window.quickLinks.forEach(link => {
                 const el = document.createElement('div');
-                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 rounded-xl group transition-colors";
+                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl group transition-colors";
 
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
 
@@ -4006,11 +4006,11 @@ window.openTypeModal = (dateStr = null) => {
                     <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <label class="text-sm font-medium text-gray-700 mb-2">${label}</label>
                         <div class="flex space-x-4">
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="Yes" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'Yes' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 cursor-pointer">Yes</span>
                             </label>
-                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
+                            <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 rounded px-2 py-1 transition-colors">
                                 <input type="radio" name="${evt.id}-${key}" value="N/A" onchange="updateTaskField('${evt.id}', '${key}', this.value)" ${val === 'N/A' ? 'checked' : ''} class="text-primary-600 focus:ring-primary-500 w-4 h-4 cursor-pointer">
                                 <span class="ml-2 text-sm text-gray-700 cursor-pointer">N/A</span>
                             </label>
@@ -4094,7 +4094,7 @@ window.openTypeModal = (dateStr = null) => {
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                         <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 bg-slate-100 border-gray-300 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
                     </div>
@@ -4241,11 +4241,11 @@ window.openTypeModal = (dateStr = null) => {
                 const row = document.getElementById(`task-row-${id}`);
                 if (row) {
                     row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.remove('hover:bg-slate-50');
+                    row.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-700');
                     row.classList.add('bg-primary-100');
                     setTimeout(() => {
                         row.classList.remove('bg-primary-100');
-                        row.classList.add('hover:bg-slate-50');
+                        row.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-700');
                     }, 2000);
                 }
             }, 100);
@@ -5369,7 +5369,7 @@ window.toggleNotifications = () => {
             userNotifs.slice(0, 5).forEach(n => {
                 const isRead = n.readBy && n.readBy.includes(window.currentUserProfile);
                 html += `
-                    <div class="p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-slate-50 dark:bg-slate-800'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
+                    <div class="p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${isRead ? 'opacity-70' : 'bg-slate-50 dark:bg-slate-800'} border border-transparent hover:border-slate-100" onclick="window.handleNotificationClick('${n.targetModule}', '${n.targetId}')">
                         <p class="text-xs font-medium text-gray-900 dark:text-white">${n.message}</p>
                         <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1">${n.createdTime}</p>
                     </div>
