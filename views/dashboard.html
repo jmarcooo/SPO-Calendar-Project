@@ -46,13 +46,13 @@
                                 <div class="flex items-center space-x-4">
                                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight" id="calendar-month-year">Month Year</h2>
                                     <div class="flex bg-slate-100 dark:bg-slate-900 rounded-xl p-0.5 border border-slate-200/60 dark:border-slate-700">
-                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-600 dark:text-gray-400 transition-all">
+                                        <button onclick="changeMonth(-1)" class="px-3 py-1.5 dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-600 dark:text-gray-400 transition-all">
                                             <i class="fa-solid fa-chevron-left text-sm"></i>
                                         </button>
                                         <button onclick="resetToToday()" class="px-4 py-1.5 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-white hover:shadow-md shadow-slate-200/50 dark:shadow-black/50 rounded-xl transition-all">
                                             Today
                                         </button>
-                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-600 dark:text-gray-400 transition-all">
+                                        <button onclick="changeMonth(1)" class="px-3 py-1.5 dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded-xl hover:bg-white hover:shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-600 dark:text-gray-400 transition-all">
                                             <i class="fa-solid fa-chevron-right text-sm"></i>
                                         </button>
                                     </div>
@@ -60,7 +60,7 @@
                                 <div class="flex items-center space-x-3">
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">Type:</span>
-                                        <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
+                                        <select id="global-type-filter" onchange="setGlobalTypeFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
                                             <option value="All">All Types</option>
                                             <option value="task">Tasks</option>
                                             <option value="event">Offline Events</option>
@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">Category:</span>
-                                        <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
+                                        <select id="global-category-filter" onchange="setGlobalCategoryFilter(this.value)" class="block w-full pl-3 pr-8 py-2 text-sm border border-gray-300 bg-white dark:bg-slate-800 dark:border-slate-600 dark:text-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 rounded-xl cursor-pointer">
                                             <option value="All">All</option>
                                             <option value="Game Promotion">Game Promotion</option>
                             <option value="Platform Feature">Platform Feature</option>
