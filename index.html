@@ -324,7 +324,7 @@
                     </div>
                     <div id="campaign-type-container">
                         <label for="event-campaign-type" class="block text-sm font-medium text-gray-700">Campaign Type <span class="text-red-500">*</span></label>
-                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <select id="event-campaign-type" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="All">All</option>
                             <option value="Game Promotion">Game Promotion</option>
                             <option value="Platform Feature">Platform Feature</option>
@@ -369,7 +369,7 @@
                     </div>
                     <div>
                         <label for="budget-type" class="block text-sm font-medium text-gray-700">Budget Type <span class="text-red-500">*</span></label>
-                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm">
+                        <select id="budget-type" required onchange="window.updateBudgetItemTypes()" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="Campaign Expenses">Campaign Expenses</option>
                             <option value="Offline Rewards">Offline Rewards</option>
                             <option value="Monthly Expenses">Monthly Expenses</option>
@@ -436,7 +436,7 @@
         </div>
         <div class="p-4 border-b border-slate-200/60 shrink-0 bg-white">
             <label class="block text-sm font-medium text-gray-700 mb-1">Select Year</label>
-            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 focus:ring-primary-500 sm:text-sm bg-white"></select>
+            <select id="budget-drawer-year" onchange="renderBudgetDrawerContent(this.value)" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 focus:ring-primary-500 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600"></select>
         </div>
         <div class="p-0 flex-1 overflow-y-auto bg-slate-50" id="budget-drawer-content"></div>
     </div>
@@ -634,7 +634,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
-                                <select id="pr-category" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                                <select id="pr-category" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                     <option value="PGC">PGC</option>
                                     <option value="UGC">UGC</option>
                                     <option value="Perya Host">Perya Host</option>
@@ -643,7 +643,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Priority <span class="text-red-500">*</span></label>
-                                <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                                <select id="pr-priority" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                     <option value="High">High</option>
                                     <option value="Medium">Medium</option>
                                     <option value="Low">Low</option>
@@ -753,7 +753,7 @@
                         </div>
                         <div class="sm:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Linked Task</label>
-                            <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm cursor-pointer">
+                            <select id="dt-linked-task" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm cursor-pointer dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="">None</option>
                             </select>
                         </div>
@@ -861,7 +861,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Campaign Status <span class="text-red-500">*</span></label>
-                            <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                            <select id="cwr-campaign-status" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="Upcoming">Upcoming</option>
                                 <option value="Active">Active</option>
                                 <option value="Completed">Completed</option>
@@ -872,7 +872,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Priority Level <span class="text-red-500">*</span></label>
-                            <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                            <select id="cwr-priority-level" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                                 <option value="S Level">S Level</option>
                                 <option value="A Level">A Level</option>
                             </select>
@@ -1255,7 +1255,7 @@
             </div>
             <div class="p-6">
                 <p class="text-sm text-gray-600 mb-4">Please select who you are:</p>
-                <select id="user-profile-select" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                <select id="user-profile-select" class="block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-slate-800 dark:text-white dark:border-slate-600">
                     <option value="">-- Select User --</option>
                     <option value="Freddy">Freddy</option>
                     <option value="Renee">Renee</option>
@@ -1523,7 +1523,7 @@
                     </div>
                     <div>
                         <label for="stp-account" class="block text-sm font-medium text-gray-700">Account Used <span class="text-red-500">*</span></label>
-                        <select id="stp-account" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white">
+                        <select id="stp-account" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-2 px-3 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                             <option value="">-- Select Account --</option>
                             <option value="OhMyBingBing">OhMyBingBing</option>
                             <option value="BingoPlusPH">BingoPlusPH</option>

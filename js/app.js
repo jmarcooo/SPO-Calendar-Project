@@ -1838,7 +1838,7 @@ cardsHtml += `
             let typeInputHtml = '';
 
             if (budgetType === 'Campaign Expenses') {
-                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white">
+                typeInputHtml = `<select class="budget-item-type block w-full border border-gray-300 rounded-lg py-1.5 px-2 sm:text-sm bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600">
                     <option value="UGC Rewards" ${selType==='UGC Rewards'?'selected':''}>UGC Rewards</option>
                     <option value="SMS" ${selType==='SMS'?'selected':''}>SMS</option>
                     <option value="Daily Task" ${selType==='Daily Task'?'selected':''}>Daily Task</option>
@@ -2881,11 +2881,11 @@ cardsHtml += `
                 const isPast = rowStatus === 'Ended';
                 const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
-                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-400' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100 dark:bg-amber-900/50 dark:text-amber-400' : 'text-blue-600 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400');
 
-                let pinStatusClass = 'text-gray-600 bg-gray-100';
-                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100';
+                let pinStatusClass = 'text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-slate-300';
+                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-400';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100 dark:bg-primary-900/50 dark:text-primary-400';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
@@ -3067,15 +3067,15 @@ cardsHtml += `
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
 
-                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:ring-blue-500';
                     if (req.category === 'PGC' || req.category === 'Content Writer') {
-                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400';
+                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400 dark:bg-emerald-900/50 dark:text-emerald-200 dark:border-emerald-700 dark:hover:ring-emerald-500';
                     } else if (req.category === 'UGC' || req.category === 'Perya Host') {
-                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400';
+                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400 dark:bg-red-900/50 dark:text-red-200 dark:border-red-700 dark:hover:ring-red-500';
                     } else if (req.status === 'Completed') {
                         baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
                     } else if (req.status === 'Under Review') {
-                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400';
+                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-700 dark:hover:ring-amber-500';
                     }
 
                     const isPast = eMs < window.getPHFakeUtcMs();
