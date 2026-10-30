@@ -1624,17 +1624,17 @@ cardsHtml += `
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900 dark:text-white', 'dark:hover:text-white');
+                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500 dark:text-gray-400');
+                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900 dark:text-white', 'dark:hover:text-white');
+                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500 dark:text-gray-400');
+                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
                         }
                     }
                 }
