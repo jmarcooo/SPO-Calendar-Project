@@ -1624,14 +1624,14 @@ cardsHtml += `
                     const icon = nav.querySelector('i');
                     if (v === viewName) {
                         nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.add('text-primary-500', 'dark:text-primary-400');
                             icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
                         }
                     } else {
                         nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:text-white', 'dark:hover:text-white');
+                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
                         if(icon) {
                             icon.classList.remove('text-primary-500', 'dark:text-primary-400');
                             icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
@@ -2879,7 +2879,7 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50' : 'hover:bg-slate-50 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
 
                 const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
 
@@ -3985,7 +3985,7 @@ window.openTypeModal = (dateStr = null) => {
                 const isAllDone = done === total;
                 const badgeClass = isAllDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-700';
                 return `
-                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 overflow-hidden" ${isOpen ? 'open' : ''}>
+                    <details class="group mb-3 border border-slate-200/60 rounded-xl bg-white shadow-md shadow-slate-200/50 dark:shadow-black/50 overflow-hidden" ${isOpen ? 'open' : ''}>
                         <summary class="cursor-pointer bg-slate-50 px-4 py-3 font-semibold text-gray-800 text-sm hover:bg-slate-100 outline-none flex justify-between items-center transition-colors list-none [&::-webkit-details-marker]:hidden">
                             <div class="flex items-center">
                                 <span>${title}</span>
@@ -4003,7 +4003,7 @@ window.openTypeModal = (dateStr = null) => {
             const makeRadioHtml = (key, label) => {
                 const val = f[key] || 'Pending';
                 return `
-                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="flex flex-col p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <label class="text-sm font-medium text-gray-700 mb-2">${label}</label>
                         <div class="flex space-x-4">
                             <label class="inline-flex items-center cursor-pointer hover:bg-slate-50 rounded px-2 py-1 transition-colors">
@@ -4028,8 +4028,8 @@ window.openTypeModal = (dateStr = null) => {
                         <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                             <button type="button" onclick="removeDocument('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                             <div class="flex items-center space-x-2 pr-8">
-                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 ${borderClass} bg-white">
+                                <input type="text" placeholder="Document Type" value="${(d.type || '').replace(/"/g, '&quot;')}" onchange="updateDocumentField('${evt.id}', ${i}, 'type', this.value)" class="w-1/3 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                                <input type="url" value="${(d.url || '').replace(/"/g, '&quot;')}" placeholder="Link (http://)" onchange="updateDocumentField('${evt.id}', ${i}, 'url', this.value)" class="flex-1 text-sm border rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 ${borderClass} bg-white">
                             </div>
                             ${!isUrlValid ? `<p class="text-xs text-red-500 mt-1">Invalid URL format.</p>` : ''}
                         </div>
@@ -4037,7 +4037,7 @@ window.openTypeModal = (dateStr = null) => {
                 }).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
                             <label class="block text-sm font-medium text-gray-700">Documents</label>
                             <button type="button" onclick="addDocument('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Document</button>
@@ -4057,10 +4057,10 @@ window.openTypeModal = (dateStr = null) => {
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Official Hashtags (Max 10)</label>
                         <div class="flex flex-wrap mb-1">${pills}</div>
-                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
+                        <input type="text" id="hashtag-input" placeholder="Type and press Enter or Space..." onkeydown="handleHashtagEnter(event, '${evt.id}')" ${tags.length >= 10 ? 'disabled' : ''} class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 disabled:bg-slate-100 disabled:cursor-not-allowed">
                     </div>
                 `;
             };
@@ -4071,17 +4071,17 @@ window.openTypeModal = (dateStr = null) => {
                     <div class="flex flex-col space-y-2 mt-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl relative">
                         <button type="button" onclick="removePostId('${evt.id}', ${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 bg-red-50 rounded transition-colors"><i class="fa-solid fa-xmark"></i></button>
                         <div class="flex items-center space-x-2 pr-8">
-                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
-                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" placeholder="Platform" value="${(p.type || '').replace(/"/g, '&quot;')}" onchange="updatePostIdField('${evt.id}', ${i}, 'type', this.value)" class="w-28 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="text" value="${(p.id || '').replace(/"/g, '&quot;')}" placeholder="Enter Post ID or URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'id', this.value)" class="flex-1 text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                         <div>
-                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
+                            <input type="url" value="${(p.imgUrl || '').replace(/"/g, '&quot;')}" placeholder="Image URL..." onchange="updatePostIdField('${evt.id}', ${i}, 'imgUrl', this.value)" class="w-full text-sm border border-gray-300 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:ring-primary-500 bg-white">
                         </div>
                     </div>
                 `).join('');
 
                 return `
-                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50">
+                    <div class="p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50">
                         <div class="flex justify-between items-center mb-1 border-b border-slate-100 pb-2">
                             <label class="block text-sm font-medium text-gray-700">Post IDs</label>
                             <button type="button" onclick="addPostId('${evt.id}')" class="text-xs font-medium bg-primary-50 text-primary-600 hover:bg-primary-100 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Post ID</button>
@@ -4094,7 +4094,7 @@ window.openTypeModal = (dateStr = null) => {
             const makeCheckboxHtml = (key, label) => {
                 const isChecked = f[key] ? 'checked' : '';
                 return `
-                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center p-3 bg-white border border-slate-200/60 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 cursor-pointer hover:bg-slate-50 transition-colors">
                         <input id="drawer-chk-${key}" type="checkbox" onchange="updateTaskField('${evt.id}', '${key}', this.checked)" ${isChecked} class="w-4 h-4 text-primary-600 bg-slate-100 border-gray-300 rounded cursor-pointer">
                         <label for="drawer-chk-${key}" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer flex-1">${label}</label>
                     </div>
