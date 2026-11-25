@@ -220,6 +220,23 @@ window.renderCalendar = () => {
         });
         bgGridHtml += `</div>`;
 
+        const getCampaignIcon = (cType) => {
+            switch (cType) {
+                case 'Game Promotion':
+                    return '<i class="fa-solid fa-trophy text-[9px] mr-1 text-sky-600 dark:text-sky-300 shrink-0" title="Game Promotion"></i>';
+                case 'Gambling Entertainment':
+                    return '<i class="fa-solid fa-dice text-[9px] mr-1 text-sky-600 dark:text-sky-300 shrink-0" title="Gambling Entertainment"></i>';
+                case 'Platform Feature':
+                    return '<i class="fa-solid fa-rocket text-[9px] mr-1 text-sky-600 dark:text-sky-300 shrink-0" title="Platform Feature"></i>';
+                case 'User Growth & Acquisition':
+                    return '<i class="fa-solid fa-chart-line text-[9px] mr-1 text-sky-600 dark:text-sky-300 shrink-0" title="User Growth & Acquisition"></i>';
+                case 'VIP Retention':
+                    return '<i class="fa-solid fa-crown text-[9px] mr-1 text-amber-600 dark:text-amber-300 shrink-0" title="VIP Retention"></i>';
+                default:
+                    return '<i class="fa-solid fa-bullhorn text-[9px] mr-1 text-sky-600 dark:text-sky-300 shrink-0" title="All"></i>';
+            }
+        };
+
         placements.forEach(p => {
             const evt = p.evt;
             const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
@@ -235,20 +252,18 @@ window.renderCalendar = () => {
                 statusColor = 'bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-200 border border-rose-200 dark:border-rose-700/60 font-semibold';
                 formattedTitle = `<i class="fa-solid fa-gamepad text-[9px] mr-1 text-peppermint-500 shrink-0"></i>${safeTitle}`;
             } else if (itemType === 'livestream') {
-                statusColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-700/60 font-semibold';
-                formattedTitle = `<i class="fa-solid fa-video text-[9px] mr-1 text-amber-600 shrink-0"></i>${safeTitle}`;
+                statusColor = 'bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-700/60 font-semibold';
+                formattedTitle = `<i class="fa-solid fa-video text-[9px] mr-1 text-purple-600 dark:text-purple-300 shrink-0"></i>${safeTitle}`;
             } else {
                 const cType = evt.campaignType || 'All';
                 if (cType === 'VIP Retention') {
                     statusColor = 'bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-700/60';
-                } else if (cType === 'Platform Feature') {
-                    statusColor = 'bg-evergreen-100 dark:bg-evergreen-900/40 text-evergreen-800 dark:text-evergreen-200 border border-evergreen-200 dark:border-evergreen-700/60';
                 } else {
                     statusColor = 'bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-200 border border-sky-200 dark:border-sky-700/60';
                 }
                 const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
                 const assignSuffix = assignsStr ? ` - ${assignsStr}` : '';
-                formattedTitle = `[${cType}] ${safeTitle}${assignSuffix}`;
+                formattedTitle = `${getCampaignIcon(cType)}[${cType}] ${safeTitle}${assignSuffix}`;
             }
 
             const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
@@ -357,14 +372,14 @@ window.renderOngoingEvents = () => {
 
             if (itemType === 'game') {
                 cardTone = 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/60 hover:border-rose-300';
-                iconClass = 'fa-fire text-peppermint-500';
-                typeLabel = 'NEW GAME';
+                iconClass = 'fa-gamepad text-peppermint-500';
+                typeLabel = 'GAME';
                 typeBg = 'bg-peppermint-100 dark:bg-peppermint-900/50 text-peppermint-700 dark:text-peppermint-300';
             } else if (itemType === 'livestream') {
-                cardTone = 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60 hover:border-amber-300';
-                iconClass = 'fa-video text-amber-600';
+                cardTone = 'bg-purple-50/70 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800/60 hover:border-purple-300';
+                iconClass = 'fa-video text-purple-600 dark:text-purple-400';
                 typeLabel = 'LIVE STREAM';
-                typeBg = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200';
+                typeBg = 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300';
             }
 
             const statusBadgeText = isPast ? 'DONE' : 'PENDING';
@@ -394,16 +409,32 @@ window.renderOngoingEvents = () => {
                 ? 'bg-evergreen-500'
                 : 'bg-gradient-to-r from-peppermint-500 to-amber-400';
             const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
+            const cType = evt.campaignType || 'All';
+            const isVIP = cType === 'VIP Retention';
+
+            const badgeClass = isVIP
+                ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200'
+                : 'bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-200';
+            const badgeText = isVIP ? 'VIP' : 'CAMPAIGN';
+
+            const iconMap = {
+                'Game Promotion': 'fa-trophy text-sky-600',
+                'Gambling Entertainment': 'fa-dice text-sky-600',
+                'Platform Feature': 'fa-rocket text-sky-600',
+                'User Growth & Acquisition': 'fa-chart-line text-sky-600',
+                'VIP Retention': 'fa-crown text-amber-500'
+            };
+            const taskIcon = iconMap[cType] || 'fa-bullhorn text-sky-600';
 
             el.className = `p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-cream-200/90 dark:border-slate-700 hover:border-peppermint-300 dark:hover:border-peppermint-600 shadow-xs transition-all cursor-pointer ${opacityClass}`;
 
             el.innerHTML = `
                 <div class="flex items-center justify-between gap-2 mb-1.5">
-                    <span class="text-[10px] font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded shrink-0">TASK</span>
+                    <span class="text-[10px] font-bold tracking-wider uppercase ${badgeClass} px-2 py-0.5 rounded shrink-0">${badgeText}</span>
                     <span class="text-xs font-bold text-gingerbread-600 dark:text-amber-300 font-fun truncate">${assignsStr}</span>
                 </div>
                 <h4 class="text-xs font-bold text-stone-800 dark:text-slate-100 hover:text-peppermint-600 dark:hover:text-peppermint-400 transition-colors leading-snug">
-                    <i class="fa-solid fa-list-ul text-amber-500 mr-1 text-[11px]"></i>[${evt.campaignType || 'All'}] ${safeTitle}
+                    <i class="fa-solid ${taskIcon} mr-1 text-[11px]"></i>[${cType}] ${safeTitle}
                 </h4>
                 <div class="mt-2.5 flex items-center justify-between text-[11px] text-stone-500 dark:text-slate-400">
                     <span class="flex items-center gap-1 font-medium ${isUrgent ? 'text-peppermint-600 dark:text-peppermint-400 font-semibold' : ''}">
