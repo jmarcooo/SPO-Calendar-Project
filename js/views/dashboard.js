@@ -263,7 +263,7 @@ window.renderCalendar = () => {
                 }
                 const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
                 const assignSuffix = assignsStr ? ` - ${assignsStr}` : '';
-                formattedTitle = `${getCampaignIcon(cType)}[${cType}] ${safeTitle}${assignSuffix}`;
+                formattedTitle = `${getCampaignIcon(cType)}${safeTitle}${assignSuffix}`;
             }
 
             const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
