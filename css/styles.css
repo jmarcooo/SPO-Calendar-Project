@@ -1,18 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .calendar-cell {
-            min-height: 80px;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        .toast-enter { transform: translateY(100%); opacity: 0; }
-        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 300ms ease-out; }
-        .toast-exit { transform: translateY(0); opacity: 1; }
-        .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 300ms ease-in; }
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #F8F4EB;
+}
+
+.dark body,
+html.dark body {
+    background-color: #0f172a;
+}
+
+/* Subtle candy-cane striped header top bar */
+.candy-stripe-banner {
+    background: repeating-linear-gradient(
+        -45deg,
+        #e11d48,
+        #e11d48 14px,
+        #ffffff 14px,
+        #ffffff 28px,
+        #16a34a 28px,
+        #16a34a 42px,
+        #ffffff 42px,
+        #ffffff 56px
+    );
+}
+
+.calendar-cell {
+    min-height: 80px;
+}
+
+/* Playful festive scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    background: #F8F4EB;
+}
+::-webkit-scrollbar-thumb {
+    background: #E6C6AC;
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #BA8053;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+.toast-enter { transform: translateY(100%); opacity: 0; }
+.toast-enter-active { transform: translateY(0); opacity: 1; transition: all 300ms ease-out; }
+.toast-exit { transform: translateY(0); opacity: 1; }
+.toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 300ms ease-in; }
+
+@keyframes festiveSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.festive-toast-in {
+    animation: festiveSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

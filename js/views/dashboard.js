@@ -1,399 +1,445 @@
 import { sortTableData } from "../utils/tableSort.js";
 
 window.updateStats = () => {
-            const filtered = window.filterEventsByGlobalCategory(window.events);
-            const currStr = window.getCurrentMonthStr();
+    const filtered = window.filterEventsByGlobalCategory(window.events);
+    const currStr = window.getCurrentMonthStr();
 
-            const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
-            const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
-            const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+    const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
+    const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-            const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
+    const monthlyEvents = filtered.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
 
-            document.querySelectorAll('.stat-month-label').forEach(el => { el.innerText = currStr; });
+    document.querySelectorAll('.stat-month-label').forEach(el => { el.innerText = currStr; });
 
-            const totalTasks = monthlyEvents.filter(e => e.status !== 'Done' && e.itemType === 'task').length;
-            const ongoingTasks = monthlyEvents.filter(e => e.status === 'Ongoing' && e.itemType === 'task').length;
-            const completedTasks = monthlyEvents.filter(e => e.status === 'Done' && e.itemType === 'task').length;
+    const totalTasks = monthlyEvents.filter(e => e.status !== 'Done' && e.itemType === 'task').length;
+    const ongoingTasks = monthlyEvents.filter(e => e.status === 'Ongoing' && e.itemType === 'task').length;
+    const completedTasks = monthlyEvents.filter(e => e.status === 'Done' && e.itemType === 'task').length;
+    const totalMonthGames = monthlyEvents.filter(e => e.itemType === 'game').length;
 
-            const statTotal = document.getElementById('stat-total');
-            if (statTotal) statTotal.innerText = totalTasks;
-            const statTotalBar = document.getElementById('stat-total-bar');
-            if (statTotalBar) {
-                statTotalBar.style.width = '100%';
-            }
+    const pToday = window.getPHParts();
+    const todayStr = `${pToday.year}-${String(pToday.month + 1).padStart(2, '0')}-${String(pToday.date).padStart(2, '0')}`;
+    const endingToday = monthlyEvents.filter(e => e.itemType === 'task' && e.status !== 'Done' && e.endDate === todayStr).length;
 
-            const statProgress = document.getElementById('stat-progress');
-            if (statProgress) statProgress.innerText = ongoingTasks;
-            const statProgressBar = document.getElementById('stat-progress-bar');
-            if (statProgressBar) {
-                const totalActive = ongoingTasks + completedTasks;
-                const pct = totalActive > 0 ? (ongoingTasks / totalActive) * 100 : 0;
-                statProgressBar.style.width = `${pct}%`;
-            }
+    const statTotal = document.getElementById('stat-total');
+    if (statTotal) statTotal.innerText = totalTasks;
+    const statTotalSub = document.getElementById('stat-total-sub');
+    if (statTotalSub) {
+        statTotalSub.innerText = totalMonthGames > 0
+            ? `plus ${totalMonthGames} holiday game${totalMonthGames > 1 ? 's' : ''} this cycle`
+            : `across ${monthlyEvents.length} scheduled item${monthlyEvents.length === 1 ? '' : 's'}`;
+    }
 
-            const statCompleted = document.getElementById('stat-completed');
-            if (statCompleted) statCompleted.innerText = completedTasks;
-            const statCompletedBar = document.getElementById('stat-completed-bar');
-            if (statCompletedBar) {
-                const totalActive = ongoingTasks + completedTasks;
-                const pct = totalActive > 0 ? (completedTasks / totalActive) * 100 : 0;
-                statCompletedBar.style.width = `${pct}%`;
-            }
+    const statProgress = document.getElementById('stat-progress');
+    if (statProgress) statProgress.innerText = ongoingTasks;
+    const statProgressSub = document.getElementById('stat-progress-sub');
+    if (statProgressSub) {
+        statProgressSub.innerText = endingToday > 0
+            ? `${endingToday} due today`
+            : (ongoingTasks > 0 ? `${ongoingTasks} campaign${ongoingTasks > 1 ? 's' : ''} in flight` : 'No active sprints right now');
+    }
 
-            let totalAllocated = 0;
-            const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
-
-            activeMonthBudgets.forEach(b => { totalAllocated += parseFloat(b.allocated) || 0; });
-            const limitForMonth = window.budgetSettings.limits[currStr] || 0;
-            const available = limitForMonth - totalAllocated;
-
-            const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
-            if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
-
-            const budgetStatEl = document.getElementById('stat-budget');
-            if(budgetStatEl) {
-                budgetStatEl.innerText = window.formatCurrency(available);
-                budgetStatEl.className = `mt-2 text-4xl font-bold ${available < 0 ? 'text-red-600' : 'text-blue-600'}`;
-            }
-
-            const currSymbol = document.getElementById('stat-budget-currency');
-            if (currSymbol) currSymbol.innerText = window.budgetSettings.currency || 'PHP';
-
-            const budgetLimitEl = document.getElementById('stat-budget-limit');
-            if (budgetLimitEl) budgetLimitEl.innerText = window.formatCurrency(limitForMonth);
-
-            const budgetPctEl = document.getElementById('stat-budget-pct');
-            if (budgetPctEl) {
-                let pct = 0;
-                if (limitForMonth > 0) {
-                    pct = (available / limitForMonth) * 100;
-                }
-                const pctText = pct >= 0 ? `${pct.toFixed(0)}% remaining` : `${Math.abs(pct).toFixed(0)}% over budget`;
-                budgetPctEl.innerText = pctText;
-                budgetPctEl.className = `font-semibold ${available < 0 ? 'text-red-600' : 'text-blue-600'}`;
-            }
+    const statCompleted = document.getElementById('stat-completed');
+    if (statCompleted) statCompleted.innerText = completedTasks;
+    const statCompletedSub = document.getElementById('stat-completed-sub');
+    if (statCompletedSub) {
+        const allMonthTasks = totalTasks + completedTasks;
+        if (completedTasks > 0 && allMonthTasks > 0) {
+            const donePct = Math.round((completedTasks / allMonthTasks) * 100);
+            statCompletedSub.innerText = `${donePct}% of monthly tasks wrapped`;
+        } else {
+            statCompletedSub.innerText = 'Ready for festive rollout';
         }
+    }
+
+    const sprintSummary = document.getElementById('festive-sprint-summary');
+    if (sprintSummary) {
+        sprintSummary.innerText = `${monthlyEvents.length} campaign${monthlyEvents.length === 1 ? '' : 's'} scheduled for ${currStr} rollout`;
+    }
+
+    let totalAllocated = 0;
+    const activeMonthBudgets = window.budgets.filter(b => b.month === currStr);
+
+    activeMonthBudgets.forEach(b => { totalAllocated += parseFloat(b.allocated) || 0; });
+    const limitForMonth = window.budgetSettings.limits[currStr] || 0;
+    const available = limitForMonth - totalAllocated;
+
+    const budgetStatMonthLabel = document.getElementById('stat-budget-month-label');
+    if (budgetStatMonthLabel) budgetStatMonthLabel.innerText = currStr;
+
+    const budgetStatEl = document.getElementById('stat-budget');
+    if (budgetStatEl) {
+        const formatted = window.formatCurrency(available);
+        const dotIdx = formatted.lastIndexOf('.');
+        if (dotIdx !== -1) {
+            budgetStatEl.innerHTML = `${formatted.slice(0, dotIdx)}.<span class="text-lg">${formatted.slice(dotIdx + 1)}</span>`;
+        } else {
+            budgetStatEl.innerText = formatted;
+        }
+        budgetStatEl.className = `text-2xl lg:text-3xl font-extrabold font-fun tracking-tight ${available < 0 ? 'text-peppermint-600 dark:text-peppermint-400' : 'text-gingerbread-700 dark:text-amber-200'}`;
+    }
+
+    const currSymbol = document.getElementById('stat-budget-currency');
+    if (currSymbol) currSymbol.innerText = window.budgetSettings.currency || 'PHP';
+
+    const budgetLimitEl = document.getElementById('stat-budget-limit');
+    if (budgetLimitEl) budgetLimitEl.innerText = window.formatCurrency(limitForMonth);
+
+    const budgetPctEl = document.getElementById('stat-budget-pct');
+    if (budgetPctEl) {
+        let pct = 0;
+        if (limitForMonth > 0) {
+            pct = (available / limitForMonth) * 100;
+        }
+        const pctText = pct >= 0 ? `${pct.toFixed(0)}% remaining` : `${Math.abs(pct).toFixed(0)}% over budget`;
+        budgetPctEl.innerText = pctText;
+        budgetPctEl.className = available < 0
+            ? 'font-bold text-peppermint-600 dark:text-peppermint-300 bg-peppermint-50 dark:bg-peppermint-900/40 px-2 py-0.5 rounded-full border border-peppermint-200 dark:border-peppermint-800 shrink-0'
+            : 'font-bold text-evergreen-600 dark:text-evergreen-300 bg-evergreen-50 dark:bg-evergreen-900/40 px-2 py-0.5 rounded-full border border-evergreen-200 dark:border-evergreen-800 shrink-0';
+    }
+};
 
 window.renderCalendar = () => {
-            const calGrid = document.getElementById('calendar-grid');
-            const calMonthYear = document.getElementById('calendar-month-year');
+    const calGrid = document.getElementById('calendar-grid');
+    const calMonthYear = document.getElementById('calendar-month-year');
 
-            if (!calGrid || !calMonthYear) return;
+    if (!calGrid || !calMonthYear) return;
 
-            calGrid.innerHTML = '';
-            const firstDay = new Date(window.currentYear, window.currentMonth, 1).getDay();
-            const daysInMonth = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            calMonthYear.innerText = `${monthNames[window.currentMonth]} ${window.currentYear}`;
+    calGrid.innerHTML = '';
+    const firstDay = new Date(window.currentYear, window.currentMonth, 1).getDay();
+    const daysInMonth = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const shortMonthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    calMonthYear.innerText = `${monthNames[window.currentMonth]} ${window.currentYear}`;
 
-            const pToday = window.getPHParts(); const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
-            const isCurrentMonth = today.getMonth() === window.currentMonth && today.getFullYear() === window.currentYear;
-            const currentDay = today.getDate();
+    const pToday = window.getPHParts();
+    const today = new Date(Date.UTC(pToday.year, pToday.month, pToday.date));
+    const isCurrentMonth = today.getMonth() === window.currentMonth && today.getFullYear() === window.currentYear;
+    const currentDay = today.getDate();
 
-            let weeks = [];
-            let currentWeek = [];
-            const prevMonthDays = new Date(window.currentYear, window.currentMonth, 0).getDate();
-            const prevMonth = window.currentMonth === 0 ? 11 : window.currentMonth - 1;
-            const prevYear = window.currentMonth === 0 ? window.currentYear - 1 : window.currentYear;
+    let weeks = [];
+    let currentWeek = [];
+    const prevMonthDays = new Date(window.currentYear, window.currentMonth, 0).getDate();
+    const prevMonth = window.currentMonth === 0 ? 11 : window.currentMonth - 1;
+    const prevYear = window.currentMonth === 0 ? window.currentYear - 1 : window.currentYear;
 
-            for (let i = 0; i < firstDay; i++) {
-                const pDay = prevMonthDays - firstDay + i + 1;
-                const pDateStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(pDay).padStart(2, '0')}`;
-                currentWeek.push({ day: pDay, dateStr: pDateStr, isMuted: true });
-            }
+    for (let i = 0; i < firstDay; i++) {
+        const pDay = prevMonthDays - firstDay + i + 1;
+        const pDateStr = `${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(pDay).padStart(2, '0')}`;
+        currentWeek.push({ day: pDay, dateStr: pDateStr, isMuted: true, monthShort: shortMonthNames[prevMonth] });
+    }
 
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                currentWeek.push({ day, dateStr, isMuted: false });
-                if (currentWeek.length === 7) {
-                    weeks.push(currentWeek);
-                    currentWeek = [];
-                }
-            }
-
-            if (currentWeek.length > 0) {
-                let nextDayCounter = 1;
-                const nextMonth = window.currentMonth === 11 ? 0 : window.currentMonth + 1;
-                const nextYear = window.currentMonth === 11 ? window.currentYear + 1 : window.currentYear;
-                while (currentWeek.length < 7) {
-                    const nDateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextDayCounter).padStart(2, '0')}`;
-                    currentWeek.push({ day: nextDayCounter++, dateStr: nDateStr, isMuted: true });
-                }
-                weeks.push(currentWeek);
-            }
-
-            weeks.forEach(week => {
-                let weekStart = week[0].dateStr;
-                let weekEnd = week[6].dateStr;
-                let weekEvents = window.events.filter(e => e.startDate <= weekEnd && e.endDate >= weekStart);
-                weekEvents = window.filterEventsByGlobalCategory(weekEvents);
-
-                weekEvents.sort((a, b) => {
-                    const aStart = a.startDate || '';
-                    const bStart = b.startDate || '';
-                    const aEnd = a.endDate || '';
-                    const bEnd = b.endDate || '';
-                    if (aStart !== bStart) return aStart.localeCompare(bStart);
-                    return new Date(bEnd) - new Date(aEnd);
-                });
-
-                let tracks = [];
-                let placements = [];
-                weekEvents.forEach(evt => {
-                    let sIdx = 0;
-                    for(let i=0; i<7; i++) {
-                        if(week[i] && week[i].dateStr === evt.startDate) { sIdx = i; break; }
-                        if(week[i] && week[i].dateStr > evt.startDate) { sIdx = 0; break; }
-                    }
-                    let eIdx = 6;
-                    for(let i=6; i>=0; i--) {
-                        if(week[i] && week[i].dateStr === evt.endDate) { eIdx = i; break; }
-                        if(week[i] && week[i].dateStr < evt.endDate) { eIdx = 6; break; }
-                    }
-                    let trackIdx = 0;
-                    while(true) {
-                        if (!tracks[trackIdx]) tracks[trackIdx] = [false,false,false,false,false,false,false];
-                        let conflict = false;
-                        for(let i = sIdx; i <= eIdx; i++) {
-                            if(tracks[trackIdx][i]) conflict = true;
-                        }
-                        if (!conflict) {
-                            for(let i = sIdx; i <= eIdx; i++) tracks[trackIdx][i] = true;
-                            placements.push({evt, sIdx, eIdx, trackIdx});
-                            break;
-                        }
-                        trackIdx++;
-                    }
-                });
-
-                let weekEl = document.createElement('div');
-                weekEl.className = 'relative bg-white dark:bg-slate-800 min-h-[120px] flex-1';
-                let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-gray-200 dark:divide-slate-700 pointer-events-none">`;
-                let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
-
-                week.forEach((dayObj, i) => {
-                    const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
-
-                    bgGridHtml += `
-                        <div class="pointer-events-auto hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-slate-50/50 dark:bg-slate-900/50' : ''} ${isToday ? 'ring-2 ring-inset ring-primary-500 z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
-                    `;
-
-                    contentGridHtml += `
-                        <div class="col-start-${i+1} row-start-1 p-1.5 pointer-events-none flex justify-start relative">
-                            <span class="text-sm font-semibold z-10 ${isToday ? 'text-white bg-primary-600 rounded-full h-7 w-7 flex items-center justify-center shadow-md' : (dayObj.isMuted ? 'text-gray-300 dark:text-gray-600 h-7 w-7 flex items-center justify-center' : 'text-gray-700 dark:text-gray-300 h-7 w-7 flex items-center justify-center')}">
-                                ${dayObj.day}
-                            </span>
-                            ${isToday ? '<span class="absolute top-2.5 left-10 text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider">Today</span>' : ''}
-                        </div>
-                    `;
-                });
-                bgGridHtml += `</div>`;
-
-                placements.forEach(p => {
-                    const evt = p.evt;
-                    const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
-
-                    let statusColor = '';
-                    let formattedTitle = '';
-
-                    if (itemType === 'event') {
-                        statusColor = 'bg-emerald-50 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50';
-                        formattedTitle = `<i class="fa-solid fa-calendar-day text-[10px] mr-1 text-emerald-500"></i>${evt.title}`;
-                    } else if (itemType === 'game') {
-                        statusColor = 'bg-red-50 dark:bg-red-900/50 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700/50';
-                        formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-red-500"></i>${evt.title}`;
-                    } else if (itemType === 'livestream') {
-                        statusColor = 'bg-purple-50 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-700/50';
-                        formattedTitle = `<i class="fa-solid fa-video text-[10px] mr-1 text-purple-500"></i>${evt.title}`;
-                    } else {
-                        statusColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50';
-                        const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
-                        formattedTitle = `<i class="fa-solid fa-list-check text-[10px] mr-1 opacity-70"></i>[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
-                    }
-
-                    let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : (itemType === 'livestream' ? 'Live Stream Event' : 'Event'));
-                    const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
-
-                    const tooltipEvents = itemType === 'task'
-                        ? `onmouseenter="showTaskTooltip('${evt.id}', event)" onmouseleave="hideTaskTooltip()" onmousemove="moveTaskTooltip(event)"`
-                        : `onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)"`;
-
-                    contentGridHtml += `
-                        <div style="${style}" class="pointer-events-auto cursor-pointer rounded p-0.5 shadow-md shadow-slate-200/50 dark:shadow-black/50 mx-1 mb-1 hover:shadow-md transition-shadow ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
-                            <div class="text-[11px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center">
-                                ${formattedTitle}
-                            </div>
-                        </div>
-                    `;
-                });
-                contentGridHtml += `</div>`;
-                weekEl.innerHTML = bgGridHtml + contentGridHtml;
-                calGrid.appendChild(weekEl);
-            });
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        currentWeek.push({ day, dateStr, isMuted: false });
+        if (currentWeek.length === 7) {
+            weeks.push(currentWeek);
+            currentWeek = [];
         }
+    }
+
+    if (currentWeek.length > 0) {
+        let nextDayCounter = 1;
+        const nextMonth = window.currentMonth === 11 ? 0 : window.currentMonth + 1;
+        const nextYear = window.currentMonth === 11 ? window.currentYear + 1 : window.currentYear;
+        while (currentWeek.length < 7) {
+            const nDateStr = `${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(nextDayCounter).padStart(2, '0')}`;
+            currentWeek.push({ day: nextDayCounter++, dateStr: nDateStr, isMuted: true, monthShort: shortMonthNames[nextMonth] });
+        }
+        weeks.push(currentWeek);
+    }
+
+    weeks.forEach(week => {
+        let weekStart = week[0].dateStr;
+        let weekEnd = week[6].dateStr;
+        let weekEvents = window.events.filter(e => e.startDate <= weekEnd && e.endDate >= weekStart);
+        weekEvents = window.filterEventsByGlobalCategory(weekEvents);
+
+        weekEvents.sort((a, b) => {
+            const aStart = a.startDate || '';
+            const bStart = b.startDate || '';
+            const aEnd = a.endDate || '';
+            const bEnd = b.endDate || '';
+            if (aStart !== bStart) return aStart.localeCompare(bStart);
+            return new Date(bEnd) - new Date(aEnd);
+        });
+
+        let tracks = [];
+        let placements = [];
+        weekEvents.forEach(evt => {
+            let sIdx = 0;
+            for (let i = 0; i < 7; i++) {
+                if (week[i] && week[i].dateStr === evt.startDate) { sIdx = i; break; }
+                if (week[i] && week[i].dateStr > evt.startDate) { sIdx = 0; break; }
+            }
+            let eIdx = 6;
+            for (let i = 6; i >= 0; i--) {
+                if (week[i] && week[i].dateStr === evt.endDate) { eIdx = i; break; }
+                if (week[i] && week[i].dateStr < evt.endDate) { eIdx = 6; break; }
+            }
+            let trackIdx = 0;
+            while (true) {
+                if (!tracks[trackIdx]) tracks[trackIdx] = [false, false, false, false, false, false, false];
+                let conflict = false;
+                for (let i = sIdx; i <= eIdx; i++) {
+                    if (tracks[trackIdx][i]) conflict = true;
+                }
+                if (!conflict) {
+                    for (let i = sIdx; i <= eIdx; i++) tracks[trackIdx][i] = true;
+                    placements.push({ evt, sIdx, eIdx, trackIdx });
+                    break;
+                }
+                trackIdx++;
+            }
+        });
+
+        let weekEl = document.createElement('div');
+        weekEl.className = 'relative bg-cream-50/40 dark:bg-slate-800 min-h-[112px] flex-1';
+        let bgGridHtml = `<div class="absolute inset-0 grid grid-cols-7 divide-x divide-cream-200 dark:divide-slate-700 pointer-events-none">`;
+        let contentGridHtml = `<div class="relative grid grid-cols-7 gap-y-1 gap-x-1 p-1 pointer-events-none">`;
+
+        week.forEach((dayObj, i) => {
+            const isToday = dayObj.day === currentDay && isCurrentMonth && !dayObj.isMuted;
+            const dayLabel = (dayObj.isMuted && dayObj.day === 1 && dayObj.monthShort)
+                ? `${dayObj.day} ${dayObj.monthShort}`
+                : `${dayObj.day}`;
+
+            bgGridHtml += `
+                <div class="pointer-events-auto hover:bg-cream-100/80 dark:hover:bg-slate-700/60 cursor-pointer transition-colors ${dayObj.isMuted ? 'bg-cream-100/40 dark:bg-slate-900/40' : ''} ${isToday ? 'bg-peppermint-50/70 dark:bg-peppermint-900/20 ring-2 ring-inset ring-peppermint-500 rounded-md z-0' : ''}" onclick="openTypeModal('${dayObj.dateStr}')"></div>
+            `;
+
+            contentGridHtml += `
+                <div class="col-start-${i + 1} row-start-1 px-1.5 pt-1 pb-0.5 pointer-events-none flex items-center justify-between relative">
+                    ${isToday
+                        ? `<span class="w-5 h-5 rounded-full bg-peppermint-500 text-white font-fun font-bold flex items-center justify-center text-[11px] shadow-sm z-10">${dayObj.day}</span>
+                           <span class="text-[9px] font-fun font-bold text-peppermint-600 dark:text-peppermint-300 bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded-full border border-peppermint-200 dark:border-peppermint-700 uppercase z-10">TODAY 🎄</span>`
+                        : `<span class="text-xs font-bold font-fun z-10 ${dayObj.isMuted ? (dayObj.day === 1 ? 'text-gingerbread-600 dark:text-amber-300/70' : 'text-stone-400 dark:text-slate-600') : 'text-stone-700 dark:text-slate-200'}">${dayLabel}</span>`
+                    }
+                </div>
+            `;
+        });
+        bgGridHtml += `</div>`;
+
+        placements.forEach(p => {
+            const evt = p.evt;
+            const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+            const safeTitle = (evt.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            let statusColor = '';
+            let formattedTitle = '';
+
+            if (itemType === 'event') {
+                statusColor = 'bg-evergreen-100 dark:bg-evergreen-900/50 text-evergreen-800 dark:text-evergreen-200 border border-evergreen-200 dark:border-evergreen-700/60';
+                formattedTitle = `<i class="fa-solid fa-calendar-day text-[9px] mr-1 text-evergreen-600 dark:text-evergreen-400 shrink-0"></i>${safeTitle}`;
+            } else if (itemType === 'game') {
+                statusColor = 'bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-200 border border-rose-200 dark:border-rose-700/60 font-semibold';
+                formattedTitle = `<i class="fa-solid fa-gamepad text-[9px] mr-1 text-peppermint-500 shrink-0"></i>${safeTitle}`;
+            } else if (itemType === 'livestream') {
+                statusColor = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-700/60 font-semibold';
+                formattedTitle = `<i class="fa-solid fa-video text-[9px] mr-1 text-amber-600 shrink-0"></i>${safeTitle}`;
+            } else {
+                const cType = evt.campaignType || 'All';
+                if (cType === 'VIP Retention') {
+                    statusColor = 'bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-700/60';
+                } else if (cType === 'Platform Feature') {
+                    statusColor = 'bg-evergreen-100 dark:bg-evergreen-900/40 text-evergreen-800 dark:text-evergreen-200 border border-evergreen-200 dark:border-evergreen-700/60';
+                } else {
+                    statusColor = 'bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-200 border border-sky-200 dark:border-sky-700/60';
+                }
+                const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
+                const assignSuffix = assignsStr ? ` - ${assignsStr}` : '';
+                formattedTitle = `[${cType}] ${safeTitle}${assignSuffix}`;
+            }
+
+            const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
+
+            const tooltipEvents = itemType === 'task'
+                ? `onmouseenter="showTaskTooltip('${evt.id}', event)" onmouseleave="hideTaskTooltip()" onmousemove="moveTaskTooltip(event)"`
+                : `onmouseenter="showEventTooltip('${evt.id}', event)" onmouseleave="hideEventTooltip()" onmousemove="moveEventTooltip(event)"`;
+
+            contentGridHtml += `
+                <div style="${style}" class="pointer-events-auto cursor-pointer rounded px-1.5 py-0.5 mx-0.5 mb-0.5 hover:brightness-95 transition-all ${statusColor}" onclick="openEditById('${evt.id}')" ${tooltipEvents}>
+                    <div class="text-[10px] font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full flex items-center leading-tight">
+                        ${formattedTitle}
+                    </div>
+                </div>
+            `;
+        });
+        contentGridHtml += `</div>`;
+        weekEl.innerHTML = bgGridHtml + contentGridHtml;
+        calGrid.appendChild(weekEl);
+    });
+};
 
 window.renderOngoingEvents = () => {
-            const ongoingList = document.getElementById('ongoing-events-list');
-            if (!ongoingList) return;
+    const ongoingList = document.getElementById('ongoing-events-list');
+    if (!ongoingList) return;
 
-            ongoingList.innerHTML = '';
-            const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
-            const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
-            const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+    ongoingList.innerHTML = '';
+    const monthStart = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(window.currentYear, window.currentMonth + 1, 0).getDate();
+    const monthEnd = `${window.currentYear}-${String(window.currentMonth + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-            let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
-            monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
+    let monthlyEvents = window.events.filter(e => e.startDate <= monthEnd && e.endDate >= monthStart);
+    monthlyEvents = window.filterEventsByGlobalCategory(monthlyEvents);
 
-            const pSort = window.getPHParts();
-            const nowStrSort = `${pSort.year}-${String(pSort.month + 1).padStart(2, '0')}-${String(pSort.date).padStart(2, '0')}`;
+    const pSort = window.getPHParts();
+    const nowStrSort = `${pSort.year}-${String(pSort.month + 1).padStart(2, '0')}-${String(pSort.date).padStart(2, '0')}`;
 
-            const getEventStatus = (evt) => {
-                const startStr = evt.startDate || '';
-                const endStr = evt.endDate || startStr;
-                if (evt.status === 'Done' || endStr < nowStrSort) return 'Past';
-                if (startStr > nowStrSort) return 'Upcoming';
-                return 'Ongoing';
-            };
+    const getEventStatus = (evt) => {
+        const startStr = evt.startDate || '';
+        const endStr = evt.endDate || startStr;
+        if (evt.status === 'Done' || endStr < nowStrSort) return 'Past';
+        if (startStr > nowStrSort) return 'Upcoming';
+        return 'Ongoing';
+    };
 
-            monthlyEvents.sort((a, b) => {
-                const rankA = getEventStatus(a) === 'Ongoing' ? 1 : (getEventStatus(a) === 'Upcoming' ? 2 : 3);
-                const rankB = getEventStatus(b) === 'Ongoing' ? 1 : (getEventStatus(b) === 'Upcoming' ? 2 : 3);
+    monthlyEvents.sort((a, b) => {
+        const rankA = getEventStatus(a) === 'Ongoing' ? 1 : (getEventStatus(a) === 'Upcoming' ? 2 : 3);
+        const rankB = getEventStatus(b) === 'Ongoing' ? 1 : (getEventStatus(b) === 'Upcoming' ? 2 : 3);
 
-                if (rankA !== rankB) return rankA - rankB;
+        if (rankA !== rankB) return rankA - rankB;
 
-                const startA = a.startDate || '';
-                const startB = b.startDate || '';
-                if (startA !== startB) return startA.localeCompare(startB);
+        const startA = a.startDate || '';
+        const startB = b.startDate || '';
+        if (startA !== startB) return startA.localeCompare(startB);
 
-                const endA = a.endDate || startA;
-                const endB = b.endDate || startB;
-                return endA.localeCompare(endB);
-            });
+        const endA = a.endDate || startA;
+        const endB = b.endDate || startB;
+        return endA.localeCompare(endB);
+    });
 
-            const ongoingCountEl = document.getElementById('ongoing-count');
-            if (ongoingCountEl) ongoingCountEl.innerText = monthlyEvents.length;
+    const ongoingCountEl = document.getElementById('ongoing-count');
+    if (ongoingCountEl) ongoingCountEl.innerText = monthlyEvents.length;
 
-            if (monthlyEvents.length === 0) {
-                ongoingList.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-slate-400 dark:text-gray-400 dark:text-slate-500 py-10">
-                        <i class="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300 dark:text-gray-600"></i>
-                        <p>No records this month.</p>
-                    </div>
-                `;
-                return;
+    if (monthlyEvents.length === 0) {
+        ongoingList.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full text-center text-stone-500 dark:text-slate-400 py-10">
+                <i class="fa-solid fa-cookie-bite text-4xl mb-3 text-gingerbread-200 dark:text-slate-600"></i>
+                <p class="font-fun text-sm font-semibold text-gingerbread-600 dark:text-slate-300">No records this month.</p>
+                <p class="text-xs text-stone-400 mt-1">Click "+ New Event" to schedule one!</p>
+            </div>
+        `;
+        return;
+    }
+
+    const formatShortDate = (dStr) => {
+        const d = new Date(dStr);
+        return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+    };
+
+    monthlyEvents.forEach(evt => {
+        const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
+        const safeTitle = (evt.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const dateObj = new Date(evt.endDate);
+        const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
+        const p = window.getPHParts();
+        const nowUtc = Date.UTC(p.year, p.month, p.date);
+        const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
+        const isUrgent = daysDiff <= 2 && evt.status !== 'Done';
+
+        const el = document.createElement('div');
+        el.title = window.getPendingSummary(evt);
+
+        const nowStrIter = `${p.year}-${String(p.month + 1).padStart(2, '0')}-${String(p.date).padStart(2, '0')}`;
+        const startStr = evt.startDate || '';
+        const endStr = evt.endDate || startStr;
+        const isPast = evt.status === 'Done' || endStr < nowStrIter;
+        const opacityClass = isPast ? 'opacity-55 grayscale-[40%]' : '';
+
+        if (itemType === 'event' || itemType === 'game' || itemType === 'livestream') {
+            el.onclick = () => window.openEditById(evt.id);
+
+            let cardTone = 'bg-evergreen-50/70 dark:bg-evergreen-950/30 border-evergreen-200 dark:border-evergreen-800/60 hover:border-evergreen-300';
+            let iconClass = 'fa-calendar-day text-evergreen-600';
+            let typeLabel = 'OFFLINE EVENT';
+            let typeBg = 'bg-evergreen-100 dark:bg-evergreen-900/50 text-evergreen-700 dark:text-evergreen-300';
+
+            if (itemType === 'game') {
+                cardTone = 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/60 hover:border-rose-300';
+                iconClass = 'fa-fire text-peppermint-500';
+                typeLabel = 'NEW GAME';
+                typeBg = 'bg-peppermint-100 dark:bg-peppermint-900/50 text-peppermint-700 dark:text-peppermint-300';
+            } else if (itemType === 'livestream') {
+                cardTone = 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60 hover:border-amber-300';
+                iconClass = 'fa-video text-amber-600';
+                typeLabel = 'LIVE STREAM';
+                typeBg = 'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200';
             }
 
-            const formatShortDate = (dStr) => {
-                const d = new Date(dStr);
-                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
-            };
+            const statusBadgeText = isPast ? 'DONE' : 'PENDING';
 
-            monthlyEvents.forEach(evt => {
-                const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
-                const dateObj = new Date(evt.endDate);
-                const displayDate = evt.startDate === evt.endDate ? formatShortDate(evt.startDate) : `${formatShortDate(evt.startDate)} - ${formatShortDate(evt.endDate)}`;
-                const p = window.getPHParts();
-                const nowUtc = Date.UTC(p.year, p.month, p.date);
-                const daysDiff = Math.ceil((dateObj - nowUtc) / (1000 * 60 * 60 * 24));
-                const urgency = (daysDiff <= 2 && evt.status !== 'Done') ? 'text-red-500 font-semibold' : 'text-gray-500 dark:text-slate-400 dark:text-gray-400 dark:text-slate-500';
+            el.className = `p-3.5 rounded-xl border shadow-xs transition-all cursor-pointer ${cardTone} ${opacityClass}`;
 
-                const el = document.createElement('div');
-                el.title = window.getPendingSummary(evt);
+            el.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${typeBg}">${typeLabel}</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 dark:text-slate-400">${statusBadgeText}</span>
+                </div>
+                <h4 class="text-xs font-bold text-stone-800 dark:text-slate-100 flex items-center gap-1.5 mt-1 font-fun truncate">
+                    <i class="fa-solid ${iconClass} shrink-0"></i>
+                    <span class="truncate">${safeTitle}</span>
+                </h4>
+                <div class="mt-1.5 text-[11px] ${isUrgent ? 'text-peppermint-600 font-semibold' : 'text-stone-500 dark:text-slate-400'} flex items-center gap-1">
+                    <i class="fa-regular fa-calendar text-peppermint-500"></i>
+                    <span>${displayDate}</span>
+                </div>
+            `;
+        } else {
+            el.onclick = () => window.jumpToTask(evt.id);
 
-                const nowStrIter = `${p.year}-${String(p.month + 1).padStart(2, '0')}-${String(p.date).padStart(2, '0')}`;
-                const startStr = evt.startDate || '';
-                const endStr = evt.endDate || startStr;
-                const isPast = evt.status === 'Done' || endStr < nowStrIter;
-                const opacityClass = isPast ? 'opacity-50 grayscale' : '';
+            const progress = evt.progress || 0;
+            const pFormatted = progress.toFixed(2);
+            const pBarClass = progress === 100
+                ? 'bg-evergreen-500'
+                : 'bg-gradient-to-r from-peppermint-500 to-amber-400';
+            const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
 
-                if (itemType === 'event' || itemType === 'game' || itemType === 'livestream') {
-                    el.onclick = () => window.openEditById(evt.id);
+            el.className = `p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-cream-200/90 dark:border-slate-700 hover:border-peppermint-300 dark:hover:border-peppermint-600 shadow-xs transition-all cursor-pointer ${opacityClass}`;
 
-                    let iconClass = 'fa-calendar-day text-emerald-500';
-                    let titleColor = 'text-emerald-900 dark:text-emerald-300';
-                    let typeLabel = 'Offline Event';
-                    let typeBg = 'bg-emerald-50 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400';
-
-                    if (itemType === 'game') {
-                        iconClass = 'fa-gamepad text-rose-500';
-                        titleColor = 'text-rose-900 dark:text-rose-300';
-                        typeLabel = 'New Game';
-                        typeBg = 'bg-rose-50 dark:bg-rose-900/50 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400';
-                    } else if (itemType === 'livestream') {
-                        iconClass = 'fa-video text-purple-500';
-                        titleColor = 'text-purple-900 dark:text-purple-300';
-                        typeLabel = 'Live Stream Event';
-                        typeBg = 'bg-purple-50 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400';
-                    }
-
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
-
-                    el.innerHTML = `
-                        <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${typeBg}">${typeLabel}</span>
-                                </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 border border-slate-200/60 dark:border-slate-600">Pending</span>
-                            </div>
-                            <p class="text-sm font-bold ${titleColor} truncate mb-2">${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-                            <div class="flex items-center justify-between w-full">
-                                <span class="text-xs ${urgency} font-medium flex items-center"><i class="fa-regular fa-calendar mr-1.5"></i>${displayDate}</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    el.onclick = () => window.jumpToTask(evt.id);
-
-                    const p = evt.progress || 0;
-                    const pFormatted = p.toFixed(2);
-                    const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
-                    const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : 'Unassigned';
-
-                    el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
-
-                    el.innerHTML = `
-                        <div class="flex-1 min-w-0 flex flex-col justify-between w-full">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border bg-primary-50 dark:bg-primary-900 text-primary-500 dark:text-primary-400 border-primary-200 dark:border-primary-800">Task</span>
-                                <span class="text-sm font-bold text-primary-500 dark:text-primary-400">${assignsStr}</span>
-                            </div>
-                            <p class="text-sm font-bold text-primary-500 dark:text-primary-400 truncate mb-2"><i class="fa-solid fa-list-check text-primary-500 dark:text-primary-400 mr-1.5 opacity-70"></i>[${evt.campaignType || 'Task'}] ${evt.title.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-                            <div class="flex items-end justify-between w-full mt-1">
-                                <span class="text-xs ${urgency} font-medium flex items-center mb-1"><i class="fa-regular fa-calendar mr-1.5 text-red-500"></i><span class="text-red-500">${displayDate}</span></span>
-                                <div class="flex flex-col items-end w-2/3">
-                                    <div class="flex items-center justify-between mb-1.5 w-full">
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 dark:text-slate-500">Progress</span>
-                                        <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 dark:text-slate-500">${pFormatted}%</span>
-                                    </div>
-                                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5">
-                                        <div class="${pColor} h-1.5 rounded-full transition-all duration-500" style="width: ${p}%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-                ongoingList.appendChild(el);
-            });
+            el.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <span class="text-[10px] font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded shrink-0">TASK</span>
+                    <span class="text-xs font-bold text-gingerbread-600 dark:text-amber-300 font-fun truncate">${assignsStr}</span>
+                </div>
+                <h4 class="text-xs font-bold text-stone-800 dark:text-slate-100 hover:text-peppermint-600 dark:hover:text-peppermint-400 transition-colors leading-snug">
+                    <i class="fa-solid fa-list-ul text-amber-500 mr-1 text-[11px]"></i>[${evt.campaignType || 'All'}] ${safeTitle}
+                </h4>
+                <div class="mt-2.5 flex items-center justify-between text-[11px] text-stone-500 dark:text-slate-400">
+                    <span class="flex items-center gap-1 font-medium ${isUrgent ? 'text-peppermint-600 dark:text-peppermint-400 font-semibold' : ''}">
+                        <i class="fa-regular fa-calendar text-peppermint-500"></i> ${displayDate}
+                    </span>
+                    <span class="font-semibold ${progress > 0 ? 'text-stone-700 dark:text-slate-200' : 'text-stone-400 dark:text-slate-500'}">${pFormatted}%</span>
+                </div>
+                <div class="w-full bg-cream-200 dark:bg-slate-700 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                    <div class="${pBarClass} h-1.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                </div>
+            `;
         }
+        ongoingList.appendChild(el);
+    });
+};
 
 window.renderUI = () => {
-            const currStr = window.getCurrentMonthStr();
-            const monthInput = document.getElementById('setting-budget-month');
-            const limitInput = document.getElementById('setting-budget-limit');
-            if (monthInput) monthInput.value = currStr;
-            if (limitInput) limitInput.value = window.budgetSettings.limits[currStr] || 0;
+    const currStr = window.getCurrentMonthStr();
+    const monthInput = document.getElementById('setting-budget-month');
+    const limitInput = document.getElementById('setting-budget-limit');
+    if (monthInput) monthInput.value = currStr;
+    if (limitInput) limitInput.value = window.budgetSettings.limits[currStr] || 0;
 
-            window.updateStats();
-            window.renderCalendar();
-            window.renderOngoingEvents();
-            if(window.renderTasksTable) window.renderTasksTable();
-            if(window.renderBudgetTable) window.renderBudgetTable();
-            if(window.updateCampaignDropdown) window.updateCampaignDropdown();
-        }
+    window.updateStats();
+    window.renderCalendar();
+    window.renderOngoingEvents();
+    if (window.renderTasksTable) window.renderTasksTable();
+    if (window.renderBudgetTable) window.renderBudgetTable();
+    if (window.updateCampaignDropdown) window.updateCampaignDropdown();
+};
+
 export function init(container) {
+    if (sessionStorage.getItem('spo_festive_toast_dismissed') === '1') {
+        const toast = document.getElementById('festive-sprint-toast');
+        if (toast) toast.remove();
+    }
 
     if (window.renderUI) window.renderUI();
     const savedTypeSelect = document.getElementById('global-type-filter');

@@ -1571,27 +1571,27 @@ cardsHtml += `
             }
 
             if (results.length === 0) {
-                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No results found for "${val}"</div>`;
+                resultsList.innerHTML = `<div class="p-4 text-center text-sm text-stone-500 dark:text-slate-400">No results found for "${val}"</div>`;
             } else {
                 // limit to 10 results
                 const limited = results.slice(0, 10);
                 resultsList.innerHTML = limited.map(r => {
                     const safeTitle = (r.title || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     return `
-                    <div class="flex items-center px-4 py-3 hover:bg-slate-50 cursor-pointer rounded-lg border-b border-gray-100 last:border-0" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
-                        <div class="h-8 w-8 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mr-3 shrink-0">
-                            <i class="fa-solid ${r.icon} text-sm"></i>
+                    <div class="flex items-center px-3.5 py-2.5 hover:bg-cream-200/60 dark:hover:bg-slate-700 cursor-pointer rounded-xl border-b border-cream-200/70 dark:border-slate-700 last:border-0 transition-colors" onclick="${r.action}; document.getElementById('global-search-results').classList.add('hidden'); document.getElementById('global-search').value = '';">
+                        <div class="h-8 w-8 rounded-lg bg-peppermint-100 dark:bg-peppermint-900/40 text-peppermint-600 dark:text-peppermint-300 flex items-center justify-center mr-3 shrink-0">
+                            <i class="fa-solid ${r.icon} text-xs"></i>
                         </div>
                         <div class="flex flex-col overflow-hidden">
-                            <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">${safeTitle}</span>
-                            <span class="text-xs text-gray-500 dark:text-gray-400">${r.type}</span>
+                            <span class="text-sm font-semibold text-stone-800 dark:text-white truncate">${safeTitle}</span>
+                            <span class="text-xs text-stone-500 dark:text-slate-400">${r.type}</span>
                         </div>
                     </div>
                     `;
                 }).join('');
 
                 if (results.length > 10) {
-                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100">Showing 10 of ${results.length} results. Please refine your search.</div>`;
+                    resultsList.innerHTML += `<div class="px-4 py-2 text-center text-xs text-stone-500 dark:text-slate-400 border-t border-cream-200 dark:border-slate-700">Showing 10 of ${results.length} results. Please refine your search.</div>`;
                 }
             }
 
@@ -1621,21 +1621,29 @@ cardsHtml += `
             const views = ['dashboard', 'tasks', 'budget', 'campaign', 'new_games', 'daily_task', 'pin_request', 'sms', 'content_writer', 'prize_distribution', 'settings'];
             views.forEach(v => {
                 const nav = document.getElementById(`nav-${v}`);
-                if(nav) {
+                if (nav) {
+                    const iconBox = nav.querySelector('.nav-icon-box');
                     const icon = nav.querySelector('i');
+                    const isSettings = v === 'settings';
                     if (v === viewName) {
-                        nav.classList.add('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
-                        if(icon) {
-                            icon.classList.add('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.remove('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
+                        nav.classList.add('bg-peppermint-50', 'dark:bg-peppermint-900/30', 'text-peppermint-700', 'dark:text-peppermint-200', 'font-semibold', 'border-peppermint-200/70', 'dark:border-peppermint-700/50', 'shadow-sm');
+                        nav.classList.remove('text-stone-600', 'dark:text-slate-300', 'hover:bg-cream-200/60', 'hover:bg-cream-200', 'dark:hover:bg-slate-700', 'hover:text-gingerbread-700', 'dark:hover:text-white', 'font-medium', 'border-transparent');
+                        if (iconBox) {
+                            iconBox.classList.add('bg-peppermint-500', 'text-white', 'shadow-xs');
+                            iconBox.classList.remove('bg-cream-200', 'dark:bg-slate-700', 'text-stone-600', 'dark:text-slate-300');
+                        } else if (icon && isSettings) {
+                            icon.classList.add('text-peppermint-600', 'dark:text-peppermint-300');
+                            icon.classList.remove('text-gingerbread-500', 'dark:text-amber-400');
                         }
                     } else {
-                        nav.classList.remove('bg-primary-50', 'dark:bg-primary-900', 'text-primary-700', 'dark:text-white');
-                        nav.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700', 'hover:text-gray-900', 'dark:hover:text-white');
-                        if(icon) {
-                            icon.classList.remove('text-primary-500', 'dark:text-primary-400');
-                            icon.classList.add('text-gray-400', 'group-hover:text-gray-500', 'dark:text-gray-400');
+                        nav.classList.remove('bg-peppermint-50', 'dark:bg-peppermint-900/30', 'text-peppermint-700', 'dark:text-peppermint-200', 'font-semibold', 'border-peppermint-200/70', 'dark:border-peppermint-700/50', 'shadow-sm');
+                        nav.classList.add('text-stone-600', 'dark:text-slate-300', isSettings ? 'hover:bg-cream-200' : 'hover:bg-cream-200/60', 'dark:hover:bg-slate-700', 'hover:text-gingerbread-700', 'dark:hover:text-white', 'font-medium', 'border-transparent');
+                        if (iconBox) {
+                            iconBox.classList.remove('bg-peppermint-500', 'text-white', 'shadow-xs');
+                            iconBox.classList.add('bg-cream-200', 'dark:bg-slate-700', 'text-stone-600', 'dark:text-slate-300');
+                        } else if (icon && isSettings) {
+                            icon.classList.remove('text-peppermint-600', 'dark:text-peppermint-300');
+                            icon.classList.add('text-gingerbread-500', 'dark:text-amber-400');
                         }
                     }
                 }
@@ -3386,27 +3394,34 @@ cardsHtml += `
             container.innerHTML = '';
 
             if (window.quickLinks.length === 0) {
-                container.innerHTML = '<div class="px-3 py-2 text-xs text-gray-400 italic">No quick links added.</div>';
+                container.innerHTML = '<div class="px-3 py-2 text-xs text-stone-400 dark:text-slate-500 italic">No holiday links added.</div>';
                 return;
             }
 
-            window.quickLinks.forEach(link => {
+            const holidayIcons = [
+                'fa-candy-cane text-peppermint-500',
+                'fa-snowflake text-sky-500',
+                'fa-holly-berry text-evergreen-600'
+            ];
+
+            window.quickLinks.forEach((link, idx) => {
                 const el = document.createElement('div');
-                el.className = "flex items-center justify-between px-3 py-1 hover:bg-slate-50 rounded-xl group transition-colors";
+                el.className = "flex items-center justify-between px-2.5 py-1.5 hover:bg-cream-200/50 dark:hover:bg-slate-700 rounded-lg group transition-colors";
 
                 const linkUrl = link.url.startsWith('http') ? link.url : 'https://' + link.url;
+                const iconClass = holidayIcons[idx % holidayIcons.length];
 
                 el.innerHTML = `
-                    <a href="${linkUrl}" target="_blank" class="flex items-center text-gray-600 group-hover:text-gray-900 dark:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
-                        <i class="fa-solid fa-link mr-3 text-gray-400 group-hover:text-primary-500 transition-colors shrink-0"></i>
+                    <a href="${linkUrl}" target="_blank" class="flex items-center gap-2 text-xs text-stone-600 dark:text-slate-300 group-hover:text-gingerbread-700 dark:group-hover:text-white font-medium truncate flex-1" title="${link.title} (Created by ${link.createdBy})">
+                        <i class="fa-solid ${iconClass} shrink-0"></i>
                         <span class="truncate">${link.title}</span>
                     </a>
-                    <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
-                        <button onclick="openQuickLinkModal('${link.id}')" class="text-gray-400 hover:text-primary-600 p-1" title="Edit">
-                            <i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i>
+                    <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1">
+                        <button onclick="openQuickLinkModal('${link.id}')" class="text-stone-400 hover:text-peppermint-600 p-1" title="Edit">
+                            <i class="fa-solid fa-pen text-[10px]" style="pointer-events: none;"></i>
                         </button>
-                        <button onclick="deleteQuickLink('${link.id}')" class="text-gray-400 hover:text-red-600 p-1" title="Delete">
-                            <i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i>
+                        <button onclick="deleteQuickLink('${link.id}')" class="text-stone-400 hover:text-red-600 p-1" title="Delete">
+                            <i class="fa-solid fa-trash text-[10px]" style="pointer-events: none;"></i>
                         </button>
                     </div>
                 `;
@@ -5406,15 +5421,25 @@ window.toggleNotifications = () => {
 
         window.updateUserProfileIcon = () => {
             const btn = document.getElementById('user-profile-btn');
+            const avatar = document.getElementById('user-profile-avatar');
+            const nameEl = document.getElementById('user-profile-name');
+            if (!btn) return;
+
             if (window.currentUserProfile) {
-                btn.innerHTML = `<span class="text-sm font-bold text-primary-700">${window.currentUserProfile.charAt(0)}</span>`;
+                if (avatar) {
+                    avatar.innerHTML = `<span class="text-sm font-fun font-bold text-white">${window.currentUserProfile.charAt(0).toUpperCase()}</span>`;
+                }
+                if (nameEl) {
+                    nameEl.innerText = window.currentUserProfile;
+                }
                 btn.title = `User Profile: ${window.currentUserProfile}`;
-                btn.classList.add('bg-primary-100', 'border-primary-300');
-                btn.classList.remove('bg-slate-200', 'border-slate-300/60');
             } else {
-                btn.innerHTML = `<i class="fa-regular fa-user text-lg"></i>`;
+                if (avatar) {
+                    avatar.innerHTML = `<i class="fa-regular fa-user text-sm"></i>`;
+                }
+                if (nameEl) {
+                    nameEl.innerText = 'Select Profile';
+                }
                 btn.title = "User Profile";
-                btn.classList.remove('bg-primary-100', 'border-primary-300');
-                btn.classList.add('bg-slate-200', 'border-slate-300/60');
             }
         };
