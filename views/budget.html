@@ -1,107 +1,107 @@
-            <div id="view-budget" >
-                <div id="budget-config-section" style="display: none;" class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/60 dark:border-slate-700 mb-6 p-4 sm:p-5">
-                    <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-4">
-                        <div class="mr-2">
-                            <label class="block text-sm font-bold text-gray-900 dark:text-white mb-1">Budget Configuration <span class="text-xs font-normal text-primary-500 bg-primary-50 px-2 py-0.5 rounded">Admin</span></label>
-                            <p class="text-xs text-gray-500 dark:text-slate-400">Synced with Calendar Dashboard view.</p>
-                        </div>
-                        <div>
-                            <label for="setting-budget-month" class="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">Active Month</label>
-                            <input type="month" id="setting-budget-month" onchange="syncBudgetMonth(this.value)" class="block w-full sm:w-40 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:outline-none focus:ring-primary-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="setting-budget-limit" class="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">Limit (Selected Month)</label>
-                            <input type="number" step="0.01" min="0" id="setting-budget-limit" class="block w-full sm:w-36 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:outline-none focus:ring-primary-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="setting-budget-currency" class="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">Currency</label>
-                            <select id="setting-budget-currency" class="block w-full sm:w-24 border border-gray-300 dark:border-slate-600 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 py-1.5 px-3 focus:outline-none focus:ring-primary-500 sm:text-sm">
-                                <option value="PHP">PHP</option>
-                                <option value="USD">USD</option>
-                            </select>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="saveBudgetSettings()" class="bg-primary-50 text-primary-700 hover:bg-primary-100 border border-primary-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium">Save Limit</button>
-                            <button onclick="migrateLocalData()" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium">
-                                <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
-                            </button>
-                            <button onclick="clearAllBudgets()" class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 py-1.5 px-3 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium transition-colors">
-                                <i class="fa-solid fa-trash-can mr-1"></i> Clear
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/60 dark:border-slate-700">
-                    <div class="px-4 py-5 sm:px-6 border-b border-slate-200/60 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="text-lg leading-6 font-bold text-gray-900 dark:text-white">Team Budget Allocation</h3>
-                            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-slate-400" id="budget-table-subtitle">Track campaign budgets, expenses, and remaining balances.</p>
-                        </div>
-                        <div class="mt-4 sm:mt-0 flex space-x-3">
-                            <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-slate-600 text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900">
-                                <i class="fa-solid fa-list-ul mr-2"></i> View All Months
-                            </button>
-                            <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-md shadow-slate-200/50 dark:shadow-black/50 text-white bg-primary-600 hover:bg-primary-700">
-                                <i class="fa-solid fa-plus mr-2"></i> Add Budget Entry
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-700 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                        <div class="relative flex-1 max-w-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-search text-gray-400"></i>
-                            </div>
-                            <input type="text" id="budget-search-input" oninput="setBudgetSearch(this.value)" placeholder="Search by campaign name or owner..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-slate-600 rounded-xl leading-5 bg-white dark:bg-slate-800 placeholder-gray-500 focus:ring-primary-500 sm:text-sm">
-                        </div>
-                        <select id="budget-filter-owner" onchange="setBudgetOwnerFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-8 py-2 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-primary-500 sm:text-sm rounded-xl cursor-pointer">
-                            <option value="All">All Owners</option>
-                        </select>
-                        <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-40 pl-3 pr-3 py-2 text-base border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-primary-500 sm:text-sm rounded-xl cursor-pointer">
-                        <button onclick="exportBudgetExcel()" class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-600 shadow-md shadow-slate-200/50 dark:shadow-black/50 text-sm font-medium rounded-xl text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:bg-slate-900 transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600 mr-2"></i>Export
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-                            <thead class="bg-slate-50 dark:bg-slate-900">
-                                <tr>
-                                    <th scope="col" onclick="handleBudgetSort('month')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Campaign Date <i id="budget-sort-icon-month" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Campaign / Project Name <i id="budget-sort-icon-name" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('type')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Type <i id="budget-sort-icon-type" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('createdAt')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Created Time <i id="budget-sort-icon-createdAt" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('owner')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Owner <i id="budget-sort-icon-owner" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-                                    <th scope="col" onclick="handleBudgetSort('allocated')" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase cursor-pointer hover:bg-slate-100 group">
-                                        Allocated Budget <i id="budget-sort-icon-allocated" class="fa-solid fa-sort text-gray-300 ml-1"></i>
-                                    </th>
-
-                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-slate-700" id="budget-table-body">
-                            </tbody>
-                            <tfoot class="bg-slate-50 dark:bg-slate-900 font-medium">
-                                <tr>
-                                    <td colspan="5" class="px-6 py-4 text-left text-sm text-gray-900 dark:text-white uppercase">Total</td>
-                                    <td class="px-6 py-4 text-right text-sm text-gray-900 dark:text-white" id="budget-total-allocated">₱0.00</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+<div id="view-budget" class="space-y-6">
+    <div id="budget-config-section" style="display: none;" class="bg-cream-50 dark:bg-slate-800 rounded-2xl shadow-festive border border-amber-200/80 dark:border-amber-800/50 p-5">
+        <div class="flex flex-col sm:flex-row sm:items-end gap-4 flex-wrap">
+            <div class="mr-2">
+                <label class="block text-sm font-bold font-fun text-gingerbread-700 dark:text-amber-100 mb-1">Budget Configuration <span class="text-[10px] font-sans font-bold text-peppermint-600 dark:text-peppermint-300 bg-peppermint-100 dark:bg-peppermint-900/40 px-2 py-0.5 rounded-full ml-1">Admin</span></label>
+                <p class="text-xs text-stone-500 dark:text-slate-400">Synced with Calendar Dashboard view.</p>
             </div>
+            <div>
+                <label for="setting-budget-month" class="block text-xs font-semibold text-gingerbread-600 dark:text-slate-300 mb-1">Active Month</label>
+                <input type="month" id="setting-budget-month" onchange="syncBudgetMonth(this.value)" class="block w-full sm:w-40 border border-cream-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-stone-700 dark:text-white py-1.5 px-3 focus:outline-none focus:ring-2 focus:ring-peppermint-400 sm:text-sm">
+            </div>
+            <div>
+                <label for="setting-budget-limit" class="block text-xs font-semibold text-gingerbread-600 dark:text-slate-300 mb-1">Limit (Selected Month)</label>
+                <input type="number" step="0.01" min="0" id="setting-budget-limit" class="block w-full sm:w-36 border border-cream-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-stone-700 dark:text-white py-1.5 px-3 focus:outline-none focus:ring-2 focus:ring-peppermint-400 sm:text-sm">
+            </div>
+            <div>
+                <label for="setting-budget-currency" class="block text-xs font-semibold text-gingerbread-600 dark:text-slate-300 mb-1">Currency</label>
+                <select id="setting-budget-currency" class="block w-full sm:w-24 border border-cream-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-800 text-stone-700 dark:text-white py-1.5 px-3 focus:outline-none focus:ring-2 focus:ring-peppermint-400 sm:text-sm">
+                    <option value="PHP">PHP</option>
+                    <option value="USD">USD</option>
+                </select>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="saveBudgetSettings()" class="bg-peppermint-50 dark:bg-peppermint-900/40 text-peppermint-700 dark:text-peppermint-200 hover:bg-peppermint-100 border border-peppermint-200 dark:border-peppermint-700/60 py-1.5 px-3.5 rounded-xl shadow-xs text-sm font-semibold transition-colors">Save Limit</button>
+                <button onclick="migrateLocalData()" class="bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 hover:bg-amber-100 border border-amber-200 dark:border-amber-700/60 py-1.5 px-3.5 rounded-xl shadow-xs text-sm font-semibold transition-colors">
+                    <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Migrate
+                </button>
+                <button onclick="clearAllBudgets()" class="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-200 hover:bg-rose-100 border border-rose-200 dark:border-rose-700/60 py-1.5 px-3.5 rounded-xl shadow-xs text-sm font-semibold transition-colors">
+                    <i class="fa-solid fa-trash-can mr-1"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
 
-            <!-- SPO team posts View -->
+    <div class="bg-cream-50 dark:bg-slate-800 rounded-2xl shadow-festive border border-cream-200 dark:border-slate-700 overflow-hidden">
+        <div class="px-5 py-5 sm:px-6 border-b border-cream-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h3 class="text-xl leading-6 font-bold font-fun text-gingerbread-700 dark:text-amber-100 flex items-center gap-2">
+                    <i class="fa-solid fa-wallet text-amber-500 text-base"></i>
+                    <span>Team Budget Allocation</span>
+                </h3>
+                <p class="mt-1 max-w-2xl text-xs sm:text-sm text-stone-500 dark:text-slate-400" id="budget-table-subtitle">Track campaign budgets, expenses, and remaining balances.</p>
+            </div>
+            <div class="flex flex-wrap gap-2.5 shrink-0">
+                <button onclick="openBudgetDrawer()" class="inline-flex items-center justify-center px-4 py-2 border border-cream-300 dark:border-slate-600 text-sm font-semibold rounded-xl shadow-xs text-gingerbread-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-cream-200/50 dark:hover:bg-slate-700 transition-colors">
+                    <i class="fa-solid fa-list-ul mr-2 text-gingerbread-500"></i> View All Months
+                </button>
+                <button onclick="openBudgetModal()" class="inline-flex items-center justify-center px-4 py-2 text-sm font-fun font-bold rounded-xl shadow-md shadow-peppermint-500/20 text-white bg-gradient-to-r from-peppermint-500 to-amber-500 hover:from-peppermint-600 hover:to-amber-600 transition-all transform active:scale-95">
+                    <i class="fa-solid fa-plus mr-2"></i> Add Budget Entry
+                </button>
+            </div>
+        </div>
+
+        <div class="px-5 py-3.5 bg-cream-100/70 dark:bg-slate-900/60 border-b border-cream-200 dark:border-slate-700 flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1 max-w-sm">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-stone-400 text-xs"></i>
+                </div>
+                <input type="text" id="budget-search-input" oninput="setBudgetSearch(this.value)" placeholder="Search by campaign name or owner..." class="block w-full pl-9 pr-3 py-2 border border-cream-300 dark:border-slate-600 rounded-xl leading-5 bg-white dark:bg-slate-800 text-stone-700 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-peppermint-400 focus:border-peppermint-400 sm:text-sm">
+            </div>
+            <select id="budget-filter-owner" onchange="setBudgetOwnerFilter(this.value)" class="block w-full sm:w-44 pl-3 pr-8 py-2 text-sm border border-cream-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-700 dark:text-slate-200 focus:ring-2 focus:ring-peppermint-400 focus:border-peppermint-400 rounded-xl cursor-pointer font-medium">
+                <option value="All">All Owners</option>
+            </select>
+            <input type="month" id="budget-filter-month" onchange="setBudgetMonthFilter(this.value)" class="block w-full sm:w-44 pl-3 pr-3 py-2 text-sm border border-cream-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-stone-700 dark:text-slate-200 focus:ring-2 focus:ring-peppermint-400 focus:border-peppermint-400 rounded-xl cursor-pointer font-medium">
+            <button onclick="exportBudgetExcel()" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 border border-cream-300 dark:border-slate-600 shadow-xs text-sm font-semibold rounded-xl text-gingerbread-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-cream-200/50 dark:hover:bg-slate-700 transition-colors">
+                <i class="fa-solid fa-file-excel text-evergreen-600 mr-2"></i>Export
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-cream-200 dark:divide-slate-700">
+                <thead class="bg-cream-100/80 dark:bg-slate-900/70">
+                    <tr>
+                        <th scope="col" onclick="handleBudgetSort('month')" class="px-6 py-3 text-left text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Campaign Date <i id="budget-sort-icon-month" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" onclick="handleBudgetSort('name')" class="px-6 py-3 text-left text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Campaign / Project Name <i id="budget-sort-icon-name" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" onclick="handleBudgetSort('type')" class="px-6 py-3 text-left text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Type <i id="budget-sort-icon-type" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" onclick="handleBudgetSort('createdAt')" class="px-6 py-3 text-left text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Created Time <i id="budget-sort-icon-createdAt" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" onclick="handleBudgetSort('owner')" class="px-6 py-3 text-left text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Owner <i id="budget-sort-icon-owner" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" onclick="handleBudgetSort('allocated')" class="px-6 py-3 text-right text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase cursor-pointer hover:bg-cream-200/60 dark:hover:bg-slate-800 group">
+                            Allocated Budget <i id="budget-sort-icon-allocated" class="fa-solid fa-sort text-gingerbread-200 dark:text-slate-600 ml-1"></i>
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-semibold font-fun text-gingerbread-600 dark:text-amber-200/80 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-cream-50/40 dark:bg-slate-800 divide-y divide-cream-200/80 dark:divide-slate-700" id="budget-table-body">
+                </tbody>
+                <tfoot class="bg-cream-100/90 dark:bg-slate-900/70 border-t border-cream-200 dark:border-slate-700 font-fun font-bold">
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-left text-sm text-gingerbread-700 dark:text-amber-100 uppercase">Total</td>
+                        <td class="px-6 py-4 text-right text-sm text-gingerbread-700 dark:text-amber-200" id="budget-total-allocated">₱0.00</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

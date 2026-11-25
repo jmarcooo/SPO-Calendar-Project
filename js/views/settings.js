@@ -86,16 +86,16 @@ window.renderAdminPOCSettings = () => {
                 const currentPOCs = savedPOCs[module.id] || [];
 
                 html += `
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                        <h4 class="text-sm font-semibold text-gray-800 mb-3">${module.name} (Max 3)</h4>
+                    <div class="p-4 bg-cream-100/80 dark:bg-slate-900/60 border border-cream-200 dark:border-slate-700 rounded-xl">
+                        <h4 class="text-sm font-bold font-fun text-gingerbread-700 dark:text-amber-100 mb-3">${module.name} (Max 3)</h4>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 `;
 
                 window.AVAILABLE_USERS.forEach(user => {
                     const isChecked = currentPOCs.includes(user) ? 'checked' : '';
                     html += `
-                        <label class="flex items-center space-x-2 text-sm text-gray-700 cursor-pointer">
-                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded text-primary-600 focus:ring-primary-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
+                        <label class="flex items-center space-x-2 text-sm text-stone-700 dark:text-slate-300 cursor-pointer">
+                            <input type="checkbox" name="poc_${module.id}" value="${user}" class="poc-checkbox rounded border-cream-300 text-peppermint-600 focus:ring-peppermint-500" ${isChecked} onchange="window.handlePOCSelection(this, '${module.id}')">
                             <span>${user}</span>
                         </label>
                     `;

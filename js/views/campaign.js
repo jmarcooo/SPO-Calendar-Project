@@ -105,32 +105,32 @@ window.renderSPOTeamPostsTable = () => {
     tbody.innerHTML = posts.map(post => {
         const datePostedDisplay = post.datePosted ? post.datePosted.replace('T', ' ') : '-';
         return `
-            <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.openSPOTeamPostDetailsModal('${post.id}')">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${post.title || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${datePostedDisplay}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${post.createdBy || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800">
+            <tr class="hover:bg-cream-100/80 dark:hover:bg-slate-700/60 transition-colors cursor-pointer" onclick="if(!event.target.closest('a') && !event.target.closest('button')) window.openSPOTeamPostDetailsModal('${post.id}')">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-stone-800 dark:text-white">${post.title || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${datePostedDisplay}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gingerbread-600 dark:text-amber-300 font-fun">${post.createdBy || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-peppermint-50 dark:bg-peppermint-900/40 text-peppermint-700 dark:text-peppermint-300 border border-peppermint-200 dark:border-peppermint-800">
                         ${post.accountUsed || '-'}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                     ${post.postUrl ? `
                         <div class="flex items-center space-x-2">
-                            <a href="${post.postUrl}" target="_blank" class="text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>
-                            <button onclick="window.copySPOTeamPostUrl('${post.postUrl}', event)" class="text-gray-400 dark:text-slate-500 hover:text-primary-600 transition-colors" title="Copy URL">
+                            <a href="${post.postUrl}" target="_blank" class="text-peppermint-600 dark:text-peppermint-400 hover:underline font-medium"><i class="fa-solid fa-arrow-up-right-from-square"></i> Link</a>
+                            <button onclick="window.copySPOTeamPostUrl('${post.postUrl}', event)" class="text-stone-400 dark:text-slate-500 hover:text-gingerbread-700 dark:hover:text-amber-300 transition-colors" title="Copy URL">
                                 <i class="fa-regular fa-copy"></i>
                             </button>
                         </div>
                     ` : '-'}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div class="flex items-center justify-end space-x-3">
-                        <button onclick="window.openSPOTeamPostModal('${post.id}'); event.stopPropagation();" class="text-primary-600 hover:text-primary-900" title="Edit">
-                            <i class="fa-solid fa-pen"></i>
+                    <div class="flex items-center justify-end space-x-2">
+                        <button onclick="window.openSPOTeamPostModal('${post.id}'); event.stopPropagation();" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 p-1.5 rounded-lg transition-colors" title="Edit">
+                            <i class="fa-solid fa-pen text-xs"></i>
                         </button>
-                        <button onclick="window.deleteSPOTeamPost('${post.id}'); event.stopPropagation();" class="text-red-600 hover:text-red-900" title="Delete">
-                            <i class="fa-solid fa-trash"></i>
+                        <button onclick="window.deleteSPOTeamPost('${post.id}'); event.stopPropagation();" class="text-peppermint-600 hover:text-peppermint-800 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 p-1.5 rounded-lg transition-colors" title="Delete">
+                            <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </div>
                 </td>

@@ -33,46 +33,46 @@ window.renderCWRequestsTable = () => {
 
             let html = '';
             filtered.forEach(p => {
-                const priorityClass = p.priorityLevel === 'High' ? 'text-red-600 bg-red-100' : (p.priorityLevel === 'Medium' ? 'text-amber-600 bg-amber-100' : 'text-blue-600 bg-blue-100');
+                const priorityClass = p.priorityLevel === 'High' ? 'text-peppermint-700 bg-peppermint-100 border border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300' : (p.priorityLevel === 'Medium' ? 'text-amber-800 bg-amber-100 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300' : 'text-sky-800 bg-sky-100 border border-sky-200 dark:bg-sky-900/40 dark:text-sky-300');
 
                 let rowStatus = window.calculateStatus(p.supportDate, p.endDate || p.supportDate, p.requestStatus);
                 if (rowStatus === 'Past' && p.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-55 grayscale-[40%] bg-cream-100/60 dark:bg-slate-800/50' : 'hover:bg-cream-100/80 dark:hover:bg-slate-700/60 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 bg-gray-100';
-                if (p.requestStatus === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
-                else if (p.requestStatus === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
-                else if (p.requestStatus === 'Pending') statusClass = 'text-primary-600 bg-primary-100';
+                let statusClass = 'text-stone-600 bg-cream-200 border border-cream-300';
+                if (p.requestStatus === 'Completed') statusClass = 'text-evergreen-700 bg-evergreen-100 border border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800';
+                else if (p.requestStatus === 'Under Review') statusClass = 'text-amber-800 bg-amber-100 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800';
+                else if (p.requestStatus === 'Pending') statusClass = 'text-peppermint-700 bg-peppermint-50 border border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300 dark:border-peppermint-800';
 
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openCWRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${p.campaignName}</div>
+                            <div class="text-sm font-semibold text-stone-800 dark:text-white truncate max-w-[200px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.submissionTime || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.supportDate || ''}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.submissionTime || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.supportDate || ''}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${p.campaignStatus || '-'}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cream-200/80 dark:bg-slate-700 text-gingerbread-700 dark:text-slate-200 border border-cream-300 dark:border-slate-600">${p.campaignStatus || '-'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel || 'Medium'}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${priorityClass}">${p.priorityLevel || 'Medium'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             ${(() => {
                                 let n = p.requestedBy || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">${initial}</div><span class="text-sm text-gray-900 dark:text-white">${n}</span></div>`;
+                                return `<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-gingerbread-500 text-white font-fun flex items-center justify-center text-xs font-bold shadow-xs">${initial}</div><span class="text-sm font-medium text-gingerbread-700 dark:text-white">${n}</span></div>`;
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${p.requestStatus || 'Pending'}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusClass}">${p.requestStatus || 'Pending'}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(p.requestStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) ? `<button onclick="event.stopPropagation(); window.completeCWRequest('${p.id}')" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="event.stopPropagation(); window.openCWRequestModal('${p.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="event.stopPropagation(); window.deleteCWRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            ${(p.requestStatus === 'Under Review' && window.isCurrentUserPOC('copy_writer')) ? `<button onclick="event.stopPropagation(); window.completeCWRequest('${p.id}')" class="text-evergreen-600 hover:text-evergreen-800 bg-evergreen-50 dark:bg-evergreen-900/30 border border-evergreen-200 dark:border-evergreen-800 px-2 py-1 rounded-lg transition-colors mr-1" title="Complete"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openCWRequestModal('${p.id}')" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 px-2 py-1 rounded-lg transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deleteCWRequest('${p.id}')" class="text-peppermint-600 hover:text-peppermint-800 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 px-2 py-1 rounded-lg transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;

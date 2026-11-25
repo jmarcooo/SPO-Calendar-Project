@@ -781,48 +781,47 @@ window.moveEventTooltip = (e) => {
             gamesOnly.sort((a, b) => new Date(b.startDate) - new Date(a.startDate)); // Newest first
 
             if (gamesOnly.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-slate-50 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gray-400"></i>
-                    <p class="text-sm font-medium">No new games found for this month.</p>
+                container.innerHTML = `<div class="col-span-full bg-cream-50 dark:bg-slate-800 border border-cream-200 dark:border-slate-700 rounded-2xl shadow-festive p-8 flex flex-col items-center justify-center text-stone-500 dark:text-slate-400">
+                    <i class="fa-solid fa-gamepad text-3xl mb-2 text-gingerbread-200 dark:text-slate-600"></i>
+                    <p class="text-sm font-fun font-semibold text-gingerbread-600 dark:text-slate-300">No new games found for this month.</p>
                 </div>`;
                 return;
             }
 
             let cardsHtml = '';
             gamesOnly.forEach(g => {
-                const pFormatted = (g.progress || 0).toFixed(0);
                 const isActive = window.currentGameId === g.id;
-                const borderClass = isActive ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800' : 'border-slate-200/60 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600';
+                const borderClass = isActive ? 'border-peppermint-500 ring-2 ring-peppermint-200 dark:ring-peppermint-800' : 'border-cream-200 dark:border-slate-700 hover:border-peppermint-300 dark:hover:border-peppermint-600';
 
                 const hasCustomBanner = g.bannerUrl && window.isValidURL(g.bannerUrl);
                 const hasLegacyBanner = g.fields && g.fields.postIds && g.fields.postIds[0] && g.fields.postIds[0].imgUrl && window.isValidURL(g.fields.postIds[0].imgUrl);
-                let bannerStyle = 'background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-700));';
+                let bannerStyle = 'background: linear-gradient(135deg, #E11D48, #F59E0B);';
                 if (hasCustomBanner) {
                     bannerStyle = `background-image: url('${g.bannerUrl}'); background-size: cover; background-position: center;`;
                 } else if (hasLegacyBanner) {
                     bannerStyle = `background-image: url('${g.fields.postIds[0].imgUrl}'); background-size: cover; background-position: center;`;
                 }
 
-
                 const launchDate = g.officialLaunchDate;
                 const status = launchDate ? 'Launched' : 'Upcoming';
                 const displayDate = launchDate ? launchDate : g.startDate.split(' ')[0];
-                const statusColor = launchDate ? 'text-emerald-500' : 'text-amber-500';
-cardsHtml += `
-                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
+                const statusBadgeClass = launchDate
+                    ? 'bg-evergreen-100 text-evergreen-700 border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800'
+                    : 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800';
+                cardsHtml += `
+                    <div onclick="event.stopPropagation(); window.renderGameDetails('${g.id}')" class="bg-cream-50 dark:bg-slate-800 rounded-2xl shadow-festive hover:shadow-card-hover hover:-translate-y-0.5 cursor-pointer transition-all border ${borderClass} overflow-hidden flex flex-col">
                         <div class="h-[18rem] w-full relative" style="${bannerStyle}">
                         </div>
                         <div class="px-4 pb-5 relative flex-1 flex flex-col items-center">
-                            <div class="w-24 h-24 bg-white dark:bg-slate-800 border-4 border-white dark:border-slate-800 shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
-                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-primary-500 absolute"></i>`}
+                            <div class="w-24 h-24 bg-cream-50 dark:bg-slate-800 border-4 border-cream-50 dark:border-slate-800 shadow-md rounded-2xl flex items-center justify-center -mt-12 mb-3 z-10 overflow-hidden relative">
+                                ${g.iconUrl ? `<img src="${g.iconUrl}" class="w-full h-full object-cover relative z-20" alt="Icon">` : `<i class="fa-solid fa-gamepad text-3xl text-peppermint-500 absolute"></i>`}
                             </div>
-                            <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 text-center w-full truncate" title="${g.title}">${g.title}</h4>
-                            <p class="text-sm font-medium ${statusColor} text-center mb-1">${status}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 text-center">${displayDate}</p>
+                            <h4 class="font-bold font-fun text-gingerbread-700 dark:text-amber-100 text-lg mb-1.5 text-center w-full truncate" title="${g.title}">${g.title}</h4>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusBadgeClass} mb-1.5">${status}</span>
+                            <p class="text-xs text-stone-500 dark:text-slate-400 text-center flex items-center gap-1"><i class="fa-regular fa-calendar text-peppermint-500"></i> ${displayDate}</p>
                         </div>
                     </div>
                 `;
-
             });
 
             container.innerHTML = cardsHtml;
@@ -2839,14 +2838,14 @@ cardsHtml += `
             const sortIcon = document.getElementById('pin-sort-icon');
             if (sortIcon) {
                 sortIcon.className = 'fa-solid ml-1 transition-colors ' +
-                    (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
-                    (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
+                    (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-peppermint-600' :
+                    (window.pinSortMode === 2 ? 'fa-sort-amount-down text-peppermint-600' : 'fa-list-ol text-peppermint-600'));
                 sortIcon.title = window.pinSortMode === 1 ? 'Sort: Sort > Page > Position' :
                     (window.pinSortMode === 2 ? 'Sort: Position > Page > Sort' : 'Sort: Page > Position > Sort');
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No pin requests found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-sm text-stone-500 dark:text-slate-400">No pin requests found.</td></tr>';
                 return;
             }
 
@@ -2855,49 +2854,49 @@ cardsHtml += `
                 let rowStatus = p.calculatedPinStatus;
                 if (rowStatus === 'Ended' && p.status !== 'Completed') rowStatus = 'Live';
                 const isPast = rowStatus === 'Ended';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-55 grayscale-[40%] bg-cream-100/60 dark:bg-slate-800/50' : 'hover:bg-cream-100/80 dark:hover:bg-slate-700/60 transition-colors group cursor-pointer';
 
-                const priorityClass = p.priority === 'High' ? 'text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-400' : (p.priority === 'Medium' ? 'text-amber-600 bg-amber-100 dark:bg-amber-900/50 dark:text-amber-400' : 'text-blue-600 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-400');
+                const priorityClass = p.priority === 'High' ? 'text-peppermint-700 bg-peppermint-100 border border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300' : (p.priority === 'Medium' ? 'text-amber-800 bg-amber-100 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300' : 'text-sky-800 bg-sky-100 border border-sky-200 dark:bg-sky-900/40 dark:text-sky-300');
 
-                let pinStatusClass = 'text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-slate-300';
-                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-emerald-600 bg-emerald-100 dark:bg-emerald-900/50 dark:text-emerald-400';
-                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-primary-600 bg-primary-100 dark:bg-primary-900/50 dark:text-primary-400';
+                let pinStatusClass = 'text-stone-600 bg-cream-200 border border-cream-300 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600';
+                if (p.calculatedPinStatus === 'Live') pinStatusClass = 'text-evergreen-700 bg-evergreen-100 border border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800';
+                else if (p.calculatedPinStatus === 'Upcoming') pinStatusClass = 'text-peppermint-700 bg-peppermint-50 border border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300 dark:border-peppermint-800';
 
                 const pinStatusStr = (p.page || p.position || p.sort) ? `${p.page || '-'} - ${p.position || '-'} - ${p.sort || '-'}` : '-';
 
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button') && !event.target.closest('a')) window.openPinRequestDetails('${p.id}')">
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[150px]">${p.campaignName}</div>
+                            <div class="text-sm font-semibold text-stone-800 dark:text-white truncate max-w-[150px]">${p.campaignName}</div>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.category || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.startDate || '-'}</td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${p.endDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.category || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.startDate || '-'}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${p.endDate || '-'}</td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${priorityClass}">${p.priority}</span>
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
                             ${(function(){
                                 let n = p.owner || 'Unknown';
                                 let initial = n.charAt(0).toUpperCase();
-                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">' + initial + '</div><span class="text-sm text-gray-900 dark:text-white">' + n + '</span></div>';
+                                return '<div class="flex items-center space-x-2"><div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-gingerbread-500 text-white font-fun flex items-center justify-center text-xs font-bold shadow-xs">' + initial + '</div><span class="text-sm font-medium text-gingerbread-700 dark:text-white">' + n + '</span></div>';
                             })()}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${p.status === 'Completed' ? 'bg-green-100 text-green-800' : (p.status === 'Under Review' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800')}">
+                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full border ${p.status === 'Completed' ? 'bg-evergreen-100 text-evergreen-700 border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800' : (p.status === 'Under Review' ? 'bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/40 dark:text-sky-300 dark:border-sky-800' : 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800')}">
                                 ${p.status || 'Pending'}
                             </span>
                         </td>
-                        <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm font-bold font-fun text-gingerbread-700 dark:text-amber-200">
                             ${pinStatusStr}
                         </td>
                         <td class="px-3 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${pinStatusClass}">${p.calculatedPinStatus}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${pinStatusClass}">${p.calculatedPinStatus}</span>
                         </td>
-                                                <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                        <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            ${p.status === 'Under Review' && window.isCurrentUserPOC('post_management') ? `<button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}', null, null, true)" class="text-amber-600 hover:text-amber-800 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 px-2 py-1 rounded-lg transition-colors mr-1" title="Pin Post"><i class="fa-solid fa-thumbtack text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="event.stopPropagation(); window.openPinRequestModal('${p.id}')" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 px-2 py-1 rounded-lg transition-colors mr-1" title="Edit"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="event.stopPropagation(); window.deletePinRequest('${p.id}')" class="text-peppermint-600 hover:text-peppermint-800 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 px-2 py-1 rounded-lg transition-colors" title="Delete"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;
@@ -2934,20 +2933,20 @@ cardsHtml += `
 
             // Timeline Header
 
-            const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-primary-600' :
-                (window.pinSortMode === 2 ? 'fa-sort-amount-down text-primary-600' : 'fa-list-ol text-primary-600'));
+            const sortIconClass = (window.pinSortMode === 1 ? 'fa-sort-numeric-down text-peppermint-600' :
+                (window.pinSortMode === 2 ? 'fa-sort-amount-down text-peppermint-600' : 'fa-list-ol text-peppermint-600'));
 
-            let html = `<div class="flex border-b border-slate-200/60 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
-                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-bold text-gray-600 dark:text-slate-300 uppercase flex items-center justify-center bg-slate-100 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors group select-none">
+            let html = `<div class="flex border-b border-cream-200 dark:border-slate-700 bg-cream-100/80 dark:bg-slate-800 sticky top-0 z-10">
+                <div onclick="window.cyclePinSort()" class="w-32 shrink-0 border-r border-cream-200 dark:border-slate-700 p-2 text-xs font-bold font-fun text-gingerbread-600 dark:text-amber-200 uppercase flex items-center justify-center bg-cream-200/70 dark:bg-slate-700 sticky left-0 z-20 cursor-pointer hover:bg-cream-200 dark:hover:bg-slate-600 transition-colors group select-none">
                     Position <i class="fa-solid ml-1 transition-colors ${sortIconClass}"></i>
                 </div>`;
 
             days.forEach(d => {
                 const dateStr = d.toISOString().split('T')[0];
                 const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getUTCDay()];
-                html += `<div class="flex-1 min-w-[120px] border-r border-slate-200/60 dark:border-slate-700 text-center">
-                    <div class="py-1 bg-slate-200/50 dark:bg-slate-700 text-xs font-bold text-gray-800 dark:text-slate-200 border-b border-slate-200/60 dark:border-slate-700">${dayName} ${dateStr}</div>
-                    <div class="flex text-[10px] text-gray-500 dark:text-gray-400 divide-x divide-slate-200/60 dark:divide-slate-700 h-4">
+                html += `<div class="flex-1 min-w-[120px] border-r border-cream-200 dark:border-slate-700 text-center">
+                    <div class="py-1 bg-cream-200/50 dark:bg-slate-700 text-xs font-bold font-fun text-gingerbread-700 dark:text-amber-100 border-b border-cream-200 dark:border-slate-700">${dayName} ${dateStr}</div>
+                    <div class="flex text-[10px] text-stone-500 dark:text-slate-400 divide-x divide-cream-200 dark:divide-slate-700 h-4">
                         <div class="flex-1">00:00</div>
                         <div class="flex-1">12:00</div>
                     </div>
@@ -2998,23 +2997,23 @@ cardsHtml += `
             const weekEndMs = weekStartMs + (7 * 24 * 60 * 60 * 1000);
 
             slots.forEach(slot => {
-                html += `<div class="flex border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors relative group h-10">
-                    <div class="w-32 shrink-0 border-r border-slate-200/60 dark:border-slate-700 p-2 text-xs font-medium text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-700 dark:text-slate-300">${slot.id}</span>
+                html += `<div class="flex border-b border-cream-200/70 dark:border-slate-700 hover:bg-cream-100/70 dark:hover:bg-slate-800 transition-colors relative group h-10">
+                    <div class="w-32 shrink-0 border-r border-cream-200 dark:border-slate-700 p-2 text-xs font-medium text-gingerbread-700 dark:text-slate-300 bg-cream-50 dark:bg-slate-800 sticky left-0 z-10 flex items-center justify-center">
+                        <span class="text-sm font-bold font-fun text-gingerbread-700 dark:text-amber-100">${slot.id}</span>
                     </div>
                     <div class="flex-1 relative pr-track cursor-pointer" data-slot="${slot.id}" onclick="window.handlePRTimelineClick(event, '${slot.id}')">`;
 
                 // Add grid lines for background
                 days.forEach((_, i) => {
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-200/40 dark:border-slate-700 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
-                    html += `<div class="absolute top-0 bottom-0 border-l border-slate-100/40 dark:border-slate-700/50 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-cream-200/70 dark:border-slate-700 pointer-events-none" style="left: ${(i/7)*100}%; width: ${100/7}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 border-l border-cream-200/40 dark:border-slate-700/50 border-dashed pointer-events-none" style="left: ${((i+0.5)/7)*100}%"></div>`;
                 });
 
-                // Add gray overlay for past time
+                // Add warm overlay for past time
                 const nowMs = window.getPHFakeUtcMs();
                 if (nowMs > weekStartMs) {
                     const pastPct = scaleMsToPct(Math.min(nowMs, weekEndMs) - weekStartMs);
-                    html += `<div class="absolute top-0 bottom-0 bg-gray-200/50 dark:bg-slate-900/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
+                    html += `<div class="absolute top-0 bottom-0 bg-cream-200/50 dark:bg-slate-900/50 pointer-events-none z-0" style="left: 0%; width: ${pastPct}%"></div>`;
                 }
 
                 // Find requests matching this slot
@@ -3022,8 +3021,6 @@ cardsHtml += `
 
                 reqs.forEach(req => {
                     if (!req.startDate || !req.endDate) return;
-                    // Format: YYYY-MM-DD HH:MM:SS
-                    // Since it's UTC conceptually, we parse it manually
                     const sParts = req.startDate.split(/[- :T]/);
                     const eParts = req.endDate.split(/[- :T]/);
 
@@ -3035,7 +3032,6 @@ cardsHtml += `
                     const sMs = sDate.getTime();
                     const eMs = eDate.getTime();
 
-                    // Check if it overlaps with current week
                     if (eMs <= weekStartMs || sMs >= weekEndMs) return;
 
                     let leftPct = scaleMsToPct(Math.max(0, sMs - weekStartMs));
@@ -3043,25 +3039,25 @@ cardsHtml += `
 
                     const durationH = Math.round((eMs - sMs) / (60 * 60 * 1000));
 
-                    let baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400 dark:bg-blue-900/50 dark:text-blue-200 dark:border-blue-700 dark:hover:ring-blue-500';
+                    let baseColorClass = 'bg-sky-100 text-sky-800 border border-sky-200 hover:ring-sky-400 dark:bg-sky-900/50 dark:text-sky-200 dark:border-sky-700';
                     if (req.category === 'PGC' || req.category === 'Content Writer') {
-                        baseColorClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:ring-emerald-400 dark:bg-emerald-900/50 dark:text-emerald-200 dark:border-emerald-700 dark:hover:ring-emerald-500';
+                        baseColorClass = 'bg-evergreen-100 text-evergreen-800 border border-evergreen-200 hover:ring-evergreen-400 dark:bg-evergreen-900/50 dark:text-evergreen-200 dark:border-evergreen-700';
                     } else if (req.category === 'UGC' || req.category === 'Perya Host') {
-                        baseColorClass = 'bg-red-50 text-red-800 border border-red-200 hover:ring-red-400 dark:bg-red-900/50 dark:text-red-200 dark:border-red-700 dark:hover:ring-red-500';
+                        baseColorClass = 'bg-rose-100 text-rose-800 border border-rose-200 hover:ring-peppermint-400 dark:bg-rose-900/50 dark:text-rose-200 dark:border-rose-700';
                     } else if (req.status === 'Completed') {
-                        baseColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 hover:ring-blue-400';
+                        baseColorClass = 'bg-sky-100 text-sky-800 border border-sky-200 hover:ring-sky-400';
                     } else if (req.status === 'Under Review') {
-                        baseColorClass = 'bg-amber-50 text-amber-800 border border-amber-200 hover:ring-amber-400 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-700 dark:hover:ring-amber-500';
+                        baseColorClass = 'bg-amber-100 text-amber-800 border border-amber-200 hover:ring-amber-400 dark:bg-amber-900/50 dark:text-amber-200 dark:border-amber-700';
                     }
 
                     const isPast = eMs < window.getPHFakeUtcMs();
-                    const grayOutClass = isPast ? 'opacity-50 grayscale' : '';
+                    const grayOutClass = isPast ? 'opacity-50 grayscale-[40%]' : '';
 
-                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-sm ${baseColorClass} ${grayOutClass} text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 z-10 transition-all"
+                    html += `<div class="absolute top-1 bottom-1 rounded-md shadow-xs ${baseColorClass} ${grayOutClass} text-[10px] flex items-center px-2 truncate cursor-pointer hover:ring-2 ring-offset-1 z-10 transition-all"
                                 style="left: ${leftPct}%; width: ${widthPct}%;"
                                 title="${req.campaignName}\nStart: ${req.startDate}\nEnd: ${req.endDate}\nDuration: ${durationH}h\nOwner: ${req.owner || 'Unknown'}"
                                 onclick="event.stopPropagation(); window.openPinRequestDetails('${req.id}')">
-                                <span class="truncate font-medium">${req.campaignName}</span>
+                                <span class="truncate font-semibold">${req.campaignName}</span>
                              </div>`;
                 });
 

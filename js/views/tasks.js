@@ -6,14 +6,14 @@ window.renderTasksTable = () => {
 
             tasksTable.innerHTML = '';
             if (window.events.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No content tasks found. Create one to get started.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-stone-500 dark:text-slate-400">No content tasks found. Create one to get started.</td></tr>`;
                 return;
             }
 
             ['title', 'startDate', 'endDate', 'assignees', 'status', 'progress'].forEach(col => {
                 const icon = document.getElementById(`sort-icon-${col}`);
                 if (icon) {
-                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-primary-600' : 'fa-sort-down text-primary-600') : 'fa-sort text-gray-300 group-hover:text-gray-500 dark:text-slate-400');
+                    icon.className = 'fa-solid ml-1 transition-colors ' + (window.sortCol === col ? (window.sortAsc ? 'fa-sort-up text-peppermint-600' : 'fa-sort-down text-peppermint-600') : 'fa-sort text-gingerbread-200 dark:text-slate-600 group-hover:text-gingerbread-500');
                 }
             });
 
@@ -34,7 +34,7 @@ window.renderTasksTable = () => {
                 const aEnd = a.endDate || '';
                 const bEnd = b.endDate || '';
 
-                                if (window.sortCol === 'default') {
+                if (window.sortCol === 'default') {
                     const pDate = window.getPHParts();
                     const nowStrSort = `${pDate.year}-${String(pDate.month + 1).padStart(2, '0')}-${String(pDate.date).padStart(2, '0')}`;
 
@@ -78,7 +78,7 @@ window.renderTasksTable = () => {
             });
 
             if (filteredEvents.length === 0) {
-                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">No tasks match your filters.</td></tr>`;
+                tasksTable.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-stone-500 dark:text-slate-400">No tasks match your filters.</td></tr>`;
                 return;
             }
 
@@ -93,9 +93,9 @@ window.renderTasksTable = () => {
                 const isPast = evt.status === 'Done' || endStr < nowStrIter;
 
                 if (isPast) {
-                    baseClass += ' opacity-60 bg-gray-50 dark:bg-slate-800/50 grayscale hover:bg-gray-100 dark:hover:bg-slate-700';
+                    baseClass += ' opacity-55 bg-cream-100/60 dark:bg-slate-800/50 grayscale-[40%] hover:bg-cream-200/40 dark:hover:bg-slate-700';
                 } else {
-                    baseClass += ' hover:bg-slate-50 dark:hover:bg-slate-800';
+                    baseClass += ' hover:bg-cream-100/80 dark:hover:bg-slate-700/60';
                 }
                 tr.className = baseClass;
 
@@ -111,7 +111,7 @@ window.renderTasksTable = () => {
 
                 const p = evt.progress || 0;
                 const pFormatted = p.toFixed(2);
-                const pColor = p === 100 ? 'bg-emerald-500' : (p > 0 ? 'bg-primary-500' : 'bg-gray-300');
+                const pColor = p === 100 ? 'bg-evergreen-500' : (p > 0 ? 'bg-gradient-to-r from-peppermint-500 to-amber-400' : 'bg-cream-300 dark:bg-slate-600');
 
                 const formatShortDate = (dStr) => {
                     if (!dStr) return '';
@@ -130,47 +130,47 @@ window.renderTasksTable = () => {
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
                             <div class="flex items-center">
-                                <span class="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-primary-700 transition-colors"><i class="fa-solid fa-list-check text-primary-500 mr-1.5 opacity-70"></i>${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
+                                <span class="text-sm font-semibold text-stone-800 dark:text-white group-hover:text-peppermint-600 dark:group-hover:text-peppermint-400 transition-colors"><i class="fa-solid fa-list-check text-amber-500 mr-1.5 opacity-80"></i>${formattedTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">
                         ${formatShortDate(evt.startDate)}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">
                         ${formatShortDate(evt.endDate)}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">
                         ${(function(){
-                            if(assigns.length === 0) return '<span class="text-gray-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
+                            if(assigns.length === 0) return '<span class="text-stone-400 dark:text-slate-500 italic text-xs">Unassigned</span>';
                             return '<div class="flex items-center space-x-3"><div class="flex items-center -space-x-1">' + assigns.map(a => {
                                 let init = a.charAt(0).toUpperCase();
-                                return '<div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold border-2 border-white ring-1 ring-slate-200" title="' + a + '">' + init + '</div>';
-                            }).join('') + '</div><span class="text-sm text-gray-900 dark:text-white">' + assigns.join(', ') + '</span></div>';
+                                return '<div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-gingerbread-500 text-white font-fun flex items-center justify-center text-xs font-bold border-2 border-cream-50 dark:border-slate-800 shadow-xs" title="' + a + '">' + init + '</div>';
+                            }).join('') + '</div><span class="text-sm font-medium text-gingerbread-700 dark:text-white">' + assigns.join(', ') + '</span></div>';
                         })()}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${evt.status === 'Done' ? 'bg-emerald-100 text-emerald-800' : (evt.status === 'Ongoing' ? 'bg-primary-100 text-primary-800' : 'bg-amber-100 text-amber-800')}">${evt.status}</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${evt.status === 'Done' ? 'bg-evergreen-100 text-evergreen-700 border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800' : (evt.status === 'Ongoing' ? 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800' : 'bg-peppermint-50 text-peppermint-700 border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300 dark:border-peppermint-800')}">${evt.status}</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex flex-col w-full max-w-[150px]">
                             <div class="flex items-center mb-1">
-                                <span class="text-xs font-medium text-gray-600 mr-2">${pFormatted}%</span>
+                                <span class="text-xs font-semibold text-stone-600 dark:text-slate-300 mr-2">${pFormatted}%</span>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
+                            <div class="w-full bg-cream-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
                                 <div class="${pColor} h-2 rounded-full transition-all duration-500" style="width: ${p}%"></div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex justify-end space-x-2">
-                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-900 bg-amber-50 p-1.5 rounded transition-colors" title="Send Reminder">
+                            <button onclick="triggerReminder('${evt.id}', '${escTitle}', '${escAssigns}')" class="text-amber-600 hover:text-amber-800 bg-amber-50 dark:bg-amber-900/30 border border-amber-200/70 dark:border-amber-800/50 p-1.5 rounded-lg transition-colors" title="Send Reminder">
                                 <i class="fa-regular fa-bell"></i>
                             </button>
-                            <button onclick="openEditById('${evt.id}')" class="text-primary-600 hover:text-primary-900 bg-primary-50 p-1.5 rounded transition-colors" title="Edit">
+                            <button onclick="openEditById('${evt.id}')" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 p-1.5 rounded-lg transition-colors" title="Edit">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button onclick="deleteTask('${evt.id}')" class="text-red-600 hover:text-red-900 bg-red-50 p-1.5 rounded transition-colors" title="Delete">
+                            <button onclick="deleteTask('${evt.id}')" class="text-peppermint-600 hover:text-peppermint-800 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 p-1.5 rounded-lg transition-colors" title="Delete">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>

@@ -58,22 +58,22 @@ window.renderDailyTasksTable = () => {
                 const isPastDate = dateStatus === 'Past';
 
                 if (rowStatus === 'Past' && task.status !== 'Completed') rowStatus = 'Ongoing';
-                const rowOpacityClass = isPastDate ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group cursor-pointer';
+                const rowOpacityClass = isPastDate ? 'opacity-55 grayscale-[40%] bg-cream-100/60 dark:bg-slate-800/50' : 'hover:bg-cream-100/80 dark:hover:bg-slate-700/60 transition-colors group cursor-pointer';
 
-                let statusClass = 'text-gray-600 bg-gray-100';
-                if (task.status === 'Completed') statusClass = 'text-emerald-600 bg-emerald-100';
-                else if (task.status === 'Under Review') statusClass = 'text-amber-600 bg-amber-100';
-                else if (task.status === 'Pending') statusClass = 'text-primary-600 bg-primary-100';
+                let statusClass = 'text-stone-600 bg-cream-200 border border-cream-300';
+                if (task.status === 'Completed') statusClass = 'text-evergreen-700 bg-evergreen-100 border border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800';
+                else if (task.status === 'Under Review') statusClass = 'text-amber-800 bg-amber-100 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800';
+                else if (task.status === 'Pending') statusClass = 'text-peppermint-700 bg-peppermint-50 border border-peppermint-200 dark:bg-peppermint-900/40 dark:text-peppermint-300 dark:border-peppermint-800';
 
-                let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${task.status || 'Pending'}</span>`;
+                let statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusClass}">${task.status || 'Pending'}</span>`;
 
-                let typeClass = 'text-slate-700 bg-slate-100 dark:text-slate-200 dark:bg-slate-700';
-                if (task.taskType === 'Daily Task') typeClass = 'text-blue-700 bg-blue-100 dark:text-blue-200 dark:bg-blue-900/50';
-                else if (task.taskType === 'Time-Limited Task') typeClass = 'text-amber-700 bg-amber-100 dark:text-amber-200 dark:bg-amber-900/50';
-                else if (task.taskType === 'Novice Task') typeClass = 'text-emerald-700 bg-emerald-100 dark:text-emerald-200 dark:bg-emerald-900/50';
+                let typeClass = 'text-gingerbread-700 bg-cream-200 dark:text-slate-200 dark:bg-slate-700';
+                if (task.taskType === 'Daily Task') typeClass = 'text-sky-800 bg-sky-100 border border-sky-200 dark:text-sky-200 dark:bg-sky-900/50 dark:border-sky-800';
+                else if (task.taskType === 'Time-Limited Task') typeClass = 'text-amber-800 bg-amber-100 border border-amber-200 dark:text-amber-200 dark:bg-amber-900/50 dark:border-amber-800';
+                else if (task.taskType === 'Novice Task') typeClass = 'text-evergreen-800 bg-evergreen-100 border border-evergreen-200 dark:text-evergreen-200 dark:bg-evergreen-900/50 dark:border-evergreen-800';
                 let taskTypeBadge = task.taskType
-                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeClass}">${task.taskType}</span>`
-                    : `<span class="text-xs text-gray-400 dark:text-slate-500">-</span>`;
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${typeClass}">${task.taskType}</span>`
+                    : `<span class="text-xs text-stone-400 dark:text-slate-500">-</span>`;
 
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
@@ -83,27 +83,27 @@ window.renderDailyTasksTable = () => {
                 html += `
                     <tr class="${rowOpacityClass}" onclick="if(!event.target.closest('button')) window.openDailyTaskDetails('${task.id}')">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
-                            <div class="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
+                            <div class="text-sm font-semibold text-stone-800 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
+                            <div class="text-xs text-stone-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${taskTypeBadge}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${task.createdTime}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayStart}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayEnd}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${task.createdTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${displayStart}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${displayEnd}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-bold">${initial}</div>
-                                <span class="text-sm text-gray-900 dark:text-white">${task.requestor}</span>
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-gingerbread-500 text-white font-fun flex items-center justify-center text-xs font-bold shadow-xs">${initial}</div>
+                                <span class="text-sm font-medium text-gingerbread-700 dark:text-white">${task.requestor}</span>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${rowStatus}</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cream-200/80 dark:bg-slate-700 text-gingerbread-700 dark:text-slate-200 border border-cream-300 dark:border-slate-600">${rowStatus}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
-                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-primary-600 hover:text-primary-900 bg-primary-50 px-2 py-1 rounded-md transition-colors mr-2"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
-                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-red-600 hover:text-red-900 bg-red-50 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
+                            ${(task.status === 'Under Review' && window.isCurrentUserPOC('daily_task')) ? `<button onclick="window.completeDailyTask('${task.id}')" title="Mark as Complete" class="text-evergreen-600 hover:text-evergreen-800 bg-evergreen-50 dark:bg-evergreen-900/30 border border-evergreen-200 dark:border-evergreen-800 px-2 py-1 rounded-lg transition-colors mr-1.5"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>` : ''}
+                            <button onclick="window.openEditDailyTask('${task.id}')" title="Edit" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 px-2 py-1 rounded-lg transition-colors mr-1.5"><i class="fa-solid fa-pen text-xs" style="pointer-events: none;"></i></button>
+                            <button onclick="window.deleteDailyTask('${task.id}')" title="Delete" class="text-peppermint-600 hover:text-peppermint-800 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 px-2 py-1 rounded-lg transition-colors"><i class="fa-solid fa-trash text-xs" style="pointer-events: none;"></i></button>
                         </td>
                     </tr>
                 `;

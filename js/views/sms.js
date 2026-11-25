@@ -41,50 +41,50 @@ window.renderSMSTable = function() {
                 };
 
                 const statusColors = {
-                    'Pending': 'bg-yellow-100 text-yellow-800',
-                    'Under Review': 'bg-blue-100 text-blue-800',
-                    'Completed': 'bg-green-100 text-green-800'
+                    'Pending': 'bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800',
+                    'Under Review': 'bg-sky-100 text-sky-800 border border-sky-200 dark:bg-sky-900/40 dark:text-sky-300 dark:border-sky-800',
+                    'Completed': 'bg-evergreen-100 text-evergreen-700 border border-evergreen-200 dark:bg-evergreen-900/40 dark:text-evergreen-300 dark:border-evergreen-800'
                 };
                 const reqStatus = req.requestStatus || 'Pending';
-                const statusClass = statusColors[reqStatus] || 'bg-gray-100 text-gray-800';
+                const statusClass = statusColors[reqStatus] || 'bg-cream-200 text-gingerbread-700';
 
                 let completeBtn = '';
                 if (reqStatus === 'Under Review' && window.isCurrentUserPOC('sms')) {
-                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 px-2 py-1 rounded-md transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
+                    completeBtn = `<button onclick="window.completeSMSRequest('${req.id}'); event.stopPropagation();" class="text-evergreen-600 hover:text-evergreen-800 bg-evergreen-50 dark:bg-evergreen-900/30 border border-evergreen-200 dark:border-evergreen-800 px-2 py-1 rounded-lg transition-colors mr-1" title="Mark as Completed"><i class="fa-solid fa-check text-xs" style="pointer-events: none;"></i></button>`;
                 }
 
                 let rowStatus = window.calculateStatus(req.eventDateTime, req.endDatetime || req.eventDateTime, req.requestStatus);
                 if (rowStatus === 'Past' && req.requestStatus !== 'Completed') rowStatus = 'Ongoing';
                 const isPast = rowStatus === 'Past';
-                const rowOpacityClass = isPast ? 'opacity-50 grayscale bg-gray-50 dark:bg-slate-800/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer';
+                const rowOpacityClass = isPast ? 'opacity-55 grayscale-[40%] bg-cream-100/60 dark:bg-slate-800/50' : 'hover:bg-cream-100/80 dark:hover:bg-slate-700/60 transition-colors cursor-pointer';
 
                 row.className = rowOpacityClass;
                 row.innerHTML = `
-                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold text-stone-800 dark:text-white">
                         ${req.campaignName || '-'}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.createdAt || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.eventDateTime || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${req.endDatetime || '-'}</td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400 font-medium">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${req.createdAt || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${req.eventDateTime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-slate-400">${req.endDatetime || '-'}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-bold font-fun text-gingerbread-700 dark:text-amber-200">
                         PHP ${parseFloat(req.budget || 0).toFixed(2)}
                     </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${rowStatus || '-'}</span>
-                    </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">${req.audienceType || '-'}</span>
-                    </td>
-                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
                     <td class="px-3 py-4 whitespace-nowrap text-sm">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cream-200/80 dark:bg-slate-700 text-gingerbread-700 dark:text-slate-200 border border-cream-300 dark:border-slate-600">${rowStatus || '-'}</span>
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-200/80 dark:border-amber-800/50">${req.audienceType || '-'}</span>
+                    </td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-stone-600 dark:text-slate-300">${window.formatUserBadge ? window.formatUserBadge(req.requestor) : req.requestor}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
                             ${reqStatus}
                         </span>
                     </td>
                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                         ${completeBtn}
-                        <button onclick="window.openSMSModal('${req.id}')" class="text-primary-600 hover:text-primary-900 group-hover:bg-primary-50 p-1 rounded transition-colors" title="Edit Request"><i class="fa-solid fa-edit"></i></button>
-                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-red-600 hover:text-red-900 ml-2 group-hover:bg-red-50 p-1 rounded transition-colors" title="Delete Request"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="window.openSMSModal('${req.id}')" class="text-gingerbread-600 hover:text-gingerbread-700 bg-cream-200/70 dark:bg-slate-700 border border-cream-300 dark:border-slate-600 px-2 py-1 rounded-lg transition-colors" title="Edit Request"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="window.deleteSMSRequest('${req.id}')" class="text-peppermint-600 hover:text-peppermint-800 ml-1.5 bg-peppermint-50 dark:bg-peppermint-900/30 border border-peppermint-200/70 dark:border-peppermint-800/50 px-2 py-1 rounded-lg transition-colors" title="Delete Request"><i class="fa-solid fa-trash text-xs"></i></button>
                     </td>
                 `;
                 tbody.appendChild(row);
