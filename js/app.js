@@ -2101,6 +2101,7 @@ cardsHtml += `
             const data = window.dailyTasks.map(t => {
                 return {
                     "Title": t.taskTitle,
+                    "Task Type": t.taskType || '',
                     "Event Title": t.eventTitle,
                     "Start Date": t.startDate,
                     "End Date": t.endDate,
@@ -2150,16 +2151,9 @@ cardsHtml += `
             document.getElementById('detail-end-date').innerText = task.endDate || 'N/A';
             document.getElementById('detail-requestor').innerText = task.requestor || 'Unknown';
 
-            const linkedTaskDisplay = document.getElementById('detail-linked-task');
-            if (task.linkedTaskId) {
-                const linkedTaskEvent = window.events.find(e => e.id === task.linkedTaskId);
-                if (linkedTaskEvent) {
-                    linkedTaskDisplay.innerHTML = `<button onclick="window.jumpToTask('${task.linkedTaskId}'); window.closeDailyTaskDetails();" class="text-primary-600 hover:text-primary-800 hover:underline cursor-pointer text-left focus:outline-none">${linkedTaskEvent.title}</button>`;
-                } else {
-                    linkedTaskDisplay.innerText = 'Unknown Task';
-                }
-            } else {
-                linkedTaskDisplay.innerText = 'None';
+            const taskTypeDisplay = document.getElementById('detail-task-type');
+            if (taskTypeDisplay) {
+                taskTypeDisplay.innerText = task.taskType || 'N/A';
             }
 
             document.getElementById('detail-task-desc').innerText = task.taskDesc || 'No description provided.';
@@ -2229,26 +2223,15 @@ cardsHtml += `
             }
         };
 
-        window.populateLinkedTasksDropdown = () => {
-            const dropdown = document.getElementById('dt-linked-task');
-            if (!dropdown) return;
-            dropdown.innerHTML = '<option value="">None</option>';
-            window.events.filter(e => e.type === 'task').forEach(task => {
-                const opt = document.createElement('option');
-                opt.value = task.id;
-                opt.textContent = task.title;
-                dropdown.appendChild(opt);
-            });
-        };
-
         window.openDailyTaskModal = () => {
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
             if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = '';
+            const taskTypeEl = document.getElementById('dt-task-type');
+            if (taskTypeEl) taskTypeEl.value = 'Daily Task';
             window.currentDTHashtags = [];
             if (window.renderDTHashtags) window.renderDTHashtags();
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
-            window.populateLinkedTasksDropdown();
             document.getElementById('daily-task-modal').classList.remove('hidden');
         }
 
@@ -2256,14 +2239,14 @@ cardsHtml += `
             document.getElementById('daily-task-form').reset();
             document.getElementById('dt-id').value = '';
             if (document.getElementById('dt-end-date')) document.getElementById('dt-end-date').value = '';
+            const taskTypeEl = document.getElementById('dt-task-type');
+            if (taskTypeEl) taskTypeEl.value = 'Daily Task';
             window.currentDTHashtags = [];
             if (window.renderDTHashtags) window.renderDTHashtags();
             document.getElementById('daily-task-modal-title').innerText = 'Create Daily Task Request';
-            window.populateLinkedTasksDropdown();
 
             const task = window.events.find(e => e.id === taskId);
             if (task) {
-                document.getElementById('dt-linked-task').value = taskId;
                 document.getElementById('dt-task-title').value = task.title || '';
                 document.getElementById('dt-event-title').value = task.campaignType || 'N/A';
                 document.getElementById('dt-start-date').value = task.startDate || '';
@@ -2281,8 +2264,6 @@ cardsHtml += `
             document.getElementById('dt-id').value = task.id;
             document.getElementById('daily-task-modal-title').innerText = 'Edit Daily Task Request';
 
-            window.populateLinkedTasksDropdown();
-
             document.getElementById('dt-event-title').value = task.eventTitle || '';
             let sDate = task.startDate || '';
             if (sDate && sDate.includes(' ')) sDate = sDate.replace(' ', 'T');
@@ -2293,7 +2274,8 @@ cardsHtml += `
                 document.getElementById('dt-end-date').value = eDate.substring(0, 16);
             }
             document.getElementById('dt-task-title').value = task.taskTitle || '';
-            document.getElementById('dt-linked-task').value = task.linkedTaskId || '';
+            const taskTypeEl = document.getElementById('dt-task-type');
+            if (taskTypeEl) taskTypeEl.value = task.taskType || 'Daily Task';
             document.getElementById('dt-task-desc').value = task.taskDesc || '';
             document.getElementById('dt-template-title').value = task.templateTitle || '';
             document.getElementById('dt-template-id').value = task.templateId || '';
@@ -2353,12 +2335,12 @@ cardsHtml += `
             const startDate = document.getElementById('dt-start-date').value;
             const endDate = document.getElementById('dt-end-date').value;
             const taskTitle = document.getElementById('dt-task-title').value.trim();
-            const linkedTaskId = document.getElementById('dt-linked-task').value;
+            const taskType = document.getElementById('dt-task-type') ? document.getElementById('dt-task-type').value : '';
             const dtId = document.getElementById('dt-id').value;
             const existingTask = dtId ? window.dailyTasks.find(t => t.id === dtId) : null;
             const requestor = existingTask && existingTask.requestor ? existingTask.requestor : (window.currentUserProfile || 'Unknown');
 
-            if (!eventTitle || !startDate || !endDate || !taskTitle) {
+            if (!eventTitle || !startDate || !endDate || !taskTitle || !taskType) {
                 alert("Please fill in all required fields (*).");
                 return;
             }
@@ -2391,9 +2373,9 @@ cardsHtml += `
             targetTask.startDate = startDate;
             targetTask.endDate = document.getElementById('dt-end-date') ? document.getElementById('dt-end-date').value : '';
             targetTask.taskTitle = taskTitle;
+            targetTask.taskType = taskType;
             targetTask.taskDesc = document.getElementById('dt-task-desc').value.trim();
             targetTask.templateTitle = document.getElementById('dt-template-title').value.trim();
-            targetTask.linkedTaskId = linkedTaskId;
             targetTask.templateId = document.getElementById('dt-template-id').value.trim();
             targetTask.templateCaption = document.getElementById('dt-template-caption').value.trim();
             targetTask.hashtags = window.currentDTHashtags.join(' ');
@@ -2417,21 +2399,6 @@ cardsHtml += `
 
             if (window.currentView === 'daily_task') {
                 window.renderDailyTasksTable();
-            }
-
-            if (linkedTaskId) {
-                const evt = window.events.find(e => e.id === linkedTaskId);
-                if (evt) {
-                    evt.progress = window.calcProgress(evt);
-                    window.syncEventToFirestore(evt);
-
-                    if (window.currentDrawerTaskId === linkedTaskId) {
-                        window.renderDrawerChecklist(evt);
-                        window.updateDrawerProgressUI(evt);
-                    }
-                    if (window.renderTasksTable) window.renderTasksTable();
-                    window.renderOngoingEvents();
-                }
             }
         };
 

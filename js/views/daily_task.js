@@ -24,7 +24,8 @@ window.renderDailyTasksTable = () => {
                     const matchTitle = t.taskTitle && t.taskTitle.toLowerCase().includes(searchVal);
                     const matchEvent = t.eventTitle && t.eventTitle.toLowerCase().includes(searchVal);
                     const matchReq = t.requestor && t.requestor.toLowerCase().includes(searchVal);
-                    return matchTitle || matchEvent || matchReq;
+                    const matchType = t.taskType && t.taskType.toLowerCase().includes(searchVal);
+                    return matchTitle || matchEvent || matchReq || matchType;
                 }
                 return true;
             });
@@ -66,6 +67,14 @@ window.renderDailyTasksTable = () => {
 
                 let statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusClass}">${task.status || 'Pending'}</span>`;
 
+                let typeClass = 'text-slate-700 bg-slate-100 dark:text-slate-200 dark:bg-slate-700';
+                if (task.taskType === 'Daily Task') typeClass = 'text-blue-700 bg-blue-100 dark:text-blue-200 dark:bg-blue-900/50';
+                else if (task.taskType === 'Time-Limited Task') typeClass = 'text-amber-700 bg-amber-100 dark:text-amber-200 dark:bg-amber-900/50';
+                else if (task.taskType === 'Novice Task') typeClass = 'text-emerald-700 bg-emerald-100 dark:text-emerald-200 dark:bg-emerald-900/50';
+                let taskTypeBadge = task.taskType
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${typeClass}">${task.taskType}</span>`
+                    : `<span class="text-xs text-gray-400 dark:text-slate-500">-</span>`;
+
                 let initial = task.requestor ? task.requestor.charAt(0).toUpperCase() : '?';
 
                 const displayStart = task.startDate ? task.startDate.replace('T', ' ') : '';
@@ -77,6 +86,7 @@ window.renderDailyTasksTable = () => {
                             <div class="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[200px]">${task.taskTitle}</div>
                             <div class="text-xs text-gray-500 dark:text-slate-400 truncate max-w-[200px]">${task.eventTitle}</div>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">${taskTypeBadge}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${task.createdTime}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayStart}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">${displayEnd}</td>
