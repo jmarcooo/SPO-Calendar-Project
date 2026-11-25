@@ -136,7 +136,7 @@ window.sortTableData = sortTableData;
                 titleEl.innerText = evt.title;
                 dateEl.innerText = evt.startDate === evt.endDate ? evt.startDate : `${evt.startDate} to ${evt.endDate}`;
 
-                const hasValidImage = evt.itemType === 'event' && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
+                const hasValidImage = (evt.itemType === 'event' || evt.itemType === 'livestream') && evt.imageLink && (window.isValidURL ? window.isValidURL(evt.imageLink) : evt.imageLink.startsWith('http'));
 
                 if (hasValidImage) {
                     imgEl.src = evt.imageLink;
@@ -378,6 +378,7 @@ window.moveEventTooltip = (e) => {
         window.getPendingSummary = (task) => {
             const itemType = task.itemType || (task.isEventOnly ? 'event' : 'task');
             if (itemType === 'event') return "Offline Event";
+            if (itemType === 'livestream') return "Live Stream Event";
             if (itemType === 'game') return "New Game Launch";
             if (task.progress === 100) return "All tasks completed!";
 
@@ -1097,7 +1098,7 @@ cardsHtml += `
 
         window.calcProgress = (evt) => {
             const itemType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
-            if (itemType === 'event' || itemType === 'game') return 0;
+            if (itemType === 'event' || itemType === 'game' || itemType === 'livestream') return 0;
 
             const fields = evt.fields || {};
             let completed = 0;
@@ -1168,7 +1169,7 @@ cardsHtml += `
             if (!form.reportValidity()) return;
 
             const itemType = document.getElementById('event-item-type').value;
-            const isNonTask = (itemType === 'event' || itemType === 'game');
+            const isNonTask = (itemType === 'event' || itemType === 'game' || itemType === 'livestream');
 
             const id = document.getElementById('event-id').value;
             const title = document.getElementById('event-title').value.trim();
@@ -1235,7 +1236,7 @@ cardsHtml += `
                 progress: progress,
                 updatedAt: window.getPHIsoString()
             };
-            if (itemType === 'event') {
+            if (itemType === 'event' || itemType === 'livestream') {
                 eventData.imageLink = imageLink;
             }
 
@@ -1333,7 +1334,7 @@ cardsHtml += `
         window.exportTasksExcel = () => {
             let filteredEvents = window.filterEventsByGlobalCategory(window.events).filter(evt => {
                 const iType = evt.itemType || (evt.isEventOnly ? 'event' : 'task');
-                if (iType === 'event' || iType === 'game') return false;
+                if (iType === 'event' || iType === 'game' || iType === 'livestream') return false;
 
                 const searchLower = window.searchQuery.toLowerCase();
                 const matchesSearch = evt.title.toLowerCase().includes(searchLower) ||
@@ -3676,6 +3677,7 @@ window.openTypeModal = (dateStr = null) => {
             let titleTxt = 'Add New Content Task';
             if (itemType === 'event') titleTxt = 'Add Offline Event';
             if (itemType === 'game') titleTxt = 'Add New Game Launch';
+            if (itemType === 'livestream') titleTxt = 'Add Live Stream Event';
             document.getElementById('modal-title').innerText = titleTxt;
 
             const startDate = dateStr ? dateStr : new Date().toISOString().split('T')[0];
@@ -3702,9 +3704,9 @@ window.openTypeModal = (dateStr = null) => {
             const campInput = document.getElementById('event-campaign-type');
             const imageContainer = document.getElementById('image-link-container');
 
-            const isNonTask = itemType === 'event' || itemType === 'game';
+            const isNonTask = itemType === 'event' || itemType === 'game' || itemType === 'livestream';
 
-            if (itemType === 'event') {
+            if (itemType === 'event' || itemType === 'livestream') {
                 imageContainer.style.display = 'block';
             } else {
                 imageContainer.style.display = 'none';
@@ -3754,6 +3756,7 @@ window.openTypeModal = (dateStr = null) => {
             let titleTxt = 'Edit Content Task';
             if (itemType === 'event') titleTxt = 'Edit Offline Event';
             if (itemType === 'game') titleTxt = 'Edit New Game Launch';
+            if (itemType === 'livestream') titleTxt = 'Edit Live Stream Event';
             document.getElementById('modal-title').innerText = titleTxt;
 
             document.getElementById('event-title').value = evt.title;
@@ -3779,9 +3782,9 @@ window.openTypeModal = (dateStr = null) => {
                 docInput.value = '';
             }
 
-            const isNonTask = itemType === 'event' || itemType === 'game';
+            const isNonTask = itemType === 'event' || itemType === 'game' || itemType === 'livestream';
 
-            if (itemType === 'event') {
+            if (itemType === 'event' || itemType === 'livestream') {
                 imageContainer.style.display = 'block';
             } else {
                 imageContainer.style.display = 'none';

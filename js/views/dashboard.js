@@ -203,13 +203,16 @@ window.renderCalendar = () => {
                     } else if (itemType === 'game') {
                         statusColor = 'bg-red-50 dark:bg-red-900/50 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700/50';
                         formattedTitle = `<i class="fa-solid fa-gamepad text-[10px] mr-1 text-red-500"></i>${evt.title}`;
+                    } else if (itemType === 'livestream') {
+                        statusColor = 'bg-purple-50 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-700/50';
+                        formattedTitle = `<i class="fa-solid fa-video text-[10px] mr-1 text-purple-500"></i>${evt.title}`;
                     } else {
                         statusColor = 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50';
                         const assignsStr = (evt.assignees && evt.assignees.length > 0) ? evt.assignees.join(', ') : '';
                         formattedTitle = `<i class="fa-solid fa-list-check text-[10px] mr-1 opacity-70"></i>[${evt.campaignType || 'All'}] ${evt.title} - ${assignsStr || 'Unassigned'}`;
                     }
 
-                    let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : 'Event');
+                    let titleAttr = itemType === 'task' ? 'Status: ' + evt.status : (itemType === 'game' ? 'New Game' : (itemType === 'livestream' ? 'Live Stream Event' : 'Event'));
                     const style = `grid-column: ${p.sIdx + 1} / ${p.eIdx + 2}; grid-row: ${p.trackIdx + 2};`;
 
                     const tooltipEvents = itemType === 'task'
@@ -304,13 +307,25 @@ window.renderOngoingEvents = () => {
                 const isPast = evt.status === 'Done' || endStr < nowStrIter;
                 const opacityClass = isPast ? 'opacity-50 grayscale' : '';
 
-                if (itemType === 'event' || itemType === 'game') {
+                if (itemType === 'event' || itemType === 'game' || itemType === 'livestream') {
                     el.onclick = () => window.openEditById(evt.id);
 
-                    let iconClass = itemType === 'game' ? 'fa-gamepad text-rose-500' : 'fa-calendar-day text-emerald-500';
-                    let titleColor = itemType === 'game' ? 'text-rose-900 dark:text-rose-300' : 'text-emerald-900 dark:text-emerald-300';
-                    let typeLabel = itemType === 'game' ? 'New Game' : 'Offline Event';
-                    let typeBg = itemType === 'game' ? 'bg-rose-50 dark:bg-rose-900/50 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400' : 'bg-emerald-50 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400';
+                    let iconClass = 'fa-calendar-day text-emerald-500';
+                    let titleColor = 'text-emerald-900 dark:text-emerald-300';
+                    let typeLabel = 'Offline Event';
+                    let typeBg = 'bg-emerald-50 dark:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400';
+
+                    if (itemType === 'game') {
+                        iconClass = 'fa-gamepad text-rose-500';
+                        titleColor = 'text-rose-900 dark:text-rose-300';
+                        typeLabel = 'New Game';
+                        typeBg = 'bg-rose-50 dark:bg-rose-900/50 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400';
+                    } else if (itemType === 'livestream') {
+                        iconClass = 'fa-video text-purple-500';
+                        titleColor = 'text-purple-900 dark:text-purple-300';
+                        typeLabel = 'Live Stream Event';
+                        typeBg = 'bg-purple-50 dark:bg-purple-900/50 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400';
+                    }
 
                     el.className = `flex items-start p-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-700 shadow-md shadow-slate-200/50 dark:shadow-black/50 transition-all cursor-pointer ${opacityClass}`;
 
