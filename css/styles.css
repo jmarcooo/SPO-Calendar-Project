@@ -25,6 +25,25 @@ html.dark body {
     );
 }
 
+/* Repeating holiday background pattern at 50% opacity for main content area */
+.festive-main-bg {
+    background-color: #F8F4EB;
+    background-image:
+        linear-gradient(rgba(248, 244, 235, 0.5), rgba(248, 244, 235, 0.5)),
+        url('https://i.pinimg.com/474x/14/99/4a/14994ad4e6d12a053acf24c1a130ed5b.jpg');
+    background-repeat: repeat;
+    background-position: top left;
+}
+
+.dark .festive-main-bg {
+    background-color: #0f172a;
+    background-image:
+        linear-gradient(rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.5)),
+        url('https://i.pinimg.com/474x/14/99/4a/14994ad4e6d12a053acf24c1a130ed5b.jpg');
+    background-repeat: repeat;
+    background-position: top left;
+}
+
 .calendar-cell {
     min-height: 80px;
 }
